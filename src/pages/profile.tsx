@@ -1,51 +1,86 @@
-import React, { FC } from "react";
-import { Box, Header, Icon, Page, Text } from "zmp-ui";
+import React, { FC, useState } from "react";
+import { Box, Header, Icon, Page, Text, useSnackbar } from "zmp-ui";
 import subscriptionDecor from "static/subscription-decor.svg";
 import { ListRenderer } from "components/list-renderer";
 import { useToBeImplemented } from "hooks";
 import { useUserStore } from "stores/user";
-import { loginWithZaloUser, clearTokens } from "apis/authorization";
 
 const Subscription: FC = () => {
-  const { zaloUser, loadZaloUser, setBackendUser } = useUserStore();
+  const { zaloUser, zaloAccessToken, loadZaloUser, authLoading, isAuthenticated } = useUserStore();
+  const { openSnackbar } = useSnackbar();
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const requestUserInfo = async () => {
-    if (!zaloUser) {
-      await loadZaloUser();
+    if (isAuthenticated) return; // Already logged in
+
+    setLoginError(null);
+    if (!zaloUser || !zaloAccessToken) {
+      try {
+        await loadZaloUser();
+      } catch (error) {
+        const errorMsg = "Không thể lấy thông tin Zalo";
+        setLoginError(errorMsg);
+        openSnackbar({ text: errorMsg, type: "error" });
+      }
     }
+
     try {
-      const backendUser = await loginWithZaloUser(zaloUser);
-      setBackendUser(backendUser);
-      console.warn("Đã đăng nhập và mapping user với backend", {
-        zaloUser,
-        backendUser,
-      });
-    } catch (e) {
-      console.error("Login backend thất bại", e);
+      // Use the store's loginWithZalo method with access token
+      const store = useUserStore.getState();
+      const userToUse = zaloUser || store.zaloUser;
+      const tokenToUse = zaloAccessToken || store.zaloAccessToken;
+
+      if (!userToUse || !tokenToUse) {
+        throw new Error("Missing Zalo user info or access token");
+      }
+
+      await store.loginWithZalo(userToUse, tokenToUse);
+      openSnackbar({ text: "Đăng nhập thành công!", type: "success" });
+    } catch (error) {
+      const errorMsg = "Đăng nhập thất bại. Vui lòng thử lại.";
+      setLoginError(errorMsg);
+      openSnackbar({ text: errorMsg, type: "error" });
     }
   };
 
+  if (isAuthenticated) {
+    return null; // Hide subscription section if already logged in
+  }
+
   return (
-    <Box className="m-4" onClick={requestUserInfo}>
+    <Box className="m-4">
       <Box
-        className="bg-green text-white rounded-xl p-4 space-y-2"
+        onClick={requestUserInfo}
+        className="cursor-pointer bg-green text-white rounded-xl p-4 space-y-2 transition-opacity hover:opacity-80"
         style={{
           backgroundImage: `url(${subscriptionDecor})`,
           backgroundPosition: "right 8px center",
           backgroundRepeat: "no-repeat",
         }}
       >
-        <Text.Title className="font-bold">Đăng ký thành viên</Text.Title>
+        <Text.Title className="font-bold">
+          {authLoading ? "Đang đăng nhập..." : "Đăng ký thành viên"}
+        </Text.Title>
         <Text size="xxSmall">Tích điểm đổi thưởng, mở rộng tiện ích</Text>
       </Box>
+      {loginError && (
+        <Box className="mt-2 p-2 bg-red-100 rounded text-red-700 text-sm">
+          {loginError}
+        </Box>
+      )}
     </Box>
   );
 };
 
 const Personal: FC = () => {
   const onClick = useToBeImplemented();
-  const backendUser = useUserStore((s) => s.backendUser);
-  const setBackendUser = useUserStore((s) => s.setBackendUser);
+  const { backendUser, logout } = useUserStore();
+  const { openSnackbar } = useSnackbar();
+
+  const handleLogout = () => {
+    logout();
+    openSnackbar({ text: "Đã đăng xuất", type: "success" });
+  };
 
   return (
     <Box className="m-4">
@@ -65,14 +100,15 @@ const Personal: FC = () => {
             ),
           },
           backendUser && {
-            left: <Icon icon="zi-logout" />,
+            left: <Icon icon="zi-call" />,
             right: (
               <Box
                 flex
-                onClick={() => {
-                  clearTokens();
-                  setBackendUser(null);
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleLogout();
                 }}
+                className="cursor-pointer"
               >
                 <Text.Header className="flex-1 items-center font-normal">
                   Đăng xuất
@@ -92,9 +128,9 @@ const Personal: FC = () => {
               </Box>
             ),
           },
-        ].filter(Boolean)}
-        renderLeft={(item) => item.left}
-        renderRight={(item) => item.right}
+        ].filter(Boolean) as Parameters<typeof ListRenderer>[0]["items"]}
+        renderLeft={(item: any) => item.left}
+        renderRight={(item: any) => item.right}
       />
     </Box>
   );

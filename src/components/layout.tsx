@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { Route, Routes } from "react-router";
 import { Box } from "zmp-ui";
 import { Navigation } from "./navigation";
@@ -12,6 +12,8 @@ import CheckoutResultPage from "pages/result";
 import { getSystemInfo } from "zmp-sdk";
 import { ScrollRestoration } from "./scroll-restoration";
 import { useHandlePayment } from "hooks";
+import { useUserStore, startTokenRefreshInterval, stopTokenRefreshInterval } from "stores/user";
+import { ProtectedRoute } from "./protected-route";
 
 if (import.meta.env.DEV) {
   document.body.style.setProperty("--zaui-safe-area-inset-top", "24px");
@@ -27,6 +29,28 @@ if (import.meta.env.DEV) {
 
 export const Layout: FC = () => {
   useHandlePayment();
+  const { authLoading, initializeAuth } = useUserStore();
+
+  // Initialize auth on mount
+  useEffect(() => {
+    initializeAuth();
+    startTokenRefreshInterval();
+
+    return () => {
+      stopTokenRefreshInterval();
+    };
+  }, [initializeAuth]);
+
+  // Show loading screen while auth is initializing
+  if (authLoading) {
+    return (
+      <Box flex flexDirection="column" className="h-screen items-center justify-center">
+        <Box className="text-center">
+          <div className="text-lg font-semibold">Đang tải...</div>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <Box flex flexDirection="column" className="h-screen">
@@ -36,10 +60,10 @@ export const Layout: FC = () => {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/search" element={<SearchPage />}></Route>
           <Route path="/category" element={<CategoryPage />}></Route>
-          <Route path="/notification" element={<NotificationPage />}></Route>
-          <Route path="/cart" element={<CartPage />}></Route>
           <Route path="/profile" element={<ProfilePage />}></Route>
-          <Route path="/result" element={<CheckoutResultPage />}></Route>
+          <Route path="/notification" element={<ProtectedRoute element={<NotificationPage />} />}></Route>
+          <Route path="/cart" element={<ProtectedRoute element={<CartPage />} />}></Route>
+          <Route path="/result" element={<ProtectedRoute element={<CheckoutResultPage />} />}></Route>
         </Routes>
       </Box>
       <Navigation />

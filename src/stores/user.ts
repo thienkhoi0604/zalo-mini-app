@@ -1,24 +1,197 @@
 import { create } from "zustand";
 import { getUserInfo } from "zmp-sdk";
 import type { BackendUser } from "apis/authorization";
+import {
+  loginWithZaloUser,
+  clearTokens,
+  getAccessToken,
+  isTokenExpired,
+  shouldRefreshToken,
+  refreshTokens,
+  fetchUserInfo,
+} from "apis/authorization";
 
 type UserStore = {
+  // State
   zaloUser: any | null;
+  zaloAccessToken: string | null;
   backendUser: BackendUser | null;
   loadingZalo: boolean;
+  authLoading: boolean;
+  isAuthenticated: boolean;
+  tokenExpiryTime: number | null;
+
+  // Actions
   loadZaloUser: () => Promise<void>;
   setBackendUser: (user: BackendUser | null) => void;
+  initializeAuth: () => Promise<void>;
+  loginWithZalo: (userInfo: any, accessToken: string) => Promise<void>;
+  logout: () => void;
+  refreshAuthToken: () => Promise<void>;
+  setTokenExpiryTime: (time: number | null) => void;
+  setAuthLoading: (loading: boolean) => void;
 };
 
-export const useUserStore = create<UserStore>((set) => ({
+export const useUserStore = create<UserStore>((set, get) => ({
   zaloUser: null,
+  zaloAccessToken: null,
   backendUser: null,
   loadingZalo: false,
+  authLoading: false,
+  isAuthenticated: false,
+  tokenExpiryTime: null,
+
   loadZaloUser: async () => {
     set({ loadingZalo: true });
-    const { userInfo } = await getUserInfo({ autoRequestPermission: true });
-    set({ zaloUser: userInfo, loadingZalo: false });
+    try {
+      const response = await getUserInfo({ autoRequestPermission: true });
+      const { userInfo } = response;
+      set({
+        zaloUser: userInfo,
+        zaloAccessToken: (userInfo as any).accessToken || null,
+        loadingZalo: false
+      });
+    } catch (error) {
+      console.error("Failed to load Zalo user info:", error);
+      set({ loadingZalo: false });
+    }
   },
-  setBackendUser: (user) => set({ backendUser: user }),
+
+  setBackendUser: (user) => {
+    set({
+      backendUser: user,
+      isAuthenticated: !!user,
+    });
+  },
+
+  setTokenExpiryTime: (time) => set({ tokenExpiryTime: time }),
+
+  setAuthLoading: (loading) => set({ authLoading: loading }),
+
+  initializeAuth: async () => {
+    set({ authLoading: true });
+
+    try {
+      // Check if we have a valid access token
+      const token = getAccessToken();
+      if (!token) {
+        // No token, clear auth state
+        set({ authLoading: false, isAuthenticated: false, backendUser: null });
+        return;
+      }
+
+      // Check if token is expired
+      if (isTokenExpired()) {
+        try {
+          // Try to refresh token
+          console.log("Token expired, attempting refresh...");
+          await refreshTokens();
+        } catch (error) {
+          console.error("Token refresh failed:", error);
+          set({
+            authLoading: false,
+            isAuthenticated: false,
+            backendUser: null,
+          });
+          return;
+        }
+      }
+
+      // At this point we have a valid token
+      // Try to fetch user info from backend
+      try {
+        const user = await fetchUserInfo();
+        set({
+          backendUser: user,
+          isAuthenticated: true,
+          authLoading: false,
+        });
+        console.log("Auto-login successful:", user);
+      } catch (error) {
+        console.error("Failed to fetch user info:", error);
+        set({
+          authLoading: false,
+          isAuthenticated: false,
+          backendUser: null,
+        });
+      }
+    } catch (error) {
+      console.error("Auth initialization error:", error);
+      set({
+        authLoading: false,
+        isAuthenticated: false,
+        backendUser: null,
+      });
+    }
+  },
+
+  loginWithZalo: async (userInfo: any, accessToken: string) => {
+    set({ authLoading: true });
+    try {
+      const user = await loginWithZaloUser(userInfo, accessToken);
+      set({
+        backendUser: user,
+        isAuthenticated: true,
+        authLoading: false,
+      });
+    } catch (error) {
+      console.error("Login failed:", error);
+      set({ authLoading: false });
+      throw error;
+    }
+  },
+
+  logout: () => {
+    clearTokens();
+    set({
+      backendUser: null,
+      isAuthenticated: false,
+      zaloUser: null,
+      zaloAccessToken: null,
+      tokenExpiryTime: null,
+    });
+  },
+
+  refreshAuthToken: async () => {
+    try {
+      await refreshTokens();
+      // Token refresh successful, update state if needed
+      const state = get();
+      if (state.isAuthenticated) {
+        console.log("Token refreshed successfully");
+      }
+    } catch (error) {
+      console.error("Token refresh failed:", error);
+      // If refresh fails, clear auth
+      get().logout();
+      throw error;
+    }
+  },
 }));
+
+// Setup periodic token refresh
+let refreshInterval: ReturnType<typeof setInterval> | null = null;
+
+export function startTokenRefreshInterval() {
+  if (refreshInterval) return;
+
+  refreshInterval = setInterval(async () => {
+    const state = useUserStore.getState();
+    // Only refresh if authenticated
+    if (state.isAuthenticated && shouldRefreshToken()) {
+      try {
+        await state.refreshAuthToken();
+      } catch (error) {
+        console.error("Periodic token refresh failed:", error);
+      }
+    }
+  }, 30000); // Check every 30 seconds
+}
+
+export function stopTokenRefreshInterval() {
+  if (refreshInterval) {
+    clearInterval(refreshInterval);
+    refreshInterval = null;
+  }
+}
 
