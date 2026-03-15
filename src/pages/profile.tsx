@@ -8,21 +8,17 @@ import { useUserStore } from "stores/user";
 const Subscription: FC = () => {
   const { zaloUser, zaloAccessToken, loadZaloUser, authLoading, isAuthenticated } = useUserStore();
   const { openSnackbar } = useSnackbar();
-  const [loginError, setLoginError] = useState<string | null>(null);
 
   const requestUserInfo = async () => {
     if (isAuthenticated) {
       return;
     }
 
-    setLoginError(null);
-
     if (!zaloUser || !zaloAccessToken) {
       try {
         await loadZaloUser();
       } catch (error) {
         const errorMsg = "Không thể lấy thông tin Zalo";
-        setLoginError(errorMsg);
         openSnackbar({ text: errorMsg, type: "error" });
         return;
       }
@@ -42,7 +38,6 @@ const Subscription: FC = () => {
       openSnackbar({ text: "Đăng nhập thành công!", type: "success" });
     } catch (error) {
       const errorMsg = "Đăng nhập thất bại. Vui lòng thử lại.";
-      setLoginError(errorMsg);
       openSnackbar({ text: errorMsg, type: "error" });
     }
   };
@@ -67,11 +62,6 @@ const Subscription: FC = () => {
         </Text.Title>
         <Text size="xxSmall">Tích điểm đổi thưởng, mở rộng tiện ích</Text>
       </Box>
-      {loginError && (
-        <Box className="mt-2 p-2 bg-red-100 rounded text-red-700 text-sm">
-          {loginError}
-        </Box>
-      )}
     </Box>
   );
 };

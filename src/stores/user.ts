@@ -50,6 +50,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
       const { userInfo } = response;
       const accessToken = await getAccessTokenZalo();
+      console.log("Zalo user info:", userInfo);
+      console.log("Zalo access token:", accessToken);
 
       const tokenFromResponse = (response as any)?.accessToken || (userInfo as any)?.accessToken;
       const finalToken = accessToken || tokenFromResponse;

@@ -7,7 +7,12 @@ import react from "@vitejs/plugin-react";
 export default () => {
   return defineConfig({
     root: "./src",
-    base: "",
+    base: process.env.VITE_BASE_URL || "",
     plugins: [tsconfigPaths(), react(), ZaloMiniApp()],
+    server: {
+      allowedHosts: ['all'],
+    },
   });
 };
+
+
