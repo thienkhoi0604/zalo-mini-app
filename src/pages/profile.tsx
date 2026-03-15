@@ -11,9 +11,12 @@ const Subscription: FC = () => {
   const [loginError, setLoginError] = useState<string | null>(null);
 
   const requestUserInfo = async () => {
-    if (isAuthenticated) return; // Already logged in
+    if (isAuthenticated) {
+      return;
+    }
 
     setLoginError(null);
+
     if (!zaloUser || !zaloAccessToken) {
       try {
         await loadZaloUser();
@@ -21,6 +24,7 @@ const Subscription: FC = () => {
         const errorMsg = "Không thể lấy thông tin Zalo";
         setLoginError(errorMsg);
         openSnackbar({ text: errorMsg, type: "error" });
+        return;
       }
     }
 
@@ -74,7 +78,7 @@ const Subscription: FC = () => {
 
 const Personal: FC = () => {
   const onClick = useToBeImplemented();
-  const { backendUser, logout } = useUserStore();
+  const { user, logout } = useUserStore();
   const { openSnackbar } = useSnackbar();
 
   const handleLogout = () => {
@@ -93,13 +97,13 @@ const Personal: FC = () => {
             right: (
               <Box flex>
                 <Text.Header className="flex-1 items-center font-normal">
-                  {backendUser?.displayName || "Đăng nhập tài khoản"}
+                  {user?.displayName || "Đăng nhập tài khoản"}
                 </Text.Header>
                 <Icon icon="zi-chevron-right" />
               </Box>
             ),
           },
-          backendUser && {
+          user && {
             left: <Icon icon="zi-call" />,
             right: (
               <Box

@@ -1,9 +1,13 @@
+import axios from "axios";
+import { User } from "@/types/user";
+
 declare const APP_CONFIG: {
   apiBaseUrl?: string;
 };
 
 const API_BASE_URL =
   (typeof APP_CONFIG !== "undefined" && APP_CONFIG.apiBaseUrl) ||
+  import.meta.env.VITE_API_URL ||
   "https://api.ecogreen-coin.dev";
 
 export type JwtTokens = {
@@ -76,21 +80,15 @@ export async function refreshTokens(): Promise<void> {
       throw new Error("No refresh token available");
     }
 
-    const res = await fetch(`${API_BASE_URL}/auth/refresh`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ refreshToken }),
+    const res = await axios.post(`${API_BASE_URL}/auth/refresh`, {
+      refreshToken,
     });
 
-    if (!res.ok) {
-      clearTokens();
-      throw new Error("Token refresh failed");
-    }
-
-    const data = (await res.json()) as { tokens: JwtTokens };
+    const data = res.data as { tokens: JwtTokens };
     saveTokens(data.tokens);
+  } catch (error) {
+    clearTokens();
+    throw error;
   } finally {
     isRefreshing = false;
   }
@@ -98,63 +96,56 @@ export async function refreshTokens(): Promise<void> {
 
 export async function apiFetch<T>(
   path: string,
-  options: RequestInit = {}
+  options: Partial<{ method: string; headers?: Record<string, string>; data?: unknown }> = {}
 ): Promise<T> {
   const token = getAccessToken();
-  const headers: HeadersInit = {
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
     ...(options.headers || {}),
   };
 
   if (token) {
-    (headers as Record<string, string>).Authorization = `Bearer ${token}`;
+    headers.Authorization = `Bearer ${token}`;
   }
 
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  try {
+    const res = await axios({
+      url: `${API_BASE_URL}${path}`,
+      method: options.method || "GET",
+      headers,
+      data: options.data,
+    });
 
-  // Handle 401 - try to refresh token and retry
-  if (res.status === 401) {
-    try {
-      await refreshTokens();
-      // Retry the request with new token
-      const newToken = getAccessToken();
-      const retryHeaders: HeadersInit = {
-        "Content-Type": "application/json",
-        ...(options.headers || {}),
-      };
-      if (newToken) {
-        (retryHeaders as Record<string, string>).Authorization = `Bearer ${newToken}`;
+    return res.data as T;
+  } catch (error: unknown) {
+    // Handle 401 - try to refresh token and retry
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      try {
+        await refreshTokens();
+        // Retry the request with new token
+        const newToken = getAccessToken();
+        const retryHeaders: Record<string, string> = {
+          "Content-Type": "application/json",
+          ...(options.headers || {}),
+        };
+        if (newToken) {
+          retryHeaders.Authorization = `Bearer ${newToken}`;
+        }
+        const retryRes = await axios({
+          url: `${API_BASE_URL}${path}`,
+          method: options.method || "GET",
+          headers: retryHeaders,
+          data: options.data,
+        });
+        return retryRes.data as T;
+      } catch (retryError) {
+        clearTokens();
+        throw retryError;
       }
-      const retryRes = await fetch(`${API_BASE_URL}${path}`, {
-        ...options,
-        headers: retryHeaders,
-      });
-      if (!retryRes.ok) {
-        throw new Error(`API error: ${retryRes.status}`);
-      }
-      return (await retryRes.json()) as T;
-    } catch (error) {
-      clearTokens();
-      throw error;
     }
+    throw error;
   }
-
-  if (!res.ok) {
-    throw new Error(`API error: ${res.status}`);
-  }
-
-  return (await res.json()) as T;
 }
-
-export type BackendUser = {
-  id: string;
-  zaloId: string;
-  displayName?: string;
-  avatar?: string;
-};
 
 export async function loginWithZaloUser(userInfo: any, zaloAccessToken: string) {
   const payload = {
@@ -166,25 +157,14 @@ export async function loginWithZaloUser(userInfo: any, zaloAccessToken: string) 
     avatar: userInfo.avatar,
   };
 
-  // Use fetch directly since we don't have auth token yet
-  const res = await fetch(`${API_BASE_URL}/auth/zalo-miniapp`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(payload),
-  });
+  const res = await axios.post(`${API_BASE_URL}/auth/zalo-miniapp`, payload);
 
-  if (!res.ok) {
-    throw new Error(`Login failed: ${res.status}`);
-  }
-
-  const data = (await res.json()) as { user: BackendUser; tokens: JwtTokens };
+  const data = res.data as { user: User; tokens: JwtTokens };
   saveTokens(data.tokens);
   return data.user;
 }
 
-export async function fetchUserInfo(): Promise<BackendUser> {
-  return apiFetch<{ user: BackendUser }>("/auth/me").then((res) => res.user);
+export async function fetchUserInfo(): Promise<User> {
+  return apiFetch<{ user: User }>("/auth/me").then((res) => res.user);
 }
 

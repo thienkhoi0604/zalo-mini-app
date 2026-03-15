@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { getUserInfo } from "zmp-sdk";
-import type { BackendUser } from "apis/authorization";
+import { getAccessToken as getAccessTokenZalo } from "zmp-sdk/apis";
+
 import {
   loginWithZaloUser,
   clearTokens,
@@ -10,12 +11,13 @@ import {
   refreshTokens,
   fetchUserInfo,
 } from "apis/authorization";
+import { User } from "@/types/user";
 
 type UserStore = {
   // State
   zaloUser: any | null;
   zaloAccessToken: string | null;
-  backendUser: BackendUser | null;
+  user: User | null;
   loadingZalo: boolean;
   authLoading: boolean;
   isAuthenticated: boolean;
@@ -23,7 +25,7 @@ type UserStore = {
 
   // Actions
   loadZaloUser: () => Promise<void>;
-  setBackendUser: (user: BackendUser | null) => void;
+  setBackendUser: (user: User | null) => void;
   initializeAuth: () => Promise<void>;
   loginWithZalo: (userInfo: any, accessToken: string) => Promise<void>;
   logout: () => void;
@@ -35,7 +37,7 @@ type UserStore = {
 export const useUserStore = create<UserStore>((set, get) => ({
   zaloUser: null,
   zaloAccessToken: null,
-  backendUser: null,
+  user: null,
   loadingZalo: false,
   authLoading: false,
   isAuthenticated: false,
@@ -45,21 +47,27 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set({ loadingZalo: true });
     try {
       const response = await getUserInfo({ autoRequestPermission: true });
+
       const { userInfo } = response;
+      const accessToken = await getAccessTokenZalo();
+
+      const tokenFromResponse = (response as any)?.accessToken || (userInfo as any)?.accessToken;
+      const finalToken = accessToken || tokenFromResponse;
+
+
       set({
         zaloUser: userInfo,
-        zaloAccessToken: (userInfo as any).accessToken || null,
+        zaloAccessToken: finalToken || null,
         loadingZalo: false
       });
     } catch (error) {
-      console.error("Failed to load Zalo user info:", error);
       set({ loadingZalo: false });
     }
   },
 
   setBackendUser: (user) => {
     set({
-      backendUser: user,
+      user: user,
       isAuthenticated: !!user,
     });
   },
@@ -76,7 +84,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       const token = getAccessToken();
       if (!token) {
         // No token, clear auth state
-        set({ authLoading: false, isAuthenticated: false, backendUser: null });
+        set({ authLoading: false, isAuthenticated: false, user: null });
         return;
       }
 
@@ -91,7 +99,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
           set({
             authLoading: false,
             isAuthenticated: false,
-            backendUser: null,
+            user: null,
           });
           return;
         }
@@ -102,7 +110,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       try {
         const user = await fetchUserInfo();
         set({
-          backendUser: user,
+          user: user,
           isAuthenticated: true,
           authLoading: false,
         });
@@ -112,7 +120,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         set({
           authLoading: false,
           isAuthenticated: false,
-          backendUser: null,
+          user: null,
         });
       }
     } catch (error) {
@@ -120,7 +128,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       set({
         authLoading: false,
         isAuthenticated: false,
-        backendUser: null,
+        user: null,
       });
     }
   },
@@ -130,7 +138,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
     try {
       const user = await loginWithZaloUser(userInfo, accessToken);
       set({
-        backendUser: user,
+        user: user,
         isAuthenticated: true,
         authLoading: false,
       });
@@ -144,7 +152,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
   logout: () => {
     clearTokens();
     set({
-      backendUser: null,
+      user: null,
       isAuthenticated: false,
       zaloUser: null,
       zaloAccessToken: null,
