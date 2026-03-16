@@ -13,7 +13,7 @@ const QRCodePage: FC = () => {
     if (user?.id) {
       loadQRCode();
     }
-  }, [user?.id, loadQRCode]);
+  }, [user?.id]);
 
   const handleScanQR = async () => {
     if (!user?.id) {
@@ -47,7 +47,8 @@ const QRCodePage: FC = () => {
       }
 
       // Extract user ID from QR data - expecting format like "userid:123"
-      const scannedUserId = scanData.data?.split(":")?.[1] || scanData.data;
+      const qrString = (scanData as any)?.data || (scanData as any);
+      const scannedUserId = qrString?.split(":")?.[1] || qrString;
 
       if (!scannedUserId) {
         openSnackbar({

@@ -9,6 +9,7 @@ import QRCodePage from "pages/qr-code";
 import { getSystemInfo } from "zmp-sdk";
 import { ScrollRestoration } from "./scroll-restoration";
 import { useUserStore, startTokenRefreshInterval, stopTokenRefreshInterval } from "stores/user";
+import { useSnackbarInit } from "hooks/use-snackbar-init";
 
 if (import.meta.env.DEV) {
   document.body.style.setProperty("--zaui-safe-area-inset-top", "24px");
@@ -24,6 +25,7 @@ if (import.meta.env.DEV) {
 
 export const Layout: FC = () => {
   const { authLoading, initializeAuth } = useUserStore();
+  useSnackbarInit();
 
   // Initialize auth on mount
   useEffect(() => {
