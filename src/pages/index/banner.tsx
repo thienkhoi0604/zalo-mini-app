@@ -1,8 +1,10 @@
 import React, { FC } from "react";
 import { Pagination } from "swiper";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { getDummyImage } from "utils/product";
 import { Box } from "zmp-ui";
+
+const getDummyImage = (filename: string) =>
+  `https://stc-zmp.zadn.vn/templates/zaui-coffee/dummy/${filename}`;
 
 export const Banner: FC = () => {
   return (
