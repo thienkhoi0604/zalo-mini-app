@@ -22,6 +22,8 @@ type UserStore = {
   authLoading: boolean;
   isAuthenticated: boolean;
   tokenExpiryTime: number | null;
+  qrCodeUrl: string | null;
+  qrLoading: boolean;
 
   // Actions
   loadZaloUser: () => Promise<void>;
@@ -32,6 +34,8 @@ type UserStore = {
   refreshAuthToken: () => Promise<void>;
   setTokenExpiryTime: (time: number | null) => void;
   setAuthLoading: (loading: boolean) => void;
+  loadQRCode: () => Promise<void>;
+  scanQRCode: (scannedUserId: string) => Promise<number>;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
@@ -42,6 +46,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
   authLoading: false,
   isAuthenticated: false,
   tokenExpiryTime: null,
+  qrCodeUrl: null,
+  qrLoading: false,
 
   loadZaloUser: async () => {
     set({ loadingZalo: true });
@@ -174,6 +180,50 @@ export const useUserStore = create<UserStore>((set, get) => ({
       console.error("Token refresh failed:", error);
       // If refresh fails, clear auth
       get().logout();
+      throw error;
+    }
+  },
+
+  loadQRCode: async () => {
+    const state = get();
+    if (!state.user?.id) return;
+
+    set({ qrLoading: true });
+    try {
+      const { data } = await (await import("apis/client")).default.get(
+        `/users/${state.user.id}/qr-code`
+      );
+      set({ qrCodeUrl: data.qrCodeUrl, qrLoading: false });
+    } catch (error) {
+      console.error("Failed to load QR code:", error);
+      set({ qrLoading: false });
+      throw error;
+    }
+  },
+
+  scanQRCode: async (scannedUserId: string) => {
+    try {
+      const { data } = await (await import("apis/client")).default.post(
+        "/qr-code/scan",
+        { scannedUserId }
+      );
+
+      // Update user points if present in response
+      if (data.totalPoints !== undefined) {
+        const state = get();
+        if (state.user) {
+          set({
+            user: {
+              ...state.user,
+              points: data.totalPoints,
+            },
+          });
+        }
+      }
+
+      return data.points || 0;
+    } catch (error) {
+      console.error("Failed to scan QR code:", error);
       throw error;
     }
   },

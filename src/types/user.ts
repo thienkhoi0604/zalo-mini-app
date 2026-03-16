@@ -3,4 +3,5 @@ export type User = {
   zaloId: string;
   displayName?: string;
   avatar?: string;
+  points?: number;
 };

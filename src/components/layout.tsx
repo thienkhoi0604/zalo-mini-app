@@ -4,6 +4,8 @@ import { Box } from "zmp-ui";
 import { Navigation } from "./navigation";
 import HomePage from "pages/index";
 import ProfilePage from "pages/profile";
+import GiftCardsPage from "pages/gift-cards";
+import QRCodePage from "pages/qr-code";
 import { getSystemInfo } from "zmp-sdk";
 import { ScrollRestoration } from "./scroll-restoration";
 import { useUserStore, startTokenRefreshInterval, stopTokenRefreshInterval } from "stores/user";
@@ -50,6 +52,8 @@ export const Layout: FC = () => {
       <Box className="flex-1 flex flex-col overflow-hidden">
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
+          <Route path="/gift-cards" element={<GiftCardsPage />}></Route>
+          <Route path="/qr-code" element={<QRCodePage />}></Route>
           <Route path="/profile" element={<ProfilePage />}></Route>
         </Routes>
       </Box>

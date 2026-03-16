@@ -11,8 +11,8 @@
             "properties": {
               "name": {
                 "type": "string",
-                "enum": ["zaui-coffee"],
-                "description": "Tên template. Bắt buộc phải mang giá trị zaui-coffee"
+                "enum": ["ecogreen-coin"],
+                "description": "Tên template. Bắt buộc phải mang giá trị ecogreen-coin"
               },
               "headerLogo": {
                 "type": "string",

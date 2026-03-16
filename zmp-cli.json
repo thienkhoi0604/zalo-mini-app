@@ -1,11 +1,11 @@
 {
-  "cwd": "/Users/lap15182-local/Desktop/zalo/zaui-coffee",
+  "cwd": "/Users/lap15182-local/Desktop/zalo/ecogreen-coin",
   "name": "Ecogreen Coin",
   "framework": "react-typescript",
   "cssPreProcessor": "scss",
   "includeTailwind": true,
   "package": "zmp-ui",
-  "stateManagement": "recoil",
+  "stateManagement": "zustand",
   "newProject": true,
   "template": "single-view",
   "theming": {

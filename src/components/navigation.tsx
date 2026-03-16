@@ -9,8 +9,16 @@ const tabs: Record<string, MenuItem> = {
     label: "Trang chủ",
     icon: <Icon icon="zi-home" />,
   },
+  "/gift-cards": {
+    label: "Thẻ quà tặng",
+    icon: <Icon icon="zi-bookmark" />,
+  },
+  "/qr-code": {
+    label: "QR Code",
+    icon: <Icon icon="zi-qrline" />,
+  },
   "/profile": {
-    label: "Cá nhân",
+    label: "Tài khoản",
     icon: <Icon icon="zi-user" />,
   },
 };
