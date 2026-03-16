@@ -1,0 +1,18 @@
+{
+  "success": true,
+  "message": "Đăng nhập thành công",
+  "data": {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1laWRlbnRpZmllciI6ImZjYTMyZDA0LWQzNGMtNDUzMS1iMWU2LWQ3OTQ5N2Q1ZmIyMSIsImh0dHA6Ly9zY2hlbWFzLnhtbHNvYXAub3JnL3dzLzIwMDUvMDUvaWRlbnRpdHkvY2xhaW1zL25hbWUiOiJIdXkgTmd1eWVuIFF1YW5nIiwianRpIjoiZmEyNDQ3ZGQtYmM2Ny00YjhmLWE1MzktMWIzNzNmOWNhNGEzIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiQ3VzdG9tZXIiLCJleHAiOjE3NzM2NzU2MjYsImlzcyI6IkVWQ2hhcmdpbmdBUEkiLCJhdWQiOiJFVkNoYXJnaW5nQXBwIn0.MBhqJz8GN8MfqOiTdNQG-6i-oytTW6SROxH4vT7F6vA",
+    "refreshToken": "DvrY8XvM7t13h3Ko1LuwpplfZVl/bW6YdYasy8jlSk9i/y0Ahdm1xFWUoRFeEPUEmKGpR86bHZkQCedrxnNy2w==",
+    "user": {
+      "id": "fca32d04-d34c-4531-b1e6-d79497d5fb21",
+      "zaloUserId": "5971311603055546888",
+      "userName": null,
+      "fullName": "Huy Nguyen Quang",
+      "phone": null,
+      "avatarUrl": "https://s120-ava-talk.zadn.vn/e/1/d/f/26/120/76b52f895d6ad7806af326063602402e.jpg",
+      "role": "Customer"
+    }
+  },
+  "errors": null
+}

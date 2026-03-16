@@ -1,5 +1,6 @@
 import axios from "axios";
 import { User } from "@/types/user";
+import mockData from "../../../mock/auth-login-response.json"
 
 declare const APP_CONFIG: {
   apiBaseUrl?: string;
@@ -13,12 +14,10 @@ const API_BASE_URL =
 export type JwtTokens = {
   accessToken: string;
   refreshToken?: string;
-  expiresIn?: number;
 };
 
 const ACCESS_TOKEN_KEY = "ecogreen_access_token";
 const REFRESH_TOKEN_KEY = "ecogreen_refresh_token";
-const TOKEN_EXPIRY_KEY = "ecogreen_token_expiry";
 
 export function saveTokens(tokens: JwtTokens) {
   if (tokens.accessToken) {
@@ -27,17 +26,11 @@ export function saveTokens(tokens: JwtTokens) {
   if (tokens.refreshToken) {
     window.localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
   }
-  // Calculate and save token expiry time
-  if (tokens.expiresIn) {
-    const expiryTime = Date.now() + tokens.expiresIn * 1000;
-    window.localStorage.setItem(TOKEN_EXPIRY_KEY, expiryTime.toString());
-  }
 }
 
 export function clearTokens() {
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
-  window.localStorage.removeItem(TOKEN_EXPIRY_KEY);
 }
 
 export function getAccessToken() {
@@ -46,25 +39,6 @@ export function getAccessToken() {
 
 export function getRefreshToken() {
   return window.localStorage.getItem(REFRESH_TOKEN_KEY);
-}
-
-export function getTokenExpiryTime() {
-  const expiry = window.localStorage.getItem(TOKEN_EXPIRY_KEY);
-  return expiry ? parseInt(expiry, 10) : null;
-}
-
-export function isTokenExpired() {
-  const expiryTime = getTokenExpiryTime();
-  if (!expiryTime) return true;
-  return Date.now() > expiryTime;
-}
-
-export function shouldRefreshToken() {
-  const expiryTime = getTokenExpiryTime();
-  if (!expiryTime) return false;
-  // Refresh if token expires within 1 minute
-  const refreshBuffer = 60 * 1000;
-  return Date.now() > expiryTime - refreshBuffer;
 }
 
 let isRefreshing = false;
@@ -84,8 +58,20 @@ export async function refreshTokens(): Promise<void> {
       refreshToken,
     });
 
-    const data = res.data as { tokens: JwtTokens };
-    saveTokens(data.tokens);
+    const responseData = res.data as {
+      success: boolean;
+      data: {
+        accessToken: string;
+        refreshToken: string;
+      };
+    };
+
+    const tokens: JwtTokens = {
+      accessToken: responseData.data.accessToken,
+      refreshToken: responseData.data.refreshToken,
+    };
+
+    saveTokens(tokens);
   } catch (error) {
     clearTokens();
     throw error;
@@ -147,24 +133,56 @@ export async function apiFetch<T>(
   }
 }
 
-export async function loginWithZaloUser(userInfo: any, zaloAccessToken: string) {
+export async function loginWithZaloUser(zaloAccessToken: string) {
   const payload = {
     // Send Zalo access token for backend verification
     zaloAccessToken: zaloAccessToken,
-    // Optional: also send user info for easier backend processing
-    zaloId: userInfo.id,
-    displayName: userInfo.name,
-    avatar: userInfo.avatar,
   };
 
-  const res = await axios.post(`${API_BASE_URL}/auth/zalo-miniapp`, payload);
+  // const res = await axios.post(`${API_BASE_URL}/auth/zalo-login`, payload);
+  const res = {
+    data: mockData
+  }
 
-  const data = res.data as { user: User; tokens: JwtTokens };
-  saveTokens(data.tokens);
-  return data.user;
+  const responseData = res.data as {
+    success: boolean;
+    message: string;
+    data: {
+      accessToken: string;
+      refreshToken: string;
+      user: {
+        id: string;
+        zaloUserId: string;
+        userName: string | null;
+        fullName: string;
+        phone: string | null;
+        avatarUrl: string;
+        role: string;
+      };
+    };
+  };
+
+  const tokens: JwtTokens = {
+    accessToken: responseData.data.accessToken,
+    refreshToken: responseData.data.refreshToken,
+  };
+
+  const user: User = {
+    id: responseData.data.user.id,
+    zaloUserId: responseData.data.user.zaloUserId,
+    fullName: responseData.data.user.fullName,
+    avatarUrl: responseData.data.user.avatarUrl,
+    phone: responseData.data.user.phone || undefined,
+    role: responseData.data.user.role,
+    userName: responseData.data.user.userName || undefined,
+  };
+
+  saveTokens(tokens);
+  return user;
 }
 
 export async function fetchUserInfo(): Promise<User> {
-  return apiFetch<{ user: User }>("/auth/me").then((res) => res.user);
+  const res = await apiFetch<{ data: User }>("/auth/me");
+  return res.data;
 }
 

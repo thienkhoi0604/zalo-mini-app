@@ -6,8 +6,6 @@ import {
   loginWithZaloUser,
   clearTokens,
   getAccessToken,
-  isTokenExpired,
-  shouldRefreshToken,
   refreshTokens,
   fetchUserInfo,
 } from "apis/authorization";
@@ -21,18 +19,15 @@ type UserStore = {
   loadingZalo: boolean;
   authLoading: boolean;
   isAuthenticated: boolean;
-  tokenExpiryTime: number | null;
   qrCodeUrl: string | null;
   qrLoading: boolean;
 
   // Actions
   loadZaloUser: () => Promise<void>;
-  setBackendUser: (user: User | null) => void;
   initializeAuth: () => Promise<void>;
-  loginWithZalo: (userInfo: any, accessToken: string) => Promise<void>;
+  loginWithZalo: (accessToken: string) => Promise<void>;
   logout: () => void;
   refreshAuthToken: () => Promise<void>;
-  setTokenExpiryTime: (time: number | null) => void;
   setAuthLoading: (loading: boolean) => void;
   loadQRCode: () => Promise<void>;
   scanQRCode: (scannedUserId: string) => Promise<number>;
@@ -45,7 +40,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
   loadingZalo: false,
   authLoading: false,
   isAuthenticated: false,
-  tokenExpiryTime: null,
   qrCodeUrl: null,
   qrLoading: false,
 
@@ -73,15 +67,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  setBackendUser: (user) => {
-    set({
-      user: user,
-      isAuthenticated: !!user,
-    });
-  },
-
-  setTokenExpiryTime: (time) => set({ tokenExpiryTime: time }),
-
   setAuthLoading: (loading) => set({ authLoading: loading }),
 
   initializeAuth: async () => {
@@ -96,24 +81,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return;
       }
 
-      // Check if token is expired
-      if (isTokenExpired()) {
-        try {
-          // Try to refresh token
-          console.log("Token expired, attempting refresh...");
-          await refreshTokens();
-        } catch (error) {
-          console.error("Token refresh failed:", error);
-          set({
-            authLoading: false,
-            isAuthenticated: false,
-            user: null,
-          });
-          return;
-        }
-      }
-
-      // At this point we have a valid token
       // Try to fetch user info from backend
       try {
         const user = await fetchUserInfo();
@@ -141,10 +108,10 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  loginWithZalo: async (userInfo: any, accessToken: string) => {
+  loginWithZalo: async (accessToken: string) => {
     set({ authLoading: true });
     try {
-      const user = await loginWithZaloUser(userInfo, accessToken);
+      const user = await loginWithZaloUser(accessToken);
       set({
         user: user,
         isAuthenticated: true,
@@ -164,7 +131,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
       isAuthenticated: false,
       zaloUser: null,
       zaloAccessToken: null,
-      tokenExpiryTime: null,
     });
   },
 
@@ -228,30 +194,4 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 }));
-
-// Setup periodic token refresh
-let refreshInterval: ReturnType<typeof setInterval> | null = null;
-
-export function startTokenRefreshInterval() {
-  if (refreshInterval) return;
-
-  refreshInterval = setInterval(async () => {
-    const state = useUserStore.getState();
-    // Only refresh if authenticated
-    if (state.isAuthenticated && shouldRefreshToken()) {
-      try {
-        await state.refreshAuthToken();
-      } catch (error) {
-        console.error("Periodic token refresh failed:", error);
-      }
-    }
-  }, 30000); // Check every 30 seconds
-}
-
-export function stopTokenRefreshInterval() {
-  if (refreshInterval) {
-    clearInterval(refreshInterval);
-    refreshInterval = null;
-  }
-}
 

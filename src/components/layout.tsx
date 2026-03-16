@@ -8,7 +8,7 @@ import GiftCardsPage from "pages/gift-cards";
 import QRCodePage from "pages/qr-code";
 import { getSystemInfo } from "zmp-sdk";
 import { ScrollRestoration } from "./scroll-restoration";
-import { useUserStore, startTokenRefreshInterval, stopTokenRefreshInterval } from "stores/user";
+import { useUserStore } from "stores/user";
 import { useSnackbarInit } from "hooks/use-snackbar-init";
 
 if (import.meta.env.DEV) {
@@ -30,11 +30,6 @@ export const Layout: FC = () => {
   // Initialize auth on mount
   useEffect(() => {
     initializeAuth();
-    startTokenRefreshInterval();
-
-    return () => {
-      stopTokenRefreshInterval();
-    };
   }, [initializeAuth]);
 
   // Show loading screen while auth is initializing

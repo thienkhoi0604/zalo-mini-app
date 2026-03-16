@@ -6,7 +6,7 @@ import { useToBeImplemented } from "hooks";
 import { useUserStore } from "stores/user";
 
 const Subscription: FC = () => {
-  const { zaloUser, zaloAccessToken, loadZaloUser, authLoading, isAuthenticated } = useUserStore();
+  const { zaloAccessToken, loadZaloUser, authLoading, isAuthenticated } = useUserStore();
   const { openSnackbar } = useSnackbar();
 
   const requestUserInfo = async () => {
@@ -14,7 +14,7 @@ const Subscription: FC = () => {
       return;
     }
 
-    if (!zaloUser || !zaloAccessToken) {
+    if (!zaloAccessToken) {
       try {
         await loadZaloUser();
       } catch (error) {
@@ -27,14 +27,13 @@ const Subscription: FC = () => {
     try {
       // Use the store's loginWithZalo method with access token
       const store = useUserStore.getState();
-      const userToUse = zaloUser || store.zaloUser;
-      const tokenToUse = zaloAccessToken || store.zaloAccessToken;
+      const tokenToUse = zaloAccessToken || store.zaloAccessToken || '';
 
-      if (!userToUse || !tokenToUse) {
+      if (!tokenToUse) {
         throw new Error("Missing Zalo user info or access token");
       }
 
-      await store.loginWithZalo(userToUse, tokenToUse);
+      await store.loginWithZalo(tokenToUse);
       openSnackbar({ text: "Đăng nhập thành công!", type: "success" });
     } catch (error) {
       const errorMsg = "Đăng nhập thất bại. Vui lòng thử lại.";
