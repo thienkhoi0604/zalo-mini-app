@@ -6,6 +6,8 @@ import HomePage from "pages/index";
 import ProfilePage from "pages/profile";
 import GiftCardsPage from "pages/gift-cards";
 import QRCodePage from "pages/qr-code";
+import StoresPage from "pages/stores";
+import StoreDetailPage from "pages/store-detail";
 import { getSystemInfo } from "zmp-sdk";
 import { ScrollRestoration } from "./scroll-restoration";
 import { useUserStore } from "stores/user";
@@ -51,6 +53,8 @@ export const Layout: FC = () => {
           <Route path="/" element={<HomePage />}></Route>
           <Route path="/gift-cards" element={<GiftCardsPage />}></Route>
           <Route path="/qr-code" element={<QRCodePage />}></Route>
+          <Route path="/stores" element={<StoresPage />}></Route>
+          <Route path="/stores/:id" element={<StoreDetailPage />}></Route>
           <Route path="/profile" element={<ProfilePage />}></Route>
         </Routes>
       </Box>
