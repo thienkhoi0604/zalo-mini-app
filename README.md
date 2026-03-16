@@ -4,17 +4,15 @@
   <img alt="react" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/react" />
   <img alt="zmp-ui" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/zmp-ui" />
   <img alt="zmp-sdk" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/zmp-sdk" />
-  <img alt="recoil" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/recoil" />
   <img alt="tailwindcss" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/dev/tailwindcss" />
   <img alt="scss" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/dev/sass" />
 </p>
 
 Public template for building a coffee shop on Zalo Mini App. Main features:
 
-- View coffee shop details and menus.
-- Order coffee and snacks with customizable size options.
+- Zalo OAuth authentication with auto account creation.
+- Multi-location management with province/ward filtering.
 - Notifications management.
-- Manage your cart and delivery options.
 - View customer profile and membership.
 
 |                      Demo                       |                  Entrypoint                  |
@@ -89,7 +87,7 @@ Folder structure:
   - **`utils`**: Reusable utility functions, such as distance calculation, date and time format, etc.
   - **`app.ts`**: Entry point of your Mini App.
   - **`global.d.ts`**: Contains TypeScript declarations for third-party modules and global objects.
-  - **`state.ts`**: State management, containing [Recoil](https://recoiljs.org/docs/introduction/getting-started#atom)'s atoms and selectors.
+  - **`stores`**: State management using Zustand.
 
 - **`mock`**: Example data as \*.json files.
 
@@ -120,39 +118,6 @@ Visit [Zalo Mini App](https://mini.zalo.me/) and go to your mini app's settings 
 You can customizations primary colors and currency displays using [Zalo Mini App Studio](https://mini.zalo.me/docs/dev-tools):
 
 ![Customizations](./docs/customizations.webp)
-
-### Load product list from server
-
-<img src="./docs/products-fetching.webp" alt="Products fetching" width="250" align="right">
-
-For a simple MVP, you can put in your store products and categories as simply as making changes to `mock/*.json` files. However, a typical application would likely need to fetch data over REST API.
-
-To make an HTTP GET request to your server and fetch the product list, update the `productsState` selector in src/state.ts to use `fetch`.
-
-If the returned JSON structure is different from the template, you would need to map your product object to the corresponding `Product` interface. For example:
-
-```ts
-export const productsState = selector<Product[]>({
-  key: "products",
-  get: async () => {
-    const response = await fetch("https://dummyjson.com/products");
-    const data = await response.json();
-    return data.products.map(
-      ({ id, title, price, images, description, category }) =>
-        <Product>{
-          id,
-          name: title,
-          price: price,
-          image: images[0],
-          description,
-          categoryId: category,
-        }
-    );
-  },
-});
-```
-
-Feel free to create another `service` layer and put the network fetching logics inside. This template provides only the UI layer, so you can customize the logic in any way you want.
 
 ## License
 
