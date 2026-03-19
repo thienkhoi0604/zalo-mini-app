@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { getUserInfo } from "zmp-sdk";
+import { getUserInfo, closeApp } from "zmp-sdk";
 import { getAccessToken as getAccessTokenZalo } from "zmp-sdk/apis";
 
 import {
@@ -63,7 +63,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
         loadingZalo: false
       });
     } catch (error) {
+      // User denied permission - exit app
+      console.error("Permission denied:", error);
       set({ loadingZalo: false });
+
+      // Close the app if user denies permission
+      closeApp();
     }
   },
 

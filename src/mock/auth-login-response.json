@@ -11,7 +11,9 @@
       "fullName": "Huy Nguyen Quang",
       "phone": null,
       "avatarUrl": "https://s120-ava-talk.zadn.vn/e/1/d/f/26/120/76b52f895d6ad7806af326063602402e.jpg",
-      "role": "Customer"
+      "role": "Customer",
+      "points": 1250,
+      "ratingPoints": 4850
     }
   },
   "errors": null

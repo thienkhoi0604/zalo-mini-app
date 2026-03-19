@@ -8,10 +8,12 @@ import GiftCardsPage from "pages/gift-cards";
 import QRCodePage from "pages/qr-code";
 import StoresPage from "pages/stores";
 import StoreDetailPage from "pages/store-detail";
+import RegisterPage from "pages/register";
 import { getSystemInfo } from "zmp-sdk";
 import { ScrollRestoration } from "./scroll-restoration";
 import { useUserStore } from "stores/user";
 import { useSnackbarInit } from "hooks/use-snackbar-init";
+import { ProtectedRoute } from "./protected-route";
 
 if (import.meta.env.DEV) {
   document.body.style.setProperty("--zaui-safe-area-inset-top", "24px");
@@ -51,11 +53,47 @@ export const Layout: FC = () => {
       <Box className="flex-1 flex flex-col overflow-hidden">
         <Routes>
           <Route path="/" element={<HomePage />}></Route>
-          <Route path="/gift-cards" element={<GiftCardsPage />}></Route>
-          <Route path="/qr-code" element={<QRCodePage />}></Route>
-          <Route path="/stores" element={<StoresPage />}></Route>
-          <Route path="/stores/:id" element={<StoreDetailPage />}></Route>
-          <Route path="/profile" element={<ProfilePage />}></Route>
+          <Route path="/register" element={<RegisterPage />}></Route>
+          <Route
+            path="/gift-cards"
+            element={
+              <ProtectedRoute>
+                <GiftCardsPage />
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route
+            path="/qr-code"
+            element={
+              <ProtectedRoute>
+                <QRCodePage />
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route
+            path="/stores"
+            element={
+              <ProtectedRoute>
+                <StoresPage />
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route
+            path="/stores/:id"
+            element={
+              <ProtectedRoute>
+                <StoreDetailPage />
+              </ProtectedRoute>
+            }
+          ></Route>
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          ></Route>
         </Routes>
       </Box>
       <Navigation />

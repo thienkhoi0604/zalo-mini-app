@@ -1,6 +1,6 @@
 import axios from "axios";
 import { User } from "@/types/user";
-import mockData from "../../../mock/auth-login-response.json"
+import mockData from "@/mock/auth-login-response.json";
 
 declare const APP_CONFIG: {
   apiBaseUrl?: string;
@@ -133,13 +133,10 @@ export async function apiFetch<T>(
   }
 }
 
-export async function loginWithZaloUser(zaloAccessToken: string) {
-  const payload = {
-    // Send Zalo access token for backend verification
-    zaloAccessToken: zaloAccessToken,
-  };
-
-  // const res = await axios.post(`${API_BASE_URL}/auth/zalo-login`, payload);
+export async function loginWithZaloUser(_zaloAccessToken: string) {
+  // const res = await axios.post(`${API_BASE_URL}/auth/zalo-login`, {
+  //   zaloAccessToken: _zaloAccessToken,
+  // });
   const res = {
     data: mockData
   }
@@ -158,6 +155,8 @@ export async function loginWithZaloUser(zaloAccessToken: string) {
         phone: string | null;
         avatarUrl: string;
         role: string;
+        points?: number;
+        ratingPoints?: number;
       };
     };
   };
@@ -175,6 +174,8 @@ export async function loginWithZaloUser(zaloAccessToken: string) {
     phone: responseData.data.user.phone || undefined,
     role: responseData.data.user.role,
     userName: responseData.data.user.userName || undefined,
+    points: responseData.data.user.points || 0,
+    ratingPoints: responseData.data.user.ratingPoints || 0,
   };
 
   saveTokens(tokens);

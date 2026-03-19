@@ -8,5 +8,6 @@ export type User = {
   avatarUrl?: string;
   phone?: string;
   points?: number;
+  ratingPoints?: number;
   role?: string;
 };
