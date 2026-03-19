@@ -23,7 +23,7 @@ export const TopStoresCarousel: FC = () => {
   return (
     <Box className="px-4 pb-4">
       <Box className="flex items-center justify-between mb-3">
-        <Text className="font-semibold text-base">Top cửa hàng nổi bật</Text>
+        <Text className="font-semibold text-base">Top trạm sạc nổi bật</Text>
         <button
           type="button"
           className="text-xs text-primary"
@@ -46,21 +46,42 @@ export const TopStoresCarousel: FC = () => {
               onClick={() => navigate(`/stores/${store.id}`)}
               className="w-full text-left"
             >
-              <Box className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 space-y-2">
-                <Box className="flex items-center justify-between">
-                  <Text className="font-semibold text-sm line-clamp-1">
-                    {store.name}
+              <Box className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                {/* Thumbnail Image */}
+                {store.thumbnailImageUrl && (
+                  <img
+                    src={store.thumbnailImageUrl}
+                    alt={store.name}
+                    className="w-full h-24 object-cover"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src =
+                        "https://via.placeholder.com/200x100?text=Station";
+                    }}
+                  />
+                )}
+
+                {/* Info */}
+                <Box className="p-3 space-y-2">
+                  <Box className="flex items-center justify-between gap-2">
+                    <Text className="font-semibold text-sm line-clamp-1">
+                      {store.name}
+                    </Text>
+                    {typeof store.points === "number" && (
+                      <Box className="flex items-center text-xs text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full whitespace-nowrap">
+                        <span className="mr-1">⭐</span>
+                        <span>{store.points}</span>
+                      </Box>
+                    )}
+                  </Box>
+                  <Text className="text-xs text-gray-600 line-clamp-1">
+                    {store.address}
                   </Text>
-                  {typeof store.points === "number" && (
-                    <Box className="flex items-center text-xs text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full">
-                      <span className="mr-1">⭐</span>
-                      <span>{store.points} điểm</span>
-                    </Box>
+                  {store.chargerCount && (
+                    <Text className="text-xs text-blue-600 font-medium">
+                      {store.chargerCount} máy sạc · {store.chargingCapacity}
+                    </Text>
                   )}
                 </Box>
-                <Text className="text-xs text-gray-600 line-clamp-2">
-                  {store.address}
-                </Text>
               </Box>
             </button>
           </SwiperSlide>

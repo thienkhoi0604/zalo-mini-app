@@ -15,6 +15,13 @@ const QRCodePage: FC = () => {
     }
   }, [user?.id]);
 
+  // Mock QR Code URL generator
+  const getMockQRUrl = () => {
+    if (!user?.id) return "https://via.placeholder.com/300x300?text=QR+Code";
+    // Using QR code API to generate QR code with user ID
+    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=userid:${user.id}`;
+  };
+
   const handleScanQR = async () => {
     if (!user?.id) {
       openSnackbar({
@@ -88,63 +95,55 @@ const QRCodePage: FC = () => {
     }
   };
 
+  const mockQRUrl = getMockQRUrl();
+
   return (
     <Page className="bg-white">
-      <Header title="QR Code" />
+      <Header showBackIcon={false} title="QR Code" />
 
       <Box className="flex flex-col p-4 space-y-6">
-        {/* My QR Code Section */}
-        <Box className="space-y-4">
-          <div className="text-lg font-semibold">Thẻ QR Code của tôi</div>
-
-          {qrLoading ? (
-            <Box className="flex justify-center">
-              <ImageSkeleton className="w-64 h-64 rounded-lg" />
-            </Box>
-          ) : qrCodeUrl ? (
-            <Box className="flex justify-center">
-              <img
-                src={qrCodeUrl}
-                alt="My QR Code"
-                className="w-64 h-64 rounded-lg border-2 border-gray-200"
-              />
-            </Box>
-          ) : (
-            <Box className="text-center text-gray-500 py-8">
-              Không thể tải mã QR. Vui lòng thử lại.
-            </Box>
-          )}
-
-          {/* User Info */}
-          {user && (
-            <Box className="bg-gray-50 rounded-lg p-4 space-y-2">
-              <div className="flex justify-between">
-                <span className="text-gray-600">Tên:</span>
-                <span className="font-medium">{user.displayName}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-600">Điểm:</span>
-                <span className="font-semibold text-primary">
-                  {user.points || 0}
-                </span>
-              </div>
-            </Box>
-          )}
-        </Box>
-
-        {/* Scan QR Code Section */}
-        <Box className="space-y-4">
-          <div className="text-lg font-semibold">Quét mã QR</div>
-          <div className="text-sm text-gray-600">
-            Quét mã QR của người khác để kiếm điểm
+        {/* Scan QR Code Section - On Top */}
+        <Box className="space-y-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
+          <div className="text-lg font-semibold text-blue-900">📱 Quét mã QR</div>
+          <div className="text-sm text-gray-700">
+            Quét mã QR của người khác để kiếm điểm tích lũy
           </div>
           <Button
-            className="w-full"
+            className="w-full bg-blue-500 hover:bg-blue-600"
             onClick={handleScanQR}
             loading={scanLoading}
           >
-            Quét mã QR
+            {scanLoading ? "Đang quét..." : "Bắt đầu quét mã QR"}
           </Button>
+        </Box>
+
+        {/* My QR Code Section - Below */}
+        <Box className="space-y-4">
+          <div className="text-lg font-semibold">🎫 Thẻ QR Code của tôi</div>
+
+          {qrLoading ? (
+            <Box className="flex justify-center">
+              <ImageSkeleton className="w-72 h-72 rounded-lg" />
+            </Box>
+          ) : (
+            <Box className="flex justify-center">
+              <Box className="bg-white p-4 rounded-lg shadow-lg border-2 border-gray-100">
+                <img
+                  src={mockQRUrl || qrCodeUrl}
+                  alt="My QR Code"
+                  className="w-64 h-64 rounded-lg"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src =
+                      "https://via.placeholder.com/300x300?text=QR+Code";
+                  }}
+                />
+              </Box>
+            </Box>
+          )}
+
+          <Box className="text-center text-sm text-gray-500 mt-2">
+            💡 Cho người khác quét mã này để họ kiếm điểm
+          </Box>
         </Box>
       </Box>
     </Page>
