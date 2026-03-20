@@ -1,15 +1,13 @@
 import React, { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router';
-import { Box, Button, Page, Text, useSnackbar } from 'zmp-ui';
+import { Page, useSnackbar } from 'zmp-ui';
 import { useUserStore } from 'stores/user';
 
 const RegisterPage: FC = () => {
   const navigate = useNavigate();
   const location = useLocation() as { state?: { from?: string } };
   const { openSnackbar } = useSnackbar();
-
   const { authLoading, isAuthenticated } = useUserStore();
-
   const from = location?.state?.from || '/profile';
 
   const handleRegister = async () => {
@@ -40,25 +38,17 @@ const RegisterPage: FC = () => {
   };
 
   return (
-    <Page className="bg-white">
-      <Box className="p-6 space-y-4">
-        <Text.Title className="font-bold">Đăng nhập</Text.Title>
-        <Text className="text-sm text-gray-700">
-          Bạn cần đăng nhập để sử dụng các chức năng của hệ thống (QR Code, Thẻ
-          quà tặng, Cửa hàng, Tài khoản...).
-        </Text>
-
-        <Box className="pt-2">
-          <Button
-            fullWidth
-            onClick={handleRegister}
-            loading={authLoading}
-            disabled={authLoading}
-          >
-            {authLoading ? 'Đang xử lý...' : 'Đăng nhập'}
-          </Button>
-        </Box>
-      </Box>
+    <Page>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white px-8">
+        <button
+          onClick={handleRegister}
+          disabled={authLoading}
+          className="w-full max-w-xs py-3.5 rounded-xl bg-green-500 text-white font-semibold text-base shadow-md active:scale-95 transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
+          style={{ color: '#ffffff', backgroundColor: '#22c55e' }}
+        >
+          {authLoading ? 'Đang xử lý...' : 'Đăng nhập EcoGreen Coin'}
+        </button>
+      </div>
     </Page>
   );
 };
