@@ -15,10 +15,8 @@ const QRCodePage: FC = () => {
     }
   }, [user?.id]);
 
-  // Mock QR Code URL generator
   const getMockQRUrl = () => {
-    if (!user?.id) return "https://via.placeholder.com/300x300?text=QR+Code";
-    // Using QR code API to generate QR code with user ID
+    if (!user?.id) return "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=EcoGreen";
     return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=userid:${user.id}`;
   };
 
@@ -33,10 +31,8 @@ const QRCodePage: FC = () => {
 
     setScanLoading(true);
     try {
-      // Dynamically import Zalo SDK to access scanQRCode function
       const zaloSdk = await import("zmp-sdk");
 
-      // Check if scanQRCode function exists
       if (typeof zaloSdk.scanQRCode !== "function") {
         openSnackbar({
           text: "Tính năng quét QR chưa được hỗ trợ",
@@ -50,10 +46,9 @@ const QRCodePage: FC = () => {
 
       if (!scanData) {
         setScanLoading(false);
-        return; // User cancelled
+        return;
       }
 
-      // Extract user ID from QR data - expecting format like "userid:123"
       const qrString = (scanData as any)?.data || (scanData as any);
       const scannedUserId = qrString?.split(":")?.[1] || qrString;
 
@@ -134,7 +129,7 @@ const QRCodePage: FC = () => {
                   className="w-64 h-64 rounded-lg"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
-                      "https://via.placeholder.com/300x300?text=QR+Code";
+                      "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=EcoGreen";
                   }}
                 />
               </Box>

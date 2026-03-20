@@ -31,12 +31,10 @@ export const Layout: FC = () => {
   const { authLoading, initializeAuth } = useUserStore();
   useSnackbarInit();
 
-  // Initialize auth on mount
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
 
-  // Show loading screen while auth is initializing
   if (authLoading) {
     return (
       <Box flex flexDirection="column" className="h-screen items-center justify-center">

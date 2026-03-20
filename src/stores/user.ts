@@ -12,7 +12,6 @@ import {
 import { User } from "@/types/user";
 
 type UserStore = {
-  // State
   zaloUser: any | null;
   zaloAccessToken: string | null;
   user: User | null;
@@ -22,7 +21,6 @@ type UserStore = {
   qrCodeUrl: string | null;
   qrLoading: boolean;
 
-  // Actions
   loadZaloUser: () => Promise<void>;
   initializeAuth: () => Promise<void>;
   loginWithZalo: (accessToken: string) => Promise<void>;
@@ -63,11 +61,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
         loadingZalo: false
       });
     } catch (error) {
-      // User denied permission - exit app
       console.error("Permission denied:", error);
       set({ loadingZalo: false });
 
-      // Close the app if user denies permission
       closeApp();
     }
   },
@@ -78,15 +74,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set({ authLoading: true });
 
     try {
-      // Check if we have a valid access token
       const token = getAccessToken();
       if (!token) {
-        // No token, clear auth state
         set({ authLoading: false, isAuthenticated: false, user: null });
         return;
       }
 
-      // Try to fetch user info from backend
       try {
         const user = await fetchUserInfo();
         set({
@@ -142,14 +135,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
   refreshAuthToken: async () => {
     try {
       await refreshTokens();
-      // Token refresh successful, update state if needed
       const state = get();
       if (state.isAuthenticated) {
         console.log("Token refreshed successfully");
       }
     } catch (error) {
       console.error("Token refresh failed:", error);
-      // If refresh fails, clear auth
       get().logout();
       throw error;
     }
@@ -179,7 +170,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
         { scannedUserId }
       );
 
-      // Update user points if present in response
       if (data.totalPoints !== undefined) {
         const state = get();
         if (state.user) {

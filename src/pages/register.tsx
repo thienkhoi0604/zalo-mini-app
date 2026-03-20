@@ -19,8 +19,6 @@ const RegisterPage: FC = () => {
     }
 
     try {
-      // BE chưa sẵn sàng: loginWithZalo hiện đang đọc mock data từ
-      // `mock/auth-login-response.json` ở layer API, nên chỉ cần gọi với token giả.
       await useUserStore.getState().loginWithZalo("mock-access-token");
       openSnackbar({ text: "Đăng ký thành công!", type: "success" });
       navigate(from, { replace: true });

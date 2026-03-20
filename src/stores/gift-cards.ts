@@ -58,7 +58,6 @@ export const useGiftCardsStore = create<GiftCardsStore>((set, get) => ({
     try {
       const result = await redeemGiftCard(giftCardId);
 
-      // Update user points in user store
       const user = useUserStore.getState().user;
       if (user) {
         useUserStore.setState({
@@ -69,7 +68,6 @@ export const useGiftCardsStore = create<GiftCardsStore>((set, get) => ({
         });
       }
 
-      // Reload user gift cards to reflect the new redeemed card
       await get().loadUserGiftCards();
       set({ redeeming: false });
     } catch (error) {

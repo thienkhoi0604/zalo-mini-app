@@ -64,7 +64,7 @@ const DetailModal: FC<Props> = ({ card, onClose }) => {
             className="w-full h-48 rounded-lg object-cover mb-4"
             onError={(e) => {
               (e.target as HTMLImageElement).src =
-                "https://via.placeholder.com/400x200?text=Card";
+                "https://cdn-icons-png.flaticon.com/512/1170/1170678.png";
             }}
           />
 

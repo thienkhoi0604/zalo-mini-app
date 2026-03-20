@@ -1,8 +1,7 @@
-import { axiosClient } from "./client";
-import type { Store } from "types/store";
+import axiosClient from './client';
+import type { Store } from 'types/store';
 
-export const getStores = async (): Promise<Store[]> => {
-  const response = await axiosClient.get<Store[]>("/stores");
-  return response.data;
-};
-
+export async function getStores(): Promise<Store[]> {
+  const { data } = await axiosClient.get<Store[]>('/stores');
+  return data;
+}

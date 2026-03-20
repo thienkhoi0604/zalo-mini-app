@@ -26,7 +26,7 @@ const StoreCard: FC<Props> = ({ store, onClick }) => {
           className="w-16 h-16 rounded-lg object-cover"
           onError={(e) => {
             (e.target as HTMLImageElement).src =
-              "https://via.placeholder.com/64x64?text=Station";
+              "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80&auto=format";
           }}
         />
       </Box>

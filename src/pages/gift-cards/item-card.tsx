@@ -21,7 +21,7 @@ const GiftCardItemCard: FC<Props> = ({ card, onClick }) => {
           className="w-16 h-16 rounded object-cover"
           onError={(e) => {
             (e.target as HTMLImageElement).src =
-              "https://via.placeholder.com/64x64?text=Card";
+              "https://cdn-icons-png.flaticon.com/512/1170/1170678.png";
           }}
         />
       </Box>

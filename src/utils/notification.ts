@@ -2,7 +2,6 @@ import { SnackbarType } from "zmp-ui/snackbar-provider";
 
 export type NotificationType = "success" | "error" | "warning" | "info";
 
-// Global snackbar instance - set by SnackbarProvider wrapper
 let globalSnackbar: {
   openSnackbar: (options: {
     text?: string;
