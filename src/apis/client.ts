@@ -3,22 +3,18 @@ import axios, {
   AxiosInstance,
   InternalAxiosRequestConfig,
 } from 'axios';
-import {
-  clearTokens,
-  getAccessToken,
-  refreshTokens,
-} from './authorization';
+import { clearTokens, getAccessToken, refreshTokens } from './authorization';
 import { useUserStore } from 'stores/user';
 import { showNotification } from 'utils/notification';
 
 declare const APP_CONFIG: {
   apiBaseUrl?: string;
 };
- 
+
 export const API_BASE_URL =
-  (typeof APP_CONFIG !== "undefined" && APP_CONFIG.apiBaseUrl) ||
+  (typeof APP_CONFIG !== 'undefined' && APP_CONFIG.apiBaseUrl) ||
   import.meta.env.VITE_API_URL ||
-  "http://localhost:3001";
+  'http://localhost:3001';
 
 type QueueEntry = {
   resolve: (token: string | null) => void;
@@ -57,7 +53,13 @@ axiosClient.interceptors.request.use(
 );
 
 axiosClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    console.log(
+      `[API] ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`,
+      response.data,
+    );
+    return response;
+  },
   async (error: AxiosError) => {
     const originalRequest = error.config as InternalAxiosRequestConfig & {
       _retry?: boolean;
@@ -88,7 +90,7 @@ axiosClient.interceptors.response.use(
         return axiosClient(originalRequest);
       } catch (refreshError) {
         clearTokens();
-        useUserStore.getState().logout();
+        useUserStore.getState().setUnauthenticated();
         processQueue(refreshError, null);
         showNotification('Session expired. Please login again.', 'error');
         return Promise.reject(refreshError);

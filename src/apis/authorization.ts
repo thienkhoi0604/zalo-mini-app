@@ -52,7 +52,7 @@ export async function refreshTokens(): Promise<void> {
   }
 
   const res = await axios.post<RefreshResponse>(
-    `${API_BASE_URL}/Auth/refresh-token`,
+    `${API_BASE_URL}/auth/refresh`,
     { refreshToken },
   );
 
@@ -114,6 +114,6 @@ export async function loginWithZaloUser(
 
 export async function fetchUserInfo(): Promise<User> {
   const { axiosClient } = await import('./client');
-  const { data } = await axiosClient.get<{ data: User }>('/auth/me');
+  const { data } = await axiosClient.get<{ data: User }>('/me/profile');
   return data.data;
 }
