@@ -1,7 +1,7 @@
-import React, { FC } from "react";
-import { useLocation, useNavigate } from "react-router";
-import { Box, Button, Page, Text, useSnackbar } from "zmp-ui";
-import { useUserStore } from "stores/user";
+import React, { FC } from 'react';
+import { useLocation, useNavigate } from 'react-router';
+import { Box, Button, Page, Text, useSnackbar } from 'zmp-ui';
+import { useUserStore } from 'stores/user';
 
 const RegisterPage: FC = () => {
   const navigate = useNavigate();
@@ -10,7 +10,7 @@ const RegisterPage: FC = () => {
 
   const { authLoading, isAuthenticated } = useUserStore();
 
-  const from = location?.state?.from || "/profile";
+  const from = location?.state?.from || '/profile';
 
   const handleRegister = async () => {
     if (isAuthenticated) {
@@ -19,21 +19,33 @@ const RegisterPage: FC = () => {
     }
 
     try {
-      await useUserStore.getState().loginWithZalo("mock-access-token");
-      openSnackbar({ text: "Đăng ký thành công!", type: "success" });
+      const result = await useUserStore.getState().loginWithZalo();
+
+      if (result === 'permission_denied') {
+        openSnackbar({
+          text: 'Bạn cần cấp quyền Zalo để đăng nhập.',
+          type: 'warning',
+        });
+        return;
+      }
+
+      openSnackbar({ text: 'Đăng nhập thành công!', type: 'success' });
       navigate(from, { replace: true });
     } catch {
-      openSnackbar({ text: "Đăng ký thất bại. Vui lòng thử lại.", type: "error" });
+      openSnackbar({
+        text: 'Đăng nhập thất bại. Vui lòng thử lại.',
+        type: 'error',
+      });
     }
   };
 
   return (
     <Page className="bg-white">
       <Box className="p-6 space-y-4">
-        <Text.Title className="font-bold">Đăng ký thành viên</Text.Title>
+        <Text.Title className="font-bold">Đăng nhập</Text.Title>
         <Text className="text-sm text-gray-700">
-          Bạn cần đăng ký để sử dụng các chức năng của hệ thống (QR Code, Thẻ quà
-          tặng, Cửa hàng, Tài khoản...).
+          Bạn cần đăng nhập để sử dụng các chức năng của hệ thống (QR Code, Thẻ
+          quà tặng, Cửa hàng, Tài khoản...).
         </Text>
 
         <Box className="pt-2">
@@ -43,7 +55,7 @@ const RegisterPage: FC = () => {
             loading={authLoading}
             disabled={authLoading}
           >
-            {authLoading ? "Đang xử lý..." : "Đăng ký"}
+            {authLoading ? 'Đang xử lý...' : 'Đăng nhập'}
           </Button>
         </Box>
       </Box>
@@ -52,4 +64,3 @@ const RegisterPage: FC = () => {
 };
 
 export default RegisterPage;
-

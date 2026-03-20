@@ -1,6 +1,5 @@
 import axios from 'axios';
 import { User } from '@/types/user';
-import mockData from '@/mock/auth-login-response.json';
 import { API_BASE_URL } from './client';
 
 export type JwtTokens = {
@@ -10,6 +9,8 @@ export type JwtTokens = {
 
 const ACCESS_TOKEN_KEY = 'ecogreen_access_token';
 const REFRESH_TOKEN_KEY = 'ecogreen_refresh_token';
+
+// ─── Token Accessors ──────────────────────────────────────────────────────────
 
 export function getAccessToken(): string | null {
   return window.localStorage.getItem(ACCESS_TOKEN_KEY);
@@ -33,6 +34,8 @@ export function clearTokens(): void {
   window.localStorage.removeItem(REFRESH_TOKEN_KEY);
 }
 
+// ─── Token Refresh ────────────────────────────────────────────────────────────
+
 type RefreshResponse = {
   success: boolean;
   data: {
@@ -49,10 +52,8 @@ export async function refreshTokens(): Promise<void> {
   }
 
   const res = await axios.post<RefreshResponse>(
-    `${API_BASE_URL}/auth/refresh`,
-    {
-      refreshToken,
-    },
+    `${API_BASE_URL}/Auth/refresh-token`,
+    { refreshToken },
   );
 
   saveTokens({
@@ -60,6 +61,8 @@ export async function refreshTokens(): Promise<void> {
     refreshToken: res.data.data.refreshToken,
   });
 }
+
+// ─── Auth API ─────────────────────────────────────────────────────────────────
 
 type LoginResponse = {
   success: boolean;
@@ -82,34 +85,34 @@ type LoginResponse = {
 };
 
 export async function loginWithZaloUser(
-  _zaloAccessToken: string,
+  zaloAccessToken: string,
 ): Promise<User> {
-  // TODO: replace mock with real call when backend is ready:
-  // const { data } = await axiosClient.post<LoginResponse>("/auth/zalo-login", {
-  //   zaloAccessToken: _zaloAccessToken,
-  // });
-  const responseData = mockData as LoginResponse;
+  const res = await axios.post<LoginResponse>(
+    `${API_BASE_URL}/Auth/zalo-login`,
+    { accessToken: zaloAccessToken },
+  );
+
+  const { data } = res.data;
 
   saveTokens({
-    accessToken: responseData.data.accessToken,
-    refreshToken: responseData.data.refreshToken,
+    accessToken: data.accessToken,
+    refreshToken: data.refreshToken,
   });
 
   return {
-    id: responseData.data.user.id,
-    zaloUserId: responseData.data.user.zaloUserId,
-    fullName: responseData.data.user.fullName,
-    avatarUrl: responseData.data.user.avatarUrl,
-    phone: responseData.data.user.phone ?? undefined,
-    role: responseData.data.user.role,
-    userName: responseData.data.user.userName ?? undefined,
-    points: responseData.data.user.points ?? 0,
-    ratingPoints: responseData.data.user.ratingPoints ?? 0,
+    id: data.user.id,
+    zaloUserId: data.user.zaloUserId,
+    fullName: data.user.fullName,
+    avatarUrl: data.user.avatarUrl,
+    phone: data.user.phone ?? undefined,
+    role: data.user.role,
+    userName: data.user.userName ?? undefined,
+    points: data.user.points ?? 0,
+    ratingPoints: data.user.ratingPoints ?? 0,
   };
 }
 
 export async function fetchUserInfo(): Promise<User> {
-  // Import lazily để tránh circular dependency với client.ts
   const { axiosClient } = await import('./client');
   const { data } = await axiosClient.get<{ data: User }>('/auth/me');
   return data.data;

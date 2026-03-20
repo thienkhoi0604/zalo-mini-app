@@ -33,24 +33,6 @@ const Personal: FC = () => {
                 </Box>
               ),
             },
-            user && {
-              left: <Icon icon="zi-call" />,
-              right: (
-                <Box
-                  flex
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleLogout();
-                  }}
-                  className="cursor-pointer"
-                >
-                  <Text.Header className="flex-1 items-center font-normal">
-                    Đăng xuất
-                  </Text.Header>
-                  <Icon icon="zi-chevron-right" />
-                </Box>
-              ),
-            },
             {
               left: <Icon icon="zi-clock-2" />,
               right: (

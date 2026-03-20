@@ -1,6 +1,6 @@
-import { create } from "zustand";
-import { getUserInfo, closeApp } from "zmp-sdk";
-import { getAccessToken as getAccessTokenZalo } from "zmp-sdk/apis";
+import { create } from 'zustand';
+import { getUserInfo } from 'zmp-sdk';
+import { getAccessToken as getAccessTokenZalo } from 'zmp-sdk/apis';
 
 import {
   loginWithZaloUser,
@@ -8,71 +8,38 @@ import {
   getAccessToken,
   refreshTokens,
   fetchUserInfo,
-} from "apis/authorization";
-import { User } from "@/types/user";
+} from 'apis/authorization';
+import { User } from '@/types/user';
 
 type UserStore = {
-  zaloUser: any | null;
-  zaloAccessToken: string | null;
   user: User | null;
-  loadingZalo: boolean;
   authLoading: boolean;
   isAuthenticated: boolean;
   qrCodeUrl: string | null;
   qrLoading: boolean;
 
-  loadZaloUser: () => Promise<void>;
   initializeAuth: () => Promise<void>;
-  loginWithZalo: (accessToken: string) => Promise<void>;
+  loginWithZalo: () => Promise<'success' | 'permission_denied'>;
   logout: () => void;
   refreshAuthToken: () => Promise<void>;
-  setAuthLoading: (loading: boolean) => void;
   loadQRCode: () => Promise<void>;
   scanQRCode: (scannedUserId: string) => Promise<number>;
 };
 
 export const useUserStore = create<UserStore>((set, get) => ({
-  zaloUser: null,
-  zaloAccessToken: null,
   user: null,
-  loadingZalo: false,
   authLoading: false,
   isAuthenticated: false,
   qrCodeUrl: null,
   qrLoading: false,
 
-  loadZaloUser: async () => {
-    set({ loadingZalo: true });
-    try {
-      const response = await getUserInfo({ autoRequestPermission: true });
-
-      const { userInfo } = response;
-      const accessToken = await getAccessTokenZalo();
-      console.log("Zalo user info:", userInfo);
-      console.log("Zalo access token:", accessToken);
-
-      const tokenFromResponse = (response as any)?.accessToken || (userInfo as any)?.accessToken;
-      const finalToken = accessToken || tokenFromResponse;
-
-
-      set({
-        zaloUser: userInfo,
-        zaloAccessToken: finalToken || null,
-        loadingZalo: false
-      });
-    } catch (error) {
-      console.error("Permission denied:", error);
-      set({ loadingZalo: false });
-
-      closeApp();
-    }
-  },
-
-  setAuthLoading: (loading) => set({ authLoading: loading }),
-
+  /**
+   * Chạy khi app khởi động (Layout.tsx).
+   * Nếu đã có JWT token hợp lệ → fetch thông tin user → tự đăng nhập.
+   * Nếu không có hoặc token hết hạn → để nguyên, không redirect.
+   */
   initializeAuth: async () => {
     set({ authLoading: true });
-
     try {
       const token = getAccessToken();
       if (!token) {
@@ -80,43 +47,51 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return;
       }
 
-      try {
-        const user = await fetchUserInfo();
-        set({
-          user: user,
-          isAuthenticated: true,
-          authLoading: false,
-        });
-        console.log("Auto-login successful:", user);
-      } catch (error) {
-        console.error("Failed to fetch user info:", error);
-        set({
-          authLoading: false,
-          isAuthenticated: false,
-          user: null,
-        });
-      }
+      const user = await fetchUserInfo();
+      set({ user, isAuthenticated: true, authLoading: false });
     } catch (error) {
-      console.error("Auth initialization error:", error);
-      set({
-        authLoading: false,
-        isAuthenticated: false,
-        user: null,
-      });
+      // Token hết hạn hoặc không hợp lệ → clear và để user đăng ký lại
+      console.error('Auto-login failed:', error);
+      clearTokens();
+      set({ authLoading: false, isAuthenticated: false, user: null });
     }
   },
 
-  loginWithZalo: async (accessToken: string) => {
+  /**
+   * Chạy khi user bấm nút "Đăng ký" lần đầu.
+   * 1. Xin quyền và lấy thông tin Zalo (autoRequestPermission: true)
+   * 2. Nếu user từ chối → trả về 'permission_denied', KHÔNG throw
+   * 3. Nếu cho phép → lấy accessToken → gọi API đăng ký/đăng nhập
+   */
+  loginWithZalo: async () => {
     set({ authLoading: true });
     try {
-      const user = await loginWithZaloUser(accessToken);
-      set({
-        user: user,
-        isAuthenticated: true,
-        authLoading: false,
-      });
+      // Bước 1: Xin quyền lấy thông tin Zalo
+      let zaloAccessToken: string | null = null;
+      try {
+        await getUserInfo({ autoRequestPermission: true });
+        zaloAccessToken = await getAccessTokenZalo();
+      } catch (permissionError) {
+        // User từ chối cấp quyền
+        console.warn('Zalo permission denied:', permissionError);
+        set({ authLoading: false });
+        return 'permission_denied';
+      }
+
+      if (!zaloAccessToken) {
+        console.warn(
+          'Could not retrieve Zalo access token after permission granted',
+        );
+        set({ authLoading: false });
+        return 'permission_denied';
+      }
+
+      // Bước 2: Đăng ký / đăng nhập với backend
+      const user = await loginWithZaloUser(zaloAccessToken);
+      set({ user, isAuthenticated: true, authLoading: false });
+      return 'success';
     } catch (error) {
-      console.error("Login failed:", error);
+      console.error('Login failed:', error);
       set({ authLoading: false });
       throw error;
     }
@@ -127,20 +102,14 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set({
       user: null,
       isAuthenticated: false,
-      zaloUser: null,
-      zaloAccessToken: null,
     });
   },
 
   refreshAuthToken: async () => {
     try {
       await refreshTokens();
-      const state = get();
-      if (state.isAuthenticated) {
-        console.log("Token refreshed successfully");
-      }
     } catch (error) {
-      console.error("Token refresh failed:", error);
+      console.error('Token refresh failed:', error);
       get().logout();
       throw error;
     }
@@ -152,12 +121,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
     set({ qrLoading: true });
     try {
-      const { data } = await (await import("apis/client")).default.get(
-        `/users/${state.user.id}/qr-code`
-      );
+      const { data } = await (
+        await import('apis/client')
+      ).default.get(`/users/${state.user.id}/qr-code`);
       set({ qrCodeUrl: data.qrCodeUrl, qrLoading: false });
     } catch (error) {
-      console.error("Failed to load QR code:", error);
+      console.error('Failed to load QR code:', error);
       set({ qrLoading: false });
       throw error;
     }
@@ -165,28 +134,21 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
   scanQRCode: async (scannedUserId: string) => {
     try {
-      const { data } = await (await import("apis/client")).default.post(
-        "/qr-code/scan",
-        { scannedUserId }
-      );
+      const { data } = await (
+        await import('apis/client')
+      ).default.post('/qr-code/scan', { scannedUserId });
 
       if (data.totalPoints !== undefined) {
         const state = get();
         if (state.user) {
-          set({
-            user: {
-              ...state.user,
-              points: data.totalPoints,
-            },
-          });
+          set({ user: { ...state.user, points: data.totalPoints } });
         }
       }
 
       return data.points || 0;
     } catch (error) {
-      console.error("Failed to scan QR code:", error);
+      console.error('Failed to scan QR code:', error);
       throw error;
     }
   },
 }));
-
