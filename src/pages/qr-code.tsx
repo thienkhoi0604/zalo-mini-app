@@ -1,8 +1,8 @@
-import React, { FC, useEffect, useState } from "react";
-import { Box, Header, Button, Page } from "zmp-ui";
-import { useUserStore } from "stores/user";
-import { ImageSkeleton } from "components/skeletons";
-import { useSnackbar } from "zmp-ui";
+import React, { FC, useEffect, useState } from 'react';
+import { Box, Button, Page, useSnackbar } from 'zmp-ui';
+import { useUserStore } from 'stores/user';
+import { ImageSkeleton } from 'components/skeletons';
+import AppHeader from 'components/app-header';
 
 const QRCodePage: FC = () => {
   const { user, qrCodeUrl, qrLoading, loadQRCode, scanQRCode } = useUserStore();
@@ -10,79 +10,59 @@ const QRCodePage: FC = () => {
   const [scanLoading, setScanLoading] = useState(false);
 
   useEffect(() => {
-    if (user?.id) {
-      loadQRCode();
-    }
+    if (user?.id) loadQRCode();
   }, [user?.id]);
 
   const getMockQRUrl = () => {
-    if (!user?.id) return "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=EcoGreen";
+    if (!user?.id)
+      return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=EcoGreen';
     return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=userid:${user.id}`;
   };
 
   const handleScanQR = async () => {
     if (!user?.id) {
-      openSnackbar({
-        text: "Vui lòng đăng nhập để quét mã QR",
-        type: "error",
-      });
+      openSnackbar({ text: 'Vui lòng đăng nhập để quét mã QR', type: 'error' });
       return;
     }
 
     setScanLoading(true);
     try {
-      const zaloSdk = await import("zmp-sdk");
+      const zaloSdk = await import('zmp-sdk');
 
-      if (typeof zaloSdk.scanQRCode !== "function") {
+      if (typeof zaloSdk.scanQRCode !== 'function') {
         openSnackbar({
-          text: "Tính năng quét QR chưa được hỗ trợ",
-          type: "error",
+          text: 'Tính năng quét QR chưa được hỗ trợ',
+          type: 'error',
         });
-        setScanLoading(false);
         return;
       }
 
       const scanData = await zaloSdk.scanQRCode();
-
-      if (!scanData) {
-        setScanLoading(false);
-        return;
-      }
+      if (!scanData) return;
 
       const qrString = (scanData as any)?.data || (scanData as any);
-      const scannedUserId = qrString?.split(":")?.[1] || qrString;
+      const scannedUserId = qrString?.split(':')?.[1] || qrString;
 
       if (!scannedUserId) {
-        openSnackbar({
-          text: "Mã QR không hợp lệ",
-          type: "error",
-        });
-        setScanLoading(false);
+        openSnackbar({ text: 'Mã QR không hợp lệ', type: 'error' });
         return;
       }
 
       const points = await scanQRCode(scannedUserId);
-      openSnackbar({
-        text: `Kiếm được ${points} điểm!`,
-        type: "success",
-      });
+      openSnackbar({ text: `Kiếm được ${points} điểm!`, type: 'success' });
     } catch (error: any) {
       const errorMessage = error?.response?.data?.message || error?.message;
-
-      if (errorMessage?.includes("already")) {
+      if (errorMessage?.includes('already')) {
         openSnackbar({
-          text: "Bạn đã quét mã người dùng này rồi",
-          type: "error",
+          text: 'Bạn đã quét mã người dùng này rồi',
+          type: 'error',
         });
-      } else if (errorMessage?.includes("not found")) {
-        openSnackbar({
-          text: "Người dùng không tồn tại",
-          type: "error",
-        });
+      } else if (errorMessage?.includes('not found')) {
+        openSnackbar({ text: 'Người dùng không tồn tại', type: 'error' });
       } else {
         openSnackbar({
-          text: errorMessage || "Có lỗi xảy ra khi quét mã QR",
-          type: "error",
+          text: errorMessage || 'Có lỗi xảy ra khi quét mã QR',
+          type: 'error',
         });
       }
     } finally {
@@ -90,55 +70,57 @@ const QRCodePage: FC = () => {
     }
   };
 
-  const mockQRUrl = getMockQRUrl();
-
   return (
-    <Page className="bg-white">
-      <Header showBackIcon={false} title="QR Code" />
+    <Page className="flex-1 flex flex-col bg-gray-50">
+      <AppHeader title="" showGreeting />
 
-      <Box className="flex flex-col p-4 space-y-6">
-        {/* Scan QR Code Section - On Top */}
-        <Box className="space-y-4 bg-blue-50 p-4 rounded-lg border border-blue-200">
-          <div className="text-lg font-semibold text-blue-900">📱 Quét mã QR</div>
-          <div className="text-sm text-gray-700">
+      <Box className="flex flex-col p-4 space-y-4">
+        <p className="text-base font-semibold text-gray-900">QR Code</p>
+
+        {/* Scan section */}
+        <Box className="bg-blue-50 p-4 rounded-xl border border-blue-100 space-y-3">
+          <p className="text-sm font-semibold text-blue-900">📱 Quét mã QR</p>
+          <p className="text-sm text-gray-600">
             Quét mã QR của người khác để kiếm điểm tích lũy
-          </div>
+          </p>
           <Button
-            className="w-full bg-blue-500 hover:bg-blue-600"
+            className="w-full"
             onClick={handleScanQR}
             loading={scanLoading}
           >
-            {scanLoading ? "Đang quét..." : "Bắt đầu quét mã QR"}
+            {scanLoading ? 'Đang quét...' : 'Bắt đầu quét mã QR'}
           </Button>
         </Box>
 
-        {/* My QR Code Section - Below */}
-        <Box className="space-y-4">
-          <div className="text-lg font-semibold">🎫 Thẻ QR Code của tôi</div>
+        {/* My QR section */}
+        <Box className="bg-white rounded-xl border border-gray-100 p-4 space-y-4">
+          <p className="text-sm font-semibold text-gray-900">
+            🎫 Thẻ QR Code của tôi
+          </p>
 
           {qrLoading ? (
-            <Box className="flex justify-center">
-              <ImageSkeleton className="w-72 h-72 rounded-lg" />
-            </Box>
+            <div className="flex justify-center">
+              <ImageSkeleton className="w-64 h-64 rounded-lg" />
+            </div>
           ) : (
-            <Box className="flex justify-center">
-              <Box className="bg-white p-4 rounded-lg shadow-lg border-2 border-gray-100">
+            <div className="flex justify-center">
+              <div className="bg-white p-3 rounded-xl shadow border border-gray-100">
                 <img
-                  src={mockQRUrl || qrCodeUrl}
+                  src={getMockQRUrl() || qrCodeUrl}
                   alt="My QR Code"
-                  className="w-64 h-64 rounded-lg"
+                  className="w-56 h-56 rounded-lg"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
-                      "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=EcoGreen";
+                      'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=EcoGreen';
                   }}
                 />
-              </Box>
-            </Box>
+              </div>
+            </div>
           )}
 
-          <Box className="text-center text-sm text-gray-500 mt-2">
+          <p className="text-center text-xs text-gray-400">
             💡 Cho người khác quét mã này để họ kiếm điểm
-          </Box>
+          </p>
         </Box>
       </Box>
     </Page>

@@ -1,13 +1,13 @@
-import React, { FC, useEffect, useState } from "react";
-import { Box, Header, Page, useSnackbar } from "zmp-ui";
-import { useGiftCardsStore } from "stores/gift-cards";
-import GiftCardsList from "./gift-cards/list";
+import React, { FC, useEffect, useState } from 'react';
+import { Box, Page, useSnackbar } from 'zmp-ui';
+import { useGiftCardsStore } from 'stores/gift-cards';
+import GiftCardsList from './gift-cards/list';
+import AppHeader from 'components/app-header';
 
 const GiftCardsPage: FC = () => {
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
-  const { loading, loadAllGiftCards, loadUserGiftCards } =
-    useGiftCardsStore();
+  const { loading, loadAllGiftCards, loadUserGiftCards } = useGiftCardsStore();
 
   useEffect(() => {
     const initializeData = async () => {
@@ -15,23 +15,26 @@ const GiftCardsPage: FC = () => {
         await loadAllGiftCards();
         await loadUserGiftCards();
         setInitialized(true);
-      } catch (error) {
+      } catch {
         openSnackbar({
-          text: "Không thể tải danh sách thẻ quà tặng",
-          type: "error",
+          text: 'Không thể tải danh sách thẻ quà tặng',
+          type: 'error',
         });
         setInitialized(true);
       }
     };
-
     initializeData();
   }, []);
 
   return (
-    <Page>
-      <Header showBackIcon={false} title="Thẻ Quà Tặng" />
+    <Page className="flex-1 flex flex-col bg-gray-50">
+      <AppHeader title="" showGreeting />
 
       <Box className="p-4">
+        <p className="text-base font-semibold text-gray-900 mb-3">
+          Thẻ Quà Tặng
+        </p>
+
         {!initialized && loading ? (
           <div className="space-y-4">
             {[1, 2, 3].map((i) => (
