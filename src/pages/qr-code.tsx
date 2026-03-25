@@ -13,6 +13,7 @@ async function getZaloLocation(): Promise<{
   return new Promise((resolve, reject) => {
     getLocation({
       success: (res: any) => {
+        console.log('Zalo location response:', res);
         if (res?.latitude && res?.longitude) {
           resolve({ latitude: res.latitude, longitude: res.longitude });
         } else {
@@ -58,8 +59,8 @@ const QRCodePage: FC = () => {
           type: 'warning',
         });
         // Nếu user từ chối cấp quyền vị trí, vẫn cho phép quét QR nhưng sẽ dùng tọa độ mặc định (ví dụ: trung tâm thành phố)
-        latitude = 10.792035;
-        longitude = 106.735451;
+        latitude = 10.7709187;
+        longitude = 106.6674697;
       }
 
       // Bước 2: Mở camera quét QR
