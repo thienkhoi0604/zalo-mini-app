@@ -61,7 +61,7 @@ const GiftCardsPage: FC = () => {
 
       {/* Summary bar */}
       <Box
-        className="mx-4 mt-3 mb-4 rounded-2xl bg-white shadow-sm overflow-hidden"
+        className="mx-4 mt-3 mb-4 rounded-2xl bg-white shadow-sm"
         flex
       >
         <Box
@@ -92,7 +92,7 @@ const GiftCardsPage: FC = () => {
       </Box>
 
       {/* Content */}
-      <Box className="flex-1 overflow-y-auto pb-6">
+      <Box className="flex-1 pb-6">
         {!initialized && loading ? (
           <Box className="flex flex-col" style={{ gap: 20 }}>
             <SkeletonRow />
