@@ -53,6 +53,16 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return;
       }
 
+      // Kiểm tra quyền Zalo còn hiệu lực không (không hiện dialog xin quyền)
+      try {
+        await getUserInfo({ autoRequestPermission: false });
+      } catch {
+        // Người dùng đã thu hồi quyền → xoá token, coi như chưa đăng nhập
+        clearTokens();
+        set({ authLoading: false, isAuthenticated: false, user: null });
+        return;
+      }
+
       const user = await fetchUserInfo();
       set({ user, isAuthenticated: true, authLoading: false });
     } catch (error) {

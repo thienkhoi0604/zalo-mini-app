@@ -37,20 +37,6 @@ const CategoryDetailPage: FC = () => {
         className="items-center bg-white px-4 py-3"
         style={{ gap: 12, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
       >
-        <Box
-          onClick={() => navigate(-1)}
-          className="flex items-center justify-center rounded-full cursor-pointer"
-          style={{
-            width: 36,
-            height: 36,
-            background: '#F5F0E8',
-            flexShrink: 0,
-          }}
-        >
-          <span style={{ fontSize: 20, color: '#A0784A', lineHeight: 1 }}>
-            ‹
-          </span>
-        </Box>
         <Box style={{ flex: 1 }}>
           <p style={{ fontSize: 16, fontWeight: 700, color: '#1a1a1a' }}>
             {decodedCategory}

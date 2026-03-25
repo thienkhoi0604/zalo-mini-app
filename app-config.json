@@ -14,7 +14,7 @@
   "listAsyncJS": [],
   "template": {
     "name": "ecogreen-coin",
-    "primaryColor": "#006af5",
+    "primaryColor": "#288F4E",
     "prefixCurrencySymbol": false,
     "currencySymbol": "đ",
     "headerLogo": ""

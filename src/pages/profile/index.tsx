@@ -1,7 +1,9 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Box, Page } from 'zmp-ui';
+import { useNavigate } from 'react-router';
 import { useToBeImplemented } from 'hooks';
 import { useUserStore } from 'stores/user';
+import { useGiftCardsStore } from 'stores/gift-cards';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
 import SectionList from './section-list';
@@ -10,7 +12,15 @@ import SectionList from './section-list';
 
 const Personal: FC = () => {
   const onClick = useToBeImplemented();
+  const navigate = useNavigate();
   const { user } = useUserStore();
+  const { userGiftCards, loadUserGiftCards } = useGiftCardsStore();
+
+  useEffect(() => {
+    loadUserGiftCards();
+  }, []);
+
+  const unusedCount = userGiftCards.filter((v) => v.status === 'received').length;
 
   return (
     <Box className="py-7">
@@ -20,9 +30,13 @@ const Personal: FC = () => {
 
       <SectionList
         title="Tiện ích"
-        onClick={onClick}
+        onClick={() => navigate('/my-vouchers')}
         items={[
-          { icon: 'zi-gift', label: 'Voucher của bạn', sub: '0 voucher' },
+          {
+            icon: 'zi-gift',
+            label: 'Voucher của bạn',
+            sub: unusedCount > 0 ? `${unusedCount} voucher chưa dùng` : 'Chưa có voucher',
+          },
         ]}
       />
 

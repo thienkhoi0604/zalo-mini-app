@@ -21,7 +21,7 @@ const RegisterPage: FC = () => {
 
       if (result === 'permission_denied') {
         openSnackbar({
-          text: 'Bạn cần cấp quyền Zalo để đăng nhập.',
+          text: 'Bạn cần cấp quyền để đăng nhập.',
           type: 'warning',
         });
         return;

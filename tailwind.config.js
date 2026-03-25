@@ -7,7 +7,7 @@ module.exports = {
         gray: "#767A7F",
         divider: "#E9EBED",
         green: "#288F4E",
-        background: "#ffffff",
+        background: "#EEF7F1",
         skeleton: "rgba(0, 0, 0, 0.1)",
       },
     },

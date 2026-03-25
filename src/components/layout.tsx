@@ -11,6 +11,7 @@ import QRCodePage from 'pages/qr-code';
 import StoresPage from 'pages/stores';
 import StoreDetailPage from 'pages/store-detail';
 import RegisterPage from 'pages/register';
+import MyVouchersPage from 'pages/my-vouchers';
 import { getSystemInfo } from 'zmp-sdk';
 import { ScrollRestoration } from './scroll-restoration';
 import { useUserStore } from 'stores/user';
@@ -161,6 +162,14 @@ export const Layout: FC = () => {
             element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-vouchers"
+            element={
+              <ProtectedRoute>
+                <MyVouchersPage />
               </ProtectedRoute>
             }
           />
