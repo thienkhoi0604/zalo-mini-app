@@ -1,10 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { Gift } from 'lucide-react';
+import { useNavigate } from 'react-router';
 import { useRewardsStore } from 'stores/rewards';
-import { Reward, UserReward } from '@/types/reward';
 import VoucherCard from './voucher-card';
-import VoucherDetailSheet from './voucher-detail-sheet';
 
 // ─── Tab ─────────────────────────────────────────────────────────────────────
 
@@ -99,7 +98,7 @@ const VoucherSkeleton: FC = () => (
 
 const MyVouchersPage: FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('unused');
-  const [selectedVoucher, setSelectedVoucher] = useState<{ reward: Reward; userVoucher: UserReward } | null>(null);
+  const navigate = useNavigate();
   const {
     userRewards,
     allRewards,
@@ -175,18 +174,14 @@ const MyVouchersPage: FC = () => {
                 reward={card}
                 userVoucher={uv}
                 used={activeTab === 'used'}
-                onClick={() => setSelectedVoucher({ reward: card, userVoucher: uv })}
+                onClick={() => navigate(`/rewards/${card.id}`, { state: { owned: true } })}
               />
             );
           })
         )}
       </Box>
 
-      <VoucherDetailSheet
-        reward={selectedVoucher?.reward ?? null}
-        userVoucher={selectedVoucher?.userVoucher ?? null}
-        onClose={() => setSelectedVoucher(null)}
-      />
+
     </Page>
   );
 };

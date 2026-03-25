@@ -1,0 +1,63 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "items": [
+      {
+        "id": "6fa6014a-8944-4048-82a8-f8c77b7c068a",
+        "code": "ALL_VCR_VOUCHER_TEST_NE_369",
+        "name": "voucher test ne",
+        "type": "Voucher",
+        "description": null,
+        "pointCost": 1,
+        "stock": 100,
+        "imageUrl": "https://admin.ecogreenhub.vn/api/upload/image/temp/1e934ad5125e49228c07d65d40348671.webp",
+        "validFrom": "2026-03-24T17:00:00+00:00",
+        "validTo": "2026-05-27T17:00:00+00:00",
+        "appliesToAll": false,
+        "isActive": true,
+        "storeIds": [],
+        "storeNames": []
+      },
+      {
+        "id": "b3222d16-bbd1-4608-8a6e-24b5ad616d59",
+        "code": "ALL_VCR_VOUCHER_GIAM_GI_547",
+        "name": "voucher giảm giá",
+        "type": "Voucher",
+        "description": "Lorem um\nLorem um 2",
+        "pointCost": 1,
+        "stock": 10,
+        "imageUrl": "https://admin.ecogreenhub.vn/api/upload/image/permanent/13562b468d0e48cfb0972d57b61697b1.webp",
+        "validFrom": null,
+        "validTo": null,
+        "appliesToAll": true,
+        "isActive": true,
+        "storeIds": [],
+        "storeNames": []
+      },
+      {
+        "id": "bbffb3e8-01b7-4e1f-8f1d-e819fc0d2db0",
+        "code": "GIFT_SVH_740",
+        "name": "voucher test",
+        "type": "PhysicalItem",
+        "description": null,
+        "pointCost": 50,
+        "stock": 10,
+        "imageUrl": "https://admin.ecogreenhub.vn/api/upload/image/permanent/a703044581924903b5f47bf11b2169e6.webp",
+        "validFrom": null,
+        "validTo": null,
+        "appliesToAll": true,
+        "isActive": true,
+        "storeIds": [],
+        "storeNames": []
+      }
+    ],
+    "pageNumber": 1,
+    "pageSize": 10,
+    "totalCount": 3,
+    "totalPages": 1,
+    "hasPrevious": false,
+    "hasNext": false
+  },
+  "errors": null
+}

@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import { Reward, UserReward } from "@/types/reward";
-import { getRewards, getUserRewards, redeemReward } from "apis/rewards";
+import { getRewards, getRewardById, getUserRewards, redeemReward } from "apis/rewards";
 import { useUserStore } from "./user";
 
 type RewardsStore = {
@@ -13,6 +13,7 @@ type RewardsStore = {
 
   // Actions
   loadAllRewards: () => Promise<void>;
+  loadRewardById: (id: string) => Promise<void>;
   loadUserRewards: () => Promise<void>;
   selectReward: (card: Reward | null) => void;
   redeemReward: (rewardId: string) => Promise<void>;
@@ -36,6 +37,26 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
       set({ allRewards: cards, loading: false });
     } catch (error) {
       console.error("Failed to load rewards:", error);
+      set({ loading: false });
+      throw error;
+    }
+  },
+
+  loadRewardById: async (id: string) => {
+    set({ loading: true });
+    try {
+      const existing = get().allRewards.find((r) => r.id === id);
+      if (existing) {
+        set({ loading: false });
+        return;
+      }
+      const reward = await getRewardById(id);
+      set((state) => ({
+        allRewards: [...state.allRewards, reward],
+        loading: false,
+      }));
+    } catch (error) {
+      console.error('Failed to load reward detail:', error);
       set({ loading: false });
       throw error;
     }

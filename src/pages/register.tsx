@@ -38,13 +38,34 @@ const RegisterPage: FC = () => {
   };
 
   return (
-    <Page>
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white px-8">
+    <Page className="flex flex-col overflow-hidden" style={{ height: '100%' }}>
+      <div
+        style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '0 32px',
+          height: '100%',
+        }}
+      >
         <button
           onClick={handleRegister}
           disabled={authLoading}
-          className="w-full max-w-xs py-3.5 rounded-xl bg-green-500 text-white font-semibold text-base shadow-md active:scale-95 transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
-          style={{ color: '#ffffff', backgroundColor: '#22c55e' }}
+          className="w-full active:scale-95 transition-transform disabled:opacity-60 disabled:cursor-not-allowed"
+          style={{
+            maxWidth: 320,
+            padding: '14px 0',
+            borderRadius: 14,
+            border: 'none',
+            background: 'linear-gradient(135deg, #2D9E58 0%, #1A6B38 100%)',
+            color: '#fff',
+            fontSize: 16,
+            fontWeight: 700,
+            cursor: 'pointer',
+            boxShadow: '0 4px 16px rgba(45,158,88,0.35)',
+          }}
         >
           {authLoading ? 'Đang xử lý...' : 'Đăng nhập EcoGreen Coin'}
         </button>

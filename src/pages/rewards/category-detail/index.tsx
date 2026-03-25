@@ -31,22 +31,6 @@ const CategoryDetailPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
-      {/* Header */}
-      <Box
-        flex
-        className="items-center bg-white px-4 py-3"
-        style={{ gap: 12, boxShadow: '0 1px 4px rgba(0,0,0,0.06)' }}
-      >
-        <Box style={{ flex: 1 }}>
-          <p style={{ fontSize: 16, fontWeight: 700, color: '#1a1a1a' }}>
-            {decodedCategory}
-          </p>
-          <p style={{ fontSize: 12, color: '#888', marginTop: 1 }}>
-            {cards.length} phần thưởng
-          </p>
-        </Box>
-      </Box>
-
       {/* Grid */}
       <Box
         className="flex-1 overflow-y-auto p-4"

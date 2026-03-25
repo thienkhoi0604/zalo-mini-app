@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router';
-import { Box, Icon } from 'zmp-ui';
+import { Box } from 'zmp-ui';
+import { ChevronLeft } from 'lucide-react';
 import { Navigation } from './navigation';
 import HomePage from 'pages/index';
 import ProfilePage from 'pages/profile';
@@ -31,36 +32,89 @@ if (import.meta.env.DEV) {
   );
 }
 
-// Routes không hiển thị back icon (root tabs)
-const ROOT_ROUTES = ['/', '/rewards', '/qr-code', '/stores', '/profile'];
+// Routes that do not show a back button
+const NO_BACK_ROUTES = ['/', '/rewards', '/qr-code', '/stores', '/profile', '/register'];
 
-const isRootRoute = (pathname: string) => ROOT_ROUTES.includes(pathname);
+const showBackButton = (pathname: string) => !NO_BACK_ROUTES.includes(pathname);
+
+const getRouteTitle = (pathname: string): string => {
+  if (pathname === '/my-vouchers') return 'Voucher của tôi';
+  if (pathname.startsWith('/rewards/category/'))
+    return decodeURIComponent(pathname.replace('/rewards/category/', ''));
+  if (pathname.startsWith('/rewards/')) return 'Chi tiết phần thưởng';
+  if (pathname.startsWith('/stores/')) return 'Chi tiết cửa hàng';
+  return '';
+};
 
 // ─── App Header ───────────────────────────────────────────────────────────────
 
 const AppHeader: FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const showBack = !isRootRoute(location.pathname);
+  const showBack = showBackButton(location.pathname);
+  const title = getRouteTitle(location.pathname);
 
   return (
     <Box
-      className="bg-white flex-shrink-0 flex items-center"
+      className="flex-shrink-0"
       style={{
+        background: 'linear-gradient(160deg, #7dd3a8 0%, #2D9E58 100%)',
         paddingTop: 'var(--zaui-safe-area-inset-top, 0px)',
-        paddingLeft: 16,
-        paddingRight: 16,
-        paddingBottom: 12,
-        minHeight: 'calc(var(--zaui-safe-area-inset-top, 0px) + 52px)',
+        minHeight: showBack
+          ? 'calc(var(--zaui-safe-area-inset-top, 0px) + 56px)'
+          : 'calc(var(--zaui-safe-area-inset-top, 0px) + 60px)',
       }}
     >
       {showBack && (
-        <button
-          onClick={() => navigate(-1)}
-          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors -ml-1 flex-shrink-0 mr-2"
+        <Box
+          flex
+          className="items-center"
+          style={{
+            height: 56,
+            paddingLeft: 10,
+            paddingRight: 16,
+            position: 'relative',
+          }}
         >
-          <Icon icon="zi-chevron-left" />
-        </button>
+          {/* Back button */}
+          <button
+            onClick={() => navigate(-1)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              width: 36,
+              height: 36,
+              borderRadius: '50%',
+              border: 'none',
+              background: 'rgba(255,255,255,0.22)',
+              cursor: 'pointer',
+              flexShrink: 0,
+              zIndex: 1,
+            }}
+          >
+            <ChevronLeft size={20} color="#fff" strokeWidth={2.5} />
+          </button>
+
+          {/* Title — centered */}
+          {title && (
+            <p
+              style={{
+                position: 'absolute',
+                left: 0,
+                right: 0,
+                textAlign: 'center',
+                fontSize: 16,
+                fontWeight: 700,
+                color: '#fff',
+                letterSpacing: 0.2,
+                pointerEvents: 'none',
+              }}
+            >
+              {title}
+            </p>
+          )}
+        </Box>
       )}
     </Box>
   );
@@ -108,22 +162,8 @@ export const Layout: FC = () => {
           <Route path="/register" element={<RegisterPage />} />
 
           {/* Rewards — category phải đứng trước :id để tránh match nhầm */}
-          <Route
-            path="/rewards"
-            element={
-              <ProtectedRoute>
-                <RewardsPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/rewards/category/:category"
-            element={
-              <ProtectedRoute>
-                <CategoryDetailPage />
-              </ProtectedRoute>
-            }
-          />
+          <Route path="/rewards" element={<RewardsPage />} />
+          <Route path="/rewards/category/:category" element={<CategoryDetailPage />} />
           <Route
             path="/rewards/:id"
             element={

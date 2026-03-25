@@ -1,0 +1,21 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "id": "6fa6014a-8944-4048-82a8-f8c77b7c068a",
+    "code": "ALL_VCR_VOUCHER_TEST_NE_369",
+    "name": "voucher test ne",
+    "type": "Voucher",
+    "description": null,
+    "pointCost": 1,
+    "stock": 100,
+    "imageUrl": "https://admin.ecogreenhub.vn/api/upload/image/temp/1e934ad5125e49228c07d65d40348671.webp",
+    "validFrom": "2026-03-24T17:00:00+00:00",
+    "validTo": "2026-05-27T17:00:00+00:00",
+    "appliesToAll": false,
+    "isActive": true,
+    "storeIds": [],
+    "storeNames": []
+  },
+  "errors": null
+}
