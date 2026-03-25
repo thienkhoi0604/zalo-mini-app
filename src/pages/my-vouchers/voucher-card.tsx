@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { GiftCard, UserGiftCard } from '@/types/gift-card';
+import { Reward, UserReward } from '@/types/reward';
 
 interface Props {
-  giftCard: GiftCard;
-  userVoucher: UserGiftCard;
+  reward: Reward;
+  userVoucher: UserReward;
   used: boolean;
   onClick: () => void;
 }
@@ -14,12 +14,12 @@ function formatDate(dateStr: string): string {
   return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
 }
 
-const VoucherCard: FC<Props> = ({ giftCard, userVoucher, used, onClick }) => {
+const VoucherCard: FC<Props> = ({ reward, userVoucher, used, onClick }) => {
   const date = used
     ? userVoucher.redeemedAt
       ? formatDate(userVoucher.redeemedAt)
       : null
-    : formatDate(giftCard.applicableTimeEnd);
+    : formatDate(reward.applicableTimeEnd);
 
   return (
     <Box
@@ -30,8 +30,8 @@ const VoucherCard: FC<Props> = ({ giftCard, userVoucher, used, onClick }) => {
       {/* Left: Image */}
       <Box style={{ width: 90, flexShrink: 0, position: 'relative', minHeight: 100 }}>
         <img
-          src={giftCard.thumbnailImageUrl}
-          alt={giftCard.name}
+          src={reward.thumbnailImageUrl}
+          alt={reward.name}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
           onError={(e) => {
             (e.target as HTMLImageElement).src =
@@ -83,7 +83,7 @@ const VoucherCard: FC<Props> = ({ giftCard, userVoucher, used, onClick }) => {
               borderRadius: 100,
             }}
           >
-            {giftCard.category}
+            {reward.category}
           </span>
         </Box>
 
@@ -100,7 +100,7 @@ const VoucherCard: FC<Props> = ({ giftCard, userVoucher, used, onClick }) => {
             overflow: 'hidden',
           }}
         >
-          {giftCard.name}
+          {reward.name}
         </p>
 
         {/* Date */}
@@ -124,7 +124,7 @@ const VoucherCard: FC<Props> = ({ giftCard, userVoucher, used, onClick }) => {
               fontWeight: 600,
             }}
           >
-            {giftCard.code}
+            {reward.code}
           </span>
         </Box>
       </Box>

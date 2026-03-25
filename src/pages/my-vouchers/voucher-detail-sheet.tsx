@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 import { Box, useSnackbar } from 'zmp-ui';
 import { Sheet } from 'components/fullscreen-sheet';
-import { GiftCard, UserGiftCard } from '@/types/gift-card';
+import { Reward, UserReward } from '@/types/reward';
 
 interface Props {
-  giftCard: GiftCard | null;
-  userVoucher: UserGiftCard | null;
+  reward: Reward | null;
+  userVoucher: UserReward | null;
   onClose: () => void;
 }
 
@@ -14,33 +14,33 @@ function formatDate(dateStr: string): string {
   return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
 }
 
-const VoucherDetailSheet: FC<Props> = ({ giftCard, userVoucher, onClose }) => {
+const VoucherDetailSheet: FC<Props> = ({ reward, userVoucher, onClose }) => {
   const { openSnackbar } = useSnackbar();
   const isUsed = userVoucher?.status === 'redeemed';
 
   const handleCopyCode = () => {
-    if (!giftCard?.code) return;
+    if (!reward?.code) return;
     navigator.clipboard
-      .writeText(giftCard.code)
+      .writeText(reward.code)
       .then(() => openSnackbar({ text: 'Đã sao chép mã voucher!', type: 'success' }))
       .catch(() => openSnackbar({ text: 'Không thể sao chép', type: 'error' }));
   };
 
   return (
     <Sheet
-      visible={!!giftCard && !!userVoucher}
+      visible={!!reward && !!userVoucher}
       onClose={onClose}
       autoHeight
       swipeToClose
       unmountOnClose
     >
-      {giftCard && userVoucher && (
+      {reward && userVoucher && (
         <Box className="flex flex-col pb-6">
           {/* Banner */}
           <Box style={{ width: '100%', height: 180, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
             <img
-              src={giftCard.bannerImageUrl || giftCard.thumbnailImageUrl}
-              alt={giftCard.name}
+              src={reward.bannerImageUrl || reward.thumbnailImageUrl}
+              alt={reward.name}
               style={{ width: '100%', height: '100%', objectFit: 'cover' }}
               onError={(e) => {
                 (e.target as HTMLImageElement).src =
@@ -84,7 +84,7 @@ const VoucherDetailSheet: FC<Props> = ({ giftCard, userVoucher, onClose }) => {
                   borderRadius: 100,
                 }}
               >
-                {giftCard.category}
+                {reward.category}
               </span>
               <p
                 style={{
@@ -95,7 +95,7 @@ const VoucherDetailSheet: FC<Props> = ({ giftCard, userVoucher, onClose }) => {
                   lineHeight: '22px',
                 }}
               >
-                {giftCard.name}
+                {reward.name}
               </p>
             </Box>
 
@@ -119,7 +119,7 @@ const VoucherDetailSheet: FC<Props> = ({ giftCard, userVoucher, onClose }) => {
                     letterSpacing: 2,
                   }}
                 >
-                  {giftCard.code}
+                  {reward.code}
                 </p>
               </Box>
               {!isUsed && (
@@ -146,7 +146,7 @@ const VoucherDetailSheet: FC<Props> = ({ giftCard, userVoucher, onClose }) => {
               {!isUsed && (
                 <p style={{ fontSize: 12, color: '#6B7280' }}>
                   <span style={{ fontWeight: 600 }}>Hạn sử dụng: </span>
-                  {formatDate(giftCard.applicableTimeEnd)}
+                  {formatDate(reward.applicableTimeEnd)}
                 </p>
               )}
               {isUsed && userVoucher.redeemedAt && (
@@ -158,20 +158,20 @@ const VoucherDetailSheet: FC<Props> = ({ giftCard, userVoucher, onClose }) => {
             </Box>
 
             {/* Applicable stores */}
-            {giftCard.stores && giftCard.stores.length > 0 && (
+            {reward.stores && reward.stores.length > 0 && (
               <Box>
                 <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', marginBottom: 6 }}>
-                  Cửa hàng áp dụng ({giftCard.stores.length})
+                  Cửa hàng áp dụng ({reward.stores.length})
                 </p>
                 <Box style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                  {giftCard.stores.slice(0, 3).map((store, i) => (
+                  {reward.stores.slice(0, 3).map((store, i) => (
                     <p key={i} style={{ fontSize: 12, color: '#444', lineHeight: '18px' }}>
                       • {store.address}
                     </p>
                   ))}
-                  {giftCard.stores.length > 3 && (
+                  {reward.stores.length > 3 && (
                     <p style={{ fontSize: 12, color: '#9CA3AF' }}>
-                      và {giftCard.stores.length - 3} cửa hàng khác...
+                      và {reward.stores.length - 3} cửa hàng khác...
                     </p>
                   )}
                 </Box>
@@ -179,13 +179,13 @@ const VoucherDetailSheet: FC<Props> = ({ giftCard, userVoucher, onClose }) => {
             )}
 
             {/* Terms */}
-            {(giftCard.terms || giftCard.usageGuide || giftCard.programNotes) && (
+            {(reward.terms || reward.usageGuide || reward.programNotes) && (
               <Box>
                 <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', marginBottom: 6 }}>
                   Điều khoản sử dụng
                 </p>
                 <p style={{ fontSize: 12, color: '#555', lineHeight: '19px' }}>
-                  {giftCard.terms || giftCard.usageGuide || giftCard.programNotes}
+                  {reward.terms || reward.usageGuide || reward.programNotes}
                 </p>
               </Box>
             )}

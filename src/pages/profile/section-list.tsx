@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC, ReactNode } from 'react';
 import { Box, Icon } from 'zmp-ui';
 
 export interface SectionItem {
-  icon: string;
+  icon: ReactNode;
   label: string;
   sub?: string;
   badge?: number;
@@ -47,7 +47,7 @@ const SectionList: FC<SectionListProps> = ({ title, items, onClick }) => (
           className="flex items-center justify-center rounded-lg flex-shrink-0"
           style={{ width: 36, height: 36, background: '#F5F0E8' }}
         >
-          <Icon icon={item.icon} style={{ fontSize: 18, color: '#A0784A' }} />
+          {item.icon}
         </Box>
 
         {/* Label */}

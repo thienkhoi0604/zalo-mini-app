@@ -10,4 +10,7 @@ export type User = {
   points?: number;
   ratingPoints?: number;
   role?: string;
+  verified?: boolean;
+  memberRank?: string;
+  voucherCount?: number;
 };

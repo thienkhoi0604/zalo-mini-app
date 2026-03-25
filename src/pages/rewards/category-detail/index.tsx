@@ -1,32 +1,32 @@
 import React, { FC, useEffect } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
-import { useParams, useNavigate } from 'react-router-dom';
-import { useGiftCardsStore } from 'stores/gift-cards';
-import { GiftCard } from '@/types/gift-card';
-import GiftCardItemCard from '../item-card';
+import { useParams, useNavigate } from 'react-router';
+import { useRewardsStore } from 'stores/rewards';
+import { Reward } from '@/types/reward';
+import RewardItemCard from '../item-card';
 
 const CategoryDetailPage: FC = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
-  const { getGroupedByCategory, loadAllGiftCards, allGiftCards } =
-    useGiftCardsStore();
+  const { getGroupedByCategory, loadAllRewards, allRewards } =
+    useRewardsStore();
 
   const decodedCategory = decodeURIComponent(category || '');
 
   useEffect(() => {
-    if (!allGiftCards.length) {
-      loadAllGiftCards().catch(() => {
+    if (!allRewards.length) {
+      loadAllRewards().catch(() => {
         openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
       });
     }
   }, []);
 
   const grouped = getGroupedByCategory();
-  const cards: GiftCard[] = grouped[decodedCategory] || [];
+  const cards: Reward[] = grouped[decodedCategory] || [];
 
-  const handleCardClick = (card: GiftCard) => {
-    navigate(`/gift-cards/${card.id}`);
+  const handleCardClick = (card: Reward) => {
+    navigate(`/rewards/${card.id}`);
   };
 
   return (
@@ -42,7 +42,7 @@ const CategoryDetailPage: FC = () => {
             {decodedCategory}
           </p>
           <p style={{ fontSize: 12, color: '#888', marginTop: 1 }}>
-            {cards.length} thẻ quà tặng
+            {cards.length} phần thưởng
           </p>
         </Box>
       </Box>
@@ -70,7 +70,7 @@ const CategoryDetailPage: FC = () => {
         ) : (
           cards.map((card) => (
             <Box key={card.id} style={{ width: '100%' }}>
-              <GiftCardItemCard card={{ ...card }} onClick={handleCardClick} />
+              <RewardItemCard card={{ ...card }} onClick={handleCardClick} />
             </Box>
           ))
         )}

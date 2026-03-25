@@ -1,8 +1,8 @@
-export interface GiftCardStore {
+export interface RewardStore {
   address: string;
 }
 
-export interface GiftCard {
+export interface Reward {
   id: string;
   code: string;
   name: string;
@@ -12,7 +12,7 @@ export interface GiftCard {
   category: string;
   brandName?: string;
   brandLogoUrl?: string;
-  stores?: GiftCardStore[];
+  stores?: RewardStore[];
   terms?: string;
   pointsRequired: number;
   applicableTimeStart: string;
@@ -22,15 +22,15 @@ export interface GiftCard {
   status: 'active' | 'expired';
 }
 
-export interface UserGiftCard {
+export interface UserReward {
   id: string;
-  giftCardId: string;
+  rewardId: string;
   status: 'redeemed' | 'received';
   redeemedAt?: string;
   receivedAt?: string;
 }
 
-export interface GiftCardsFilter {
+export interface RewardsFilter {
   category?: string;
   search?: string;
 }

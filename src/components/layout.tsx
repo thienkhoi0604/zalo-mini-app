@@ -4,9 +4,9 @@ import { Box, Icon } from 'zmp-ui';
 import { Navigation } from './navigation';
 import HomePage from 'pages/index';
 import ProfilePage from 'pages/profile';
-import GiftCardsPage from 'pages/gift-cards';
-import GiftCardDetailPage from 'pages/gift-cards/detail';
-import CategoryDetailPage from 'pages/gift-cards/category-detail';
+import RewardsPage from 'pages/rewards';
+import RewardDetailPage from 'pages/rewards/detail';
+import CategoryDetailPage from 'pages/rewards/category-detail';
 import QRCodePage from 'pages/qr-code';
 import StoresPage from 'pages/stores';
 import StoreDetailPage from 'pages/store-detail';
@@ -32,7 +32,7 @@ if (import.meta.env.DEV) {
 }
 
 // Routes không hiển thị back icon (root tabs)
-const ROOT_ROUTES = ['/', '/gift-cards', '/qr-code', '/stores', '/profile'];
+const ROOT_ROUTES = ['/', '/rewards', '/qr-code', '/stores', '/profile'];
 
 const isRootRoute = (pathname: string) => ROOT_ROUTES.includes(pathname);
 
@@ -107,17 +107,17 @@ export const Layout: FC = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          {/* Gift Cards — category phải đứng trước :id để tránh match nhầm */}
+          {/* Rewards — category phải đứng trước :id để tránh match nhầm */}
           <Route
-            path="/gift-cards"
+            path="/rewards"
             element={
               <ProtectedRoute>
-                <GiftCardsPage />
+                <RewardsPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/gift-cards/category/:category"
+            path="/rewards/category/:category"
             element={
               <ProtectedRoute>
                 <CategoryDetailPage />
@@ -125,10 +125,10 @@ export const Layout: FC = () => {
             }
           />
           <Route
-            path="/gift-cards/:id"
+            path="/rewards/:id"
             element={
               <ProtectedRoute>
-                <GiftCardDetailPage />
+                <RewardDetailPage />
               </ProtectedRoute>
             }
           />

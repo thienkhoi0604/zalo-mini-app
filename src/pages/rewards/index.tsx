@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
-import { useGiftCardsStore } from 'stores/gift-cards';
+import { useRewardsStore } from 'stores/rewards';
 import { useUserStore } from 'stores/user';
-import GiftCardsList from './item-cards-list';
+import RewardsList from './item-cards-list';
 
 const SkeletonRow: FC = () => (
   <Box className="mb-1">
@@ -31,21 +31,21 @@ const SkeletonRow: FC = () => (
   </Box>
 );
 
-const GiftCardsPage: FC = () => {
+const RewardsPage: FC = () => {
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
-  const { loading, loadAllGiftCards, loadUserGiftCards } = useGiftCardsStore();
+  const { loading, loadAllRewards, loadUserRewards } = useRewardsStore();
   const { user } = useUserStore();
 
   useEffect(() => {
     const initializeData = async () => {
       try {
-        await loadAllGiftCards();
-        await loadUserGiftCards();
+        await loadAllRewards();
+        await loadUserRewards();
         setInitialized(true);
       } catch {
         openSnackbar({
-          text: 'Không thể tải danh sách thẻ quà tặng',
+          text: 'Không thể tải danh sách phần thưởng',
           type: 'error',
         });
         setInitialized(true);
@@ -97,11 +97,11 @@ const GiftCardsPage: FC = () => {
             <SkeletonRow />
           </Box>
         ) : (
-          <GiftCardsList />
+          <RewardsList />
         )}
       </Box>
     </Page>
   );
 };
 
-export default GiftCardsPage;
+export default RewardsPage;

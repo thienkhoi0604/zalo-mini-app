@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { GiftCard } from '@/types/gift-card';
+import { Reward } from '@/types/reward';
 
 interface Props {
-  card: GiftCard;
-  onClick?: (card: GiftCard) => void;
+  card: Reward;
+  onClick?: (card: Reward) => void;
 }
 
-const GiftCardItemCard: FC<Props> = ({ card, onClick }) => {
+const RewardItemCard: FC<Props> = ({ card, onClick }) => {
   return (
     <Box
       onClick={() => onClick?.(card)}
@@ -97,4 +97,4 @@ const GiftCardItemCard: FC<Props> = ({ card, onClick }) => {
   );
 };
 
-export default GiftCardItemCard;
+export default RewardItemCard;

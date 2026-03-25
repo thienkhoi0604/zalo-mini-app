@@ -1,7 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
-import { Box, Icon, Page } from 'zmp-ui';
-import { useGiftCardsStore } from 'stores/gift-cards';
-import { GiftCard, UserGiftCard } from '@/types/gift-card';
+import { Box, Page } from 'zmp-ui';
+import { Gift } from 'lucide-react';
+import { useRewardsStore } from 'stores/rewards';
+import { Reward, UserReward } from '@/types/reward';
 import VoucherCard from './voucher-card';
 import VoucherDetailSheet from './voucher-detail-sheet';
 
@@ -66,7 +67,7 @@ const EmptyState: FC<{ used: boolean }> = ({ used }) => (
       className="flex items-center justify-center rounded-full"
       style={{ width: 72, height: 72, background: '#EEF7F1' }}
     >
-      <Icon icon="zi-gift" style={{ fontSize: 36, color: '#288F4E' }} />
+      <Gift size={36} color="#288F4E" />
     </Box>
     <p style={{ fontSize: 14, color: '#9CA3AF', textAlign: 'center', lineHeight: '20px' }}>
       {used
@@ -98,28 +99,28 @@ const VoucherSkeleton: FC = () => (
 
 const MyVouchersPage: FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('unused');
-  const [selectedVoucher, setSelectedVoucher] = useState<{ giftCard: GiftCard; userVoucher: UserGiftCard } | null>(null);
+  const [selectedVoucher, setSelectedVoucher] = useState<{ reward: Reward; userVoucher: UserReward } | null>(null);
   const {
-    userGiftCards,
-    allGiftCards,
+    userRewards,
+    allRewards,
     loading,
-    loadUserGiftCards,
-    loadAllGiftCards,
-  } = useGiftCardsStore();
+    loadUserRewards,
+    loadAllRewards,
+  } = useRewardsStore();
 
   useEffect(() => {
-    loadUserGiftCards();
-    if (allGiftCards.length === 0) {
-      loadAllGiftCards();
+    loadUserRewards();
+    if (allRewards.length === 0) {
+      loadAllRewards();
     }
   }, []);
 
-  const unusedVouchers = userGiftCards.filter((v) => v.status === 'received');
-  const usedVouchers = userGiftCards.filter((v) => v.status === 'redeemed');
+  const unusedVouchers = userRewards.filter((v) => v.status === 'received');
+  const usedVouchers = userRewards.filter((v) => v.status === 'redeemed');
   const activeVouchers = activeTab === 'unused' ? unusedVouchers : usedVouchers;
 
-  const getGiftCard = (giftCardId: string) =>
-    allGiftCards.find((c) => c.id === giftCardId);
+  const getReward = (rewardId: string) =>
+    allRewards.find((c) => c.id === rewardId);
 
   return (
     <Page className="flex-1 flex flex-col overflow-hidden">
@@ -166,15 +167,15 @@ const MyVouchersPage: FC = () => {
           <EmptyState used={activeTab === 'used'} />
         ) : (
           activeVouchers.map((uv) => {
-            const card = getGiftCard(uv.giftCardId);
+            const card = getReward(uv.rewardId);
             if (!card) return null;
             return (
               <VoucherCard
                 key={uv.id}
-                giftCard={card}
+                reward={card}
                 userVoucher={uv}
                 used={activeTab === 'used'}
-                onClick={() => setSelectedVoucher({ giftCard: card, userVoucher: uv })}
+                onClick={() => setSelectedVoucher({ reward: card, userVoucher: uv })}
               />
             );
           })
@@ -182,7 +183,7 @@ const MyVouchersPage: FC = () => {
       </Box>
 
       <VoucherDetailSheet
-        giftCard={selectedVoucher?.giftCard ?? null}
+        reward={selectedVoucher?.reward ?? null}
         userVoucher={selectedVoucher?.userVoucher ?? null}
         onClose={() => setSelectedVoucher(null)}
       />

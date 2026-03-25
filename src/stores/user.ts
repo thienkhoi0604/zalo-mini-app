@@ -7,7 +7,6 @@ import {
   clearTokens,
   getAccessToken,
   getRefreshToken,
-  refreshTokens,
 } from 'apis/authorization';
 import { fetchUserInfo } from 'apis/user';
 import { User } from '@/types/user';

@@ -1,6 +1,6 @@
-import { GiftCard, UserGiftCard } from '@/types/gift-card';
+import { Reward, UserReward } from '@/types/reward';
 
-export const MOCK_GIFT_CARDS: GiftCard[] = [
+export const MOCK_REWARDS: Reward[] = [
   {
     id: 'gc-001',
     code: 'COFFEE001',
@@ -172,28 +172,28 @@ export const MOCK_GIFT_CARDS: GiftCard[] = [
   },
 ];
 
-export const MOCK_USER_GIFT_CARDS: UserGiftCard[] = [
+export const MOCK_USER_REWARDS: UserReward[] = [
   {
     id: 'ugc-001',
-    giftCardId: 'gc-001',
+    rewardId: 'gc-001',
     status: 'redeemed',
     redeemedAt: '2026-03-10T14:30:00Z',
   },
   {
     id: 'ugc-002',
-    giftCardId: 'gc-004',
+    rewardId: 'gc-004',
     status: 'redeemed',
     redeemedAt: '2026-03-05T10:15:00Z',
   },
   {
     id: 'ugc-003',
-    giftCardId: 'gc-006',
+    rewardId: 'gc-006',
     status: 'received',
     receivedAt: '2026-02-28T18:00:00Z',
   },
   {
     id: 'ugc-004',
-    giftCardId: 'gc-008',
+    rewardId: 'gc-008',
     status: 'redeemed',
     redeemedAt: '2026-02-10T09:45:00Z',
   },

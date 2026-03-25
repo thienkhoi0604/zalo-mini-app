@@ -80,6 +80,9 @@ type LoginResponse = {
       role: string;
       points?: number;
       ratingPoints?: number;
+      verified?: boolean;
+      memberRank?: string;
+      voucherCount?: number;
     };
   };
 };
@@ -110,6 +113,9 @@ export async function loginWithZaloUser(
     userName: data.user.userName ?? undefined,
     points: data.user.points ?? 0,
     ratingPoints: data.user.ratingPoints ?? 0,
+    verified: data.user.verified,
+    memberRank: data.user.memberRank,
+    voucherCount: data.user.voucherCount,
   };
 }
 

@@ -1,30 +1,30 @@
 import React, { FC, useEffect } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
-import { useParams } from 'react-router-dom';
-import { useGiftCardsStore } from 'stores/gift-cards';
+import { useParams } from 'react-router';
+import { useRewardsStore } from 'stores/rewards';
 import { useToBeImplemented } from 'hooks';
 
-const GiftCardDetailPage: FC = () => {
+const RewardDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
   const { openSnackbar } = useSnackbar();
-  const { allGiftCards, loadAllGiftCards } = useGiftCardsStore();
+  const { allRewards, loadAllRewards } = useRewardsStore();
   const onBuy = useToBeImplemented();
 
   useEffect(() => {
-    if (!allGiftCards.length) {
-      loadAllGiftCards().catch(() => {
+    if (!allRewards.length) {
+      loadAllRewards().catch(() => {
         openSnackbar({ text: 'Không thể tải thông tin thẻ', type: 'error' });
       });
     }
   }, []);
 
-  const card = allGiftCards.find((c) => c.id === id);
+  const card = allRewards.find((c) => c.id === id);
 
   if (!card) {
     return (
       <Page className="flex-1 flex flex-col bg-gray-50 items-center justify-center">
         <p style={{ fontSize: 14, color: '#888' }}>
-          Không tìm thấy thẻ quà tặng.
+          Không tìm thấy phần thưởng.
         </p>
       </Page>
     );
@@ -221,4 +221,4 @@ const GiftCardDetailPage: FC = () => {
   );
 };
 
-export default GiftCardDetailPage;
+export default RewardDetailPage;

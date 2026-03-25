@@ -3,6 +3,7 @@ import React, { FC } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { MenuItem } from "types/menu";
 import { BottomNavigation, Icon } from "zmp-ui";
+import { Bookmark, QrCode } from "lucide-react";
 
 const tabs: Record<string, MenuItem> = {
   "/": {
@@ -13,13 +14,13 @@ const tabs: Record<string, MenuItem> = {
     label: "Cửa hàng",
     icon: <Icon icon="zi-location" />,
   },
-  "/gift-cards": {
-    label: "Thẻ quà tặng",
-    icon: <Icon icon="zi-bookmark" />,
+  "/rewards": {
+    label: "Phần thưởng",
+    icon: <Bookmark size={22} />,
   },
   "/qr-code": {
     label: "QR Code",
-    icon: <Icon icon="zi-qrline" />,
+    icon: <QrCode size={22} />,
   },
   "/profile": {
     label: "Tài khoản",

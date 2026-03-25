@@ -1,26 +1,26 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { useGiftCardsStore } from 'stores/gift-cards';
-import { GiftCard } from '@/types/gift-card';
-import GiftCardItemCard from './item-card';
-import { useNavigate } from 'react-router-dom';
+import { useRewardsStore } from 'stores/rewards';
+import { Reward } from '@/types/reward';
+import RewardItemCard from './item-card';
+import { useNavigate } from 'react-router';
 
 // ─── Category Row ─────────────────────────────────────────────────────────────
 
 interface CategoryRowProps {
   category: string;
-  cards: GiftCard[];
+  cards: Reward[];
 }
 
 const CategoryRow: FC<CategoryRowProps> = ({ category, cards }) => {
   const navigate = useNavigate();
 
-  const handleCardClick = (card: GiftCard) => {
-    navigate(`/gift-cards/${card.id}`);
+  const handleCardClick = (card: Reward) => {
+    navigate(`/rewards/${card.id}`);
   };
 
   const handleViewAll = () => {
-    navigate(`/gift-cards/category/${encodeURIComponent(category)}`);
+    navigate(`/rewards/category/${encodeURIComponent(category)}`);
   };
 
   // Show max 7 in the scroll row
@@ -82,7 +82,7 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards }) => {
         }}
       >
         {visibleCards.map((card) => (
-          <GiftCardItemCard
+          <RewardItemCard
             key={card.id}
             card={card}
             onClick={handleCardClick}
@@ -133,8 +133,8 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards }) => {
 
 // ─── Main List ────────────────────────────────────────────────────────────────
 
-const GiftCardsList: FC = () => {
-  const { getGroupedByCategory } = useGiftCardsStore();
+const RewardsList: FC = () => {
+  const { getGroupedByCategory } = useRewardsStore();
   const grouped = getGroupedByCategory();
   const categories = Object.keys(grouped).sort();
 
@@ -146,7 +146,7 @@ const GiftCardsList: FC = () => {
       >
         <span style={{ fontSize: 40 }}>🎁</span>
         <p style={{ fontSize: 14, color: '#888' }}>
-          Không có thẻ quà tặng nào có sẵn
+          Không có phần thưởng nào có sẵn
         </p>
       </Box>
     );
@@ -165,4 +165,4 @@ const GiftCardsList: FC = () => {
   );
 };
 
-export default GiftCardsList;
+export default RewardsList;

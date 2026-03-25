@@ -1,6 +1,7 @@
 import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { Box, Icon, Page, Text } from 'zmp-ui';
+import { Phone, MapPin } from 'lucide-react';
 import { MOCK_STORES } from 'mock/stores';
 
 const StoreDetailPage: FC = () => {
@@ -93,10 +94,7 @@ const StoreDetailPage: FC = () => {
             {/* Số điện thoại */}
             {store.phone && (
               <Box className="flex items-start gap-3 p-4">
-                <Icon
-                  icon="zi-call"
-                  className="text-green-500 mt-0.5 flex-shrink-0"
-                />
+                <Phone size={18} className="text-green-500 mt-0.5 flex-shrink-0" />
                 <Box>
                   <Text className="text-xs text-gray-400 font-medium">
                     Số điện thoại
@@ -129,10 +127,7 @@ const StoreDetailPage: FC = () => {
             {/* Bản đồ */}
             {store.latitude != null && store.longitude != null && (
               <Box className="flex items-start gap-3 p-4">
-                <Icon
-                  icon="zi-location-solid"
-                  className="text-green-500 mt-0.5 flex-shrink-0"
-                />
+                <MapPin size={18} fill="currentColor" className="text-green-500 mt-0.5 flex-shrink-0" />
                 <Box>
                   <Text className="text-xs text-gray-400 font-medium">
                     Bản đồ
