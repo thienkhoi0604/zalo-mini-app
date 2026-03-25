@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { User } from '@/types/user';
+import { User, UserRank } from '@/types/user';
 import { API_BASE_URL } from './client';
 
 export type JwtTokens = {
@@ -76,12 +76,21 @@ type LoginResponse = {
       userName: string | null;
       fullName: string;
       phone: string | null;
+      email: string | null;
       avatarUrl: string;
       role: string;
+      address: string | null;
+      provinceCode: string | null;
+      wardCode: string | null;
+      latitude: number;
+      longitude: number;
+      isVehicleApproved: boolean;
+      status: string;
+      lastLoginAt: string;
+      createdAt: string;
+      rank?: UserRank;
       points?: number;
-      ratingPoints?: number;
       verified?: boolean;
-      memberRank?: string;
       voucherCount?: number;
     };
   };
@@ -109,12 +118,21 @@ export async function loginWithZaloUser(
     fullName: data.user.fullName,
     avatarUrl: data.user.avatarUrl,
     phone: data.user.phone ?? undefined,
+    email: data.user.email ?? undefined,
     role: data.user.role,
     userName: data.user.userName ?? undefined,
+    address: data.user.address ?? undefined,
+    provinceCode: data.user.provinceCode ?? undefined,
+    wardCode: data.user.wardCode ?? undefined,
+    latitude: data.user.latitude,
+    longitude: data.user.longitude,
+    isVehicleApproved: data.user.isVehicleApproved,
+    status: data.user.status,
+    lastLoginAt: data.user.lastLoginAt,
+    createdAt: data.user.createdAt,
+    rank: data.user.rank,
     points: data.user.points ?? 0,
-    ratingPoints: data.user.ratingPoints ?? 0,
     verified: data.user.verified,
-    memberRank: data.user.memberRank,
     voucherCount: data.user.voucherCount,
   };
 }

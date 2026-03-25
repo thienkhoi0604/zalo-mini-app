@@ -50,18 +50,9 @@ const MemberCard: FC = () => {
         >
           {user?.fullName || 'Tên thành viên'}
         </p>
-        <p
-          style={{
-            color: 'rgba(255,255,255,0.85)',
-            fontSize: 14,
-            marginTop: 2,
-          }}
-        >
-          {user?.phone || ''}
-        </p>
       </Box>
 
-      {/* Rank | VPoint row */}
+      {/* Rank | Xu row */}
       <Box
         flex
         className="mx-4 mb-4 mt-2 py-3 px-4 rounded-xl"
@@ -69,7 +60,7 @@ const MemberCard: FC = () => {
       >
         <Box className="flex-1 text-center">
           <p style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-            {user?.memberRank || 'Member'}
+            {user?.rank?.currentRankName || 'Member'}
           </p>
           <p style={{ color: 'rgba(255,255,255)', fontSize: 12, marginTop: 2 }}>
             Hạng thành viên
@@ -90,7 +81,7 @@ const MemberCard: FC = () => {
             <span style={{ fontSize: 16 }}>🪙</span>
           </Box>
           <p style={{ color: 'rgba(255,255,255)', fontSize: 12, marginTop: 2 }}>
-            VPoint khả dụng
+            Xu khả dụng
           </p>
         </Box>
       </Box>

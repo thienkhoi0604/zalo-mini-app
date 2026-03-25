@@ -123,11 +123,7 @@ const MyVouchersPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col overflow-hidden">
-      {/* Title */}
       <Box className="px-4 pt-1 pb-3">
-        <p style={{ fontSize: 18, fontWeight: 700, color: '#1a1a1a' }}>
-          Voucher của tôi
-        </p>
       </Box>
 
       {/* Tabs */}

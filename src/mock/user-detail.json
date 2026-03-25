@@ -1,0 +1,34 @@
+{
+  "success": true,
+  "message": "string",
+  "data": {
+    "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+    "zaloUserId": "string",
+    "userName": "string",
+    "fullName": "string",
+    "phone": "string",
+    "email": "string",
+    "avatarUrl": "string",
+    "role": "string",
+    "address": "string",
+    "provinceCode": "string",
+    "wardCode": "string",
+    "latitude": 0,
+    "longitude": 0,
+    "isVehicleApproved": true,
+    "status": "string",
+    "lastLoginAt": "2026-03-25T16:52:42.638Z",
+    "createdAt": "2026-03-25T16:52:42.638Z",
+    "rank": {
+      "currentTotalSpent": 0,
+      "currentRankCode": "string",
+      "currentRankName": "string",
+      "nextRankCode": "string",
+      "nextRankName": "string",
+      "nextRankRequiredTotalSpent": 0,
+      "pointsToNext": 0,
+      "progressToNextPercent": 0
+    }
+  },
+  "errors": ["string"]
+}

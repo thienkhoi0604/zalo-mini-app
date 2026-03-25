@@ -35,7 +35,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
       actions={[
         {
           text: redeeming ? 'Đang xử lý...' : 'Xác nhận',
-          primary: true,
+          // primary: true,
           disabled: !hasEnough || redeeming,
           onClick: onConfirm,
           highLight: hasEnough,

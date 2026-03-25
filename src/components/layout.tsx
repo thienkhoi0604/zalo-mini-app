@@ -58,7 +58,7 @@ const AppHeader: FC = () => {
     <Box
       className="flex-shrink-0"
       style={{
-        background: 'linear-gradient(160deg, #7dd3a8 0%, #2D9E58 100%)',
+        background: 'linear-gradient(160deg, rgb(238, 247, 241) 0%',
         paddingTop: 'var(--zaui-safe-area-inset-top, 0px)',
         minHeight: showBack
           ? 'calc(var(--zaui-safe-area-inset-top, 0px) + 56px)'
@@ -87,13 +87,13 @@ const AppHeader: FC = () => {
               height: 36,
               borderRadius: '50%',
               border: 'none',
-              background: 'rgba(255,255,255,0.22)',
+              background: 'rgba(40,143,78,0.12)',
               cursor: 'pointer',
               flexShrink: 0,
               zIndex: 1,
             }}
           >
-            <ChevronLeft size={20} color="#fff" strokeWidth={2.5} />
+            <ChevronLeft size={20} color="#1A6B38" strokeWidth={2.5} />
           </button>
 
           {/* Title — centered */}
@@ -106,7 +106,7 @@ const AppHeader: FC = () => {
                 textAlign: 'center',
                 fontSize: 16,
                 fontWeight: 700,
-                color: '#fff',
+                color: '#1A6B38',
                 letterSpacing: 0.2,
                 pointerEvents: 'none',
               }}

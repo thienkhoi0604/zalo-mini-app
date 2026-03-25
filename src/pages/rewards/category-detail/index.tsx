@@ -33,7 +33,7 @@ const CategoryDetailPage: FC = () => {
     <Page className="flex-1 flex flex-col bg-gray-50">
       {/* Grid */}
       <Box
-        className="flex-1 overflow-y-auto p-4"
+        className="flex-1 overflow-y-auto p-4 pt-6"
         style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(2, 1fr)',

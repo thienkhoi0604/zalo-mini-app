@@ -104,7 +104,8 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return 'permission_denied';
       }
 
-      const user = await loginWithZaloUser(zaloAccessToken, locationToken);
+      await loginWithZaloUser(zaloAccessToken, locationToken);
+      const user = await fetchUserInfo();
       set({ user, isAuthenticated: true, authLoading: false });
       return 'success';
     } catch (error) {

@@ -1,16 +1,35 @@
+export type UserRank = {
+  currentTotalSpent: number;
+  currentRankCode: string;
+  currentRankName: string;
+  nextRankCode: string;
+  nextRankName: string;
+  nextRankRequiredTotalSpent: number;
+  pointsToNext: number;
+  progressToNextPercent: number;
+};
+
 export type User = {
   id: string;
   zaloUserId?: string;
-  displayName?: string;
-  fullName?: string;
   userName?: string;
-  avatar?: string;
-  avatarUrl?: string;
+  fullName?: string;
   phone?: string;
-  points?: number;
-  ratingPoints?: number;
+  email?: string;
+  avatarUrl?: string;
   role?: string;
+  address?: string;
+  provinceCode?: string;
+  wardCode?: string;
+  latitude?: number;
+  longitude?: number;
+  isVehicleApproved?: boolean;
+  status?: string;
+  lastLoginAt?: string;
+  createdAt?: string;
+  rank?: UserRank;
+  // Fields used by app logic (may come from login response or separate endpoints)
+  points?: number;
   verified?: boolean;
-  memberRank?: string;
   voucherCount?: number;
 };

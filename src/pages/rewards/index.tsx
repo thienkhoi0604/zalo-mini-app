@@ -3,6 +3,7 @@ import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useRewardsStore } from 'stores/rewards';
 import { useUserStore } from 'stores/user';
 import RewardsList from './item-cards-list';
+import { useNavigate } from 'react-router';
 
 const SkeletonRow: FC = () => (
   <Box className="mb-1">
@@ -32,6 +33,7 @@ const SkeletonRow: FC = () => (
 );
 
 const RewardsPage: FC = () => {
+  const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
   const { loading, loadAllRewards, loadUserRewards } = useRewardsStore();
@@ -56,7 +58,6 @@ const RewardsPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
-      {/* Summary bar — only shown when authenticated */}
       {isAuthenticated && (
         <Box className="mx-4 mt-3 mb-4 rounded-2xl bg-white shadow-sm" flex>
           <Box
@@ -64,7 +65,7 @@ const RewardsPage: FC = () => {
             style={{ borderRight: '1px solid #F3F3F3' }}
           >
             <p style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>
-              VPoint khả dụng
+              Xu khả dụng
             </p>
             <Box flex className="justify-center items-center" style={{ gap: 5 }}>
               <span style={{ fontSize: 18 }}>🪙</span>
@@ -73,7 +74,7 @@ const RewardsPage: FC = () => {
               </p>
             </Box>
           </Box>
-          <Box className="flex-1 text-center py-3">
+          <Box className="flex-1 text-center py-3" onClick={() => navigate('/my-vouchers')}>
             <p style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>
               Voucher của bạn
             </p>

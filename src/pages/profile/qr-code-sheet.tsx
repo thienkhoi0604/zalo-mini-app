@@ -12,9 +12,9 @@ interface Props {
 const QRCodeSheet: FC<Props> = ({ visible, onClose }) => {
   const { user, qrCodeUrl, qrLoading, loadQRCode } = useUserStore();
 
-  useEffect(() => {
-    if (visible && user?.id) loadQRCode();
-  }, [visible, user?.id]);
+  // useEffect(() => {
+  //   if (visible && user?.id) loadQRCode();
+  // }, [visible, user?.id]);
 
   return (
     <Sheet visible={visible} onClose={onClose} autoHeight swipeToClose unmountOnClose>

@@ -3,6 +3,11 @@ import rewardsJson from '@/mock/rewards.json';
 import rewardDetailJson from '@/mock/reward-detail.json';
 import axiosClient from './client';
 
+export enum REWARD_TYPES {
+  VOUCHER = 'Voucher',
+  PRODUCT = 'PhysicalItem',
+}
+
 interface RewardApiItem {
   id: string;
   code: string;
@@ -39,11 +44,20 @@ function mapApiItemToReward(item: RewardApiItem): Reward {
   };
 }
 
-export async function getRewards(): Promise<Reward[]> {
+export interface GetRewardsParams {
+  pageNumber?: number;
+  pageSize?: number;
+  type?: REWARD_TYPES;
+}
+
+export async function getRewards(params: GetRewardsParams = {}): Promise<Reward[]> {
   try {
+    const { pageNumber = 1, pageSize = 10, type } = params;
     const { data } = await axiosClient.get<{
       data: { items: RewardApiItem[] };
-    }>('/Rewards');
+    }>('/Rewards', {
+      params: { pageNumber, pageSize, ...(type && { type }) },
+    });
     return (data.data.items ?? []).map(mapApiItemToReward);
   } catch (error) {
     console.warn(
@@ -72,7 +86,7 @@ export async function getRewardById(id: string): Promise<Reward> {
 export async function getUserRewards(): Promise<UserReward[]> {
   try {
     const { data } = await axiosClient.get<{ data: UserReward[] }>(
-      '/users/rewards',
+      '/Rewards/my-vouchers',
     );
     return data.data;
   } catch (error) {
@@ -89,6 +103,6 @@ export async function redeemReward(
 ): Promise<{ pointsDeducted: number }> {
   const { data } = await axiosClient.post<{
     data: { pointsDeducted: number };
-  }>('/users/redeem-reward', { rewardId });
+  }>('/Rewards/redeem', { rewardId });
   return data.data;
 }

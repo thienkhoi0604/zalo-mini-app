@@ -10,10 +10,31 @@
       "userName": null,
       "fullName": "Huy Nguyen Quang",
       "phone": null,
+      "email": null,
       "avatarUrl": "https://s120-ava-talk.zadn.vn/e/1/d/f/26/120/76b52f895d6ad7806af326063602402e.jpg",
       "role": "Customer",
+      "address": null,
+      "provinceCode": null,
+      "wardCode": null,
+      "latitude": 0,
+      "longitude": 0,
+      "isVehicleApproved": false,
+      "status": "Active",
+      "lastLoginAt": "2026-03-26T00:00:00.000Z",
+      "createdAt": "2026-01-01T00:00:00.000Z",
       "points": 1250,
-      "ratingPoints": 4850
+      "verified": true,
+      "voucherCount": 2,
+      "rank": {
+        "currentTotalSpent": 1250000,
+        "currentRankCode": "SILVER",
+        "currentRankName": "Silver",
+        "nextRankCode": "GOLD",
+        "nextRankName": "Gold",
+        "nextRankRequiredTotalSpent": 5000000,
+        "pointsToNext": 3750000,
+        "progressToNextPercent": 25
+      }
     }
   },
   "errors": null
