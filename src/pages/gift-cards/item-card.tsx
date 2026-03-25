@@ -4,13 +4,11 @@ import { GiftCard } from "@/types/gift-card";
 
 interface Props {
   card: GiftCard;
-  onClick: () => void;
 }
 
-const GiftCardItemCard: FC<Props> = ({ card, onClick }) => {
+const GiftCardItemCard: FC<Props> = ({ card }) => {
   return (
     <Box
-      onClick={onClick}
       className="flex gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:shadow-md transition-shadow"
     >
       {/* Thumbnail Image */}

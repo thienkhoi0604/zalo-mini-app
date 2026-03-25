@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useGiftCardsStore } from 'stores/gift-cards';
-import GiftCardsList from './gift-cards/list';
+import GiftCardsList from './item-cards-list';
 import AppHeader from 'components/app-header';
 
 const GiftCardsPage: FC = () => {

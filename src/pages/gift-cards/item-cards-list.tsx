@@ -1,14 +1,11 @@
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import { Box, Text } from "zmp-ui";
 import { useGiftCardsStore } from "stores/gift-cards";
 import GiftCardItemCard from "./item-card";
-import DetailModal from "./detail-modal";
-import { GiftCard } from "@/types/gift-card";
 
 const GiftCardsList: FC = () => {
   const { getGroupedByCategory } = useGiftCardsStore();
   const grouped = getGroupedByCategory();
-  const [selectedCard, setSelectedCard] = useState<GiftCard | null>(null);
 
   const categories = Object.keys(grouped).sort();
 
@@ -32,16 +29,11 @@ const GiftCardsList: FC = () => {
               <GiftCardItemCard
                 key={card.id}
                 card={card}
-                onClick={() => setSelectedCard(card)}
               />
             ))}
           </Box>
         </Box>
       ))}
-
-      {selectedCard && (
-        <DetailModal card={selectedCard} onClose={() => setSelectedCard(null)} />
-      )}
     </Box>
   );
 };
