@@ -1,6 +1,6 @@
 import React, { FC, useEffect } from 'react';
-import { Route, Routes } from 'react-router';
-import { Box } from 'zmp-ui';
+import { Route, Routes, useLocation, useNavigate } from 'react-router';
+import { Box, Icon } from 'zmp-ui';
 import { Navigation } from './navigation';
 import HomePage from 'pages/index';
 import ProfilePage from 'pages/profile';
@@ -29,6 +29,43 @@ if (import.meta.env.DEV) {
     `${androidSafeTop}px`,
   );
 }
+
+// Routes không hiển thị back icon (root tabs)
+const ROOT_ROUTES = ['/', '/gift-cards', '/qr-code', '/stores', '/profile'];
+
+const isRootRoute = (pathname: string) => ROOT_ROUTES.includes(pathname);
+
+// ─── App Header ───────────────────────────────────────────────────────────────
+
+const AppHeader: FC = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const showBack = !isRootRoute(location.pathname);
+
+  return (
+    <Box
+      className="bg-white flex-shrink-0 flex items-center"
+      style={{
+        paddingTop: 'var(--zaui-safe-area-inset-top, 0px)',
+        paddingLeft: 16,
+        paddingRight: 16,
+        paddingBottom: 12,
+        minHeight: 'calc(var(--zaui-safe-area-inset-top, 0px) + 52px)',
+      }}
+    >
+      {showBack && (
+        <button
+          onClick={() => navigate(-1)}
+          className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 active:bg-gray-200 transition-colors -ml-1 flex-shrink-0 mr-2"
+        >
+          <Icon icon="zi-chevron-left" />
+        </button>
+      )}
+    </Box>
+  );
+};
+
+// ─── Layout ───────────────────────────────────────────────────────────────────
 
 export const Layout: FC = () => {
   const { authLoading, initializeAuth } = useUserStore();
@@ -63,6 +100,7 @@ export const Layout: FC = () => {
   return (
     <Box flex flexDirection="column" className="h-screen">
       <ScrollRestoration />
+      <AppHeader />
       <Box className="flex-1 flex flex-col overflow-hidden">
         <Routes>
           <Route path="/" element={<HomePage />} />

@@ -2,7 +2,6 @@ import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { Box, Icon, Page, Text } from 'zmp-ui';
 import { MOCK_STORES } from 'mock/stores';
-import AppHeader from 'components/app-header';
 
 const StoreDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -11,7 +10,6 @@ const StoreDetailPage: FC = () => {
   if (!store) {
     return (
       <Page className="flex-1 flex flex-col bg-gray-50">
-        <AppHeader title="Chi tiết trạm sạc" showBackIcon />
         <Box className="p-4">
           <Text className="text-gray-500">Không tìm thấy trạm sạc pin.</Text>
         </Box>
@@ -25,7 +23,7 @@ const StoreDetailPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
-      <AppHeader title="Chi tiết trạm sạc" showBackIcon />
+      {/* <AppHeader title="Chi tiết trạm sạc" showBackIcon /> */}
 
       <Box className="flex-1 overflow-auto pb-6">
         {/* Banner */}

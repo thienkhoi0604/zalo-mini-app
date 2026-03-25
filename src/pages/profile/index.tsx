@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useToBeImplemented } from 'hooks';
 import { useUserStore } from 'stores/user';
-import AppHeader from 'components/app-header';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
 import SectionList from './section-list';
@@ -44,7 +43,6 @@ const Personal: FC = () => {
 const ProfilePage: FC = () => {
   return (
     <Page className="flex-1 flex flex-col bg-gray-50 overflow-y-auto">
-      <AppHeader title="" showGreeting />
       <Personal />
     </Page>
   );

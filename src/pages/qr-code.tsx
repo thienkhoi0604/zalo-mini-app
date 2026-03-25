@@ -2,7 +2,6 @@ import React, { FC, useEffect, useState } from 'react';
 import { Box, Button, Page, useSnackbar } from 'zmp-ui';
 import { useUserStore } from 'stores/user';
 import { ImageSkeleton } from 'components/skeletons';
-import AppHeader from 'components/app-header';
 import { checkin, CheckinPayload } from 'apis/checkins';
 
 async function getZaloLocation(): Promise<{
@@ -112,8 +111,6 @@ const QRCodePage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
-      <AppHeader title="" showGreeting />
-
       <Box className="flex flex-col p-4 space-y-4">
         <p className="text-base font-semibold text-gray-900">QR Code</p>
 

@@ -3,7 +3,6 @@ import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useGiftCardsStore } from 'stores/gift-cards';
 import { useUserStore } from 'stores/user';
 import GiftCardsList from './item-cards-list';
-import AppHeader from 'components/app-header';
 
 const SkeletonRow: FC = () => (
   <Box className="mb-1">
@@ -57,8 +56,6 @@ const GiftCardsPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
-      <AppHeader title="" showGreeting />
-
       {/* Summary bar */}
       <Box
         className="mx-4 mt-3 mb-4 rounded-2xl bg-white shadow-sm"

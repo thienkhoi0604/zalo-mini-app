@@ -4,7 +4,6 @@ import { Box, Page, Text } from 'zmp-ui';
 import type { Store } from 'types/store';
 import { MOCK_STORES } from 'mock/stores';
 import StoreCard from './stores/store-card';
-import AppHeader from 'components/app-header';
 
 export const StoresPage: FC = () => {
   const navigate = useNavigate();
@@ -12,7 +11,6 @@ export const StoresPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
-      <AppHeader title="" showGreeting />
 
       <Box className="flex-1 overflow-auto px-4 pt-4">
         {/* Title danh sách */}
