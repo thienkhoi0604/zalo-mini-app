@@ -17,7 +17,7 @@ import { ScrollRestoration } from './scroll-restoration';
 import { useUserStore } from 'stores/user';
 import { useSnackbarInit } from 'hooks/use-snackbar-init';
 import { ProtectedRoute } from './protected-route';
-import { getAccessToken as getAccessTokenZalo } from 'zmp-sdk/apis';
+import { getZaloAccessToken } from 'helpers/user';
 
 if (import.meta.env.DEV) {
   document.body.style.setProperty('--zaui-safe-area-inset-top', '24px');
@@ -78,7 +78,7 @@ export const Layout: FC = () => {
 
   useEffect(() => {
     async function fetchToken() {
-      const zaloAccessToken = await getAccessTokenZalo();
+      const zaloAccessToken = await getZaloAccessToken();
       console.log('Zalo Access Token:', zaloAccessToken);
     }
     fetchToken();

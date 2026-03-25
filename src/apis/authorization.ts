@@ -86,10 +86,11 @@ type LoginResponse = {
 
 export async function loginWithZaloUser(
   zaloAccessToken: string,
+  locationToken?: string,
 ): Promise<User> {
   const res = await axios.post<LoginResponse>(
     `${API_BASE_URL}/Auth/zalo-login`,
-    { accessToken: zaloAccessToken },
+    { accessToken: zaloAccessToken, ...(locationToken && { code: locationToken }) },
   );
 
   const { data } = res.data;
@@ -112,8 +113,3 @@ export async function loginWithZaloUser(
   };
 }
 
-export async function fetchUserInfo(): Promise<User> {
-  const { axiosClient } = await import('./client');
-  const { data } = await axiosClient.get<{ data: User }>('/me/profile');
-  return data.data;
-}

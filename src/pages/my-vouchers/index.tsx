@@ -1,7 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Icon, Page } from 'zmp-ui';
 import { useGiftCardsStore } from 'stores/gift-cards';
+import { GiftCard, UserGiftCard } from '@/types/gift-card';
 import VoucherCard from './voucher-card';
+import VoucherDetailSheet from './voucher-detail-sheet';
 
 // ─── Tab ─────────────────────────────────────────────────────────────────────
 
@@ -96,6 +98,7 @@ const VoucherSkeleton: FC = () => (
 
 const MyVouchersPage: FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('unused');
+  const [selectedVoucher, setSelectedVoucher] = useState<{ giftCard: GiftCard; userVoucher: UserGiftCard } | null>(null);
   const {
     userGiftCards,
     allGiftCards,
@@ -171,11 +174,18 @@ const MyVouchersPage: FC = () => {
                 giftCard={card}
                 userVoucher={uv}
                 used={activeTab === 'used'}
+                onClick={() => setSelectedVoucher({ giftCard: card, userVoucher: uv })}
               />
             );
           })
         )}
       </Box>
+
+      <VoucherDetailSheet
+        giftCard={selectedVoucher?.giftCard ?? null}
+        userVoucher={selectedVoucher?.userVoucher ?? null}
+        onClose={() => setSelectedVoucher(null)}
+      />
     </Page>
   );
 };

@@ -6,8 +6,8 @@ export type CheckinPayload = {
   stationCode: string;
   vehicleTypeCode: string;
   checkinAt: string;
-  latitude: number;
-  longitude: number;
+  zaloAccessToken: string;
+  code: string;
 };
 
 export type CheckinResponse = {

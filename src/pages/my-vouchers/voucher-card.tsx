@@ -6,6 +6,7 @@ interface Props {
   giftCard: GiftCard;
   userVoucher: UserGiftCard;
   used: boolean;
+  onClick: () => void;
 }
 
 function formatDate(dateStr: string): string {
@@ -13,7 +14,7 @@ function formatDate(dateStr: string): string {
   return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
 }
 
-const VoucherCard: FC<Props> = ({ giftCard, userVoucher, used }) => {
+const VoucherCard: FC<Props> = ({ giftCard, userVoucher, used, onClick }) => {
   const date = used
     ? userVoucher.redeemedAt
       ? formatDate(userVoucher.redeemedAt)
@@ -22,8 +23,9 @@ const VoucherCard: FC<Props> = ({ giftCard, userVoucher, used }) => {
 
   return (
     <Box
+      onClick={onClick}
       className="bg-white rounded-2xl overflow-hidden flex"
-      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}
+      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', cursor: 'pointer' }}
     >
       {/* Left: Image */}
       <Box style={{ width: 90, flexShrink: 0, position: 'relative', minHeight: 100 }}>

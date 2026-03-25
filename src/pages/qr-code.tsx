@@ -2,27 +2,8 @@ import React, { FC, useEffect, useState } from 'react';
 import { Box, Button, Page, useSnackbar } from 'zmp-ui';
 import { useUserStore } from 'stores/user';
 import { ImageSkeleton } from 'components/skeletons';
-import { checkin, CheckinPayload } from 'apis/checkins';
-
-async function getZaloLocation(): Promise<{
-  latitude: number;
-  longitude: number;
-}> {
-  const { getLocation } = await import('zmp-sdk');
-  return new Promise((resolve, reject) => {
-    getLocation({
-      success: (res: any) => {
-        console.log('Zalo location response:', res);
-        if (res?.latitude && res?.longitude) {
-          resolve({ latitude: res.latitude, longitude: res.longitude });
-        } else {
-          reject(new Error('Không lấy được vị trí'));
-        }
-      },
-      fail: (err: any) => reject(err),
-    });
-  });
-}
+import { checkin } from 'apis/checkins';
+import { getZaloLocationToken, getZaloAccessToken } from 'helpers/user';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -33,63 +14,37 @@ const QRCodePage: FC = () => {
 
   useEffect(() => {
     if (user?.id) loadQRCode();
-  }, [user?.id]);
-
-  const getMockQRUrl = () => {
-    if (!user?.id)
-      return 'https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=EcoGreen';
-    return `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=userid:${user.id}`;
-  };
+  }, [user?.id, loadQRCode]);
 
   const handleScanQR = async () => {
     setScanLoading(true);
     try {
-      // Bước 1: Xin quyền và lấy tọa độ GPS trước khi mở camera
-      let latitude = 0;
-      let longitude = 0;
-      try {
-        const location = await getZaloLocation();
-        latitude = location.latitude;
-        longitude = location.longitude;
-        console.log('User location:', location);
-      } catch {
-        openSnackbar({
-          text: 'Bạn cần cấp quyền vị trí để checkin tại trạm',
-          type: 'warning',
-        });
-        // Nếu user từ chối cấp quyền vị trí, vẫn cho phép quét QR nhưng sẽ dùng tọa độ mặc định (ví dụ: trung tâm thành phố)
-        latitude = 10.7709187;
-        longitude = 106.6674697;
-      }
+      // Bước 1: Lấy Zalo access token và location token song song
+      const [zaloAccessToken, locationToken] = await Promise.all([
+        getZaloAccessToken(),
+        getZaloLocationToken(),
+      ]);
 
       // Bước 2: Mở camera quét QR
-      const zaloSdk = await import('zmp-sdk');
-      if (typeof zaloSdk.scanQRCode !== 'function') {
-        openSnackbar({
-          text: 'Tính năng quét QR chưa được hỗ trợ',
-          type: 'error',
-        });
-        return;
+      const { scanQRCode } = await import('zmp-sdk');
+      if (typeof scanQRCode !== 'function') {
+        throw new Error('Tính năng quét QR chưa được hỗ trợ');
       }
 
-      const scanData = await zaloSdk.scanQRCode();
-      console.log('Raw scan data:', scanData);
+      const scanData = await scanQRCode();
       if (!scanData) return;
 
-      // Bước 3: Lấy raw string từ kết quả quét
-      const rawString: string = (scanData as any)?.content ?? String(scanData);
-      console.log('rawString from QR scan:', rawString);
+      // Bước 3: Lấy station code từ kết quả quét
+      const stationCode: string = (scanData as any)?.content ?? String(scanData);
 
       // Bước 4: Gọi API checkin
-      const payload: CheckinPayload = {
-        stationCode: rawString,
-        vehicleTypeCode: 'ELECTRIC_CAR', // Tạm thời hardcode, có thể mở rộng sau
+      const response = await checkin({
+        stationCode,
+        vehicleTypeCode: 'ELECTRIC_CAR',
         checkinAt: new Date().toISOString(),
-        latitude,
-        longitude,
-      };
-
-      const response = await checkin(payload);
+        zaloAccessToken,
+        code: locationToken,
+      });
 
       const points = response?.data?.points;
       openSnackbar({
@@ -99,9 +54,8 @@ const QRCodePage: FC = () => {
         type: 'success',
       });
     } catch (error: any) {
-      const message = error?.response?.data?.message || error?.message;
       openSnackbar({
-        text: message || 'Có lỗi xảy ra khi quét mã QR',
+        text: error?.response?.data?.message || error?.message || 'Có lỗi xảy ra khi quét mã QR',
         type: 'error',
       });
     } finally {
@@ -122,12 +76,8 @@ const QRCodePage: FC = () => {
           <p className="text-sm text-gray-600">
             Quét mã QR tại trạm sạc để checkin và nhận điểm tích lũy
           </p>
-          <Button
-            className="w-full"
-            onClick={handleScanQR}
-            loading={scanLoading}
-          >
-            {scanLoading ? 'Đang xử lý...' : 'Bắt đầu quét mã QR'}
+          <Button className="w-full" onClick={handleScanQR} loading={scanLoading}>
+            Bắt đầu quét mã QR
           </Button>
         </Box>
 
@@ -145,7 +95,7 @@ const QRCodePage: FC = () => {
             <div className="flex justify-center">
               <div className="bg-white p-3 rounded-xl shadow border border-gray-100">
                 <img
-                  src={getMockQRUrl() || (qrCodeUrl as string)}
+                  src={qrCodeUrl || `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=userid:${user?.id ?? 'EcoGreen'}`}
                   alt="My QR Code"
                   className="w-56 h-56 rounded-lg"
                   onError={(e) => {

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { getUserInfo } from 'zmp-sdk';
-import { getAccessToken as getAccessTokenZalo } from 'zmp-sdk/apis';
+import { getZaloAccessToken, getZaloLocationToken } from 'helpers/user';
 
 import {
   loginWithZaloUser,
@@ -8,8 +8,8 @@ import {
   getAccessToken,
   getRefreshToken,
   refreshTokens,
-  fetchUserInfo,
 } from 'apis/authorization';
+import { fetchUserInfo } from 'apis/user';
 import { User } from '@/types/user';
 
 type UserStore = {
@@ -54,10 +54,16 @@ export const useUserStore = create<UserStore>((set, get) => ({
       }
 
       // Kiểm tra quyền Zalo còn hiệu lực không (không hiện dialog xin quyền)
+      // getUserInfo resolve với error response khi bị thu hồi quyền, không throw
       try {
-        await getUserInfo({ autoRequestPermission: false });
+        const zaloResult = await getUserInfo({ autoRequestPermission: false });
+        if (!zaloResult?.userInfo?.id) {
+          // Quyền bị thu hồi hoặc chưa cấp
+          clearTokens();
+          set({ authLoading: false, isAuthenticated: false, user: null });
+          return;
+        }
       } catch {
-        // Người dùng đã thu hồi quyền → xoá token, coi như chưa đăng nhập
         clearTokens();
         set({ authLoading: false, isAuthenticated: false, user: null });
         return;
@@ -83,11 +89,11 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set({ authLoading: true });
     try {
       let zaloAccessToken: string | null = null;
+      let locationToken: string | undefined;
       try {
-        const user = await getUserInfo({ autoRequestPermission: true });
-        zaloAccessToken = await getAccessTokenZalo();
-        console.log('Zalo user info:', user);
-        console.log('zaloAccessToken: ', zaloAccessToken);
+        await getUserInfo({ autoRequestPermission: true });
+        zaloAccessToken = await getZaloAccessToken();
+        locationToken = await getZaloLocationToken().catch(() => undefined);
       } catch (permissionError) {
         console.warn('Zalo permission denied:', permissionError);
         set({ authLoading: false });
@@ -99,7 +105,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return 'permission_denied';
       }
 
-      const user = await loginWithZaloUser(zaloAccessToken);
+      const user = await loginWithZaloUser(zaloAccessToken, locationToken);
       set({ user, isAuthenticated: true, authLoading: false });
       return 'success';
     } catch (error) {
