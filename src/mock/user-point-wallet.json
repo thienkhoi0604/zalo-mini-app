@@ -1,0 +1,14 @@
+{
+    "success": true,
+    "message": "Success",
+    "data": {
+        "currentBalance": 1822,
+        "lockedBalance": 0,
+        "vehicleStatus": "Approved",
+        "totalEarned": 1812,
+        "totalSpent": 0,
+        "lastEarnedAt": "2026-03-25T13:56:32.261005+00:00",
+        "lastSpentAt": null
+    },
+    "errors": null
+}

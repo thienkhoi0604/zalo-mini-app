@@ -83,17 +83,10 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     try {
       const result = await redeemReward(rewardId);
 
-      const user = useUserStore.getState().user;
-      if (user) {
-        useUserStore.setState({
-          user: {
-            ...user,
-            points: (user.points || 0) - result.pointsDeducted,
-          },
-        });
-      }
-
-      await get().loadUserRewards();
+      await Promise.all([
+        get().loadUserRewards(),
+        useUserStore.getState().loadPointWallet(),
+      ]);
       set({ redeeming: false });
     } catch (error) {
       console.error("Failed to redeem reward:", error);

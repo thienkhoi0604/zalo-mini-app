@@ -8,11 +8,13 @@ import {
   getAccessToken,
   getRefreshToken,
 } from 'apis/authorization';
-import { fetchUserInfo } from 'apis/user';
+import { fetchUserInfo, fetchPointWallet } from 'apis/user';
 import { User } from '@/types/user';
+import { PointWallet } from '@/types/point-wallet';
 
 type UserStore = {
   user: User | null;
+  pointWallet: PointWallet | null;
   authLoading: boolean;
   isAuthenticated: boolean;
   qrCodeUrl: string | null;
@@ -20,6 +22,7 @@ type UserStore = {
 
   initializeAuth: () => Promise<void>;
   loginWithZalo: () => Promise<'success' | 'permission_denied'>;
+  loadPointWallet: () => Promise<void>;
   /** Dùng nội bộ bởi client.ts interceptor khi refresh token thất bại */
   setUnauthenticated: () => void;
   loadQRCode: () => Promise<void>;
@@ -28,6 +31,7 @@ type UserStore = {
 
 export const useUserStore = create<UserStore>((set, get) => ({
   user: null,
+  pointWallet: null,
   authLoading: false,
   isAuthenticated: false,
   qrCodeUrl: null,
@@ -36,9 +40,9 @@ export const useUserStore = create<UserStore>((set, get) => ({
   /**
    * Chạy khi app khởi động (Layout.tsx).
    *
-   * - Có token → gọi /auth/me để lấy thông tin user mới nhất
+   * - Có token → gọi /me/profile + /me/point-wallet
    * - Không có token → chưa đăng ký, để nguyên
-   * - /auth/me thất bại do token hết hạn → axiosClient interceptor tự refresh.
+   * - Thất bại do token hết hạn → interceptor tự refresh.
    *   Nếu refresh cũng fail → clearTokens + để user đăng ký lại
    */
   initializeAuth: async () => {
@@ -48,38 +52,39 @@ export const useUserStore = create<UserStore>((set, get) => ({
       const refreshToken = getRefreshToken();
 
       if (!accessToken && !refreshToken) {
-        set({ authLoading: false, isAuthenticated: false, user: null });
+        set({ authLoading: false, isAuthenticated: false, user: null, pointWallet: null });
         return;
       }
 
       // Kiểm tra quyền Zalo còn hiệu lực không (không hiện dialog xin quyền)
-      // getUserInfo resolve với error response khi bị thu hồi quyền, không throw
       try {
         const zaloResult = await getUserInfo({ autoRequestPermission: false });
         if (!zaloResult?.userInfo?.id) {
-          // Quyền bị thu hồi hoặc chưa cấp
           clearTokens();
-          set({ authLoading: false, isAuthenticated: false, user: null });
+          set({ authLoading: false, isAuthenticated: false, user: null, pointWallet: null });
           return;
         }
       } catch {
         clearTokens();
-        set({ authLoading: false, isAuthenticated: false, user: null });
+        set({ authLoading: false, isAuthenticated: false, user: null, pointWallet: null });
         return;
       }
 
-      const user = await fetchUserInfo();
-      set({ user, isAuthenticated: true, authLoading: false });
+      const [user, pointWallet] = await Promise.all([
+        fetchUserInfo(),
+        fetchPointWallet(),
+      ]);
+      set({ user, pointWallet, isAuthenticated: true, authLoading: false });
     } catch (error) {
-      // Token hết hạn và refresh cũng fail → bắt đăng ký lại
       console.error('Auto-login failed:', error);
       clearTokens();
-      set({ authLoading: false, isAuthenticated: false, user: null });
+      set({ authLoading: false, isAuthenticated: false, user: null, pointWallet: null });
     }
   },
 
   /**
-   * Chạy khi user bấm "Đăng ký" lần đầu.
+   * Chạy khi user bấm "Đăng nhập".
+   *
    * 1. Xin quyền Zalo (autoRequestPermission: true)
    * 2. User từ chối → trả về 'permission_denied', không throw
    * 3. Cho phép → lấy accessToken Zalo → gọi API → lưu tokens
@@ -105,8 +110,11 @@ export const useUserStore = create<UserStore>((set, get) => ({
       }
 
       await loginWithZaloUser(zaloAccessToken, locationToken);
-      const user = await fetchUserInfo();
-      set({ user, isAuthenticated: true, authLoading: false });
+      const [user, pointWallet] = await Promise.all([
+        fetchUserInfo(),
+        fetchPointWallet(),
+      ]);
+      set({ user, pointWallet, isAuthenticated: true, authLoading: false });
       return 'success';
     } catch (error) {
       console.error('Login failed:', error);
@@ -115,9 +123,18 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
+  loadPointWallet: async () => {
+    try {
+      const pointWallet = await fetchPointWallet();
+      set({ pointWallet });
+    } catch (error) {
+      console.error('Failed to load point wallet:', error);
+    }
+  },
+
   setUnauthenticated: () => {
     clearTokens();
-    set({ user: null, isAuthenticated: false });
+    set({ user: null, pointWallet: null, isAuthenticated: false });
   },
 
   loadQRCode: async () => {
@@ -143,11 +160,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
         await import('apis/client')
       ).default.post('/qr-code/scan', { scannedUserId });
 
+      // Refresh point wallet after earning points
       if (data.totalPoints !== undefined) {
-        const state = get();
-        if (state.user) {
-          set({ user: { ...state.user, points: data.totalPoints } });
-        }
+        set((state) => ({
+          pointWallet: state.pointWallet
+            ? { ...state.pointWallet, currentBalance: data.totalPoints }
+            : null,
+        }));
       }
 
       return data.points || 0;

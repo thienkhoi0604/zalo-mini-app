@@ -2,8 +2,9 @@ import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { useUserStore } from 'stores/user';
 
+
 const MemberCard: FC = () => {
-  const { user } = useUserStore();
+  const { user, pointWallet } = useUserStore();
 
   const initials = user?.fullName
     ? user.fullName
@@ -76,7 +77,7 @@ const MemberCard: FC = () => {
         <Box className="flex-1 text-center">
           <Box flex className="justify-center items-center" style={{ gap: 4 }}>
             <p style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-              {user?.points || 0}
+              {pointWallet?.currentBalance ?? 0}
             </p>
             <span style={{ fontSize: 16 }}>🪙</span>
           </Box>

@@ -103,7 +103,7 @@ const RewardDetailPage: FC = () => {
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const { allRewards, loadRewardById, redeemReward, redeeming } = useRewardsStore();
-  const { user } = useUserStore();
+  const { user, pointWallet } = useUserStore();
   const [confirmVisible, setConfirmVisible] = useState(false);
 
   useEffect(() => {
@@ -268,7 +268,7 @@ const RewardDetailPage: FC = () => {
             <Box flex className="items-center" style={{ gap: 4 }}>
               <span style={{ fontSize: 16 }}>🪙</span>
               <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>
-                {user?.points ?? 0}
+                {pointWallet?.currentBalance ?? 0}
               </p>
             </Box>
 
@@ -293,7 +293,7 @@ const RewardDetailPage: FC = () => {
         visible={confirmVisible}
         name={card.name}
         pointsRequired={card.pointsRequired}
-        userPoints={user?.points ?? 0}
+        userPoints={pointWallet?.currentBalance ?? 0}
         redeeming={redeeming}
         onConfirm={handleBuy}
         onCancel={() => setConfirmVisible(false)}

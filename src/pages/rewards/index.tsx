@@ -37,7 +37,7 @@ const RewardsPage: FC = () => {
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
   const { loading, loadAllRewards, loadUserRewards } = useRewardsStore();
-  const { user, isAuthenticated } = useUserStore();
+  const { user, pointWallet, isAuthenticated } = useUserStore();
 
   useEffect(() => {
     const initializeData = async () => {
@@ -70,7 +70,7 @@ const RewardsPage: FC = () => {
             <Box flex className="justify-center items-center" style={{ gap: 5 }}>
               <span style={{ fontSize: 18 }}>🪙</span>
               <p style={{ fontSize: 18, fontWeight: 700, color: '#1a1a1a' }}>
-                {user?.points || 0}
+                {pointWallet?.currentBalance ?? 0}
               </p>
             </Box>
           </Box>
