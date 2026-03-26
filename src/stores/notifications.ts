@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import logo from '@/static/logo.png';
+import logo from '@/static/img/logo.png';
 import { Notification } from '@/types/notification';
 
 type NotificationsStore = {

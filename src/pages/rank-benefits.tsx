@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { Check, Star } from 'lucide-react';
 import { useUserStore } from '@/stores/user';
+import { PointWallet } from '@/types/point-wallet';
 import { RankTier } from '@/types/rank';
 
 // ─── Tier config ───────────────────────────────────────────────────────────────
@@ -16,12 +17,12 @@ interface TierConfig extends RankTier {
 const RANK_TIERS: TierConfig[] = [
   {
     code: 'MEMBER',
-    name: 'Member',
-    emoji: '🌱',
-    color: '#9CA3AF',
-    gradient: 'linear-gradient(135deg, #D1D5DB, #9CA3AF)',
-    lightBg: '#F9FAFB',
-    accentColor: '#6B7280',
+    name: 'Bronze',
+    emoji: '🥉',
+    color: '#CD7F32',
+    gradient: 'linear-gradient(135deg, #E8C49A, #CD7F32)',
+    lightBg: '#FDF6EE',
+    accentColor: '#A0622A',
     benefits: [
       { icon: '💳', label: 'Tích điểm 0,1% giá trị giao dịch' },
       { icon: '🪙', label: 'Nhận ưu đãi cơ bản tại trạm sạc' },
@@ -84,21 +85,20 @@ const RANK_TIERS: TierConfig[] = [
 
 // ─── Hero Banner ───────────────────────────────────────────────────────────────
 
-const HeroBanner: FC<{ tier: TierConfig }> = ({ tier }) => (
+const HeroBanner: FC<{ tier: TierConfig; pointWallet: PointWallet | null }> = ({ tier, pointWallet }) => (
   <Box
     className="rounded-2xl overflow-hidden relative"
     style={{
       background: tier.gradient,
       boxShadow: `0 12px 32px ${tier.color}30, inset 0 1px 0 rgba(255,255,255,0.3)`,
-      padding: '22px 20px 26px',
+      padding: '22px 20px 22px',
     }}
   >
     {/* Light */}
     <Box
       className="absolute inset-0 pointer-events-none"
       style={{
-        background:
-          'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 60%)',
+        background: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 60%)',
       }}
     />
 
@@ -117,9 +117,7 @@ const HeroBanner: FC<{ tier: TierConfig }> = ({ tier }) => (
 
     <Box flex className="items-center justify-between relative">
       <Box>
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)' }}>
-          Hạng hiện tại
-        </p>
+        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.85)' }}>Hạng hiện tại</p>
         <p style={{ fontSize: 26, fontWeight: 800, color: '#fff' }}>
           {tier.emoji} {tier.name}
         </p>
@@ -135,6 +133,36 @@ const HeroBanner: FC<{ tier: TierConfig }> = ({ tier }) => (
         }}
       >
         <Star size={28} color="#fff" fill="#fff" />
+      </Box>
+    </Box>
+
+    {/* Points row */}
+    <Box
+      flex
+      className="items-center"
+      style={{
+        marginTop: 16,
+        background: 'rgba(255,255,255,0.18)',
+        border: '1px solid rgba(255,255,255,0.3)',
+        borderRadius: 12,
+        padding: '10px 14px',
+        gap: 10,
+      }}
+    >
+      <Box style={{ flex: 1, borderRight: '1px solid rgba(255,255,255,0.3)', paddingRight: 10 }}>
+        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', marginBottom: 3 }}>Xu khả dụng</p>
+        <Box flex className="items-center" style={{ gap: 5 }}>
+          <span style={{ fontSize: 16 }}>🪙</span>
+          <p style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>
+            {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+          </p>
+        </Box>
+      </Box>
+      <Box style={{ flex: 1, paddingLeft: 10 }}>
+        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', marginBottom: 3 }}>Đã sử dụng</p>
+        <p style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>
+          {(pointWallet?.totalSpent ?? 0).toLocaleString('vi-VN')}
+        </p>
       </Box>
     </Box>
   </Box>
@@ -250,14 +278,33 @@ const RankCard: FC<{
 
 // ─── Page ──────────────────────────────────────────────────────────────────────
 
+function resolveCurrentTier(rankCode?: string, rankName?: string): TierConfig {
+  if (import.meta.env.DEV) {
+    console.log('[RankBenefits] currentRankCode:', rankCode, '| currentRankName:', rankName);
+  }
+
+  if (rankCode) {
+    const byCode = RANK_TIERS.find(
+      (t) => t.code === rankCode.toUpperCase() || t.name.toUpperCase() === rankCode.toUpperCase(),
+    );
+    if (byCode) return byCode;
+  }
+
+  if (rankName) {
+    const byName = RANK_TIERS.find(
+      (t) => t.name.toUpperCase() === rankName.toUpperCase() || t.code === rankName.toUpperCase(),
+    );
+    if (byName) return byName;
+  }
+
+  return RANK_TIERS[0];
+}
+
 const RankBenefitsPage: FC = () => {
-  const { user } = useUserStore();
+  const { user, pointWallet } = useUserStore();
 
-  const currentCode = user?.rank?.currentRankCode?.toUpperCase() ?? 'MEMBER';
-
-  const currentTier =
-    RANK_TIERS.find((t) => t.code === currentCode) ?? RANK_TIERS[0];
-
+  const currentTier = resolveCurrentTier(user?.rank?.currentRankCode, user?.rank?.currentRankName);
+  const currentCode = currentTier.code;
   const currentIndex = RANK_TIERS.findIndex((t) => t.code === currentCode);
 
   return (
@@ -268,7 +315,7 @@ const RankBenefitsPage: FC = () => {
       }}
     >
       <Box className="px-4 pt-4 pb-8 flex flex-col gap-3">
-        <HeroBanner tier={currentTier} />
+        <HeroBanner tier={currentTier} pointWallet={pointWallet} />
         <ProgressSteps currentCode={currentCode} />
 
         <p className="text-xs font-bold text-gray-500 uppercase mt-2">

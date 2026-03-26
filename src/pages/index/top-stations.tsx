@@ -1,9 +1,35 @@
 import React, { FC, useMemo } from "react";
 import { useNavigate } from "react-router";
-import { Box, Text } from "zmp-ui";
+import { Box } from "zmp-ui";
+import { Zap, ChevronRight, MapPin } from "lucide-react";
 import { MOCK_STATIONS } from '@/apis/stations';
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Pagination } from "swiper";
+
+const SectionHeader: FC<{ title: string; onViewAll: () => void }> = ({ title, onViewAll }) => (
+  <Box flex className="items-center justify-between px-4 mb-3">
+    <Box flex className="items-center" style={{ gap: 8 }}>
+      <Box
+        className="flex items-center justify-center rounded-full flex-shrink-0"
+        style={{
+          width: 28,
+          height: 28,
+          background: 'linear-gradient(135deg, #43B96B, #288F4E)',
+        }}
+      >
+        <Zap size={14} color="#fff" fill="#fff" strokeWidth={0} />
+      </Box>
+      <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>{title}</p>
+    </Box>
+    <Box
+      flex
+      className="items-center cursor-pointer"
+      style={{ gap: 2 }}
+      onClick={onViewAll}
+    >
+      <p style={{ fontSize: 13, color: '#288F4E', fontWeight: 600 }}>Xem tất cả</p>
+      <ChevronRight size={14} color="#288F4E" strokeWidth={2.5} />
+    </Box>
+  </Box>
+);
 
 export const TopStationsCarousel: FC = () => {
   const navigate = useNavigate();
@@ -13,67 +39,117 @@ export const TopStationsCarousel: FC = () => {
       [...MOCK_STATIONS]
         .sort((a, b) => (b.defaultPoint || 0) - (a.defaultPoint || 0))
         .slice(0, 5),
-    []
+    [],
   );
 
-  if (topStations.length === 0) {
-    return null;
-  }
+  if (topStations.length === 0) return null;
 
   return (
-    <Box className="px-4 pb-4">
-      <Box className="flex items-center justify-between mb-3">
-        <Text className="font-semibold text-base">Top trạm sạc nổi bật</Text>
-        <button
-          type="button"
-          className="text-xs text-primary"
-          onClick={() => navigate("/stations")}
-        >
-          Xem tất cả
-        </button>
-      </Box>
+    <Box className="pt-4 pb-2">
+      <SectionHeader title="Trạm sạc nổi bật" onViewAll={() => navigate('/stations')} />
 
-      <Swiper
-        spaceBetween={12}
-        slidesPerView={1.15}
-        pagination={{ clickable: true }}
-        modules={[Pagination]}
+      {/* Horizontal scroll */}
+      <Box
+        flex
+        style={{
+          overflowX: 'auto',
+          paddingLeft: 16,
+          paddingRight: 16,
+          paddingBottom: 4,
+          gap: 12,
+          scrollbarWidth: 'none',
+          msOverflowStyle: 'none',
+          flexWrap: 'nowrap',
+        }}
       >
         {topStations.map((station) => (
-          <SwiperSlide key={station.id}>
-            <button
-              type="button"
-              onClick={() => navigate(`/stations/${station.id}`)}
-              className="w-full text-left"
-            >
-              <Box className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <img
-                  src={station.imageUrl ?? 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80&auto=format'}
-                  alt={station.name}
-                  className="w-full h-24 object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).src =
-                      "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80&auto=format";
+          <Box
+            key={station.id}
+            className="flex-shrink-0 bg-white rounded-2xl overflow-hidden cursor-pointer"
+            style={{ width: 200, boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
+            onClick={() => navigate(`/stations/${station.id}`)}
+          >
+            {/* Image */}
+            <Box style={{ height: 100, position: 'relative', overflow: 'hidden', background: '#E9EBED' }}>
+              <img
+                src={station.imageUrl ?? ''}
+                alt={station.name}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+              {/* Points badge */}
+              {station.defaultPoint != null && (
+                <Box
+                  style={{
+                    position: 'absolute',
+                    top: 8,
+                    right: 8,
+                    background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
+                    borderRadius: 100,
+                    padding: '3px 8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: 3,
                   }}
-                />
-                <Box className="p-3 space-y-2">
-                  <Box className="flex items-center justify-between gap-2">
-                    <Text className="font-semibold text-sm line-clamp-1">{station.name}</Text>
-                    {station.defaultPoint != null && (
-                      <Box className="flex items-center text-xs text-yellow-600 bg-yellow-50 px-2 py-0.5 rounded-full whitespace-nowrap">
-                        <span className="mr-1">⭐</span>
-                        <span>{station.defaultPoint}</span>
-                      </Box>
-                    )}
-                  </Box>
-                  <Text className="text-xs text-gray-600 line-clamp-1">{station.address}</Text>
-                  <Text className="text-xs text-gray-400 line-clamp-1">{station.stationTypeName}</Text>
+                >
+                  <span style={{ fontSize: 11 }}>🪙</span>
+                  <p style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>
+                    +{station.defaultPoint}
+                  </p>
                 </Box>
+              )}
+            </Box>
+
+            {/* Info */}
+            <Box className="p-3" style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+              <p
+                style={{
+                  fontSize: 13,
+                  fontWeight: 700,
+                  color: '#1a1a1a',
+                  whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {station.name}
+              </p>
+
+              <Box flex className="items-start" style={{ gap: 4 }}>
+                <MapPin size={11} color="#9CA3AF" style={{ marginTop: 2, flexShrink: 0 }} />
+                <p
+                  style={{
+                    fontSize: 11,
+                    color: '#9CA3AF',
+                    lineHeight: '15px',
+                    display: '-webkit-box',
+                    WebkitLineClamp: 2,
+                    WebkitBoxOrient: 'vertical',
+                    overflow: 'hidden',
+                  }}
+                >
+                  {station.address}
+                </p>
               </Box>
-            </button>
-          </SwiperSlide>
+
+              <Box
+                style={{
+                  background: '#EEF7F1',
+                  borderRadius: 6,
+                  padding: '3px 8px',
+                  alignSelf: 'flex-start',
+                }}
+              >
+                <p style={{ fontSize: 10, color: '#288F4E', fontWeight: 600 }}>
+                  {station.stationTypeName}
+                </p>
+              </Box>
+            </Box>
+          </Box>
         ))}
-      </Swiper>
+      </Box>
     </Box>
   );
 };
