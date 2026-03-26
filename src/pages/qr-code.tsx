@@ -1,8 +1,9 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { checkin } from 'apis/checkins';
-import { getZaloLocationToken, getZaloAccessToken } from 'helpers/user';
+import { checkin } from '@/apis/checkins';
+import { getZaloLocationToken, getZaloAccessToken } from '@/helpers/user';
+import { REDIRECT_DELAY_MS } from '@/constants';
 
 type ScanResult =
   | { status: 'success'; points?: number }
@@ -24,7 +25,8 @@ async function runScan(): Promise<ScanResult> {
     const scanData = await scanQRCode();
     if (!scanData) return { status: 'cancelled' };
 
-    const stationCode: string = (scanData as any)?.content ?? String(scanData);
+    const raw = scanData as { content?: string } | string;
+    const stationCode = typeof raw === 'object' && raw.content ? raw.content : String(raw);
 
     const response = await checkin({
       stationCode,
@@ -35,11 +37,11 @@ async function runScan(): Promise<ScanResult> {
     });
 
     return { status: 'success', points: response?.data?.points };
-  } catch (error: any) {
+  } catch (error) {
+    const err = error as { response?: { data?: { message?: string } }; message?: string };
     return {
       status: 'error',
-      message:
-        error?.response?.data?.message || error?.message || 'Có lỗi xảy ra khi quét mã QR',
+      message: err?.response?.data?.message ?? err?.message ?? 'Có lỗi xảy ra khi quét mã QR',
     };
   }
 }
@@ -51,9 +53,7 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
     return (
       <Box className="flex flex-col items-center" style={{ gap: 12 }}>
         <span style={{ fontSize: 56 }}>🎉</span>
-        <p style={{ fontSize: 18, fontWeight: 700, color: '#288F4E' }}>
-          Checkin thành công!
-        </p>
+        <p style={{ fontSize: 18, fontWeight: 700, color: '#288F4E' }}>Checkin thành công!</p>
         {result.points != null && result.points > 0 && (
           <Box
             className="flex items-center justify-center rounded-2xl px-5 py-3"
@@ -76,18 +76,8 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
     return (
       <Box className="flex flex-col items-center" style={{ gap: 12 }}>
         <span style={{ fontSize: 56 }}>❌</span>
-        <p style={{ fontSize: 18, fontWeight: 700, color: '#EF4444' }}>
-          Checkin thất bại
-        </p>
-        <p
-          style={{
-            fontSize: 14,
-            color: '#6B7280',
-            textAlign: 'center',
-            lineHeight: '20px',
-            maxWidth: 260,
-          }}
-        >
+        <p style={{ fontSize: 18, fontWeight: 700, color: '#EF4444' }}>Checkin thất bại</p>
+        <p style={{ fontSize: 14, color: '#6B7280', textAlign: 'center', lineHeight: '20px', maxWidth: 260 }}>
           {result.message}
         </p>
         <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
@@ -100,9 +90,7 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
   return null;
 };
 
-// ─── Component ────────────────────────────────────────────────────────────────
-
-const REDIRECT_DELAY_MS = 2500;
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 const QRCodePage: FC = () => {
   const navigate = useNavigate();

@@ -1,8 +1,8 @@
 import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
-import { Sheet } from 'components/fullscreen-sheet';
-import { useUserStore } from 'stores/user';
-import { ImageSkeleton } from 'components/skeletons';
+import { Sheet } from '@/components/fullscreen-sheet';
+import { useUserStore } from '@/stores/user';
+import { ImageSkeleton } from '@/components/skeletons';
 
 interface Props {
   visible: boolean;
@@ -12,9 +12,9 @@ interface Props {
 const QRCodeSheet: FC<Props> = ({ visible, onClose }) => {
   const { user, qrCodeUrl, qrLoading, loadQRCode } = useUserStore();
 
-  // useEffect(() => {
-  //   if (visible && user?.id) loadQRCode();
-  // }, [visible, user?.id]);
+  useEffect(() => {
+    if (visible && user?.id) loadQRCode();
+  }, [visible, user?.id]);
 
   return (
     <Sheet visible={visible} onClose={onClose} autoHeight swipeToClose unmountOnClose>

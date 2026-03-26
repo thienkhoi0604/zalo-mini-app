@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { useRewardsStore } from 'stores/rewards';
+import { useRewardsStore } from '@/stores/rewards';
 import { Reward } from '@/types/reward';
 import RewardItemCard from './item-card';
 import { useNavigate } from 'react-router';

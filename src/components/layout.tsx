@@ -2,24 +2,25 @@ import React, { FC, useEffect } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { ChevronLeft } from 'lucide-react';
-import background from 'static/img/background.png';
+import background from '@/static/img/background.png';
 import { Navigation } from './navigation';
-import HomePage from 'pages/index';
-import ProfilePage from 'pages/profile';
-import RewardsPage from 'pages/rewards';
-import RewardDetailPage from 'pages/rewards/detail';
-import CategoryDetailPage from 'pages/rewards/category-detail';
-import QRCodePage from 'pages/qr-code';
-import StationsPage from 'pages/stations';
-import StationDetailPage from 'pages/station-detail';
-import RegisterPage from 'pages/register';
-import MyVouchersPage from 'pages/my-vouchers';
+import HomePage from '@/pages/index';
+import ProfilePage from '@/pages/profile';
+import RewardsPage from '@/pages/rewards';
+import RewardDetailPage from '@/pages/rewards/detail';
+import CategoryDetailPage from '@/pages/rewards/category-detail';
+import QRCodePage from '@/pages/qr-code';
+import StationsPage from '@/pages/stations';
+import StationDetailPage from '@/pages/station-detail';
+import RegisterPage from '@/pages/register';
+import MyVouchersPage from '@/pages/my-vouchers';
+import RankBenefitsPage from '@/pages/rank-benefits';
 import { getSystemInfo } from 'zmp-sdk';
 import { ScrollRestoration } from './scroll-restoration';
-import { useUserStore } from 'stores/user';
-import { useSnackbarInit } from 'hooks/use-snackbar-init';
+import { useUserStore } from '@/stores/user';
+import { useSnackbarInit } from '@/hooks/use-snackbar-init';
 import { ProtectedRoute } from './protected-route';
-import { getZaloAccessToken } from 'helpers/user';
+import { getZaloAccessToken } from '@/helpers/user';
 
 if (import.meta.env.DEV) {
   document.body.style.setProperty('--zaui-safe-area-inset-top', '24px');
@@ -41,6 +42,7 @@ const showBackButton = (pathname: string) => !NO_BACK_ROUTES.includes(pathname);
 const getRouteTitle = (pathname: string): string => {
   if (pathname === '/stations') return 'Trạm sạc';
   if (pathname === '/my-vouchers') return 'Voucher của tôi';
+  if (pathname === '/rank-benefits') return 'Đặc quyền';
   if (pathname.startsWith('/rewards/category/'))
     return decodeURIComponent(pathname.replace('/rewards/category/', ''));
   if (pathname.startsWith('/rewards/')) return 'Chi tiết phần thưởng';
@@ -225,6 +227,14 @@ export const Layout: FC = () => {
             element={
               <ProtectedRoute>
                 <MyVouchersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/rank-benefits"
+            element={
+              <ProtectedRoute>
+                <RankBenefitsPage />
               </ProtectedRoute>
             }
           />

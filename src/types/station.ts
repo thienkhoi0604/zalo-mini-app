@@ -36,3 +36,8 @@ export interface StationsApiResponse {
   };
   errors: unknown | null;
 }
+
+export interface GetStationsParams {
+  pageNumber?: number;
+  pageSize?: number;
+}

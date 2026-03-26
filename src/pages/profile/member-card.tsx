@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { useUserStore } from 'stores/user';
+import { useUserStore } from '@/stores/user';
 
 
 const MemberCard: FC = () => {

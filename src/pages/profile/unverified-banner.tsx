@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { useToBeImplemented } from 'hooks';
+import { useToBeImplemented } from '@/hooks';
 
 const UnverifiedBanner: FC = () => {
   const onClick = useToBeImplemented();

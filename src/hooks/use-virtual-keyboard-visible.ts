@@ -1,20 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState } from 'react';
+import { KEYBOARD_HEIGHT_THRESHOLD } from '@/constants';
 
 const originalScreenHeight = window.innerHeight;
 
-export function useVirtualKeyboardVisible() {
+export function useVirtualKeyboardVisible(): boolean {
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
-    const detectKeyboardOpen = () => {
-      setVisible(window.innerHeight + 160 < originalScreenHeight);
+    const detect = () => {
+      setVisible(window.innerHeight + KEYBOARD_HEIGHT_THRESHOLD < originalScreenHeight);
     };
-    window.addEventListener("resize", detectKeyboardOpen);
-    return () => {
-      window.removeEventListener("resize", detectKeyboardOpen);
-    };
+    window.addEventListener('resize', detect);
+    return () => window.removeEventListener('resize', detect);
   }, []);
 
   return visible;
 }
-

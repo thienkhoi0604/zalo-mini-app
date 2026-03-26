@@ -1,16 +1,12 @@
 import React, { FC } from 'react';
 import { Box, useSnackbar } from 'zmp-ui';
-import { Sheet } from 'components/fullscreen-sheet';
+import { Sheet } from '@/components/fullscreen-sheet';
 import { UserReward } from '@/types/reward';
+import { formatDate } from '@/utils/date';
 
 interface Props {
   userVoucher: UserReward | null;
   onClose: () => void;
-}
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
 }
 
 const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {

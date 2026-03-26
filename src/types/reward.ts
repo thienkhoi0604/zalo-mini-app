@@ -37,3 +37,31 @@ export interface RewardsFilter {
   category?: string;
   search?: string;
 }
+
+export enum REWARD_TYPES {
+  VOUCHER = 'Voucher',
+  PRODUCT = 'PhysicalItem',
+}
+
+export interface RewardApiItem {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  description: string | null;
+  pointCost: number;
+  stock: number;
+  imageUrl: string;
+  validFrom: string | null;
+  validTo: string | null;
+  appliesToAll: boolean;
+  isActive: boolean;
+  storeIds: string[];
+  storeNames: string[];
+}
+
+export interface GetRewardsParams {
+  pageNumber?: number;
+  pageSize?: number;
+  type?: REWARD_TYPES;
+}

@@ -1,11 +1,7 @@
 import axios from 'axios';
-import { User, UserRank } from '@/types/user';
+import { User } from '@/types/user';
+import { JwtTokens, RefreshResponse, LoginResponse } from '@/types/auth';
 import { API_BASE_URL } from './client';
-
-export type JwtTokens = {
-  accessToken: string;
-  refreshToken?: string;
-};
 
 const ACCESS_TOKEN_KEY = 'ecogreen_access_token';
 const REFRESH_TOKEN_KEY = 'ecogreen_refresh_token';
@@ -36,14 +32,6 @@ export function clearTokens(): void {
 
 // ─── Token Refresh ────────────────────────────────────────────────────────────
 
-type RefreshResponse = {
-  success: boolean;
-  data: {
-    accessToken: string;
-    refreshToken: string;
-  };
-};
-
 export async function refreshTokens(): Promise<void> {
   const refreshToken = getRefreshToken();
   if (!refreshToken) {
@@ -63,38 +51,6 @@ export async function refreshTokens(): Promise<void> {
 }
 
 // ─── Auth API ─────────────────────────────────────────────────────────────────
-
-type LoginResponse = {
-  success: boolean;
-  message: string;
-  data: {
-    accessToken: string;
-    refreshToken: string;
-    user: {
-      id: string;
-      zaloUserId: string;
-      userName: string | null;
-      fullName: string;
-      phone: string | null;
-      email: string | null;
-      avatarUrl: string;
-      role: string;
-      address: string | null;
-      provinceCode: string | null;
-      wardCode: string | null;
-      latitude: number;
-      longitude: number;
-      isVehicleApproved: boolean;
-      status: string;
-      lastLoginAt: string;
-      createdAt: string;
-      rank?: UserRank;
-      points?: number;
-      verified?: boolean;
-      voucherCount?: number;
-    };
-  };
-};
 
 export async function loginWithZaloUser(
   zaloAccessToken: string,
@@ -136,4 +92,3 @@ export async function loginWithZaloUser(
     voucherCount: data.user.voucherCount,
   };
 }
-

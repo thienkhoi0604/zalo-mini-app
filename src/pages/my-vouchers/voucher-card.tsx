@@ -1,15 +1,11 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { UserReward } from '@/types/reward';
+import { formatDate } from '@/utils/date';
 
 interface Props {
   userVoucher: UserReward;
   used: boolean;
-}
-
-function formatDate(dateStr: string): string {
-  const d = new Date(dateStr);
-  return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
 }
 
 const VoucherCard: FC<Props> = ({ userVoucher, used }) => {

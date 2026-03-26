@@ -4,8 +4,8 @@ import axios, {
   InternalAxiosRequestConfig,
 } from 'axios';
 import { clearTokens, getAccessToken, refreshTokens } from './authorization';
-import { useUserStore } from 'stores/user';
-import { showNotification } from 'utils/notification';
+import { useUserStore } from '@/stores/user';
+import { showNotification } from '@/utils/notification';
 
 declare const APP_CONFIG: {
   apiBaseUrl?: string;

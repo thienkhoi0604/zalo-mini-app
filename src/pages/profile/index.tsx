@@ -1,10 +1,10 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { Gift, QrCode, UserCircle2, UserPlus } from 'lucide-react';
-import { useToBeImplemented } from 'hooks';
-import { useUserStore } from 'stores/user';
-import { useRewardsStore } from 'stores/rewards';
+import { Gift, QrCode, UserCircle2, UserPlus, ShieldCheck } from 'lucide-react';
+import { useToBeImplemented } from '@/hooks';
+import { useUserStore } from '@/stores/user';
+import { useRewardsStore } from '@/stores/rewards';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
 import SectionList from './section-list';
@@ -53,10 +53,15 @@ const Personal: FC = () => {
 
       <SectionList
         title="Dành cho bạn"
-        onClick={onClick}
         items={[
-          { icon: <UserCircle2 size={18} color="#A0784A" />, label: 'Giới thiệu khách hàng' },
-          { icon: <UserPlus size={18} color="#A0784A" />, label: 'Giới thiệu bạn bè tải ứng dụng' },
+          {
+            icon: <ShieldCheck size={18} color="#A0784A" />,
+            label: 'Quyền lợi xếp hạng',
+            sub: user?.rank?.currentRankName ? `Hạng ${user.rank.currentRankName}` : undefined,
+            onPress: () => navigate('/rank-benefits'),
+          },
+          { icon: <UserCircle2 size={18} color="#A0784A" />, label: 'Giới thiệu khách hàng', onPress: onClick },
+          { icon: <UserPlus size={18} color="#A0784A" />, label: 'Giới thiệu bạn bè tải ứng dụng', onPress: onClick },
         ]}
       />
 

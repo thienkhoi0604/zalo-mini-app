@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
-import { useRewardsStore } from 'stores/rewards';
-import { useUserStore } from 'stores/user';
+import { useRewardsStore } from '@/stores/rewards';
+import { useUserStore } from '@/stores/user';
 import RewardsList from './item-cards-list';
 import { useNavigate } from 'react-router';
 

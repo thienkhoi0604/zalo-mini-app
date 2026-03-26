@@ -1,14 +1,14 @@
 import { create } from 'zustand';
 import { getUserInfo } from 'zmp-sdk';
-import { getZaloAccessToken, getZaloLocationToken } from 'helpers/user';
-
+import { getZaloAccessToken, getZaloLocationToken } from '@/helpers/user';
 import {
   loginWithZaloUser,
   clearTokens,
   getAccessToken,
   getRefreshToken,
-} from 'apis/authorization';
-import { fetchUserInfo, fetchPointWallet } from 'apis/user';
+} from '@/apis/authorization';
+import axiosClient from '@/apis/client';
+import { fetchUserInfo, fetchPointWallet } from '@/apis/user';
 import { User } from '@/types/user';
 import { PointWallet } from '@/types/point-wallet';
 
@@ -23,7 +23,6 @@ type UserStore = {
   initializeAuth: () => Promise<void>;
   loginWithZalo: () => Promise<'success' | 'permission_denied'>;
   loadPointWallet: () => Promise<void>;
-  /** Dùng nội bộ bởi client.ts interceptor khi refresh token thất bại */
   setUnauthenticated: () => void;
   loadQRCode: () => Promise<void>;
   scanQRCode: (scannedUserId: string) => Promise<number>;
@@ -37,14 +36,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
   qrCodeUrl: null,
   qrLoading: false,
 
-  /**
-   * Chạy khi app khởi động (Layout.tsx).
-   *
-   * - Có token → gọi /me/profile + /me/point-wallet
-   * - Không có token → chưa đăng ký, để nguyên
-   * - Thất bại do token hết hạn → interceptor tự refresh.
-   *   Nếu refresh cũng fail → clearTokens + để user đăng ký lại
-   */
   initializeAuth: async () => {
     set({ authLoading: true });
     try {
@@ -56,7 +47,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return;
       }
 
-      // Kiểm tra quyền Zalo còn hiệu lực không (không hiện dialog xin quyền)
       try {
         const zaloResult = await getUserInfo({ autoRequestPermission: false });
         if (!zaloResult?.userInfo?.id) {
@@ -70,10 +60,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
         return;
       }
 
-      const [user, pointWallet] = await Promise.all([
-        fetchUserInfo(),
-        fetchPointWallet(),
-      ]);
+      const [user, pointWallet] = await Promise.all([fetchUserInfo(), fetchPointWallet()]);
       set({ user, pointWallet, isAuthenticated: true, authLoading: false });
     } catch (error) {
       console.error('Auto-login failed:', error);
@@ -82,13 +69,6 @@ export const useUserStore = create<UserStore>((set, get) => ({
     }
   },
 
-  /**
-   * Chạy khi user bấm "Đăng nhập".
-   *
-   * 1. Xin quyền Zalo (autoRequestPermission: true)
-   * 2. User từ chối → trả về 'permission_denied', không throw
-   * 3. Cho phép → lấy accessToken Zalo → gọi API → lưu tokens
-   */
   loginWithZalo: async () => {
     set({ authLoading: true });
     try {
@@ -110,10 +90,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       }
 
       await loginWithZaloUser(zaloAccessToken, locationToken);
-      const [user, pointWallet] = await Promise.all([
-        fetchUserInfo(),
-        fetchPointWallet(),
-      ]);
+      const [user, pointWallet] = await Promise.all([fetchUserInfo(), fetchPointWallet()]);
       set({ user, pointWallet, isAuthenticated: true, authLoading: false });
       return 'success';
     } catch (error) {
@@ -138,14 +115,12 @@ export const useUserStore = create<UserStore>((set, get) => ({
   },
 
   loadQRCode: async () => {
-    const state = get();
-    if (!state.user?.id) return;
+    const { user } = get();
+    if (!user?.id) return;
 
     set({ qrLoading: true });
     try {
-      const { data } = await (
-        await import('apis/client')
-      ).default.get(`/users/${state.user.id}/qr-code`);
+      const { data } = await axiosClient.get(`/users/${user.id}/qr-code`);
       set({ qrCodeUrl: data.qrCodeUrl, qrLoading: false });
     } catch (error) {
       console.error('Failed to load QR code:', error);
@@ -156,11 +131,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
   scanQRCode: async (scannedUserId: string) => {
     try {
-      const { data } = await (
-        await import('apis/client')
-      ).default.post('/qr-code/scan', { scannedUserId });
-
-      // Refresh point wallet after earning points
+      const { data } = await axiosClient.post('/qr-code/scan', { scannedUserId });
       if (data.totalPoints !== undefined) {
         set((state) => ({
           pointWallet: state.pointWallet
@@ -168,8 +139,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
             : null,
         }));
       }
-
-      return data.points || 0;
+      return data.points ?? 0;
     } catch (error) {
       console.error('Failed to scan QR code:', error);
       throw error;

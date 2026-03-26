@@ -1,22 +1,19 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router';
 import { Icon } from 'zmp-ui';
-import { useUserStore } from 'stores/user';
 
 type Props = {
   title: string;
   showBackIcon?: boolean;
-  showGreeting?: boolean;
 };
 
-const AppHeader: FC<Props> = ({ title, showBackIcon = false, showGreeting = false }) => {
+const AppHeader: FC<Props> = ({ title, showBackIcon = false }) => {
   const navigate = useNavigate();
-  const { user } = useUserStore();
 
   return (
     <div
-      className="bg-white px-4 pb-3 flex-shrink-0"
-      style={{ padding: 'calc(var(--zaui-safe-area-inset-top, 0px) + 14px)' }}
+      className="bg-white flex-shrink-0"
+      style={{ padding: 'calc(var(--zaui-safe-area-inset-top, 0px) + 14px) 16px 12px' }}
     >
       <div className="flex items-center gap-3">
         {showBackIcon && (
@@ -27,7 +24,6 @@ const AppHeader: FC<Props> = ({ title, showBackIcon = false, showGreeting = fals
             <Icon icon="zi-chevron-left" />
           </button>
         )}
-
         <div className="flex-1 min-w-0">
           {title && <p className="text-base font-semibold text-gray-900 truncate">{title}</p>}
         </div>

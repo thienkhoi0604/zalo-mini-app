@@ -1,8 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
-import { useRewardsStore } from 'stores/rewards';
-import { useUserStore } from 'stores/user';
+import { useRewardsStore } from '@/stores/rewards';
+import { useUserStore } from '@/stores/user';
 
 // ─── Confirm Modal ─────────────────────────────────────────────────────────────
 

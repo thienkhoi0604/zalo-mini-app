@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Page, Text } from 'zmp-ui';
-import type { Station } from 'types/station';
-import { MOCK_STATIONS } from 'apis/stations';
+import type { Station } from '@/types/station';
+import { MOCK_STATIONS } from '@/apis/stations';
 import StationCard from './stations/station-card';
 
 export const StationsPage: FC = () => {

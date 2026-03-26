@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
-import { useRewardsStore } from 'stores/rewards';
+import { useRewardsStore } from '@/stores/rewards';
 import { Reward } from '@/types/reward';
 import RewardItemCard from '../item-card';
 

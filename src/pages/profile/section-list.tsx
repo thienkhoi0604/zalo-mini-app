@@ -9,12 +9,13 @@ export interface SectionItem {
   rightLabel?: string;
   toggle?: boolean;
   toggleValue?: boolean;
+  onPress?: () => void;
 }
 
 interface SectionListProps {
   title: string;
   items: SectionItem[];
-  onClick: () => void;
+  onClick?: () => void;
 }
 
 const SectionList: FC<SectionListProps> = ({ title, items, onClick }) => (
@@ -34,7 +35,7 @@ const SectionList: FC<SectionListProps> = ({ title, items, onClick }) => (
         key={i}
         flex
         className="items-center"
-        onClick={item.toggle ? undefined : onClick}
+        onClick={item.toggle ? undefined : (item.onPress ?? onClick)}
         style={{
           padding: '13px 16px',
           borderTop: i === 0 ? 'none' : '1px solid #F3F3F3',

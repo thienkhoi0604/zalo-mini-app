@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { Gift } from 'lucide-react';
-import { useRewardsStore } from 'stores/rewards';
+import { useRewardsStore } from '@/stores/rewards';
 import VoucherCard from './voucher-card';
 
 // ─── Tab ─────────────────────────────────────────────────────────────────────

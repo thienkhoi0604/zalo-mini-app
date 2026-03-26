@@ -1,7 +1,7 @@
 import React, { FC, useMemo } from "react";
 import { useNavigate } from "react-router";
 import { Box, Text } from "zmp-ui";
-import { MOCK_STATIONS } from "apis/stations";
+import { MOCK_STATIONS } from '@/apis/stations';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination } from "swiper";
 

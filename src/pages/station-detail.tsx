@@ -2,7 +2,7 @@ import React, { FC, useMemo } from 'react';
 import { useParams } from 'react-router';
 import { Box, Page, Text } from 'zmp-ui';
 import { MapPin, Navigation } from 'lucide-react';
-import { MOCK_STATIONS } from 'apis/stations';
+import { MOCK_STATIONS } from '@/apis/stations';
 
 const StationDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();

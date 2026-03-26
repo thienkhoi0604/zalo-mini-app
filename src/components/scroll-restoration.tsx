@@ -1,22 +1,14 @@
-import React from "react";
-import { FC, useEffect } from "react";
-import { useLocation } from "react-router";
+import React, { FC, useEffect } from 'react';
+import { useLocation } from 'react-router';
 
-const scrollPositions = {};
+const scrollPositions: Record<string, number> = {};
 
-function findElementWithScrollbar(rootElement: Element = document.body) {
-  if (rootElement.scrollHeight > rootElement.clientHeight) {
-    return rootElement;
+function findScrollableElement(root: Element = document.body): Element | null {
+  if (root.scrollHeight > root.clientHeight) return root;
+  for (let i = 0; i < root.children.length; i++) {
+    const found = findScrollableElement(root.children[i]);
+    if (found) return found;
   }
-
-  for (let i = 0; i < rootElement.children.length; i++) {
-    const childElement = rootElement.children[i];
-    const elementWithScrollbar = findElementWithScrollbar(childElement);
-    if (elementWithScrollbar) {
-      return elementWithScrollbar;
-    }
-  }
-
   return null;
 }
 
@@ -24,20 +16,21 @@ export const ScrollRestoration: FC = () => {
   const location = useLocation();
 
   useEffect(() => {
-    const content = findElementWithScrollbar();
-    if (content) {
-      const key = `${location.pathname}${location.search}`;
-      if (scrollPositions[key]) {
-        content.scrollTo(0, scrollPositions[key]);
-      }
-      const saveScrollPosition = (e: Event) => {
-        scrollPositions[key] = content.scrollTop;
-      };
-      content.addEventListener("scroll", saveScrollPosition);
-      return () => content.removeEventListener("scroll", saveScrollPosition);
+    const el = findScrollableElement();
+    if (!el) return;
+
+    const key = `${location.pathname}${location.search}`;
+    if (scrollPositions[key]) {
+      el.scrollTo(0, scrollPositions[key]);
     }
-    return () => {};
+
+    const onScroll = () => {
+      scrollPositions[key] = el.scrollTop;
+    };
+
+    el.addEventListener('scroll', onScroll);
+    return () => el.removeEventListener('scroll', onScroll);
   }, [location]);
 
-  return <></>;
+  return null;
 };
