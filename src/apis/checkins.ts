@@ -13,11 +13,23 @@ export async function getCheckinHistory(
 ): Promise<PaginatedApiResponse<CheckinHistoryItem>> {
   const { pageNumber = 1, pageSize = 5 } = params;
   try {
-    const { data } = await axiosClient.get<PaginatedApiResponse<CheckinHistoryItem>>(
+    const { data } = await axiosClient.get<{ success: boolean; data: CheckinHistoryItem[] }>(
       '/Checkins/history',
       { params: { pageNumber, pageSize } },
     );
-    return data;
+    const all: CheckinHistoryItem[] = Array.isArray(data.data) ? data.data : [];
+    const start = (pageNumber - 1) * pageSize;
+    const items = all.slice(start, start + pageSize);
+    return {
+      success: true,
+      data: {
+        items,
+        pageNumber,
+        pageSize,
+        totalCount: all.length,
+        hasNext: start + pageSize < all.length,
+      },
+    };
   } catch {
     const all = mockItems.data as CheckinHistoryItem[];
     const start = (pageNumber - 1) * pageSize;

@@ -54,11 +54,23 @@ export async function getUserRewards(
 ): Promise<PaginatedApiResponse<UserReward>> {
   const { pageNumber = 1, pageSize = 5 } = params;
   try {
-    const { data } = await axiosClient.get<PaginatedApiResponse<UserReward>>(
+    const { data } = await axiosClient.get<{ success: boolean; data: UserReward[] }>(
       '/Rewards/my-vouchers',
       { params: { pageNumber, pageSize } },
     );
-    return data;
+    const all: UserReward[] = Array.isArray(data.data) ? data.data : [];
+    const start = (pageNumber - 1) * pageSize;
+    const items = all.slice(start, start + pageSize);
+    return {
+      success: true,
+      data: {
+        items,
+        pageNumber,
+        pageSize,
+        totalCount: all.length,
+        hasNext: start + pageSize < all.length,
+      },
+    };
   } catch (error) {
     console.warn('Failed to fetch user rewards from API, falling back to mock data:', error);
     const all = myVouchersJson.data as UserReward[];
