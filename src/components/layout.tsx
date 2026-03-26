@@ -2,6 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { ChevronLeft } from 'lucide-react';
+import background from 'static/img/background.png';
 import { Navigation } from './navigation';
 import HomePage from 'pages/index';
 import ProfilePage from 'pages/profile';
@@ -9,8 +10,8 @@ import RewardsPage from 'pages/rewards';
 import RewardDetailPage from 'pages/rewards/detail';
 import CategoryDetailPage from 'pages/rewards/category-detail';
 import QRCodePage from 'pages/qr-code';
-import StoresPage from 'pages/stores';
-import StoreDetailPage from 'pages/store-detail';
+import StationsPage from 'pages/stations';
+import StationDetailPage from 'pages/station-detail';
 import RegisterPage from 'pages/register';
 import MyVouchersPage from 'pages/my-vouchers';
 import { getSystemInfo } from 'zmp-sdk';
@@ -33,16 +34,17 @@ if (import.meta.env.DEV) {
 }
 
 // Routes that do not show a back button
-const NO_BACK_ROUTES = ['/', '/rewards', '/qr-code', '/stores', '/profile', '/register'];
+const NO_BACK_ROUTES = ['/', '/rewards', '/qr-code', '/stations', '/profile', '/register'];
 
 const showBackButton = (pathname: string) => !NO_BACK_ROUTES.includes(pathname);
 
 const getRouteTitle = (pathname: string): string => {
+  if (pathname === '/stations') return 'Trạm sạc';
   if (pathname === '/my-vouchers') return 'Voucher của tôi';
   if (pathname.startsWith('/rewards/category/'))
     return decodeURIComponent(pathname.replace('/rewards/category/', ''));
   if (pathname.startsWith('/rewards/')) return 'Chi tiết phần thưởng';
-  if (pathname.startsWith('/stores/')) return 'Chi tiết cửa hàng';
+  if (pathname.startsWith('/stations/')) return 'Chi tiết trạm sạc';
   return '';
 };
 
@@ -58,14 +60,14 @@ const AppHeader: FC = () => {
     <Box
       className="flex-shrink-0"
       style={{
-        background: 'linear-gradient(160deg, rgb(238, 247, 241) 0%',
+        // background: 'linear-gradient(160deg, rgb(238, 247, 241) 0%',
         paddingTop: 'var(--zaui-safe-area-inset-top, 0px)',
         minHeight: showBack
           ? 'calc(var(--zaui-safe-area-inset-top, 0px) + 56px)'
           : 'calc(var(--zaui-safe-area-inset-top, 0px) + 60px)',
       }}
     >
-      {showBack && (
+      {(showBack || title) && (
         <Box
           flex
           className="items-center"
@@ -77,24 +79,26 @@ const AppHeader: FC = () => {
           }}
         >
           {/* Back button */}
-          <button
-            onClick={() => navigate(-1)}
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              width: 36,
-              height: 36,
-              borderRadius: '50%',
-              border: 'none',
-              background: 'rgba(40,143,78,0.12)',
-              cursor: 'pointer',
-              flexShrink: 0,
-              zIndex: 1,
-            }}
-          >
-            <ChevronLeft size={20} color="#1A6B38" strokeWidth={2.5} />
-          </button>
+          {showBack && (
+            <button
+              onClick={() => navigate(-1)}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                border: 'none',
+                background: 'rgba(40,143,78,0.12)',
+                cursor: 'pointer',
+                flexShrink: 0,
+                zIndex: 1,
+              }}
+            >
+              <ChevronLeft size={20} color="#1A6B38" strokeWidth={2.5} />
+            </button>
+          )}
 
           {/* Title — centered */}
           {title && (
@@ -153,7 +157,18 @@ export const Layout: FC = () => {
   }
 
   return (
-    <Box flex flexDirection="column" className="h-screen">
+    <Box
+      flex
+      flexDirection="column"
+      className="h-screen"
+      style={{
+        backgroundImage: `url(${background})`,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        backgroundRepeat: 'no-repeat',
+        backgroundAttachment: 'fixed',
+      }}
+    >
       <ScrollRestoration />
       <AppHeader />
       <Box className="flex-1 flex flex-col overflow-hidden">
@@ -182,18 +197,18 @@ export const Layout: FC = () => {
             }
           />
           <Route
-            path="/stores"
+            path="/stations"
             element={
               <ProtectedRoute>
-                <StoresPage />
+                <StationsPage />
               </ProtectedRoute>
             }
           />
           <Route
-            path="/stores/:id"
+            path="/stations/:id"
             element={
               <ProtectedRoute>
-                <StoreDetailPage />
+                <StationDetailPage />
               </ProtectedRoute>
             }
           />

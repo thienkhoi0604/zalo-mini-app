@@ -2,7 +2,7 @@ import React from "react";
 import { Box, Page } from "zmp-ui";
 import { Inquiry } from "./inquiry";
 import { Banner } from "./banner";
-import { TopStoresCarousel } from "./top-stores";
+import { TopStationsCarousel } from "./top-stations";
 import { Divider } from "components/divider";
 
 const HomePage: React.FunctionComponent = () => {
@@ -11,7 +11,7 @@ const HomePage: React.FunctionComponent = () => {
       <Box className="flex-1 overflow-auto">
         <Inquiry />
         <Banner />
-        <TopStoresCarousel />
+        <TopStationsCarousel />
         <Divider />
       </Box>
     </Page>
