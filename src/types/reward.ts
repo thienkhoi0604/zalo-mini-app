@@ -24,10 +24,13 @@ export interface Reward {
 
 export interface UserReward {
   id: string;
-  rewardId: string;
-  status: 'redeemed' | 'received';
-  redeemedAt?: string;
-  receivedAt?: string;
+  code: string;
+  rewardName: string;
+  storeName: string | null;
+  status: string;
+  issuedAt: string;
+  expiredAt: string;
+  usedAt: string | null;
 }
 
 export interface RewardsFilter {

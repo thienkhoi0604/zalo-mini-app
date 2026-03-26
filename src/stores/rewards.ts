@@ -109,10 +109,7 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     return grouped;
   },
 
-  getUserRewardDetails: (userRewardId: string) => {
-    const userCard = get().userRewards.find((c) => c.id === userRewardId);
-    if (!userCard) return null;
-
-    return get().allRewards.find((c) => c.id === userCard.rewardId) || null;
+  getUserRewardDetails: (_userRewardId: string) => {
+    return null;
   },
 }));

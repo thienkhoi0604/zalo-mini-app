@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { Gift } from 'lucide-react';
-import { useNavigate } from 'react-router';
 import { useRewardsStore } from 'stores/rewards';
 import VoucherCard from './voucher-card';
 
@@ -98,28 +97,15 @@ const VoucherSkeleton: FC = () => (
 
 const MyVouchersPage: FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('unused');
-  const navigate = useNavigate();
-  const {
-    userRewards,
-    allRewards,
-    loading,
-    loadUserRewards,
-    loadAllRewards,
-  } = useRewardsStore();
+  const { userRewards, loading, loadUserRewards } = useRewardsStore();
 
   useEffect(() => {
     loadUserRewards();
-    if (allRewards.length === 0) {
-      loadAllRewards();
-    }
   }, []);
 
-  const unusedVouchers = userRewards.filter((v) => v.status === 'received');
-  const usedVouchers = userRewards.filter((v) => v.status === 'redeemed');
+  const unusedVouchers = userRewards.filter((v) => v.usedAt === null);
+  const usedVouchers = userRewards.filter((v) => v.usedAt !== null);
   const activeVouchers = activeTab === 'unused' ? unusedVouchers : usedVouchers;
-
-  const getReward = (rewardId: string) =>
-    allRewards.find((c) => c.id === rewardId);
 
   return (
     <Page className="flex-1 flex flex-col overflow-hidden">
@@ -161,19 +147,13 @@ const MyVouchersPage: FC = () => {
         ) : activeVouchers.length === 0 ? (
           <EmptyState used={activeTab === 'used'} />
         ) : (
-          activeVouchers.map((uv) => {
-            const card = getReward(uv.rewardId);
-            if (!card) return null;
-            return (
-              <VoucherCard
-                key={uv.id}
-                reward={card}
-                userVoucher={uv}
-                used={activeTab === 'used'}
-                onClick={() => navigate(`/rewards/${card.id}`, { state: { owned: true } })}
-              />
-            );
-          })
+          activeVouchers.map((uv) => (
+            <VoucherCard
+              key={uv.id}
+              userVoucher={uv}
+              used={activeTab === 'used'}
+            />
+          ))
         )}
       </Box>
 

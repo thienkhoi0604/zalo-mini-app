@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
 import { Box, useSnackbar } from 'zmp-ui';
 import { Sheet } from 'components/fullscreen-sheet';
-import { Reward, UserReward } from '@/types/reward';
+import { UserReward } from '@/types/reward';
 
 interface Props {
-  reward: Reward | null;
   userVoucher: UserReward | null;
   onClose: () => void;
 }
@@ -14,65 +13,31 @@ function formatDate(dateStr: string): string {
   return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
 }
 
-const VoucherDetailSheet: FC<Props> = ({ reward, userVoucher, onClose }) => {
+const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
   const { openSnackbar } = useSnackbar();
-  const isUsed = userVoucher?.status === 'redeemed';
+  const isUsed = userVoucher?.usedAt != null;
 
   const handleCopyCode = () => {
-    if (!reward?.code) return;
+    if (!userVoucher?.code) return;
     navigator.clipboard
-      .writeText(reward.code)
+      .writeText(userVoucher.code)
       .then(() => openSnackbar({ text: 'Đã sao chép mã voucher!', type: 'success' }))
       .catch(() => openSnackbar({ text: 'Không thể sao chép', type: 'error' }));
   };
 
   return (
     <Sheet
-      visible={!!reward && !!userVoucher}
+      visible={!!userVoucher}
       onClose={onClose}
       autoHeight
       swipeToClose
       unmountOnClose
     >
-      {reward && userVoucher && (
+      {userVoucher && (
         <Box className="flex flex-col pb-6">
-          {/* Banner */}
-          <Box style={{ width: '100%', height: 180, overflow: 'hidden', flexShrink: 0, position: 'relative' }}>
-            <img
-              src={reward.bannerImageUrl || reward.thumbnailImageUrl}
-              alt={reward.name}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src =
-                  'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
-              }}
-            />
-            {isUsed && (
-              <Box
-                className="absolute inset-0 flex items-center justify-center"
-                style={{ background: 'rgba(0,0,0,0.35)' }}
-              >
-                <span
-                  style={{
-                    background: '#6B7280',
-                    color: '#fff',
-                    fontWeight: 700,
-                    fontSize: 13,
-                    padding: '5px 18px',
-                    borderRadius: 100,
-                    transform: 'rotate(-15deg)',
-                    display: 'block',
-                  }}
-                >
-                  Đã sử dụng
-                </span>
-              </Box>
-            )}
-          </Box>
-
           {/* Info */}
           <Box className="px-4 pt-4" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-            {/* Category + Name */}
+            {/* Status + Name */}
             <Box>
               <span
                 style={{
@@ -84,7 +49,7 @@ const VoucherDetailSheet: FC<Props> = ({ reward, userVoucher, onClose }) => {
                   borderRadius: 100,
                 }}
               >
-                {reward.category}
+                {isUsed ? 'Đã dùng' : 'Còn hiệu lực'}
               </span>
               <p
                 style={{
@@ -95,7 +60,7 @@ const VoucherDetailSheet: FC<Props> = ({ reward, userVoucher, onClose }) => {
                   lineHeight: '22px',
                 }}
               >
-                {reward.name}
+                {userVoucher.rewardName}
               </p>
             </Box>
 
@@ -119,7 +84,7 @@ const VoucherDetailSheet: FC<Props> = ({ reward, userVoucher, onClose }) => {
                     letterSpacing: 2,
                   }}
                 >
-                  {reward.code}
+                  {userVoucher.code}
                 </p>
               </Box>
               {!isUsed && (
@@ -146,47 +111,24 @@ const VoucherDetailSheet: FC<Props> = ({ reward, userVoucher, onClose }) => {
               {!isUsed && (
                 <p style={{ fontSize: 12, color: '#6B7280' }}>
                   <span style={{ fontWeight: 600 }}>Hạn sử dụng: </span>
-                  {formatDate(reward.applicableTimeEnd)}
+                  {formatDate(userVoucher.expiredAt)}
                 </p>
               )}
-              {isUsed && userVoucher.redeemedAt && (
+              {isUsed && userVoucher.usedAt && (
                 <p style={{ fontSize: 12, color: '#6B7280' }}>
                   <span style={{ fontWeight: 600 }}>Đã dùng lúc: </span>
-                  {formatDate(userVoucher.redeemedAt)}
+                  {formatDate(userVoucher.usedAt)}
                 </p>
               )}
             </Box>
 
-            {/* Applicable stores */}
-            {reward.stores && reward.stores.length > 0 && (
+            {/* Store */}
+            {userVoucher.storeName && (
               <Box>
-                <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', marginBottom: 6 }}>
-                  Cửa hàng áp dụng ({reward.stores.length})
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', marginBottom: 4 }}>
+                  Cửa hàng áp dụng
                 </p>
-                <Box style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-                  {reward.stores.slice(0, 3).map((store, i) => (
-                    <p key={i} style={{ fontSize: 12, color: '#444', lineHeight: '18px' }}>
-                      • {store.address}
-                    </p>
-                  ))}
-                  {reward.stores.length > 3 && (
-                    <p style={{ fontSize: 12, color: '#9CA3AF' }}>
-                      và {reward.stores.length - 3} cửa hàng khác...
-                    </p>
-                  )}
-                </Box>
-              </Box>
-            )}
-
-            {/* Terms */}
-            {(reward.terms || reward.usageGuide || reward.programNotes) && (
-              <Box>
-                <p style={{ fontSize: 13, fontWeight: 700, color: '#1a1a1a', marginBottom: 6 }}>
-                  Điều khoản sử dụng
-                </p>
-                <p style={{ fontSize: 12, color: '#555', lineHeight: '19px' }}>
-                  {reward.terms || reward.usageGuide || reward.programNotes}
-                </p>
+                <p style={{ fontSize: 12, color: '#444' }}>• {userVoucher.storeName}</p>
               </Box>
             )}
           </Box>

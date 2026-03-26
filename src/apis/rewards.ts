@@ -1,6 +1,7 @@
 import { Reward, UserReward } from '@/types/reward';
 import rewardsJson from '@/mock/rewards.json';
 import rewardDetailJson from '@/mock/reward-detail.json';
+import myVouchersJson from '@/mock/my-vouchers.json';
 import axiosClient from './client';
 
 export enum REWARD_TYPES {
@@ -94,7 +95,7 @@ export async function getUserRewards(): Promise<UserReward[]> {
       'Failed to fetch user rewards from API, falling back to mock data:',
       error,
     );
-    return [];
+    return myVouchersJson.data as UserReward[];
   }
 }
 

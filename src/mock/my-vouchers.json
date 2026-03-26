@@ -1,0 +1,37 @@
+{
+    "success": true,
+    "message": "Success",
+    "data": [
+        {
+            "id": "9a5fdc91-f242-4c57-932c-8b64e6629623",
+            "code": "VCH-02E8A0C6",
+            "rewardName": "voucher giảm giá",
+            "storeName": null,
+            "status": "Active",
+            "issuedAt": "2026-03-26T09:06:24.456691+00:00",
+            "expiredAt": "2026-04-25T09:06:24.456691+00:00",
+            "usedAt": null
+        },
+        {
+            "id": "3aa1ba9b-74be-4fe5-bf86-24d5ffb7c663",
+            "code": "VCH-35ECC8C5",
+            "rewardName": "voucher test ne",
+            "storeName": null,
+            "status": "Active",
+            "issuedAt": "2026-03-26T08:54:13.279246+00:00",
+            "expiredAt": "2026-04-25T08:54:13.279247+00:00",
+            "usedAt": null
+        },
+        {
+            "id": "cfc78843-3281-42ea-bd42-59f766ea9fca",
+            "code": "VCH-31409FA5",
+            "rewardName": "voucher test ne",
+            "storeName": null,
+            "status": "Active",
+            "issuedAt": "2026-03-25T17:37:52.24705+00:00",
+            "expiredAt": "2026-04-24T17:37:52.247075+00:00",
+            "usedAt": null
+        }
+    ],
+    "errors": null
+}

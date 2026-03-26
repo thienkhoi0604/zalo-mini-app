@@ -1,12 +1,10 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Reward, UserReward } from '@/types/reward';
+import { UserReward } from '@/types/reward';
 
 interface Props {
-  reward: Reward;
   userVoucher: UserReward;
   used: boolean;
-  onClick: () => void;
 }
 
 function formatDate(dateStr: string): string {
@@ -14,50 +12,24 @@ function formatDate(dateStr: string): string {
   return `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
 }
 
-const VoucherCard: FC<Props> = ({ reward, userVoucher, used, onClick }) => {
+const VoucherCard: FC<Props> = ({ userVoucher, used }) => {
   const date = used
-    ? userVoucher.redeemedAt
-      ? formatDate(userVoucher.redeemedAt)
-      : null
-    : formatDate(reward.applicableTimeEnd);
+    ? userVoucher.usedAt ? formatDate(userVoucher.usedAt) : null
+    : formatDate(userVoucher.expiredAt);
 
   return (
     <Box
-      onClick={onClick}
       className="bg-white rounded-2xl overflow-hidden flex"
-      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', cursor: 'pointer' }}
+      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}
     >
-      {/* Left: Image */}
-      <Box style={{ width: 90, flexShrink: 0, position: 'relative', minHeight: 100 }}>
-        <img
-          src={reward.thumbnailImageUrl}
-          alt={reward.name}
-          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src =
-              'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
-          }}
-        />
-        {used && (
-          <Box
-            className="absolute inset-0 flex items-center justify-center"
-            style={{ background: 'rgba(255,255,255,0.65)' }}
-          >
-            <Box
-              className="rounded-full"
-              style={{
-                background: '#9CA3AF',
-                padding: '3px 10px',
-                transform: 'rotate(-20deg)',
-              }}
-            >
-              <p style={{ fontSize: 10, color: '#fff', fontWeight: 700, whiteSpace: 'nowrap' }}>
-                Đã dùng
-              </p>
-            </Box>
-          </Box>
-        )}
-      </Box>
+      {/* Left: colored strip */}
+      <Box
+        style={{
+          width: 8,
+          flexShrink: 0,
+          background: used ? '#D1D5DB' : '#288F4E',
+        }}
+      />
 
       {/* Dashed separator with ticket notch effect */}
       <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0, width: 16, position: 'relative' }}>
@@ -68,10 +40,10 @@ const VoucherCard: FC<Props> = ({ reward, userVoucher, used, onClick }) => {
 
       {/* Right: Info */}
       <Box
-        className="flex-1 py-3 pr-3"
+        className="flex-1 py-3 pr-3 pl-1"
         style={{ display: 'flex', flexDirection: 'column', gap: 5 }}
       >
-        {/* Category pill */}
+        {/* Status pill */}
         <Box style={{ display: 'inline-flex' }}>
           <span
             style={{
@@ -83,7 +55,7 @@ const VoucherCard: FC<Props> = ({ reward, userVoucher, used, onClick }) => {
               borderRadius: 100,
             }}
           >
-            {reward.category}
+            {used ? 'Đã dùng' : 'Còn hiệu lực'}
           </span>
         </Box>
 
@@ -100,8 +72,13 @@ const VoucherCard: FC<Props> = ({ reward, userVoucher, used, onClick }) => {
             overflow: 'hidden',
           }}
         >
-          {reward.name}
+          {userVoucher.rewardName}
         </p>
+
+        {/* Store */}
+        {userVoucher.storeName && (
+          <p style={{ fontSize: 11, color: '#9CA3AF' }}>{userVoucher.storeName}</p>
+        )}
 
         {/* Date */}
         {date && (
@@ -124,7 +101,7 @@ const VoucherCard: FC<Props> = ({ reward, userVoucher, used, onClick }) => {
               fontWeight: 600,
             }}
           >
-            {reward.code}
+            {userVoucher.code}
           </span>
         </Box>
       </Box>

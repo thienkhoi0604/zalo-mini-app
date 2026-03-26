@@ -23,7 +23,7 @@ const Personal: FC = () => {
     loadUserRewards();
   }, []);
 
-  const unusedCount = userRewards.filter((v) => v.status === 'received').length;
+  const unusedCount = userRewards.filter((v) => v.usedAt === null).length;
 
   return (
     <Box className="py-7">
