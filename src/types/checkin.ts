@@ -13,3 +13,18 @@ export type CheckinResponse = {
     points?: number;
   };
 };
+
+export interface CheckinHistoryItem {
+  id: string;
+  stationName: string;
+  stationCode: string;
+  stationTypeName: string;
+  vehicleTypeName: string;
+  pointEarned: number;
+  checkinAt: string;
+}
+
+export interface GetCheckinHistoryParams {
+  pageNumber?: number;
+  pageSize?: number;
+}

@@ -1,0 +1,70 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": [
+    {
+      "id": "5908de52-897b-4c44-a58d-5f63e31c06fb",
+      "stationName": "Khôi đi test station",
+      "stationCode": "GS-ST2603-505",
+      "stationTypeName": "Trạm test Q10",
+      "vehicleTypeName": "Electric Car",
+      "pointEarned": 10,
+      "checkinAt": "2026-03-26T05:23:59.63+00:00"
+    },
+    {
+      "id": "9d48da72-93b6-4972-beb9-f4ac180f6434",
+      "stationName": "Trạm sạc của Nguyễn Quang Huy",
+      "stationCode": "GS_ST_TRAM_SAC_CUA_328",
+      "stationTypeName": "Vinfast",
+      "vehicleTypeName": "Electric Car",
+      "pointEarned": 900,
+      "checkinAt": "2026-03-25T13:56:34.795+00:00"
+    },
+    {
+      "id": "5883f25a-a6e6-48e7-82ad-96c681268f8b",
+      "stationName": "Khôi đi test station",
+      "stationCode": "GS-ST2603-505",
+      "stationTypeName": "Trạm test Q10",
+      "vehicleTypeName": "Electric Car",
+      "pointEarned": 10,
+      "checkinAt": "2026-03-25T13:06:58.699+00:00"
+    },
+    {
+      "id": "4b664ff2-2be0-415f-b59f-1e14bc823abe",
+      "stationName": "Trạm sạc của Nguyễn Quang Huy",
+      "stationCode": "GS_ST_TRAM_SAC_CUA_328",
+      "stationTypeName": "Vinfast",
+      "vehicleTypeName": "Electric Car",
+      "pointEarned": 900,
+      "checkinAt": "2026-03-25T08:09:06.937081+00:00"
+    },
+    {
+      "id": "c749e2f6-90e9-4c5d-824e-cec7520ef4cf",
+      "stationName": "Khôi đi test station",
+      "stationCode": "GS-ST2603-505",
+      "stationTypeName": "Trạm test Q10",
+      "vehicleTypeName": "Electric Car",
+      "pointEarned": 10,
+      "checkinAt": "2026-03-25T07:59:45.415+00:00"
+    },
+    {
+      "id": "4bfed687-bc94-460b-ac1b-74b5575bca05",
+      "stationName": "VinFast Charging Station Thủ Đức",
+      "stationCode": "GS-ST2603-589",
+      "stationTypeName": "Trạm Sạc Nhanh Vinfast 120KW",
+      "vehicleTypeName": "Electric Car",
+      "pointEarned": 1,
+      "checkinAt": "2026-03-23T14:32:10.116+00:00"
+    },
+    {
+      "id": "7bb9f122-c8bb-4c1a-a100-56984b086c7b",
+      "stationName": "VinFast Charging Station Thủ Đức",
+      "stationCode": "GS-ST2603-589",
+      "stationTypeName": "Trạm Sạc Nhanh Vinfast 120KW",
+      "vehicleTypeName": "Electric Car",
+      "pointEarned": 1,
+      "checkinAt": "2026-03-23T01:21:33.901+00:00"
+    }
+  ],
+  "errors": null
+}

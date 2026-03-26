@@ -3,16 +3,23 @@ import { Reward, UserReward, REWARD_TYPES } from '@/types/reward';
 import { getRewards, getRewardById, getUserRewards, redeemReward } from '@/apis/rewards';
 import { useUserStore } from '@/stores/user';
 
+const USER_REWARDS_PAGE_SIZE = 5;
+
 type RewardsStore = {
   allRewards: Reward[];
   userRewards: UserReward[];
+  userRewardsPage: number;
+  userRewardsHasMore: boolean;
   loading: boolean;
   selectedReward: Reward | null;
   redeeming: boolean;
 
   loadAllRewards: () => Promise<void>;
   loadRewardById: (id: string) => Promise<void>;
+  /** Load page 1, reset userRewards list */
   loadUserRewards: () => Promise<void>;
+  /** Append next page of userRewards */
+  loadMoreUserRewards: () => Promise<void>;
   selectReward: (reward: Reward | null) => void;
   redeemReward: (rewardId: string) => Promise<void>;
   getGroupedByCategory: () => Record<string, Reward[]>;
@@ -21,6 +28,8 @@ type RewardsStore = {
 export const useRewardsStore = create<RewardsStore>((set, get) => ({
   allRewards: [],
   userRewards: [],
+  userRewardsPage: 0,
+  userRewardsHasMore: true,
   loading: false,
   selectedReward: null,
   redeeming: false,
@@ -62,12 +71,38 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
   },
 
   loadUserRewards: async () => {
+    if (get().loading) return;
+    set({ loading: true });
     try {
-      const userRewards = await getUserRewards();
-      set({ userRewards });
+      const res = await getUserRewards({ pageNumber: 1, pageSize: USER_REWARDS_PAGE_SIZE });
+      set({
+        userRewards: res.data.items ?? [],
+        userRewardsPage: 1,
+        userRewardsHasMore: res.data.hasNext ?? false,
+      });
     } catch (error) {
       console.error('Failed to load user rewards:', error);
-      throw error;
+    } finally {
+      set({ loading: false });
+    }
+  },
+
+  loadMoreUserRewards: async () => {
+    const { loading, userRewardsHasMore, userRewardsPage } = get();
+    if (loading || !userRewardsHasMore) return;
+    set({ loading: true });
+    try {
+      const nextPage = userRewardsPage + 1;
+      const res = await getUserRewards({ pageNumber: nextPage, pageSize: USER_REWARDS_PAGE_SIZE });
+      set((state) => ({
+        userRewards: [...state.userRewards, ...(res.data.items ?? [])],
+        userRewardsPage: nextPage,
+        userRewardsHasMore: res.data.hasNext ?? false,
+      }));
+    } catch (error) {
+      console.error('Failed to load more user rewards:', error);
+    } finally {
+      set({ loading: false });
     }
   },
 

@@ -2,88 +2,85 @@ import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { useUserStore } from '@/stores/user';
 
+function getInitials(fullName: string): string {
+  return fullName
+    .split(' ')
+    .slice(-2)
+    .map((w) => w[0])
+    .join('')
+    .toUpperCase();
+}
 
 const MemberCard: FC = () => {
   const { user, pointWallet } = useUserStore();
-
-  const initials = user?.fullName
-    ? user.fullName
-        .split(' ')
-        .slice(-2)
-        .map((w: string) => w[0])
-        .join('')
-        .toUpperCase()
-    : '';
+  const initials = user?.fullName ? getInitials(user.fullName) : '';
 
   return (
     <Box
-      className="mx-4 mt-4 pb-2 rounded-2xl overflow-visible relative"
+      className="mx-4 mt-4 rounded-2xl overflow-hidden relative"
       style={{
-        background: 'linear-gradient(135deg, #C49A6C 0%, #A0784A 100%)',
+        background: 'linear-gradient(135deg, #D8B07A 0%, #C49A6C 25%, #B4884F 50%, #A0784A 75%, #8C6538 100%)',
+        boxShadow: '0 10px 25px rgba(160,120,74,0.25), inset 0 1px 0 rgba(255,255,255,0.3)',
+        border: '1px solid rgba(255,255,255,0.25)',
       }}
     >
-      {/* Avatar */}
-      <Box className="flex justify-center" style={{ marginTop: -1 }}>
-        <Box
-          className="relative flex items-center justify-center rounded-full border-4 border-white"
-          style={{
-            width: 72,
-            height: 72,
-            background: 'linear-gradient(135deg, #E8CFA0 0%, #C49A6C 100%)',
-            marginTop: -36,
-          }}
-        >
-          <span style={{ fontSize: 22, fontWeight: 700, color: '#7A5230' }}>
-            {initials}
-          </span>
-        </Box>
-      </Box>
+      {/* Shimmer overlay */}
+      <Box
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 60%)',
+        }}
+      />
 
-      {/* Name & phone */}
-      <Box className="text-center px-4 pt-2 pb-1">
-        <p
+      {/* Content */}
+      <Box className="relative px-4 pt-5 pb-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
+        {/* Avatar */}
+        <Box
+          className="flex items-center justify-center rounded-full"
           style={{
-            color: '#fff',
-            fontWeight: 700,
-            fontSize: 18,
-            lineHeight: '26px',
+            width: 64,
+            height: 64,
+            background: 'linear-gradient(135deg, #E8CFA0 0%, #C49A6C 100%)',
+            border: '3px solid rgba(255,255,255,0.6)',
+            flexShrink: 0,
           }}
         >
+          <span style={{ fontSize: 20, fontWeight: 700, color: '#7A5230' }}>{initials}</span>
+        </Box>
+
+        {/* Name */}
+        <p style={{ color: '#fff', fontWeight: 700, fontSize: 17, lineHeight: '24px', textAlign: 'center' }}>
           {user?.fullName || 'Tên thành viên'}
         </p>
-      </Box>
 
-      {/* Rank | Xu row */}
-      <Box
-        flex
-        className="mx-4 mb-4 mt-2 py-3 px-4 rounded-xl"
-        style={{ background: 'rgba(255,255,255,0.15)', gap: 0 }}
-      >
-        <Box className="flex-1 text-center">
-          <p style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-            {user?.rank?.currentRankName || 'Member'}
-          </p>
-          <p style={{ color: 'rgba(255,255,255)', fontSize: 12, marginTop: 2 }}>
-            Hạng thành viên
-          </p>
-        </Box>
+        {/* Rank | Points */}
         <Box
-          style={{
-            width: 1,
-            background: 'rgba(255,255,255,0.35)',
-            margin: '0 8px',
-          }}
-        />
-        <Box className="flex-1 text-center">
-          <Box flex className="justify-center items-center" style={{ gap: 4 }}>
+          flex
+          className="w-full rounded-xl py-3 px-4"
+          style={{ background: 'rgba(255,255,255,0.15)', gap: 0 }}
+        >
+          <Box className="flex-1 text-center">
             <p style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-              {pointWallet?.currentBalance ?? 0}
+              {user?.rank?.currentRankName || 'Member'}
             </p>
-            <span style={{ fontSize: 16 }}>🪙</span>
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, marginTop: 3 }}>
+              Hạng thành viên
+            </p>
           </Box>
-          <p style={{ color: 'rgba(255,255,255)', fontSize: 12, marginTop: 2 }}>
-            Xu khả dụng
-          </p>
+
+          <Box style={{ width: 1, background: 'rgba(255,255,255,0.35)', margin: '0 8px' }} />
+
+          <Box className="flex-1 text-center">
+            <Box flex className="justify-center items-center" style={{ gap: 4 }}>
+              <span style={{ fontSize: 15 }}>🪙</span>
+              <p style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
+                {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+              </p>
+            </Box>
+            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, marginTop: 3 }}>
+              Xu khả dụng
+            </p>
+          </Box>
         </Box>
       </Box>
     </Box>

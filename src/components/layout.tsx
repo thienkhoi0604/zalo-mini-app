@@ -15,6 +15,7 @@ import StationDetailPage from '@/pages/station-detail';
 import RegisterPage from '@/pages/register';
 import MyVouchersPage from '@/pages/my-vouchers';
 import RankBenefitsPage from '@/pages/rank-benefits';
+import CheckinHistoryPage from '@/pages/checkin-history';
 import { getSystemInfo } from 'zmp-sdk';
 import { ScrollRestoration } from './scroll-restoration';
 import { useUserStore } from '@/stores/user';
@@ -40,9 +41,15 @@ const NO_BACK_ROUTES = ['/', '/rewards', '/qr-code', '/stations', '/profile', '/
 const showBackButton = (pathname: string) => !NO_BACK_ROUTES.includes(pathname);
 
 const getRouteTitle = (pathname: string): string => {
+  if (pathname === '/profile') return '';
+  if (pathname === '/') return 'Trang chủ';
+  if (pathname === '/rewards') return 'Phần thưởng';
   if (pathname === '/stations') return 'Trạm sạc';
+  if (pathname === '/qr-code') return 'QR Code';
+  if (pathname === '/register') return 'Đăng ký';
   if (pathname === '/my-vouchers') return 'Voucher của tôi';
   if (pathname === '/rank-benefits') return 'Đặc quyền';
+  if (pathname === '/checkin-history') return 'Lịch sử điểm';
   if (pathname.startsWith('/rewards/category/'))
     return decodeURIComponent(pathname.replace('/rewards/category/', ''));
   if (pathname.startsWith('/rewards/')) return 'Chi tiết phần thưởng';
@@ -235,6 +242,14 @@ export const Layout: FC = () => {
             element={
               <ProtectedRoute>
                 <RankBenefitsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkin-history"
+            element={
+              <ProtectedRoute>
+                <CheckinHistoryPage />
               </ProtectedRoute>
             }
           />

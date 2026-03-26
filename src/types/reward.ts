@@ -65,3 +65,8 @@ export interface GetRewardsParams {
   pageSize?: number;
   type?: REWARD_TYPES;
 }
+
+export interface GetUserRewardsParams {
+  pageNumber?: number;
+  pageSize?: number;
+}

@@ -1,4 +1,5 @@
-import { Reward, UserReward, RewardApiItem, GetRewardsParams, REWARD_TYPES } from '@/types/reward';
+import { Reward, UserReward, RewardApiItem, GetRewardsParams, GetUserRewardsParams, REWARD_TYPES } from '@/types/reward';
+import { PaginatedApiResponse } from '@/types/common';
 import rewardsJson from '@/mock/rewards.json';
 import rewardDetailJson from '@/mock/reward-detail.json';
 import myVouchersJson from '@/mock/my-vouchers.json';
@@ -48,13 +49,31 @@ export async function getRewardById(id: string): Promise<Reward> {
   }
 }
 
-export async function getUserRewards(): Promise<UserReward[]> {
+export async function getUserRewards(
+  params: GetUserRewardsParams = {},
+): Promise<PaginatedApiResponse<UserReward>> {
+  const { pageNumber = 1, pageSize = 5 } = params;
   try {
-    const { data } = await axiosClient.get<{ data: UserReward[] }>('/Rewards/my-vouchers');
-    return data.data;
+    const { data } = await axiosClient.get<PaginatedApiResponse<UserReward>>(
+      '/Rewards/my-vouchers',
+      { params: { pageNumber, pageSize } },
+    );
+    return data;
   } catch (error) {
     console.warn('Failed to fetch user rewards from API, falling back to mock data:', error);
-    return myVouchersJson.data as UserReward[];
+    const all = myVouchersJson.data as UserReward[];
+    const start = (pageNumber - 1) * pageSize;
+    const items = all.slice(start, start + pageSize);
+    return {
+      success: true,
+      data: {
+        items,
+        pageNumber,
+        pageSize,
+        totalCount: all.length,
+        hasNext: start + pageSize < all.length,
+      },
+    };
   }
 }
 

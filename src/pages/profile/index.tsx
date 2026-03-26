@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { Gift, QrCode, UserCircle2, UserPlus, ShieldCheck } from 'lucide-react';
+import { Gift, QrCode, UserCircle2, UserPlus, ShieldCheck, History } from 'lucide-react';
 import { useToBeImplemented } from '@/hooks';
 import { useUserStore } from '@/stores/user';
 import { useRewardsStore } from '@/stores/rewards';
@@ -59,6 +59,12 @@ const Personal: FC = () => {
             label: 'Quyền lợi xếp hạng',
             sub: user?.rank?.currentRankName ? `Hạng ${user.rank.currentRankName}` : undefined,
             onPress: () => navigate('/rank-benefits'),
+          },
+          {
+            icon: <History size={18} color="#A0784A" />,
+            label: 'Lịch sử điểm',
+            sub: 'Xem các lần check-in tích điểm',
+            onPress: () => navigate('/checkin-history'),
           },
           { icon: <UserCircle2 size={18} color="#A0784A" />, label: 'Giới thiệu khách hàng', onPress: onClick },
           { icon: <UserPlus size={18} color="#A0784A" />, label: 'Giới thiệu bạn bè tải ứng dụng', onPress: onClick },

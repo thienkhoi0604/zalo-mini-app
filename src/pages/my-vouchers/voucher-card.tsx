@@ -6,9 +6,10 @@ import { formatDate } from '@/utils/date';
 interface Props {
   userVoucher: UserReward;
   used: boolean;
+  onClick?: () => void;
 }
 
-const VoucherCard: FC<Props> = ({ userVoucher, used }) => {
+const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
   const date = used
     ? userVoucher.usedAt ? formatDate(userVoucher.usedAt) : null
     : formatDate(userVoucher.expiredAt);
@@ -16,7 +17,8 @@ const VoucherCard: FC<Props> = ({ userVoucher, used }) => {
   return (
     <Box
       className="bg-white rounded-2xl overflow-hidden flex"
-      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}
+      style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', cursor: onClick ? 'pointer' : 'default' }}
+      onClick={onClick}
     >
       {/* Left: colored strip */}
       <Box

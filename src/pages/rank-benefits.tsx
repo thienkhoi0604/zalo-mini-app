@@ -59,28 +59,19 @@ const RankCard: FC<{ tier: RankTier; isCurrent: boolean }> = ({ tier, isCurrent 
   <Box
     className="rounded-2xl overflow-hidden bg-white"
     style={{
-      border: isCurrent ? `2px solid ${tier.color}` : '1px solid #F0F0F0',
-      boxShadow: isCurrent ? `0 4px 16px ${tier.color}33` : '0 1px 4px rgba(0,0,0,0.06)',
+      border: isCurrent ? `2px solid ${tier.color}` : '1px solid #EBEBEB',
+      boxShadow: '0 1px 4px rgba(0,0,0,0.06)',
     }}
   >
-    {/* Rank header */}
+    {/* Rank title */}
     <Box
       flex
-      className="items-center px-4 py-3"
-      style={{
-        borderBottom: '1px solid #F5F5F5',
-        gap: 8,
-      }}
+      className="items-center justify-between px-4 pt-4 pb-2"
     >
-      <Box
-        className="rounded-full flex items-center justify-center"
-        style={{ width: 10, height: 10, background: tier.color, flexShrink: 0 }}
-      />
       <p style={{ fontWeight: 700, fontSize: 15, color: '#1a1a1a' }}>{tier.name}</p>
       {isCurrent && (
         <span
           style={{
-            marginLeft: 'auto',
             fontSize: 10,
             fontWeight: 700,
             background: tier.color,
@@ -95,22 +86,19 @@ const RankCard: FC<{ tier: RankTier; isCurrent: boolean }> = ({ tier, isCurrent 
     </Box>
 
     {/* Benefits list */}
-    <Box className="px-4 py-2">
+    <Box className="px-4 pb-3" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       {tier.benefits.map((b, i) => (
         <Box
           key={i}
           flex
-          className="items-center py-3"
-          style={{
-            borderBottom: i < tier.benefits.length - 1 ? '1px solid #F9F9F9' : 'none',
-            gap: 14,
-          }}
+          className="items-center py-2"
+          style={{ gap: 14 }}
         >
           <Box
             className="flex items-center justify-center rounded-full flex-shrink-0"
-            style={{ width: 40, height: 40, background: '#FEF3C7' }}
+            style={{ width: 48, height: 48, background: '#FEF3C7' }}
           >
-            <span style={{ fontSize: 20 }}>{b.icon}</span>
+            <span style={{ fontSize: 24 }}>{b.icon}</span>
           </Box>
           <p style={{ fontSize: 14, color: '#374151', lineHeight: '20px' }}>{b.label}</p>
         </Box>
