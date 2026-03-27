@@ -1,73 +1,142 @@
-import React, { FC } from "react";
-import { Box } from "zmp-ui";
-import { MapPin, ChevronRight } from "lucide-react";
-import type { Station } from "types/station";
+import React, { FC } from 'react';
+import { Box } from 'zmp-ui';
+import { MapPin, Zap, Clock } from 'lucide-react';
+import type { Station } from '@/types/station';
 
 interface Props {
   station: Station;
   onClick: () => void;
 }
 
+const FALLBACK_IMG =
+  'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=400&q=80&auto=format';
+
 const StationCard: FC<Props> = ({ station, onClick }) => {
-  const location = [station.address, station.provinceName].filter(Boolean).join(', ');
+  const address = [station.address, station.wardName, station.provinceName]
+    .filter(Boolean)
+    .join(', ');
 
   return (
     <Box
-      className="flex mb-3 rounded-xl overflow-hidden bg-white shadow-sm"
-      style={{ border: "1px solid #f0f0f0" }}
+      className="bg-white rounded-2xl overflow-hidden cursor-pointer"
+      style={{
+        boxShadow: '0 2px 12px rgba(0,0,0,0.08)',
+        border: '1px solid #F0F0F0',
+        marginBottom: 12,
+      }}
+      onClick={onClick}
     >
-      {/* Image — left side */}
-      <div className="flex-shrink-0" style={{ width: 120 }}>
-        <img
-          src={station.imageUrl ?? undefined}
-          alt={station.name}
-          style={{ width: 120, height: "100%", minHeight: 120, objectFit: "cover" }}
-          onError={(e) => {
-            (e.target as HTMLImageElement).src =
-              "https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=400&q=80&auto=format";
-          }}
-        />
-      </div>
+      <Box flex style={{ height: 110 }}>
+        {/* Image */}
+        <Box style={{ width: 110, flexShrink: 0, position: 'relative', overflow: 'hidden' }}>
+          <img
+            src={station.imageUrl ?? FALLBACK_IMG}
+            alt={station.name}
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMG; }}
+          />
+          {/* Active indicator */}
+          <Box
+            style={{
+              position: 'absolute',
+              top: 8,
+              left: 8,
+              width: 8,
+              height: 8,
+              borderRadius: '50%',
+              background: station.isActive ? '#22C55E' : '#9CA3AF',
+              boxShadow: station.isActive ? '0 0 0 2px rgba(34,197,94,0.3)' : 'none',
+            }}
+          />
+        </Box>
 
-      {/* Info — right side */}
-      <Box className="flex-1 flex flex-col p-3" style={{ minWidth: 0 }}>
-        {/* Station name */}
-        <p className="font-semibold text-gray-900 mb-2 leading-snug" style={{ fontSize: 14 }}>
-          {station.name}
-        </p>
-
-        {/* Type */}
-        <p className="text-gray-400 mb-1" style={{ fontSize: 11 }}>
-          {station.stationTypeName}
-        </p>
-
-        {/* Address */}
-        <div className="flex items-start gap-1 mb-2">
-          <MapPin size={13} color="#6b7280" className="flex-shrink-0 mt-0.5" />
-          <p className="text-gray-500 line-clamp-2" style={{ fontSize: 12 }}>
-            {location}
-          </p>
-        </div>
-
-        {/* Bottom row: points + action button */}
-        <div className="flex items-center justify-between mt-auto">
-          {station.defaultPoint != null && (
-            <span
-              className="rounded-full px-2 py-0.5 text-gray-600 font-medium"
-              style={{ fontSize: 11, background: "#f3f4f6", border: "1px solid #e5e7eb" }}
+        {/* Info */}
+        <Box
+          className="flex-1"
+          style={{ padding: '10px 12px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minWidth: 0 }}
+        >
+          {/* Top: name + type */}
+          <Box>
+            <p
+              style={{
+                fontSize: 13,
+                fontWeight: 700,
+                color: '#111827',
+                lineHeight: '18px',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+                overflow: 'hidden',
+                marginBottom: 4,
+              }}
             >
-              {station.defaultPoint} điểm
-            </span>
-          )}
-          <button
-            onClick={onClick}
-            className="flex items-center gap-0.5 font-medium rounded-full px-3 py-1 ml-auto"
-            style={{ fontSize: 12, background: "#fff7ed", color: "#ea580c", border: "1px solid #fed7aa" }}
-          >
-            Chi tiết
-            <ChevronRight size={13} strokeWidth={2.5} />
-          </button>
-        </div>
+              {station.name}
+            </p>
+            <Box
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                background: '#EEF7F1',
+                borderRadius: 6,
+                padding: '2px 7px',
+              }}
+            >
+              <p style={{ fontSize: 10, color: '#288F4E', fontWeight: 600 }}>
+                {station.stationTypeName}
+              </p>
+            </Box>
+          </Box>
+
+          {/* Bottom: address + points */}
+          <Box>
+            <Box flex className="items-start" style={{ gap: 4, marginBottom: 6 }}>
+              <MapPin size={11} color="#9CA3AF" style={{ marginTop: 2, flexShrink: 0 }} />
+              <p
+                style={{
+                  fontSize: 11,
+                  color: '#9CA3AF',
+                  lineHeight: '15px',
+                  overflow: 'hidden',
+                  display: '-webkit-box',
+                  WebkitLineClamp: 1,
+                  WebkitBoxOrient: 'vertical',
+                }}
+              >
+                {address}
+              </p>
+            </Box>
+
+            <Box flex className="items-center justify-between">
+              {station.defaultPoint != null ? (
+                <Box
+                  flex
+                  className="items-center"
+                  style={{
+                    gap: 4,
+                    background: 'linear-gradient(135deg, #FEF9EF, #FEF3C7)',
+                    border: '1px solid #FDE68A',
+                    borderRadius: 8,
+                    padding: '3px 8px',
+                  }}
+                >
+                  <Zap size={11} color="#D97706" fill="#D97706" strokeWidth={0} />
+                  <p style={{ fontSize: 11, fontWeight: 700, color: '#D97706' }}>
+                    +{station.defaultPoint} xu
+                  </p>
+                </Box>
+              ) : <Box />}
+
+              {station.minCheckinIntervalMinutes != null && (
+                <Box flex className="items-center" style={{ gap: 3 }}>
+                  <Clock size={10} color="#9CA3AF" />
+                  <p style={{ fontSize: 10, color: '#9CA3AF' }}>
+                    {station.minCheckinIntervalMinutes} phút/lần
+                  </p>
+                </Box>
+              )}
+            </Box>
+          </Box>
+        </Box>
       </Box>
     </Box>
   );

@@ -1,9 +1,26 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
+import { ChevronRight, Gift } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
 import { Reward } from '@/types/reward';
 import RewardItemCard from './item-card';
 import { useNavigate } from 'react-router';
+
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+
+const CardSkeleton: FC = () => (
+  <Box
+    className="flex-shrink-0 rounded-2xl overflow-hidden animate-pulse"
+    style={{ width: 148, background: '#F3F4F6' }}
+  >
+    <Box style={{ height: 96, background: '#E9EBED' }} />
+    <Box style={{ padding: '8px 10px 10px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <Box style={{ height: 10, width: '50%', background: '#E9EBED', borderRadius: 5 }} />
+      <Box style={{ height: 13, width: '90%', background: '#E9EBED', borderRadius: 5 }} />
+      <Box style={{ height: 13, width: '65%', background: '#E9EBED', borderRadius: 5 }} />
+    </Box>
+  </Box>
+);
 
 // ─── Category Row ─────────────────────────────────────────────────────────────
 
@@ -14,56 +31,37 @@ interface CategoryRowProps {
 
 const CategoryRow: FC<CategoryRowProps> = ({ category, cards }) => {
   const navigate = useNavigate();
-
-  const handleCardClick = (card: Reward) => {
-    navigate(`/rewards/${card.id}`);
-  };
-
-  const handleViewAll = () => {
-    navigate(`/rewards/category/${encodeURIComponent(category)}`);
-  };
-
-  // Show max 7 in the scroll row
-  const visibleCards = cards.slice(0, 7);
+  const visibleCards = cards.slice(0, 8);
+  const extra = cards.length - 8;
 
   return (
-    <Box className="mb-1">
-      {/* Row header */}
+    <Box style={{ paddingBottom: 4 }}>
+      {/* Header */}
       <Box flex className="items-center justify-between px-4 mb-3">
         <Box flex className="items-center" style={{ gap: 8 }}>
           <Box
-            className="rounded-full flex-shrink-0"
             style={{
               width: 4,
-              height: 18,
-              background: 'linear-gradient(180deg, #C49A6C, #A0784A)',
+              height: 20,
+              borderRadius: 2,
+              background: 'linear-gradient(180deg, #E8CFA0, #A0784A)',
+              flexShrink: 0,
             }}
           />
-          <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>
-            {category}
-          </p>
-          <Box
-            className="rounded-full"
-            style={{ background: '#F5F0E8', padding: '2px 8px' }}
-          >
-            <p style={{ fontSize: 11, color: '#A0784A', fontWeight: 600 }}>
-              {cards.length}
-            </p>
+          <p style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>{category}</p>
+          <Box style={{ background: '#FEF9EF', border: '1px solid #FDE68A', borderRadius: 100, padding: '1px 8px' }}>
+            <p style={{ fontSize: 11, color: '#D97706', fontWeight: 700 }}>{cards.length}</p>
           </Box>
         </Box>
 
         <Box
           flex
           className="items-center cursor-pointer"
-          style={{ gap: 3 }}
-          onClick={handleViewAll}
+          style={{ gap: 2 }}
+          onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
         >
-          <p style={{ fontSize: 13, color: '#C49A6C', fontWeight: 600 }}>
-            Xem tất cả
-          </p>
-          <span style={{ color: '#C49A6C', fontSize: 15, lineHeight: 1 }}>
-            ›
-          </span>
+          <p style={{ fontSize: 13, color: '#C49A6C', fontWeight: 600 }}>Xem tất cả</p>
+          <ChevronRight size={14} color="#C49A6C" strokeWidth={2.5} />
         </Box>
       </Box>
 
@@ -85,44 +83,31 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards }) => {
           <RewardItemCard
             key={card.id}
             card={card}
-            onClick={handleCardClick}
+            onClick={(c) => navigate(`/rewards/${c.id}`)}
           />
         ))}
 
-        {/* "View all" card at the end if more than 7 */}
-        {cards.length > 7 && (
+        {/* View-all end card */}
+        {extra > 0 && (
           <Box
-            onClick={handleViewAll}
-            className="flex-shrink-0 bg-white rounded-2xl flex flex-col items-center justify-center cursor-pointer"
+            onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
+            className="flex-shrink-0 rounded-2xl flex flex-col items-center justify-center cursor-pointer"
             style={{
               width: 100,
-              height: 155,
-              boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+              minHeight: 150,
+              background: 'linear-gradient(135deg, #FEF9EF, #FEF3C7)',
+              border: '1.5px dashed #F0C97A',
               gap: 8,
             }}
           >
             <Box
               className="flex items-center justify-center rounded-full"
-              style={{
-                width: 40,
-                height: 40,
-                background: 'linear-gradient(135deg, #C49A6C, #A0784A)',
-              }}
+              style={{ width: 40, height: 40, background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)' }}
             >
-              <span style={{ color: '#fff', fontSize: 20, lineHeight: 1 }}>
-                ›
-              </span>
+              <ChevronRight size={18} color="#fff" strokeWidth={2.5} />
             </Box>
-            <p
-              style={{
-                fontSize: 12,
-                color: '#A0784A',
-                fontWeight: 600,
-                textAlign: 'center',
-                lineHeight: '16px',
-              }}
-            >
-              Xem thêm {cards.length - 7} mã
+            <p style={{ fontSize: 11, color: '#A0784A', fontWeight: 700, textAlign: 'center', lineHeight: '15px' }}>
+              +{extra} ưu đãi
             </p>
           </Box>
         )}
@@ -140,26 +125,23 @@ const RewardsList: FC = () => {
 
   if (categories.length === 0) {
     return (
-      <Box
-        className="flex flex-col items-center justify-center py-16"
-        style={{ gap: 8 }}
-      >
-        <span style={{ fontSize: 40 }}>🎁</span>
-        <p style={{ fontSize: 14, color: '#888' }}>
-          Không có phần thưởng nào có sẵn
-        </p>
+      <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 12 }}>
+        <Box
+          className="flex items-center justify-center rounded-full"
+          style={{ width: 72, height: 72, background: '#FEF9EF' }}
+        >
+          <Gift size={32} color="#C49A6C" />
+        </Box>
+        <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>Chưa có phần thưởng</p>
+        <p style={{ fontSize: 13, color: '#9CA3AF' }}>Hãy quay lại sau nhé!</p>
       </Box>
     );
   }
 
   return (
-    <Box className="flex flex-col" style={{ gap: 20 }}>
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
       {categories.map((category) => (
-        <CategoryRow
-          key={category}
-          category={category}
-          cards={grouped[category]}
-        />
+        <CategoryRow key={category} category={category} cards={grouped[category]} />
       ))}
     </Box>
   );

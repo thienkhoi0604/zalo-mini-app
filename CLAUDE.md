@@ -57,7 +57,7 @@ Mock JSON fallbacks live in `src/mock/` and are used when the real API fails.
 Tailwind CSS v3 + inline `style={{}}` props (preferred for dynamic values). The zmp-ui `Box` component accepts `flex`, `flexDirection`, and other layout props directly. Lucide React is used for icons throughout (not the zmp icon set).
 
 ### Rank System
-Rank tiers are hardcoded in `src/pages/rank-benefits.tsx` as `RANK_TIERS`. The `resolveCurrentTier()` function matches the API's `currentRankCode` / `currentRankName` against the tier list using multiple fallback strategies (code match → name match) because the API's exact values may differ from the hardcoded codes.
+Rank tiers are hardcoded in `src/pages/rank-benefits/tiers.ts` as `RANK_TIERS`. The `resolveCurrentTier()` function matches the API's `currentRankCode` / `currentRankName` against the tier list using multiple fallback strategies (code match → name match) because the API's exact values may differ from the hardcoded codes. The page is split into sub-components: `hero-banner.tsx`, `progress-steps.tsx`, `rank-card.tsx`.
 
 ### Key Type Conventions
 - `RewardApiItem` → mapped to `Reward` via `mapApiItemToReward()` in `src/apis/rewards.ts`

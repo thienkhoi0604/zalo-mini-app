@@ -1,6 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
+import { MapPin, Calendar, FileText, Store, AlertCircle } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
 import { useUserStore } from '@/stores/user';
 
@@ -17,84 +18,124 @@ interface ConfirmBuyModalProps {
 }
 
 const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
-  visible,
-  name,
-  pointsRequired,
-  userPoints,
-  redeeming,
-  onConfirm,
-  onCancel,
+  visible, name, pointsRequired, userPoints, redeeming, onConfirm, onCancel,
 }) => {
   const hasEnough = userPoints >= pointsRequired;
+  const remaining = userPoints - pointsRequired;
 
   return (
     <Modal
       visible={visible}
-      title="Xác nhận đổi điểm"
+      title="Xác nhận đổi xu"
       onClose={onCancel}
       actions={[
         {
-          text: redeeming ? 'Đang xử lý...' : 'Xác nhận',
-          // primary: true,
+          text: redeeming ? 'Đang xử lý...' : 'Xác nhận đổi',
           disabled: !hasEnough || redeeming,
           onClick: onConfirm,
           highLight: hasEnough,
         },
-        {
-          text: 'Huỷ',
-          onClick: onCancel,
-        },
+        { text: 'Huỷ', onClick: onCancel },
       ]}
     >
-      <Box className="flex flex-col items-center" style={{ gap: 12, padding: '8px 0 4px' }}>
-        <p style={{ fontSize: 14, color: '#444', textAlign: 'center', lineHeight: '20px' }}>
-          Bạn có muốn đổi điểm để nhận
+      <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '4px 0 8px' }}>
+        <p style={{ fontSize: 13, color: '#6B7280', textAlign: 'center', lineHeight: '19px' }}>
+          Đổi xu để nhận
         </p>
-        <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a', textAlign: 'center' }}>
+        <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', textAlign: 'center', lineHeight: '22px' }}>
           {name}
         </p>
 
         <Box
-          className="w-full rounded-2xl"
-          style={{ background: '#F9F9F9', padding: '12px 16px' }}
+          style={{
+            background: '#F9FAFB',
+            borderRadius: 16,
+            padding: '12px 16px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 10,
+          }}
         >
-          <Box flex className="items-center justify-between" style={{ marginBottom: 6 }}>
-            <p style={{ fontSize: 13, color: '#888' }}>Chi phí</p>
-            <Box flex className="items-center" style={{ gap: 4 }}>
-              <span style={{ fontSize: 14 }}>🪙</span>
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#1a1a1a' }}>
-                {pointsRequired}
-              </p>
-            </Box>
-          </Box>
           <Box flex className="items-center justify-between">
-            <p style={{ fontSize: 13, color: '#888' }}>Điểm của bạn</p>
-            <Box flex className="items-center" style={{ gap: 4 }}>
-              <span style={{ fontSize: 14 }}>🪙</span>
-              <p
-                style={{
-                  fontSize: 14,
-                  fontWeight: 700,
-                  color: hasEnough ? '#288F4E' : '#EF4444',
-                }}
-              >
-                {userPoints}
+            <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí</p>
+            <Box flex className="items-center" style={{ gap: 5 }}>
+              <span style={{ fontSize: 15 }}>🪙</span>
+              <p style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
+                {pointsRequired.toLocaleString('vi-VN')}
               </p>
             </Box>
           </Box>
+
+          <Box style={{ height: 1, background: '#E5E7EB' }} />
+
+          <Box flex className="items-center justify-between">
+            <p style={{ fontSize: 13, color: '#6B7280' }}>Xu hiện có</p>
+            <Box flex className="items-center" style={{ gap: 5 }}>
+              <span style={{ fontSize: 15 }}>🪙</span>
+              <p style={{ fontSize: 15, fontWeight: 700, color: hasEnough ? '#288F4E' : '#EF4444' }}>
+                {userPoints.toLocaleString('vi-VN')}
+              </p>
+            </Box>
+          </Box>
+
+          {hasEnough && (
+            <>
+              <Box style={{ height: 1, background: '#E5E7EB' }} />
+              <Box flex className="items-center justify-between">
+                <p style={{ fontSize: 13, color: '#6B7280' }}>Còn lại sau khi đổi</p>
+                <Box flex className="items-center" style={{ gap: 5 }}>
+                  <span style={{ fontSize: 15 }}>🪙</span>
+                  <p style={{ fontSize: 15, fontWeight: 700, color: '#374151' }}>
+                    {remaining.toLocaleString('vi-VN')}
+                  </p>
+                </Box>
+              </Box>
+            </>
+          )}
         </Box>
 
         {!hasEnough && (
-          <p style={{ fontSize: 13, color: '#EF4444', textAlign: 'center' }}>
-            Bạn không đủ điểm để đổi phần thưởng này
-          </p>
+          <Box
+            flex
+            className="items-center rounded-xl"
+            style={{ gap: 8, background: '#FEF2F2', border: '1px solid #FECACA', padding: '10px 14px' }}
+          >
+            <AlertCircle size={16} color="#EF4444" style={{ flexShrink: 0 }} />
+            <p style={{ fontSize: 13, color: '#DC2626' }}>
+              Bạn cần thêm {(pointsRequired - userPoints).toLocaleString('vi-VN')} xu để đổi phần thưởng này
+            </p>
+          </Box>
         )}
       </Box>
     </Modal>
   );
 };
 
-// ─── Reward Detail Page ────────────────────────────────────────────────────────
+// ─── Section card ─────────────────────────────────────────────────────────────
+
+const SectionCard: FC<{ title: string; icon: React.ReactNode; children: React.ReactNode }> = ({ title, icon, children }) => (
+  <Box
+    className="bg-white rounded-2xl overflow-hidden"
+    style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
+  >
+    <Box
+      flex
+      className="items-center"
+      style={{ gap: 8, padding: '12px 16px', borderBottom: '1px solid #F3F4F6' }}
+    >
+      <Box
+        className="flex items-center justify-center rounded-lg flex-shrink-0"
+        style={{ width: 28, height: 28, background: '#F9FAFB' }}
+      >
+        {icon}
+      </Box>
+      <p style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>{title}</p>
+    </Box>
+    <Box style={{ padding: '12px 16px' }}>{children}</Box>
+  </Box>
+);
+
+// ─── Detail Page ──────────────────────────────────────────────────────────────
 
 const RewardDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -103,15 +144,11 @@ const RewardDetailPage: FC = () => {
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const { allRewards, loadRewardById, redeemReward, redeeming } = useRewardsStore();
-  const { user, pointWallet } = useUserStore();
+  const { pointWallet } = useUserStore();
   const [confirmVisible, setConfirmVisible] = useState(false);
 
   useEffect(() => {
-    if (id) {
-      loadRewardById(id).catch(() => {
-        openSnackbar({ text: 'Không thể tải thông tin thẻ', type: 'error' });
-      });
-    }
+    if (id) loadRewardById(id).catch(() => openSnackbar({ text: 'Không thể tải thông tin', type: 'error' }));
   }, [id]);
 
   const card = allRewards.find((c) => c.id === id);
@@ -121,33 +158,39 @@ const RewardDetailPage: FC = () => {
     try {
       await redeemReward(id);
       setConfirmVisible(false);
-      openSnackbar({ text: 'Đổi điểm thành công! Voucher đã được thêm vào tài khoản.', type: 'success' });
+      openSnackbar({ text: 'Đổi xu thành công! Voucher đã được thêm vào tài khoản.', type: 'success' });
       setTimeout(() => navigate('/my-vouchers', { replace: true }), 1200);
     } catch {
       setConfirmVisible(false);
-      openSnackbar({ text: 'Đổi điểm thất bại. Vui lòng thử lại.', type: 'error' });
+      openSnackbar({ text: 'Đổi xu thất bại. Vui lòng thử lại.', type: 'error' });
     }
   };
 
   if (!card) {
     return (
-      <Page className="flex-1 flex flex-col bg-gray-50 items-center justify-center">
-        <p style={{ fontSize: 14, color: '#888' }}>
-          Không tìm thấy phần thưởng.
-        </p>
+      <Page className="flex-1 flex flex-col items-center justify-center" style={{ background: '#F5F5F7' }}>
+        <Box className="flex flex-col items-center" style={{ gap: 12 }}>
+          <Box
+            className="flex items-center justify-center rounded-full"
+            style={{ width: 72, height: 72, background: '#FEF9EF' }}
+          >
+            <span style={{ fontSize: 32 }}>🎁</span>
+          </Box>
+          <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>Không tìm thấy phần thưởng</p>
+        </Box>
       </Page>
     );
   }
 
+  const userPoints = pointWallet?.currentBalance ?? 0;
+  const hasEnough = userPoints >= card.pointsRequired;
+
   return (
-    <Page
-      className="flex-1 flex flex-col"
-      style={{ background: '#F5F0E8', position: 'relative' }}
-    >
-      {/* Scrollable body */}
-      <Box className="flex-1 overflow-y-auto" style={{ paddingBottom: owned ? 0 : 84 }}>
-        {/* ── Hero image ── */}
-        <Box style={{ width: '100%', height: 220, flexShrink: 0, overflow: 'hidden' }}>
+    <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7', position: 'relative' }}>
+      <Box className="flex-1 overflow-y-auto" style={{ paddingBottom: owned ? 16 : 88 }}>
+
+        {/* Hero image + overlay */}
+        <Box style={{ position: 'relative', height: 240, overflow: 'hidden' }}>
           <img
             src={card.bannerImageUrl || card.thumbnailImageUrl}
             alt={card.name}
@@ -157,101 +200,154 @@ const RewardDetailPage: FC = () => {
                 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
             }}
           />
+          <Box
+            style={{
+              position: 'absolute',
+              inset: 0,
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.6) 100%)',
+            }}
+          />
+          {/* Category badge */}
+          <Box
+            style={{
+              position: 'absolute',
+              top: 12,
+              right: 12,
+              background: 'rgba(255,255,255,0.2)',
+              backdropFilter: 'blur(8px)',
+              border: '1px solid rgba(255,255,255,0.35)',
+              borderRadius: 100,
+              padding: '4px 12px',
+            }}
+          >
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>{card.category}</p>
+          </Box>
         </Box>
 
-        {/* ── Main info card ── */}
-        <Box
-          className="bg-white flex flex-col items-center"
-          style={{ margin: '12px 16px 0', borderRadius: 16, padding: '20px 20px 20px', gap: 8 }}
-        >
-          {card.brandLogoUrl && (
-            <img
-              src={card.brandLogoUrl}
-              alt={card.brandName}
-              style={{ width: 64, height: 64, borderRadius: 12, objectFit: 'cover', marginBottom: 4 }}
-            />
-          )}
-
-          <p style={{ fontSize: 17, fontWeight: 700, color: '#1a1a1a', textAlign: 'center', lineHeight: '24px' }}>
-            {card.name}
-          </p>
-
-          <Box flex className="items-center justify-center" style={{ gap: 6, marginTop: 2 }}>
-            <span style={{ fontSize: 22 }}>🪙</span>
-            <p style={{ fontSize: 22, fontWeight: 800, color: '#1a1a1a' }}>
-              {card.pointsRequired}
-            </p>
-            <p style={{ fontSize: 13, color: '#888' }}>điểm</p>
-          </Box>
-
-          {/* Validity */}
-          {(card.applicableTimeStart || card.applicableTimeEnd) && (
-            <p style={{ fontSize: 12, color: '#aaa', marginTop: 2 }}>
-              {card.applicableTimeStart
-                ? `Từ ${new Date(card.applicableTimeStart).toLocaleDateString('vi-VN')}`
-                : ''}
-              {card.applicableTimeEnd
-                ? ` — ${new Date(card.applicableTimeEnd).toLocaleDateString('vi-VN')}`
-                : ''}
-            </p>
-          )}
-        </Box>
-
-        {/* ── Description ── */}
-        {card.description && (
+        {/* Info card — overlapping hero */}
+        <Box style={{ padding: '0 16px', marginTop: -28, position: 'relative', zIndex: 2 }}>
           <Box
-            className="bg-white"
-            style={{ margin: '12px 16px 0', borderRadius: 16, padding: '16px 16px' }}
+            className="bg-white rounded-2xl"
+            style={{ padding: '20px', boxShadow: '0 4px 20px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', gap: 12 }}
           >
-            <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a', marginBottom: 8 }}>
-              Mô tả
-            </p>
-            <p style={{ fontSize: 13, color: '#444', lineHeight: '21px', whiteSpace: 'pre-line' }}>
-              {card.description}
-            </p>
-          </Box>
-        )}
-
-        {/* ── Cửa hàng áp dụng ── */}
-        {card.stores && card.stores.length > 0 && (
-          <Box
-            className="bg-white"
-            style={{ margin: '12px 16px 0', borderRadius: 16, padding: '16px 16px' }}
-          >
-            <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a', marginBottom: 12 }}>
-              Cửa hàng áp dụng ({card.stores.length})
-            </p>
-            <Box className="flex flex-col" style={{ gap: 10 }}>
-              {card.stores.slice(0, 3).map((store: { address: string }, i: number) => (
-                <Box key={i} flex className="items-start" style={{ gap: 8 }}>
-                  <span style={{ fontSize: 14, marginTop: 1 }}>📍</span>
-                  <p style={{ fontSize: 13, color: '#444', lineHeight: '19px', flex: 1 }}>
-                    {store.address}
+            {/* Brand + name */}
+            <Box flex className="items-start" style={{ gap: 12 }}>
+              {card.brandLogoUrl && (
+                <img
+                  src={card.brandLogoUrl}
+                  alt={card.brandName}
+                  style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover', flexShrink: 0, border: '1px solid #F0F0F0' }}
+                />
+              )}
+              <Box style={{ flex: 1, minWidth: 0 }}>
+                {card.brandName && (
+                  <p style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.4, marginBottom: 4 }}>
+                    {card.brandName}
                   </p>
-                </Box>
-              ))}
+                )}
+                <p style={{ fontSize: 17, fontWeight: 800, color: '#111827', lineHeight: '24px' }}>
+                  {card.name}
+                </p>
+              </Box>
             </Box>
-          </Box>
-        )}
 
-        {/* ── Điều khoản ── */}
-        {(card.terms || card.programNotes || card.usageGuide) && (
-          <Box
-            className="bg-white"
-            style={{ margin: '12px 16px 16px', borderRadius: 16, padding: '16px 16px' }}
-          >
-            <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a', marginBottom: 10 }}>
-              Điều khoản sử dụng
-            </p>
-            <p style={{ fontSize: 13, color: '#444', lineHeight: '21px' }}>
-              {card.terms || card.programNotes || card.usageGuide}
-            </p>
+            <Box style={{ height: 1, background: '#F3F4F6' }} />
+
+            {/* Points row */}
+            <Box flex className="items-center justify-between">
+              <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí đổi</p>
+              <Box
+                flex
+                className="items-center"
+                style={{
+                  gap: 6,
+                  background: 'linear-gradient(135deg, #FEF9EF, #FEF3C7)',
+                  border: '1px solid #FDE68A',
+                  borderRadius: 100,
+                  padding: '5px 14px',
+                }}
+              >
+                <span style={{ fontSize: 16 }}>🪙</span>
+                <p style={{ fontSize: 16, fontWeight: 800, color: '#D97706' }}>
+                  {card.pointsRequired.toLocaleString('vi-VN')}
+                </p>
+              </Box>
+            </Box>
+
+            {/* Validity */}
+            {(card.applicableTimeStart || card.applicableTimeEnd) && (
+              <Box flex className="items-center" style={{ gap: 6 }}>
+                <Calendar size={13} color="#9CA3AF" />
+                <p style={{ fontSize: 12, color: '#9CA3AF' }}>
+                  {card.applicableTimeStart
+                    ? `Từ ${new Date(card.applicableTimeStart).toLocaleDateString('vi-VN')}`
+                    : ''}
+                  {card.applicableTimeEnd
+                    ? ` – ${new Date(card.applicableTimeEnd).toLocaleDateString('vi-VN')}`
+                    : ''}
+                </p>
+              </Box>
+            )}
+
+            {/* Expired badge */}
+            {card.status === 'expired' && (
+              <Box
+                flex
+                className="items-center rounded-xl"
+                style={{ gap: 7, background: '#FEF2F2', border: '1px solid #FECACA', padding: '8px 12px' }}
+              >
+                <AlertCircle size={14} color="#EF4444" />
+                <p style={{ fontSize: 12, color: '#DC2626', fontWeight: 600 }}>Phần thưởng này đã hết hạn</p>
+              </Box>
+            )}
           </Box>
-        )}
+        </Box>
+
+        {/* Content sections */}
+        <Box style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {card.description && (
+            <SectionCard title="Mô tả" icon={<FileText size={15} color="#288F4E" />}>
+              <p style={{ fontSize: 13, color: '#4B5563', lineHeight: '21px', whiteSpace: 'pre-line' }}>
+                {card.description}
+              </p>
+            </SectionCard>
+          )}
+
+          {card.stores && card.stores.length > 0 && (
+            <SectionCard
+              title={`Cửa hàng áp dụng (${card.stores.length})`}
+              icon={<Store size={15} color="#7C3AED" />}
+            >
+              <Box style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+                {card.stores.slice(0, 5).map((store, i) => (
+                  <Box key={i} flex className="items-start" style={{ gap: 10 }}>
+                    <MapPin size={14} color="#9CA3AF" style={{ marginTop: 2, flexShrink: 0 }} />
+                    <p style={{ fontSize: 13, color: '#374151', lineHeight: '19px', flex: 1 }}>
+                      {store.address}
+                    </p>
+                  </Box>
+                ))}
+                {card.stores.length > 5 && (
+                  <p style={{ fontSize: 12, color: '#9CA3AF', marginTop: 2 }}>
+                    và {card.stores.length - 5} địa điểm khác
+                  </p>
+                )}
+              </Box>
+            </SectionCard>
+          )}
+
+          {(card.terms || card.programNotes || card.usageGuide) && (
+            <SectionCard title="Điều khoản sử dụng" icon={<AlertCircle size={15} color="#D97706" />}>
+              <p style={{ fontSize: 13, color: '#4B5563', lineHeight: '21px' }}>
+                {card.terms || card.programNotes || card.usageGuide}
+              </p>
+            </SectionCard>
+          )}
+        </Box>
       </Box>
 
-      {/* ── Sticky buy button ── */}
-      {!owned && (
+      {/* Sticky bottom bar */}
+      {!owned && card.status !== 'expired' && (
         <Box
           style={{
             position: 'absolute',
@@ -260,29 +356,45 @@ const RewardDetailPage: FC = () => {
             right: 0,
             padding: '12px 16px',
             background: '#fff',
-            boxShadow: '0 -2px 16px rgba(0,0,0,0.08)',
+            boxShadow: '0 -4px 20px rgba(0,0,0,0.1)',
           }}
         >
           <Box flex className="items-center" style={{ gap: 10 }}>
-            {/* Points balance */}
-            <Box flex className="items-center" style={{ gap: 4 }}>
-              <span style={{ fontSize: 16 }}>🪙</span>
-              <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>
-                {pointWallet?.currentBalance ?? 0}
+            {/* Balance */}
+            <Box
+              style={{
+                background: '#F9FAFB',
+                border: '1px solid #E5E7EB',
+                borderRadius: 12,
+                padding: '8px 12px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 5,
+                flexShrink: 0,
+              }}
+            >
+              <span style={{ fontSize: 15 }}>🪙</span>
+              <p style={{ fontSize: 14, fontWeight: 700, color: hasEnough ? '#111827' : '#EF4444' }}>
+                {userPoints.toLocaleString('vi-VN')}
               </p>
             </Box>
 
+            {/* CTA */}
             <Box
               onClick={() => setConfirmVisible(true)}
               className="flex-1 flex items-center justify-center cursor-pointer"
               style={{
-                background: 'linear-gradient(135deg, #2D9E58 0%, #1A6B38 100%)',
-                height: 52,
+                background: hasEnough
+                  ? 'linear-gradient(135deg, #2FA85F, #1A6B38)'
+                  : '#E5E7EB',
+                height: 50,
                 borderRadius: 14,
+                gap: 6,
               }}
             >
-              <p style={{ color: '#fff', fontWeight: 700, fontSize: 16 }}>
-                Đổi {card.pointsRequired} điểm
+              <span style={{ fontSize: 16 }}>🪙</span>
+              <p style={{ color: hasEnough ? '#fff' : '#9CA3AF', fontWeight: 700, fontSize: 15 }}>
+                Đổi {card.pointsRequired.toLocaleString('vi-VN')} xu
               </p>
             </Box>
           </Box>
@@ -293,7 +405,7 @@ const RewardDetailPage: FC = () => {
         visible={confirmVisible}
         name={card.name}
         pointsRequired={card.pointsRequired}
-        userPoints={pointWallet?.currentBalance ?? 0}
+        userPoints={userPoints}
         redeeming={redeeming}
         onConfirm={handleBuy}
         onCancel={() => setConfirmVisible(false)}
