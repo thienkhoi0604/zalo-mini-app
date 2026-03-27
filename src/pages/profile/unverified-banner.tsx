@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { useToBeImplemented } from '@/hooks';
+import { useNavigate } from 'react-router';
 
 const UnverifiedBanner: FC = () => {
-  const onClick = useToBeImplemented();
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -26,13 +26,13 @@ const UnverifiedBanner: FC = () => {
           Tài khoản chưa xác thực
         </p>
         <p style={{ fontSize: 13, color: '#555', marginTop: 3, lineHeight: '18px' }}>
-          Vui lòng xác thực để nhận các đặc quyền và tài khoản được bảo mật tốt nhất.
+          Vui lòng xác thực để nhận các đặc quyền và sử dụng điểm.
         </p>
         <p
-          onClick={onClick}
+          onClick={() => navigate('/verify-vehicle')}
           style={{ color: '#A0784A', fontWeight: 600, fontSize: 14, marginTop: 8, cursor: 'pointer' }}
         >
-          Xác thực ngay
+          Xác thực ngay →
         </p>
       </Box>
     </Box>

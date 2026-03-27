@@ -1,10 +1,10 @@
 import axiosClient from './client';
 
 export interface UploadImageResponse {
-  success: boolean;
-  data: {
-    url: string;
-  };
+  url: string;
+  fileName: string;
+  sizeKb: number;
+  message: string;
 }
 
 export async function uploadImage(file: File): Promise<string> {
@@ -15,5 +15,5 @@ export async function uploadImage(file: File): Promise<string> {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 
-  return data.data.url;
+  return data.url;
 }

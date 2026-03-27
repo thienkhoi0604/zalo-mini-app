@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useRef } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { Gift } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
@@ -13,11 +13,12 @@ type Tab = 'unused' | 'used';
 
 interface TabButtonProps {
   label: string;
+  count: number;
   active: boolean;
   onClick: () => void;
 }
 
-const TabButton: FC<TabButtonProps> = ({ label, active, onClick }) => (
+const TabButton: FC<TabButtonProps> = ({ label, count, active, onClick }) => (
   <button
     onClick={onClick}
     style={{
@@ -31,10 +32,29 @@ const TabButton: FC<TabButtonProps> = ({ label, active, onClick }) => (
       transition: 'all 0.2s',
       background: active ? '#fff' : 'transparent',
       color: active ? '#288F4E' : '#767A7F',
-      boxShadow: active ? '0 1px 4px rgba(0,0,0,0.1)' : 'none',
+      boxShadow: active ? '0 2px 6px rgba(0,0,0,0.1)' : 'none',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: 6,
     }}
   >
     {label}
+    {count > 0 && (
+      <span
+        style={{
+          background: active ? '#288F4E' : '#D1D5DB',
+          color: '#fff',
+          fontSize: 10,
+          fontWeight: 700,
+          padding: '1px 6px',
+          borderRadius: 100,
+          lineHeight: '14px',
+        }}
+      >
+        {count}
+      </span>
+    )}
   </button>
 );
 
@@ -43,17 +63,29 @@ const TabButton: FC<TabButtonProps> = ({ label, active, onClick }) => (
 const EmptyState: FC<{ tab: Tab }> = ({ tab }) => (
   <Box
     className="flex flex-col items-center justify-center"
-    style={{ paddingTop: 60, paddingBottom: 40, gap: 12 }}
+    style={{ paddingTop: 60, paddingBottom: 40, gap: 14 }}
   >
     <Box
       className="flex items-center justify-center rounded-full"
-      style={{ width: 72, height: 72, background: '#EEF7F1' }}
+      style={{
+        width: 80,
+        height: 80,
+        background: 'linear-gradient(145deg, #DCFCE7, #BBF7D0)',
+        boxShadow: '0 4px 16px rgba(40,143,78,0.15)',
+      }}
     >
-      <Gift size={36} color="#288F4E" />
+      <Gift size={38} color="#288F4E" strokeWidth={1.6} />
     </Box>
-    <p style={{ fontSize: 14, color: '#9CA3AF', textAlign: 'center', lineHeight: '20px' }}>
-      {tab === 'used' ? 'Bạn chưa sử dụng voucher nào' : 'Bạn chưa có voucher nào\nHãy đổi điểm để nhận voucher!'}
-    </p>
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 6, alignItems: 'center' }}>
+      <p style={{ fontSize: 15, fontWeight: 700, color: '#374151', textAlign: 'center' }}>
+        {tab === 'used' ? 'Chưa có voucher đã dùng' : 'Chưa có voucher nào'}
+      </p>
+      <p style={{ fontSize: 13, color: '#9CA3AF', textAlign: 'center', lineHeight: '20px' }}>
+        {tab === 'used'
+          ? 'Các voucher bạn đã sử dụng sẽ hiển thị ở đây'
+          : 'Hãy đổi điểm xanh để nhận voucher ưu đãi!'}
+      </p>
+    </Box>
   </Box>
 );
 
@@ -61,16 +93,23 @@ const EmptyState: FC<{ tab: Tab }> = ({ tab }) => (
 
 const VoucherSkeleton: FC = () => (
   <Box
-    className="bg-white rounded-2xl overflow-hidden flex"
-    style={{ boxShadow: '0 2px 8px rgba(0,0,0,0.07)', height: 100 }}
+    style={{
+      background: '#fff',
+      borderRadius: 16,
+      overflow: 'hidden',
+      display: 'flex',
+      height: 96,
+      boxShadow: '0 1px 6px rgba(0,0,0,0.06)',
+      border: '1px solid #F3F4F6',
+    }}
   >
-    <Box style={{ width: 90, background: '#E9EBED' }} className="animate-pulse" />
-    <Box style={{ width: 16 }} />
-    <Box className="flex-1 py-3 pr-3" style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-      <Box style={{ width: 64, height: 16, background: '#E9EBED', borderRadius: 8 }} className="animate-pulse" />
-      <Box style={{ width: '80%', height: 14, background: '#E9EBED', borderRadius: 6 }} className="animate-pulse" />
-      <Box style={{ width: '50%', height: 12, background: '#E9EBED', borderRadius: 6 }} className="animate-pulse" />
-      <Box style={{ width: 72, height: 20, background: '#E9EBED', borderRadius: 6 }} className="animate-pulse" />
+    <Box style={{ width: 76, background: '#E9EBED' }} className="animate-pulse" />
+    <Box style={{ width: 14 }} />
+    <Box style={{ flex: 1, padding: '12px 8px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <Box style={{ width: 60, height: 16, background: '#E9EBED', borderRadius: 8 }} className="animate-pulse" />
+      <Box style={{ width: '75%', height: 13, background: '#E9EBED', borderRadius: 6 }} className="animate-pulse" />
+      <Box style={{ width: '45%', height: 11, background: '#E9EBED', borderRadius: 6 }} className="animate-pulse" />
+      <Box style={{ width: 68, height: 18, background: '#E9EBED', borderRadius: 5 }} className="animate-pulse" />
     </Box>
   </Box>
 );
@@ -114,8 +153,18 @@ const MyVouchersPage: FC = () => {
         className="mx-4 mb-3 flex"
         style={{ background: '#EEF7F1', borderRadius: 100, padding: 3, gap: 2 }}
       >
-        <TabButton label="Chưa dùng" active={activeTab === 'unused'} onClick={() => setActiveTab('unused')} />
-        <TabButton label="Đã dùng" active={activeTab === 'used'} onClick={() => setActiveTab('used')} />
+        <TabButton
+          label="Chưa dùng"
+          count={unusedVouchers.length}
+          active={activeTab === 'unused'}
+          onClick={() => setActiveTab('unused')}
+        />
+        <TabButton
+          label="Đã dùng"
+          count={usedVouchers.length}
+          active={activeTab === 'used'}
+          onClick={() => setActiveTab('used')}
+        />
       </Box>
 
       {/* List */}

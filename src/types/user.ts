@@ -1,3 +1,15 @@
+export type VehicleInfo = {
+  id?: string;
+  licensePlate: string;
+  vehicleTypeId?: string;
+  vehicleTypeName?: string;
+  photoUrl1: string;
+  photoUrl2?: string;
+  status?: string;
+  submittedAt?: string;
+  approvedAt?: string;
+};
+
 export type UserRank = {
   currentTotalSpent: number;
   currentRankCode: string;
@@ -24,6 +36,7 @@ export type User = {
   latitude?: number;
   longitude?: number;
   isVehicleApproved?: boolean;
+  vehicleStatus?: string;
   status?: string;
   lastLoginAt?: string;
   createdAt?: string;

@@ -40,4 +40,7 @@ export interface StationsApiResponse {
 export interface GetStationsParams {
   pageNumber?: number;
   pageSize?: number;
+  search?: string;
+  provinceCode?: string;
+  wardCode?: string;
 }

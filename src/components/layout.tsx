@@ -16,6 +16,8 @@ import RegisterPage from '@/pages/register';
 import MyVouchersPage from '@/pages/my-vouchers';
 import RankBenefitsPage from '@/pages/rank-benefits';
 import CheckinHistoryPage from '@/pages/checkin-history';
+import VerifyVehiclePage from '@/pages/verify-vehicle';
+import VehicleInfoPage from '@/pages/vehicle-info';
 import { getSystemInfo } from 'zmp-sdk';
 import { ScrollRestoration } from './scroll-restoration';
 import { useUserStore } from '@/stores/user';
@@ -50,6 +52,8 @@ const getRouteTitle = (pathname: string): string => {
   if (pathname === '/my-vouchers') return 'Voucher của tôi';
   if (pathname === '/rank-benefits') return 'Đặc quyền';
   if (pathname === '/checkin-history') return 'Lịch sử điểm';
+  if (pathname === '/verify-vehicle') return 'Xác thực xe';
+  if (pathname === '/vehicle-info') return 'Thông tin xe';
   if (pathname.startsWith('/rewards/category/'))
     return decodeURIComponent(pathname.replace('/rewards/category/', ''));
   if (pathname.startsWith('/rewards/')) return 'Chi tiết phần thưởng';
@@ -250,6 +254,22 @@ export const Layout: FC = () => {
             element={
               <ProtectedRoute>
                 <CheckinHistoryPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/verify-vehicle"
+            element={
+              <ProtectedRoute>
+                <VerifyVehiclePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/vehicle-info"
+            element={
+              <ProtectedRoute>
+                <VehicleInfoPage />
               </ProtectedRoute>
             }
           />

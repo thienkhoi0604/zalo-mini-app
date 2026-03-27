@@ -5,6 +5,7 @@ import { Zap } from 'lucide-react';
 import { useStationsStore } from '@/stores/stations';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import StationCard from './station-card';
+import SearchFilter from './search-filter';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -45,12 +46,13 @@ const LoadingMore: FC = () => (
 
 export const StationsPage: FC = () => {
   const navigate = useNavigate();
-  const { stations, loading, hasMore, loadStations, loadMore } = useStationsStore();
+  const { stations, loading, hasMore, loadStations, loadMore, search, provinceCode, wardCode } = useStationsStore();
 
   useEffect(() => { loadStations(); }, []);
 
   const sentinelRef = useInfiniteScroll(loadMore, hasMore, loading);
   const isInitialLoad = loading && stations.length === 0;
+  const hasActiveFilters = search || provinceCode || wardCode;
 
   return (
     <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
@@ -69,15 +71,11 @@ export const StationsPage: FC = () => {
             </Box>
             <p style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>Danh sách trạm sạc</p>
           </Box>
-          {!isInitialLoad && stations.length > 0 && (
-            <Box style={{ background: '#EEF7F1', borderRadius: 100, padding: '3px 10px' }}>
-              <p style={{ fontSize: 12, color: '#288F4E', fontWeight: 600 }}>
-                {stations.length} trạm
-              </p>
-            </Box>
-          )}
         </Box>
       </Box>
+
+      {/* Search & filters */}
+      <SearchFilter />
 
       <Box className="flex-1 overflow-auto px-4 pt-4 pb-4">
         {isInitialLoad ? (
@@ -95,9 +93,13 @@ export const StationsPage: FC = () => {
             >
               <Zap size={32} color="#288F4E" fill="#288F4E" strokeWidth={0} />
             </Box>
-            <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>Chưa có trạm sạc</p>
+            <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>
+              {hasActiveFilters ? 'Không tìm thấy trạm sạc' : 'Chưa có trạm sạc'}
+            </p>
             <p style={{ fontSize: 13, color: '#9CA3AF', textAlign: 'center' }}>
-              Hiện chưa có trạm sạc nào trong khu vực
+              {hasActiveFilters
+                ? 'Thử thay đổi bộ lọc để tìm kết quả khác'
+                : 'Hiện chưa có trạm sạc nào trong khu vực'}
             </p>
           </Box>
         ) : (

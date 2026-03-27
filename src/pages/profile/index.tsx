@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { Gift, QrCode, UserCircle2, UserPlus, ShieldCheck, History } from 'lucide-react';
+import { Gift, QrCode, UserCircle2, UserPlus, ShieldCheck, History, Car } from 'lucide-react';
 import { useToBeImplemented } from '@/hooks';
 import { useUserStore } from '@/stores/user';
 import { useRewardsStore } from '@/stores/rewards';
@@ -29,17 +29,23 @@ const Personal: FC = () => {
     <Box className="py-7">
       <MemberCard />
 
-      {user && !user.verified && <UnverifiedBanner />}
+      {user && user.vehicleStatus !== 'Approved' && <UnverifiedBanner />}
 
       <SectionList
         title="Tiện ích"
-        onClick={() => navigate('/my-vouchers')}
         items={[
           {
             icon: <Gift size={18} color="#A0784A" />,
             label: 'Voucher của bạn',
             sub: unusedCount > 0 ? `${unusedCount} voucher chưa dùng` : 'Chưa có voucher',
+            onPress: () => navigate('/my-vouchers'),
           },
+          ...(user?.vehicleStatus === 'Approved' ? [{
+            icon: <Car size={18} color="#A0784A" />,
+            label: 'Thông tin xe của tôi',
+            sub: 'Xe điện đã được xác thực',
+            onPress: () => navigate('/vehicle-info'),
+          }] : []),
         ]}
       />
 
