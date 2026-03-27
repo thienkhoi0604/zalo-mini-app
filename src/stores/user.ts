@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { getUserInfo } from 'zmp-sdk';
-import { getZaloAccessToken, getZaloLocationToken } from '@/helpers/user';
+import { getZaloAccessToken, getZaloLocationToken, requestLocationPermissionOnce } from '@/helpers/user';
 import {
   loginWithZaloUser,
   clearTokens,
@@ -62,6 +62,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
 
       const [user, pointWallet] = await Promise.all([fetchUserInfo(), fetchPointWallet()]);
       set({ user, pointWallet, isAuthenticated: true, authLoading: false });
+      requestLocationPermissionOnce();
     } catch (error) {
       console.error('Auto-login failed:', error);
       clearTokens();
@@ -92,6 +93,7 @@ export const useUserStore = create<UserStore>((set, get) => ({
       await loginWithZaloUser(zaloAccessToken, locationToken);
       const [user, pointWallet] = await Promise.all([fetchUserInfo(), fetchPointWallet()]);
       set({ user, pointWallet, isAuthenticated: true, authLoading: false });
+      requestLocationPermissionOnce();
       return 'success';
     } catch (error) {
       console.error('Login failed:', error);

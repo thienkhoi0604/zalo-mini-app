@@ -36,7 +36,7 @@ const MemberCard: FC = () => {
       <Box className="relative px-4 pt-5 pb-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
         {/* Avatar */}
         <Box
-          className="flex items-center justify-center rounded-full"
+          className="flex items-center justify-center rounded-full overflow-hidden"
           style={{
             width: 64,
             height: 64,
@@ -45,7 +45,16 @@ const MemberCard: FC = () => {
             flexShrink: 0,
           }}
         >
-          <span style={{ fontSize: 20, fontWeight: 700, color: '#7A5230' }}>{initials}</span>
+          {user?.avatarUrl ? (
+            <img
+              src={user.avatarUrl}
+              alt={user.fullName ?? ''}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+            />
+          ) : (
+            <span style={{ fontSize: 20, fontWeight: 700, color: '#7A5230' }}>{initials}</span>
+          )}
         </Box>
 
         {/* Name */}
