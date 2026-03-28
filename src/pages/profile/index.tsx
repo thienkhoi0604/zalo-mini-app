@@ -15,7 +15,7 @@ import QRCodeSheet from './qr-code-sheet';
 const Personal: FC = () => {
   const onClick = useToBeImplemented();
   const navigate = useNavigate();
-  const { user } = useUserStore();
+  const { user, pointWallet } = useUserStore();
   const { userRewards, loadUserRewards } = useRewardsStore();
   const [qrSheetVisible, setQrSheetVisible] = useState(false);
 
@@ -29,7 +29,7 @@ const Personal: FC = () => {
     <Box className="py-7">
       <MemberCard />
 
-      {user && user.vehicleStatus !== 'Approved' && <UnverifiedBanner />}
+      {user && pointWallet?.vehicleStatus !== 'Approved' && <UnverifiedBanner />}
 
       <SectionList
         title="Tiện ích"
@@ -40,7 +40,7 @@ const Personal: FC = () => {
             sub: unusedCount > 0 ? `${unusedCount} voucher chưa dùng` : 'Chưa có voucher',
             onPress: () => navigate('/my-vouchers'),
           },
-          ...(user?.vehicleStatus === 'Approved' ? [{
+          ...(pointWallet?.vehicleStatus === 'Approved' ? [{
             icon: <Car size={18} color="#A0784A" />,
             label: 'Thông tin xe của tôi',
             sub: 'Xe điện đã được xác thực',
