@@ -1,8 +1,9 @@
-import React, { FC, useMemo } from "react";
+import React, { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Box } from "zmp-ui";
 import { Zap, ChevronRight, MapPin } from "lucide-react";
-import { MOCK_STATIONS } from '@/apis/stations';
+import { Station } from '@/types/station';
+import { getStations } from '@/apis/stations';
 
 const SectionHeader: FC<{ title: string; onViewAll: () => void }> = ({ title, onViewAll }) => (
   <Box flex className="items-center justify-between px-4 mb-3">
@@ -33,14 +34,16 @@ const SectionHeader: FC<{ title: string; onViewAll: () => void }> = ({ title, on
 
 export const TopStationsCarousel: FC = () => {
   const navigate = useNavigate();
+  const [topStations, setTopStations] = useState<Station[]>([]);
 
-  const topStations = useMemo(
-    () =>
-      [...MOCK_STATIONS]
+  useEffect(() => {
+    getStations({ pageNumber: 1, pageSize: 20 }).then((res) => {
+      const sorted = [...(res.data.items ?? [])]
         .sort((a, b) => (b.defaultPoint || 0) - (a.defaultPoint || 0))
-        .slice(0, 5),
-    [],
-  );
+        .slice(0, 5);
+      setTopStations(sorted);
+    });
+  }, []);
 
   if (topStations.length === 0) return null;
 

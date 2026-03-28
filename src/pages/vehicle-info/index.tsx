@@ -7,8 +7,9 @@ import { VehicleInfo } from '@/types/user';
 import { VEHICLE_TYPES, VEHICLE_TYPE_IDS } from '@/pages/verify-vehicle/vehicle-type-selector';
 
 // Reverse lookup: vehicleTypeId → VehicleType
-const vehicleTypeById = Object.fromEntries(
-  VEHICLE_TYPES.map((t) => [VEHICLE_TYPE_IDS[t.code], t]),
+const vehicleTypeById: Record<string, typeof VEHICLE_TYPES[number]> = VEHICLE_TYPES.reduce(
+  (acc, t) => { acc[VEHICLE_TYPE_IDS[t.code]] = t; return acc; },
+  {} as Record<string, typeof VEHICLE_TYPES[number]>,
 );
 
 const formatDate = (iso?: string) => {

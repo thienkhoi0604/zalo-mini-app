@@ -1,7 +1,6 @@
 import axiosClient from './client';
 import { User, VehicleInfo } from '@/types/user';
 import { PointWallet } from '@/types/point-wallet';
-import pointWalletJson from '@/mock/user-point-wallet.json';
 
 export interface VerifyVehiclePayload {
   vehicleTypeId: string;
@@ -32,8 +31,7 @@ export async function fetchPointWallet(): Promise<PointWallet> {
   try {
     const { data } = await axiosClient.get<{ data: PointWallet }>('/me/point-wallet');
     return data.data;
-  } catch (error) {
-    console.warn('Failed to fetch point wallet, falling back to mock:', error);
-    return pointWalletJson.data as PointWallet;
+  } catch {
+    return { currentBalance: 0, lockedBalance: 0, vehicleStatus: '', totalEarned: 0, totalSpent: 0, lastEarnedAt: null, lastSpentAt: null };
   }
 }

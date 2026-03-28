@@ -1,8 +1,9 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Box, Page } from 'zmp-ui';
 import { MapPin, Navigation, Zap, Clock, RotateCcw, Store } from 'lucide-react';
-import { MOCK_STATIONS } from '@/apis/stations';
+import { Station } from '@/types/station';
+import { getStationById } from '@/apis/stations';
 import StatCard from './stat-card';
 import InfoRow from './info-row';
 
@@ -11,7 +12,25 @@ const FALLBACK_IMG =
 
 const StationDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
-  const station = useMemo(() => MOCK_STATIONS.find((s) => s.id === id), [id]);
+  const [station, setStation] = useState<Station | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!id) return;
+    setLoading(true);
+    getStationById(id).then((s) => {
+      setStation(s);
+      setLoading(false);
+    });
+  }, [id]);
+
+  if (loading) {
+    return (
+      <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+        <Box className="flex flex-col items-center justify-center py-20" />
+      </Page>
+    );
+  }
 
   if (!station) {
     return (

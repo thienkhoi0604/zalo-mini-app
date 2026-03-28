@@ -1,0 +1,57 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "items": [
+      {
+        "id": "24b2dbc3-4712-4029-94ae-8236b4e5ff74",
+        "code": "GOLD",
+        "name": "Gold",
+        "description": "Khách hàng VIP",
+        "minTotalSpent": 5000,
+        "maxTotalSpent": 0,
+        "priority": 3,
+        "iconUrl": "https://admin.ecogreenhub.vn/api/upload/image/temp/dc0a40b169bb49cc853593eb01c22180.webp",
+        "rewardProductDiscountPercent": 30,
+        "bonusPointCheckinPercent": 30,
+        "rewardExchangeCoinDiscountPercent": 30,
+        "isActive": true
+      },
+      {
+        "id": "30af5a0f-482d-43ab-b970-dfd82c8fe41f",
+        "code": "SILVER",
+        "name": "Silver",
+        "description": "Khách hàng thân thiết",
+        "minTotalSpent": 1000,
+        "maxTotalSpent": 4999,
+        "priority": 2,
+        "iconUrl": "https://admin.ecogreenhub.vn/api/upload/image/temp/51e895d1214148d89691f08760e8b9e8.webp",
+        "rewardProductDiscountPercent": 20,
+        "bonusPointCheckinPercent": 20,
+        "rewardExchangeCoinDiscountPercent": 20,
+        "isActive": true
+      },
+      {
+        "id": "c04270ce-52d4-4c0b-9083-3830c9edbd7a",
+        "code": "BRONZE",
+        "name": "Bronze",
+        "description": "Khách hàng mới",
+        "minTotalSpent": 0,
+        "maxTotalSpent": 999,
+        "priority": 1,
+        "iconUrl": "https://admin.ecogreenhub.vn/api/upload/image/temp/3d854f88b1cb4cb59ef9f10b3278ff01.webp",
+        "rewardProductDiscountPercent": 10,
+        "bonusPointCheckinPercent": 10,
+        "rewardExchangeCoinDiscountPercent": 10,
+        "isActive": true
+      }
+    ],
+    "pageNumber": 1,
+    "pageSize": 20,
+    "totalCount": 3,
+    "totalPages": 1,
+    "hasPrevious": false,
+    "hasNext": false
+  },
+  "errors": null
+}

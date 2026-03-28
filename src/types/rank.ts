@@ -1,11 +1,14 @@
-export interface Benefit {
-  icon: string;
-  label: string;
-}
-
-export interface RankTier {
+export interface AppRank {
+  id: string;
   code: string;
   name: string;
-  color: string;
-  benefits: Benefit[];
+  description: string;
+  minTotalSpent: number;
+  maxTotalSpent: number;
+  priority: number;
+  iconUrl: string;
+  rewardProductDiscountPercent: number;
+  bonusPointCheckinPercent: number;
+  rewardExchangeCoinDiscountPercent: number;
+  isActive: boolean;
 }

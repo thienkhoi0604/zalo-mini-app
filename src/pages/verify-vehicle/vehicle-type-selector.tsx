@@ -10,7 +10,7 @@ export interface VehicleType {
 }
 
 export const VEHICLE_TYPE_IDS: Record<string, string> = {
-  ELECTRIC_CAR: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+  ELECTRIC_CAR: '0afdcf7e-0c88-4e1a-b34d-2d4d1067c567',
 };
 
 export const VEHICLE_TYPES: VehicleType[] = [

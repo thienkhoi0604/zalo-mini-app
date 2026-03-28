@@ -1,8 +1,5 @@
-import { Reward, UserReward, RewardApiItem, GetRewardsParams, GetUserRewardsParams, REWARD_TYPES } from '@/types/reward';
+import { Reward, UserReward, RewardApiItem, GetRewardsParams, GetUserRewardsParams } from '@/types/reward';
 import { PaginatedApiResponse } from '@/types/common';
-import rewardsJson from '@/mock/rewards.json';
-import rewardDetailJson from '@/mock/reward-detail.json';
-import myVouchersJson from '@/mock/my-vouchers.json';
 import axiosClient from './client';
 
 function mapApiItemToReward(item: RewardApiItem): Reward {
@@ -33,19 +30,17 @@ export async function getRewards(params: GetRewardsParams = {}): Promise<Reward[
       params: { pageNumber, pageSize, ...(type && { type }) },
     });
     return (data.data.items ?? []).map(mapApiItemToReward);
-  } catch (error) {
-    console.warn('Failed to fetch rewards from API, falling back to mock data:', error);
-    return (rewardsJson.data.items as RewardApiItem[]).map(mapApiItemToReward);
+  } catch {
+    return [];
   }
 }
 
-export async function getRewardById(id: string): Promise<Reward> {
+export async function getRewardById(id: string): Promise<Reward | null> {
   try {
     const { data } = await axiosClient.get<{ data: RewardApiItem }>(`/Rewards/${id}`);
     return mapApiItemToReward(data.data);
-  } catch (error) {
-    console.warn('Failed to fetch reward detail from API, falling back to mock data:', error);
-    return mapApiItemToReward(rewardDetailJson.data as RewardApiItem);
+  } catch {
+    return null;
   }
 }
 
@@ -71,20 +66,10 @@ export async function getUserRewards(
         hasNext: start + pageSize < all.length,
       },
     };
-  } catch (error) {
-    console.warn('Failed to fetch user rewards from API, falling back to mock data:', error);
-    const all = myVouchersJson.data as UserReward[];
-    const start = (pageNumber - 1) * pageSize;
-    const items = all.slice(start, start + pageSize);
+  } catch {
     return {
-      success: true,
-      data: {
-        items,
-        pageNumber,
-        pageSize,
-        totalCount: all.length,
-        hasNext: start + pageSize < all.length,
-      },
+      success: false,
+      data: { items: [], pageNumber, pageSize, totalCount: 0, hasNext: false },
     };
   }
 }

@@ -1,10 +1,7 @@
 import axiosClient from './client';
 
-export interface UploadImageResponse {
+interface UploadImageResponse {
   url: string;
-  fileName: string;
-  sizeKb: number;
-  message: string;
 }
 
 export async function uploadImage(file: File): Promise<string> {

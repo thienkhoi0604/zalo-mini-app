@@ -1,3 +1,16 @@
+export interface Province {
+  code: string;
+  name: string;
+  fullName: string;
+}
+
+export interface Ward {
+  code: string;
+  name: string;
+  fullName: string;
+  provinceCode: string;
+}
+
 export interface Station {
   id: string;
   code: string;

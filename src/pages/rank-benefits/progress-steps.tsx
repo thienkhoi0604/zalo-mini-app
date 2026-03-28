@@ -1,20 +1,22 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { Check } from 'lucide-react';
-import { RANK_TIERS } from './tiers';
+import { TierConfig } from './tiers';
 
 interface Props {
+  tiers: TierConfig[];
   currentCode: string;
 }
 
-const ProgressSteps: FC<Props> = ({ currentCode }) => {
-  const currentIndex = RANK_TIERS.findIndex((t) => t.code === currentCode);
+const ProgressSteps: FC<Props> = ({ tiers, currentCode }) => {
+  const sorted = [...tiers].sort((a, b) => a.priority - b.priority);
+  const currentIndex = sorted.findIndex((t) => t.code === currentCode);
 
   return (
     <Box className="bg-white rounded-2xl px-4 py-4">
       <p className="text-xs font-bold text-gray-500 mb-3 uppercase">Lộ trình thăng hạng</p>
       <Box flex className="items-center">
-        {RANK_TIERS.map((tier, i) => {
+        {sorted.map((tier, i) => {
           const reached = i <= currentIndex;
           const isCurrent = i === currentIndex;
 
@@ -31,12 +33,12 @@ const ProgressSteps: FC<Props> = ({ currentCode }) => {
                     background: reached ? tier.gradient : '#E5E7EB',
                   }}
                 >
-                  {reached ? <Check size={12} color="#fff" /> : <span>{tier.emoji}</span>}
+                  {reached ? <Check size={12} color="#fff" /> : <span style={{ fontSize: 12 }}>{tier.emoji}</span>}
                 </Box>
                 <p className="text-[10px] mt-1">{tier.name}</p>
               </Box>
 
-              {i < RANK_TIERS.length - 1 && (
+              {i < sorted.length - 1 && (
                 <Box
                   style={{
                     flex: 1,

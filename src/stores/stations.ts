@@ -1,6 +1,8 @@
 import { create } from 'zustand';
-import { Station } from '@/types/station';
-import { getStations, MOCK_STATIONS } from '@/apis/stations';
+import { Station, Province, Ward } from '@/types/station';
+import { getStations } from '@/apis/stations';
+import { fetchProvinces } from '@/apis/provinces';
+import { fetchWards } from '@/apis/wards';
 
 const PAGE_SIZE = 10;
 
@@ -12,19 +14,25 @@ export interface StationFilters {
 
 interface StationsState extends StationFilters {
   stations: Station[];
-  allForFilter: Station[];   // full unfiltered list for province/ward options
+  provinces: Province[];
+  wards: Ward[];
+  wardsLoading: boolean;
   page: number;
   hasMore: boolean;
   loading: boolean;
 
   loadStations: () => Promise<void>;
   loadMore: () => Promise<void>;
+  loadProvinces: () => Promise<void>;
+  loadWards: (provinceCode: string) => Promise<void>;
   setFilters: (filters: Partial<StationFilters>) => void;
 }
 
 export const useStationsStore = create<StationsState>((set, get) => ({
   stations: [],
-  allForFilter: [],
+  provinces: [],
+  wards: [],
+  wardsLoading: false,
   page: 0,
   hasMore: true,
   loading: false,
@@ -32,17 +40,30 @@ export const useStationsStore = create<StationsState>((set, get) => ({
   provinceCode: '',
   wardCode: '',
 
+  loadProvinces: async () => {
+    if (get().provinces.length > 0) return;
+    const provinces = await fetchProvinces();
+    set({ provinces });
+  },
+
+  loadWards: async (provinceCode) => {
+    if (!provinceCode) {
+      set({ wards: [] });
+      return;
+    }
+    set({ wardsLoading: true });
+    try {
+      const wards = await fetchWards(provinceCode);
+      set({ wards });
+    } finally {
+      set({ wardsLoading: false });
+    }
+  },
+
   loadStations: async () => {
-    if (get().loading) return;
     set({ loading: true });
     try {
       const { search, provinceCode, wardCode } = get();
-
-      // Load unfiltered list once for dropdown options
-      if (get().allForFilter.length === 0) {
-        set({ allForFilter: MOCK_STATIONS });
-      }
-
       const res = await getStations({
         pageNumber: 1,
         pageSize: PAGE_SIZE,
@@ -85,13 +106,23 @@ export const useStationsStore = create<StationsState>((set, get) => ({
 
   setFilters: (filters) => {
     const current = get();
-    // Reset ward when province changes
-    const nextProvince = filters.provinceCode !== undefined ? filters.provinceCode : current.provinceCode;
-    const nextWard = filters.provinceCode !== undefined && filters.provinceCode !== current.provinceCode
+    const provinceChanged =
+      filters.provinceCode !== undefined && filters.provinceCode !== current.provinceCode;
+
+    const nextProvince =
+      filters.provinceCode !== undefined ? filters.provinceCode : current.provinceCode;
+    const nextWard = provinceChanged
       ? ''
-      : (filters.wardCode !== undefined ? filters.wardCode : current.wardCode);
+      : filters.wardCode !== undefined
+      ? filters.wardCode
+      : current.wardCode;
 
     set({ ...filters, provinceCode: nextProvince, wardCode: nextWard });
+
+    if (provinceChanged) {
+      get().loadWards(nextProvince);
+    }
+
     get().loadStations();
   },
 }));

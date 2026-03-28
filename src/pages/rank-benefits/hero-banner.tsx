@@ -40,12 +40,28 @@ const HeroBanner: FC<Props> = ({ tier, pointWallet }) => (
         <p style={{ fontSize: 26, fontWeight: 800, color: '#fff' }}>
           {tier.emoji} {tier.name}
         </p>
+        {tier.description ? (
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', marginTop: 2 }}>
+            {tier.description}
+          </p>
+        ) : null}
       </Box>
+
       <Box
-        className="flex items-center justify-center rounded-full"
-        style={{ width: 64, height: 64, background: 'rgba(255,255,255,0.2)', border: '2px solid rgba(255,255,255,0.4)' }}
+        className="flex items-center justify-center rounded-full overflow-hidden"
+        style={{
+          width: 64,
+          height: 64,
+          background: 'rgba(255,255,255,0.2)',
+          border: '2px solid rgba(255,255,255,0.4)',
+          flexShrink: 0,
+        }}
       >
-        <Star size={28} color="#fff" fill="#fff" />
+        {tier.iconUrl ? (
+          <img src={tier.iconUrl} alt={tier.name} style={{ width: 44, height: 44, objectFit: 'contain' }} />
+        ) : (
+          <Star size={28} color="#fff" fill="#fff" />
+        )}
       </Box>
     </Box>
 

@@ -1,13 +1,7 @@
-import React, { FC, useMemo, useRef } from 'react';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Box } from 'zmp-ui';
 import { Search, X, ChevronDown } from 'lucide-react';
-import { useStationsStore, StationFilters } from '@/stores/stations';
-
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
-function unique<T>(arr: T[]): T[] {
-  return Array.from(new Set(arr));
-}
+import { useStationsStore } from '@/stores/stations';
 
 // ─── Native Select ────────────────────────────────────────────────────────────
 
@@ -16,7 +10,8 @@ const NativeSelect: FC<{
   onChange: (v: string) => void;
   placeholder: string;
   options: { value: string; label: string }[];
-}> = ({ value, onChange, placeholder, options }) => (
+  disabled?: boolean;
+}> = ({ value, onChange, placeholder, options, disabled }) => (
   <Box
     className="relative flex items-center rounded-xl overflow-hidden flex-1"
     style={{
@@ -24,11 +19,13 @@ const NativeSelect: FC<{
       border: `1.5px solid ${value ? '#86EFAC' : '#E5E7EB'}`,
       height: 40,
       minWidth: 0,
+      opacity: disabled ? 0.5 : 1,
     }}
   >
     <select
       value={value}
       onChange={(e) => onChange(e.target.value)}
+      disabled={disabled}
       style={{
         width: '100%',
         height: '100%',
@@ -61,48 +58,48 @@ const NativeSelect: FC<{
 // ─── Search Filter Bar ────────────────────────────────────────────────────────
 
 const SearchFilter: FC = () => {
-  const { search, provinceCode, wardCode, allForFilter, setFilters } = useStationsStore();
+  const {
+    search, provinceCode, wardCode,
+    provinces, wards, wardsLoading,
+    setFilters, loadProvinces,
+  } = useStationsStore();
+
+  const [inputValue, setInputValue] = useState(search);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const provinces = useMemo(
-    () =>
-      unique(allForFilter.map((s) => s.provinceCode))
-        .filter(Boolean)
-        .map((code) => ({
-          value: code,
-          label: allForFilter.find((s) => s.provinceCode === code)?.provinceName ?? code,
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label, 'vi')),
-    [allForFilter],
+  useEffect(() => {
+    loadProvinces();
+  }, []);
+
+  const provinceOptions = useMemo(
+    () => provinces.map((p) => ({ value: p.code, label: p.name })),
+    [provinces],
   );
 
-  const wards = useMemo(
-    () =>
-      unique(
-        allForFilter
-          .filter((s) => !provinceCode || s.provinceCode === provinceCode)
-          .map((s) => s.wardCode),
-      )
-        .filter(Boolean)
-        .map((code) => ({
-          value: code,
-          label:
-            allForFilter.find((s) => s.wardCode === code)?.wardName ?? code,
-        }))
-        .sort((a, b) => a.label.localeCompare(b.label, 'vi')),
-    [allForFilter, provinceCode],
+  const wardOptions = useMemo(
+    () => wards.map((w) => ({ value: w.code, label: w.name })),
+    [wards],
   );
 
-  const hasFilters = search || provinceCode || wardCode;
+  const hasFilters = inputValue || provinceCode || wardCode;
 
   const handleSearchChange = (value: string) => {
+    setInputValue(value);
     if (debounceRef.current) clearTimeout(debounceRef.current);
     debounceRef.current = setTimeout(() => {
       setFilters({ search: value });
     }, 350);
   };
 
+  const handleClearSearch = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setInputValue('');
+    setFilters({ search: '' });
+  };
+
   const handleClearAll = () => {
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    setInputValue('');
     setFilters({ search: '', provinceCode: '', wardCode: '' });
   };
 
@@ -124,7 +121,7 @@ const SearchFilter: FC = () => {
         className="items-center rounded-xl overflow-hidden"
         style={{
           background: '#F3F4F6',
-          border: `1.5px solid ${search ? '#86EFAC' : 'transparent'}`,
+          border: `1.5px solid ${inputValue ? '#86EFAC' : 'transparent'}`,
           height: 42,
           gap: 8,
           paddingLeft: 12,
@@ -132,10 +129,10 @@ const SearchFilter: FC = () => {
           transition: 'border-color 0.2s',
         }}
       >
-        <Search size={16} color={search ? '#288F4E' : '#9CA3AF'} style={{ flexShrink: 0 }} />
+        <Search size={16} color={inputValue ? '#288F4E' : '#9CA3AF'} style={{ flexShrink: 0 }} />
         <input
           type="text"
-          defaultValue={search}
+          value={inputValue}
           placeholder="Tìm theo tên trạm, địa chỉ..."
           onChange={(e) => handleSearchChange(e.target.value)}
           style={{
@@ -147,12 +144,9 @@ const SearchFilter: FC = () => {
             outline: 'none',
           }}
         />
-        {search && (
+        {inputValue && (
           <button
-            onClick={() => {
-              if (debounceRef.current) clearTimeout(debounceRef.current);
-              setFilters({ search: '' });
-            }}
+            onClick={handleClearSearch}
             style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 4, flexShrink: 0 }}
           >
             <X size={14} color="#9CA3AF" />
@@ -166,13 +160,14 @@ const SearchFilter: FC = () => {
           value={provinceCode}
           onChange={(v) => setFilters({ provinceCode: v })}
           placeholder="Tỉnh / Thành phố"
-          options={provinces}
+          options={provinceOptions}
         />
         <NativeSelect
           value={wardCode}
           onChange={(v) => setFilters({ wardCode: v })}
-          placeholder="Phường / Xã"
-          options={wards}
+          placeholder={wardsLoading ? 'Đang tải...' : 'Phường / Xã'}
+          options={wardOptions}
+          disabled={!provinceCode || wardsLoading}
         />
       </Box>
 

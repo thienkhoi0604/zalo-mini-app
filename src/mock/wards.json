@@ -1,0 +1,614 @@
+[
+  {
+    "code": "81323095",
+    "name": "Đặc khu Kiên Hải",
+    "fullName": "Đặc khu Kiên Hải",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81321101",
+    "name": "Đặc khu Phú Quốc",
+    "fullName": "Đặc khu Phú Quốc",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81321102",
+    "name": "Đặc khu Thổ Châu",
+    "fullName": "Đặc khu Thổ Châu",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80501003",
+    "name": "Phường Bình Đức",
+    "fullName": "Phường Bình Đức",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80503005",
+    "name": "Phường Châu Đốc",
+    "fullName": "Phường Châu Đốc",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80513032",
+    "name": "Phường Chi Lăng",
+    "fullName": "Phường Chi Lăng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81325098",
+    "name": "Phường Hà Tiên",
+    "fullName": "Phường Hà Tiên",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80507016",
+    "name": "Phường Long Phú",
+    "fullName": "Phường Long Phú",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80501002",
+    "name": "Phường Long Xuyên",
+    "fullName": "Phường Long Xuyên",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80501004",
+    "name": "Phường Mỹ Thới",
+    "fullName": "Phường Mỹ Thới",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81301097",
+    "name": "Phường Rạch Giá",
+    "fullName": "Phường Rạch Giá",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80507015",
+    "name": "Phường Tân Châu",
+    "fullName": "Phường Tân Châu",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80513031",
+    "name": "Phường Thới Sơn",
+    "fullName": "Phường Thới Sơn",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80513030",
+    "name": "Phường Tịnh Biên",
+    "fullName": "Phường Tịnh Biên",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81325099",
+    "name": "Phường Tô Châu",
+    "fullName": "Phường Tô Châu",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80503006",
+    "name": "Phường Vĩnh Tế",
+    "fullName": "Phường Vĩnh Tế",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81301096",
+    "name": "Phường Vĩnh Thông",
+    "fullName": "Phường Vĩnh Thông",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81315067",
+    "name": "Xã An Biên",
+    "fullName": "Xã An Biên",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80519038",
+    "name": "Xã An Châu",
+    "fullName": "Xã An Châu",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80513028",
+    "name": "Xã An Cư",
+    "fullName": "Xã An Cư",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81317063",
+    "name": "Xã An Minh",
+    "fullName": "Xã An Minh",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80505007",
+    "name": "Xã An Phú",
+    "fullName": "Xã An Phú",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80515033",
+    "name": "Xã Ba Chúc",
+    "fullName": "Xã Ba Chúc",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81309083",
+    "name": "Xã Bình An",
+    "fullName": "Xã Bình An",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81305088",
+    "name": "Xã Bình Giang",
+    "fullName": "Xã Bình Giang",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80519039",
+    "name": "Xã Bình Hoà",
+    "fullName": "Xã Bình Hoà",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80511026",
+    "name": "Xã Bình Mỹ",
+    "fullName": "Xã Bình Mỹ",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81305087",
+    "name": "Xã Bình Sơn",
+    "fullName": "Xã Bình Sơn",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80509019",
+    "name": "Xã Bình Thạnh Đông",
+    "fullName": "Xã Bình Thạnh Đông",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80519040",
+    "name": "Xã Cần Đăng",
+    "fullName": "Xã Cần Đăng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80507013",
+    "name": "Xã Châu Phong",
+    "fullName": "Xã Châu Phong",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80511023",
+    "name": "Xã Châu Phú",
+    "fullName": "Xã Châu Phú",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81309082",
+    "name": "Xã Châu Thành",
+    "fullName": "Xã Châu Thành",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80517043",
+    "name": "Xã Chợ Mới",
+    "fullName": "Xã Chợ Mới",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80509020",
+    "name": "Xã Chợ Vàm",
+    "fullName": "Xã Chợ Vàm",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80515036",
+    "name": "Xã Cô Tô",
+    "fullName": "Xã Cô Tô",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80517044",
+    "name": "Xã Cù Lao Giêng",
+    "fullName": "Xã Cù Lao Giêng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81313068",
+    "name": "Xã Định Hoà",
+    "fullName": "Xã Định Hoà",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80521051",
+    "name": "Xã Định Mỹ",
+    "fullName": "Xã Định Mỹ",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81317060",
+    "name": "Xã Đông Hoà",
+    "fullName": "Xã Đông Hoà",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81317062",
+    "name": "Xã Đông Hưng",
+    "fullName": "Xã Đông Hưng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81315066",
+    "name": "Xã Đông Thái",
+    "fullName": "Xã Đông Thái",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81304089",
+    "name": "Xã Giang Thành",
+    "fullName": "Xã Giang Thành",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81311072",
+    "name": "Xã Giồng Riềng",
+    "fullName": "Xã Giồng Riềng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81313069",
+    "name": "Xã Gò Quao",
+    "fullName": "Xã Gò Quao",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81303091",
+    "name": "Xã Hoà Điền",
+    "fullName": "Xã Hoà Điền",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81311075",
+    "name": "Xã Hoà Hưng",
+    "fullName": "Xã Hoà Hưng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80509021",
+    "name": "Xã Hoà Lạc",
+    "fullName": "Xã Hoà Lạc",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81311077",
+    "name": "Xã Hoà Thuận",
+    "fullName": "Xã Hoà Thuận",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80517045",
+    "name": "Xã Hội An",
+    "fullName": "Xã Hội An",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81305084",
+    "name": "Xã Hòn Đất",
+    "fullName": "Xã Hòn Đất",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81303094",
+    "name": "Xã Hòn Nghệ",
+    "fullName": "Xã Hòn Nghệ",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80505010",
+    "name": "Xã Khánh Bình",
+    "fullName": "Xã Khánh Bình",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81303092",
+    "name": "Xã Kiên Lương",
+    "fullName": "Xã Kiên Lương",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80517046",
+    "name": "Xã Long Điền",
+    "fullName": "Xã Long Điền",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80517048",
+    "name": "Xã Long Kiến",
+    "fullName": "Xã Long Kiến",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81311074",
+    "name": "Xã Long Thạnh",
+    "fullName": "Xã Long Thạnh",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80511024",
+    "name": "Xã Mỹ Đức",
+    "fullName": "Xã Mỹ Đức",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80501001",
+    "name": "Xã Mỹ Hoà Hưng",
+    "fullName": "Xã Mỹ Hoà Hưng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81305086",
+    "name": "Xã Mỹ Thuận",
+    "fullName": "Xã Mỹ Thuận",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81311076",
+    "name": "Xã Ngọc Chúc",
+    "fullName": "Xã Ngọc Chúc",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80505009",
+    "name": "Xã Nhơn Hội",
+    "fullName": "Xã Nhơn Hội",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80517047",
+    "name": "Xã Nhơn Mỹ",
+    "fullName": "Xã Nhơn Mỹ",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80513029",
+    "name": "Xã Núi Cấm",
+    "fullName": "Xã Núi Cấm",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80521050",
+    "name": "Xã Óc Eo",
+    "fullName": "Xã Óc Eo",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80515035",
+    "name": "Xã Ô Lâm",
+    "fullName": "Xã Ô Lâm",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80509018",
+    "name": "Xã Phú An",
+    "fullName": "Xã Phú An",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80521052",
+    "name": "Xã Phú Hoà",
+    "fullName": "Xã Phú Hoà",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80505011",
+    "name": "Xã Phú Hữu",
+    "fullName": "Xã Phú Hữu",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80509022",
+    "name": "Xã Phú Lâm",
+    "fullName": "Xã Phú Lâm",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80509017",
+    "name": "Xã Phú Tân",
+    "fullName": "Xã Phú Tân",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81303093",
+    "name": "Xã Sơn Hải",
+    "fullName": "Xã Sơn Hải",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81305085",
+    "name": "Xã Sơn Kiên",
+    "fullName": "Xã Sơn Kiên",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80507012",
+    "name": "Xã Tân An",
+    "fullName": "Xã Tân An",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81307079",
+    "name": "Xã Tân Hiệp",
+    "fullName": "Xã Tân Hiệp",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81307078",
+    "name": "Xã Tân Hội",
+    "fullName": "Xã Tân Hội",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81317061",
+    "name": "Xã Tân Thạnh",
+    "fullName": "Xã Tân Thạnh",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80521054",
+    "name": "Xã Tây Phú",
+    "fullName": "Xã Tây Phú",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81315065",
+    "name": "Xã Tây Yên",
+    "fullName": "Xã Tây Yên",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81307080",
+    "name": "Xã Thạnh Đông",
+    "fullName": "Xã Thạnh Đông",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81311073",
+    "name": "Xã Thạnh Hưng",
+    "fullName": "Xã Thạnh Hưng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81309081",
+    "name": "Xã Thạnh Lộc",
+    "fullName": "Xã Thạnh Lộc",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80511027",
+    "name": "Xã Thạnh Mỹ Tây",
+    "fullName": "Xã Thạnh Mỹ Tây",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80521049",
+    "name": "Xã Thoại Sơn",
+    "fullName": "Xã Thoại Sơn",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81325100",
+    "name": "Xã Tiên Hải",
+    "fullName": "Xã Tiên Hải",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80515034",
+    "name": "Xã Tri Tôn",
+    "fullName": "Xã Tri Tôn",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81327059",
+    "name": "Xã U Minh Thượng",
+    "fullName": "Xã U Minh Thượng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81317064",
+    "name": "Xã Vân Khánh",
+    "fullName": "Xã Vân Khánh",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80519042",
+    "name": "Xã Vĩnh An",
+    "fullName": "Xã Vĩnh An",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81319055",
+    "name": "Xã Vĩnh Bình",
+    "fullName": "Xã Vĩnh Bình",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81304090",
+    "name": "Xã Vĩnh Điều",
+    "fullName": "Xã Vĩnh Điều",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80515037",
+    "name": "Xã Vĩnh Gia",
+    "fullName": "Xã Vĩnh Gia",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80519041",
+    "name": "Xã Vĩnh Hanh",
+    "fullName": "Xã Vĩnh Hanh",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80505008",
+    "name": "Xã Vĩnh Hậu",
+    "fullName": "Xã Vĩnh Hậu",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81327058",
+    "name": "Xã Vĩnh Hoà",
+    "fullName": "Xã Vĩnh Hoà",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81313070",
+    "name": "Xã Vĩnh Hoà Hưng",
+    "fullName": "Xã Vĩnh Hoà Hưng",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81319057",
+    "name": "Xã Vĩnh Phong",
+    "fullName": "Xã Vĩnh Phong",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80511025",
+    "name": "Xã Vĩnh Thạnh Trung",
+    "fullName": "Xã Vĩnh Thạnh Trung",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81319056",
+    "name": "Xã Vĩnh Thuận",
+    "fullName": "Xã Vĩnh Thuận",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80521053",
+    "name": "Xã Vĩnh Trạch",
+    "fullName": "Xã Vĩnh Trạch",
+    "provinceCode": "32"
+  },
+  {
+    "code": "81313071",
+    "name": "Xã Vĩnh Tuy",
+    "fullName": "Xã Vĩnh Tuy",
+    "provinceCode": "32"
+  },
+  {
+    "code": "80507014",
+    "name": "Xã Vĩnh Xương",
+    "fullName": "Xã Vĩnh Xương",
+    "provinceCode": "32"
+  }
+]
