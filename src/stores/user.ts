@@ -18,7 +18,7 @@ type UserStore = {
   isAuthenticated: boolean;
 
   initializeAuth: () => Promise<void>;
-  loginWithZalo: () => Promise<'success' | 'permission_denied'>;
+  loginWithZalo: () => Promise<'success' | 'permission_denied_info' | 'permission_denied_location'>;
   loadPointWallet: () => Promise<void>;
   setUnauthenticated: () => void;
   scanQRCode: (scannedUserId: string) => Promise<number>;
@@ -67,27 +67,33 @@ export const useUserStore = create<UserStore>((set) => ({
   loginWithZalo: async () => {
     set({ authLoading: true });
     try {
+      // Step 1: personal info permission
       let zaloAccessToken: string | null = null;
-      let locationToken: string | undefined;
       try {
         await getUserInfo({ autoRequestPermission: true });
         zaloAccessToken = await getZaloAccessToken();
-        locationToken = await getZaloLocationToken().catch(() => undefined);
-      } catch (permissionError) {
-        console.warn('Zalo permission denied:', permissionError);
+      } catch {
         set({ authLoading: false });
-        return 'permission_denied';
+        return 'permission_denied_info';
       }
 
       if (!zaloAccessToken) {
         set({ authLoading: false });
-        return 'permission_denied';
+        return 'permission_denied_info';
+      }
+
+      // Step 2: location permission
+      let locationToken: string | undefined;
+      try {
+        locationToken = await getZaloLocationToken();
+      } catch {
+        set({ authLoading: false });
+        return 'permission_denied_location';
       }
 
       await loginWithZaloUser(zaloAccessToken, locationToken);
       const [user, pointWallet] = await Promise.all([fetchUserInfo(), fetchPointWallet()]);
       set({ user, pointWallet, isAuthenticated: true, authLoading: false });
-      requestLocationPermissionOnce();
       return 'success';
     } catch (error) {
       console.error('Login failed:', error);

@@ -19,9 +19,17 @@ const RegisterPage: FC = () => {
     try {
       const result = await useUserStore.getState().loginWithZalo();
 
-      if (result === 'permission_denied') {
+      if (result === 'permission_denied_info') {
         openSnackbar({
-          text: 'Bạn cần cấp quyền để đăng nhập.',
+          text: 'Bạn cần cấp quyền thông tin cá nhân để đăng nhập.',
+          type: 'warning',
+        });
+        return;
+      }
+
+      if (result === 'permission_denied_location') {
+        openSnackbar({
+          text: 'Bạn cần cấp quyền vị trí để đăng nhập.',
           type: 'warning',
         });
         return;

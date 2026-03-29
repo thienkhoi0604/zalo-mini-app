@@ -10,11 +10,13 @@ import { useRewardsStore } from "@/stores/rewards";
 
 const HomePage: React.FunctionComponent = () => {
   const [refreshKey, setRefreshKey] = useState(0);
-  const { loadPointWallet } = useUserStore();
+  const { loadPointWallet, isAuthenticated } = useUserStore();
   const { loadAllRewards } = useRewardsStore();
 
   const handleRefresh = async () => {
-    await Promise.all([loadPointWallet(), loadAllRewards()]);
+    const tasks: Promise<void>[] = [loadAllRewards()];
+    if (isAuthenticated) tasks.push(loadPointWallet());
+    await Promise.all(tasks);
     setRefreshKey((k) => k + 1);
   };
 
