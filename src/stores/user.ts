@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { getUserInfo } from 'zmp-sdk';
-import { getZaloAccessToken, getZaloLocationToken, requestLocationPermissionOnce } from '@/helpers/user';
+import { getZaloAccessToken, getZaloLocationToken, requestLocationPermissionOnce, requestZaloPermissions } from '@/helpers/user';
 import {
   loginWithZaloUser,
   clearTokens,
@@ -67,29 +67,20 @@ export const useUserStore = create<UserStore>((set) => ({
   loginWithZalo: async () => {
     set({ authLoading: true });
     try {
-      // Step 1: personal info permission
-      let zaloAccessToken: string | null = null;
-      try {
-        await getUserInfo({ autoRequestPermission: true });
-        zaloAccessToken = await getZaloAccessToken();
-      } catch {
+      // Request both permissions via authorize
+      const permission = await requestZaloPermissions();
+      if (permission.status === 'denied_info') {
         set({ authLoading: false });
         return 'permission_denied_info';
       }
-
-      if (!zaloAccessToken) {
-        set({ authLoading: false });
-        return 'permission_denied_info';
-      }
-
-      // Step 2: location permission
-      let locationToken: string | undefined;
-      try {
-        locationToken = await getZaloLocationToken();
-      } catch {
+      if (permission.status === 'denied_location') {
         set({ authLoading: false });
         return 'permission_denied_location';
       }
+
+      // Both granted — fetch tokens
+      const zaloAccessToken = await getZaloAccessToken();
+      const locationToken = await getZaloLocationToken().catch(() => undefined);
 
       await loginWithZaloUser(zaloAccessToken, locationToken);
       const [user, pointWallet] = await Promise.all([fetchUserInfo(), fetchPointWallet()]);

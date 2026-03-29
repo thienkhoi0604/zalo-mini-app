@@ -1,5 +1,23 @@
 import { getLocation } from 'zmp-sdk';
-import { getAccessToken } from 'zmp-sdk/apis';
+import { getAccessToken, authorize } from 'zmp-sdk/apis';
+
+export type PermissionResult =
+  | { status: 'granted' }
+  | { status: 'denied_info' }
+  | { status: 'denied_location' };
+
+export async function requestZaloPermissions(): Promise<PermissionResult> {
+  try {
+    const data = await authorize({
+      scopes: ['scope.userInfo', 'scope.userLocation'],
+    });
+    if (!data['scope.userInfo']) return { status: 'denied_info' };
+    if (!data['scope.userLocation']) return { status: 'denied_location' };
+    return { status: 'granted' };
+  } catch {
+    return { status: 'denied_info' };
+  }
+}
 
 const LOCATION_PERMISSION_KEY = 'zalo_location_permission_granted';
 
