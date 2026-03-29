@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
-import { Gift, Ticket, ChevronRight } from 'lucide-react';
+import { ChevronRight, Ticket } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
 import { useUserStore } from '@/stores/user';
 import RewardsList from './item-cards-list';
@@ -54,78 +54,75 @@ const RewardsPage: FC = () => {
     init();
   }, [isAuthenticated]);
 
+  const handleRefresh = async () => {
+    await loadAllRewards();
+    if (isAuthenticated) await loadUserRewards();
+  };
+
   return (
     <Page className="flex-1 flex flex-col">
+      <PullToRefresh onRefresh={handleRefresh} className="flex-1 py-5">
 
-      {/* Stats banner */}
-      {isAuthenticated && (
-        <Box
-          style={{
-            background: 'linear-gradient(135deg, #2FA85F 0%, #1A6B38 100%)',
-            padding: '14px 16px',
-            position: 'relative',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Decorative circle */}
+        {/* Stats banner */}
+        {isAuthenticated && (
           <Box
             style={{
-              position: 'absolute',
-              top: -20,
-              right: -20,
-              width: 90,
-              height: 90,
-              borderRadius: '50%',
-              background: 'rgba(255,255,255,0.08)',
+              background: 'linear-gradient(135deg, #2FA85F 0%, #1A6B38 100%)',
+              padding: '14px 16px',
+              position: 'relative',
+              overflow: 'hidden',
+              marginBottom: 4,
             }}
-          />
-
-          <Box flex style={{ gap: 0 }}>
-            {/* Coins */}
+          >
             <Box
-              className="flex-1 text-center"
-              style={{ borderRight: '1px solid rgba(255,255,255,0.2)', paddingRight: 12 }}
-            >
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginBottom: 5 }}>
-                Xu khả dụng
-              </p>
-              <Box flex className="justify-center items-center" style={{ gap: 5 }}>
-                <span style={{ fontSize: 18 }}>🪙</span>
-                <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-                  {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+              style={{
+                position: 'absolute',
+                top: -20,
+                right: -20,
+                width: 90,
+                height: 90,
+                borderRadius: '50%',
+                background: 'rgba(255,255,255,0.08)',
+              }}
+            />
+
+            <Box flex style={{ gap: 0 }}>
+              <Box
+                className="flex-1 text-center"
+                style={{ borderRight: '1px solid rgba(255,255,255,0.2)', paddingRight: 12 }}
+              >
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginBottom: 5 }}>
+                  Xu khả dụng
                 </p>
+                <Box flex className="justify-center items-center" style={{ gap: 5 }}>
+                  <span style={{ fontSize: 18 }}>🪙</span>
+                  <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
+                    {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+                  </p>
+                </Box>
               </Box>
-            </Box>
 
-            {/* Vouchers */}
-            <Box
-              className="flex-1 text-center cursor-pointer"
-              style={{ paddingLeft: 12 }}
-              onClick={() => navigate('/my-vouchers')}
-            >
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginBottom: 5 }}>
-                Voucher của bạn
-              </p>
-              <Box flex className="justify-center items-center" style={{ gap: 5 }}>
-                <Ticket size={18} color="#fff" />
-                <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-                  {userRewards.filter((v) => v.usedAt === null).length}
+              <Box
+                className="flex-1 text-center cursor-pointer"
+                style={{ paddingLeft: 12 }}
+                onClick={() => navigate('/my-vouchers')}
+              >
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginBottom: 5 }}>
+                  Voucher của bạn
                 </p>
-                <ChevronRight size={14} color="rgba(255,255,255,0.7)" />
+                <Box flex className="justify-center items-center" style={{ gap: 5 }}>
+                  <Ticket size={18} color="#fff" />
+                  <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
+                    {userRewards.filter((v) => v.usedAt === null).length}
+                  </p>
+                  <ChevronRight size={14} color="rgba(255,255,255,0.7)" />
+                </Box>
               </Box>
             </Box>
           </Box>
-        </Box>
-      )}
+        )}
 
-      {/* Rewards list */}
-      <PullToRefresh
-        onRefresh={async () => {
-          await loadAllRewards();
-          if (isAuthenticated) await loadUserRewards();
-        }}
-        className="flex-1 py-5"
-      >
+        {/* Rewards list */}
         {!initialized && loading ? (
           <Box style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <SkeletonRow />
@@ -135,6 +132,7 @@ const RewardsPage: FC = () => {
         ) : (
           <RewardsList />
         )}
+
       </PullToRefresh>
     </Page>
   );

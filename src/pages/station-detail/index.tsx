@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Box, Page } from 'zmp-ui';
 import { MapPin, Navigation, Zap, Clock, RotateCcw, Store } from 'lucide-react';
@@ -6,6 +6,7 @@ import { Station } from '@/types/station';
 import { getStationById } from '@/apis/stations';
 import StatCard from './stat-card';
 import InfoRow from './info-row';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 const FALLBACK_IMG =
   'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80&auto=format';
@@ -15,14 +16,15 @@ const StationDetailPage: FC = () => {
   const [station, setStation] = useState<Station | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+  const loadStation = useCallback(async () => {
     if (!id) return;
     setLoading(true);
-    getStationById(id).then((s) => {
-      setStation(s);
-      setLoading(false);
-    });
+    const s = await getStationById(id);
+    setStation(s);
+    setLoading(false);
   }, [id]);
+
+  useEffect(() => { loadStation(); }, [loadStation]);
 
   if (loading) {
     return (
@@ -59,7 +61,7 @@ const StationDetailPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col">
-      <Box className="flex-1 overflow-auto pb-6">
+      <PullToRefresh onRefresh={loadStation} className="flex-1 pb-6">
 
         {/* Hero image with gradient overlay */}
         <Box style={{ position: 'relative', height: 220 }}>
@@ -76,15 +78,7 @@ const StationDetailPage: FC = () => {
               background: 'linear-gradient(to bottom, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.55) 100%)',
             }}
           />
-          <Box
-            style={{
-              position: 'absolute',
-              bottom: 0,
-              left: 0,
-              right: 0,
-              padding: '16px',
-            }}
-          >
+          <Box style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px' }}>
             <Box
               style={{
                 display: 'inline-flex',
@@ -206,7 +200,7 @@ const StationDetailPage: FC = () => {
           )}
 
         </Box>
-      </Box>
+      </PullToRefresh>
     </Page>
   );
 };

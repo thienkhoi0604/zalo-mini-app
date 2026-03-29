@@ -35,10 +35,15 @@ export async function scanQRCode(scannedUserId: string): Promise<{ points: numbe
 }
 
 
-export async function fetchQRSession(): Promise<{ token: string; expiresInSeconds: number }> {
+export type QRSessionType = 'Checkin' | 'Voucher';
+
+export async function fetchQRSession(
+  assetId: string | null = null,
+  type: QRSessionType = 'Checkin',
+): Promise<{ token: string; expiresInSeconds: number }> {
   const { data } = await axiosClient.post<{ data: { token: string; expiresInSeconds: number } }>(
     '/me/qr/session',
-    { assetId: null, type: 'Checkin' },
+    { assetId, type },
   );
   return data.data;
 }

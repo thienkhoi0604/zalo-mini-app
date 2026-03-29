@@ -5,6 +5,7 @@ import { MapPin, Calendar, FileText, Store, AlertCircle } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
 import { getRewardTypeLabel } from '@/types/reward';
 import { useUserStore } from '@/stores/user';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 // ─── Confirm Modal ─────────────────────────────────────────────────────────────
 
@@ -186,9 +187,13 @@ const RewardDetailPage: FC = () => {
   const userPoints = pointWallet?.currentBalance ?? 0;
   const hasEnough = userPoints >= card.pointsRequired;
 
+  const handleRefresh = async () => {
+    if (id) await loadRewardById(id).catch(() => {});
+  };
+
   return (
     <Page className="flex-1 flex flex-col" style={{ position: 'relative' }}>
-      <Box className="flex-1 overflow-y-auto" style={{ paddingBottom: owned ? 16 : 88 }}>
+      <PullToRefresh onRefresh={handleRefresh} className="flex-1" style={{ paddingBottom: owned ? 16 : 88 }}>
 
         {/* Hero image + overlay */}
         <Box style={{ position: 'relative', height: 240, overflow: 'hidden' }}>
@@ -345,7 +350,7 @@ const RewardDetailPage: FC = () => {
             </SectionCard>
           )}
         </Box>
-      </Box>
+      </PullToRefresh>
 
       {/* Sticky bottom bar */}
       {!owned && card.status !== 'expired' && (

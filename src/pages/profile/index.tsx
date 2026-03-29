@@ -21,7 +21,7 @@ const QR_SHEET_CONFIG: Record<
   { fetchData: () => Promise<string>; title: string; hint: string }
 > = {
   checkin: {
-    fetchData: () => fetchQRSession().then((d) => d.token),
+    fetchData: () => fetchQRSession(null, 'Checkin').then((d) => d.token),
     title: 'QR Code của tôi',
     hint: '💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc',
   },

@@ -18,6 +18,7 @@ const HomePage: React.FunctionComponent = () => {
     setRefreshKey((k) => k + 1);
   };
 
+
   return (
     <Page className="relative flex-1 flex flex-col">
       <PullToRefresh onRefresh={handleRefresh} className="flex-1 pb-4">

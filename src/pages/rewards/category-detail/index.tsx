@@ -4,6 +4,7 @@ import { useParams, useNavigate } from 'react-router';
 import { Gift, ArrowUpDown, TrendingUp, TrendingDown } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
 import { Reward, getRewardTypeLabel } from '@/types/reward';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -30,7 +31,6 @@ const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ car
     className="bg-white rounded-2xl overflow-hidden cursor-pointer"
     style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.08)', position: 'relative' }}
   >
-    {/* Thumbnail */}
     <Box style={{ height: 110, background: '#F3EDE3', position: 'relative', overflow: 'hidden' }}>
       <img
         src={card.thumbnailImageUrl}
@@ -52,22 +52,14 @@ const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ car
             justifyContent: 'center',
           }}
         >
-          <Box
-            style={{
-              background: '#EF4444',
-              borderRadius: 20,
-              padding: '3px 10px',
-            }}
-          >
+          <Box style={{ background: '#EF4444', borderRadius: 20, padding: '3px 10px' }}>
             <p style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>Hết hạn</p>
           </Box>
         </Box>
       )}
     </Box>
 
-    {/* Info */}
     <Box className="p-3" style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-      {/* Brand */}
       <Box flex className="items-center" style={{ gap: 5 }}>
         {card.brandLogoUrl ? (
           <img
@@ -77,10 +69,7 @@ const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ car
             style={{ width: 14, height: 14 }}
           />
         ) : (
-          <Box
-            className="rounded-full flex-shrink-0"
-            style={{ width: 14, height: 14, background: '#C49A6C' }}
-          />
+          <Box className="rounded-full flex-shrink-0" style={{ width: 14, height: 14, background: '#C49A6C' }} />
         )}
         <p
           className="truncate"
@@ -90,7 +79,6 @@ const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ car
         </p>
       </Box>
 
-      {/* Name */}
       <p
         style={{
           fontSize: 12,
@@ -107,10 +95,8 @@ const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ car
         {card.name}
       </p>
 
-      {/* Divider */}
       <Box style={{ height: 1, background: '#F3F4F6' }} />
 
-      {/* Points badge */}
       <Box flex className="items-center" style={{ gap: 4 }}>
         <span style={{ fontSize: 14 }}>🪙</span>
         <p style={{ fontSize: 13, fontWeight: 800, color: '#C49A6C' }}>
@@ -163,8 +149,15 @@ const CategoryDetailPage: FC = () => {
 
   const isLoading = loading && rawCards.length === 0;
 
+  const handleRefresh = async () => {
+    await loadAllRewards().catch(() => {
+      openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
+    });
+  };
+
   return (
     <Page className="flex-1 flex flex-col">
+
       {/* ── Category Banner ─────────────────────────────────────────────── */}
       <Box
         style={{
@@ -201,6 +194,7 @@ const CategoryDetailPage: FC = () => {
           position: 'relative',
           zIndex: 10,
           boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
+          flexShrink: 0,
         }}
       >
         <p style={{ fontSize: 12, color: '#6B7280' }}>
@@ -273,54 +267,55 @@ const CategoryDetailPage: FC = () => {
       </Box>
 
       {/* ── Grid ────────────────────────────────────────────────────────── */}
-      <Box
-        className="flex-1 overflow-y-auto p-4"
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: 12,
-          alignContent: 'start',
-        }}
-      >
-        {isLoading ? (
-          <>
-            {[1, 2, 3, 4, 5, 6].map((i) => (
-              <CardSkeleton key={i} />
-            ))}
-          </>
-        ) : cards.length === 0 ? (
-          <Box
-            className="col-span-2 flex flex-col items-center justify-center"
-            style={{ paddingTop: 64, gap: 14 }}
-          >
+      <PullToRefresh onRefresh={handleRefresh} className="flex-1">
+        <div
+          style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, 1fr)',
+            gap: 12,
+            padding: 16,
+            alignContent: 'start',
+          }}
+        >
+          {isLoading ? (
+            <>
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <CardSkeleton key={i} />
+              ))}
+            </>
+          ) : cards.length === 0 ? (
             <Box
-              className="flex items-center justify-center rounded-full"
-              style={{ width: 72, height: 72, background: '#EEF7F1' }}
+              className="col-span-2 flex flex-col items-center justify-center"
+              style={{ paddingTop: 64, gap: 14 }}
             >
-              <Gift size={32} color="#288F4E" />
+              <Box
+                className="flex items-center justify-center rounded-full"
+                style={{ width: 72, height: 72, background: '#EEF7F1' }}
+              >
+                <Gift size={32} color="#288F4E" />
+              </Box>
+              <Box style={{ textAlign: 'center' }}>
+                <p style={{ fontSize: 15, fontWeight: 700, color: '#374151' }}>Chưa có phần thưởng</p>
+                <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
+                  Danh mục này chưa có phần thưởng nào
+                </p>
+              </Box>
             </Box>
-            <Box style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 15, fontWeight: 700, color: '#374151' }}>Chưa có phần thưởng</p>
-              <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
-                Danh mục này chưa có phần thưởng nào
-              </p>
-            </Box>
-          </Box>
-        ) : (
-          <>
-            {cards.map((card) => (
-              <RewardCard
-                key={card.id}
-                card={card}
-                onClick={(c) => navigate(`/rewards/${c.id}`)}
-              />
-            ))}
+          ) : (
+            <>
+              {cards.map((card) => (
+                <RewardCard
+                  key={card.id}
+                  card={card}
+                  onClick={(c) => navigate(`/rewards/${c.id}`)}
+                />
+              ))}
+              <Box className="col-span-2" style={{ height: 12 }} />
+            </>
+          )}
+        </div>
+      </PullToRefresh>
 
-            {/* Bottom padding */}
-            <Box className="col-span-2" style={{ height: 12 }} />
-          </>
-        )}
-      </Box>
     </Page>
   );
 };

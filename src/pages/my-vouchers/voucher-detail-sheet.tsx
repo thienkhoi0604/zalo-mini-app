@@ -1,9 +1,11 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box, useSnackbar } from 'zmp-ui';
+import QRCode from 'react-qr-code';
 import { Sheet } from '@/components/fullscreen-sheet';
 import { UserReward } from '@/types/reward';
 import { formatDate } from '@/utils/date';
 import { Copy, CheckCircle, Clock, MapPin, Gift } from 'lucide-react';
+import { fetchQRSession } from '@/apis/user';
 
 interface Props {
   userVoucher: UserReward | null;
@@ -12,7 +14,28 @@ interface Props {
 
 const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
   const { openSnackbar } = useSnackbar();
+  const [qrValue, setQrValue] = useState<string | null>(null);
+  const [qrLoading, setQrLoading] = useState(false);
+  const fetchedForIdRef = useRef<string | null>(null);
+
   const isUsed = userVoucher?.usedAt != null;
+
+  useEffect(() => {
+    if (!userVoucher || isUsed) return;
+    if (fetchedForIdRef.current === userVoucher.id) return;
+    fetchedForIdRef.current = userVoucher.id;
+
+    setQrLoading(true);
+    setQrValue(null);
+    fetchQRSession(userVoucher.id, 'Voucher')
+      .then((session) => {
+        setQrValue(session.token);
+        setQrLoading(false);
+      })
+      .catch(() => {
+        setQrLoading(false);
+      });
+  }, [userVoucher?.id, isUsed]);
 
   const handleCopyCode = () => {
     if (!userVoucher?.code) return;
@@ -23,15 +46,10 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
   };
 
   return (
-    <Sheet
-      visible={!!userVoucher}
-      onClose={onClose}
-      autoHeight
-      swipeToClose
-      unmountOnClose
-    >
+    <Sheet visible={!!userVoucher} onClose={onClose} autoHeight swipeToClose unmountOnClose>
       {userVoucher && (
         <Box style={{ display: 'flex', flexDirection: 'column', paddingBottom: 28 }}>
+
           {/* Header banner */}
           <Box
             style={{
@@ -45,7 +63,6 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
               position: 'relative',
             }}
           >
-            {/* Icon */}
             <Box
               style={{
                 width: 52,
@@ -61,7 +78,6 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
               <Gift size={28} color={isUsed ? '#9CA3AF' : '#fff'} strokeWidth={1.7} />
             </Box>
 
-            {/* Name + status */}
             <Box style={{ flex: 1, paddingTop: 2 }}>
               <span
                 style={{
@@ -91,7 +107,7 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
             </Box>
           </Box>
 
-          {/* Ticket notch row */}
+          {/* Ticket notch */}
           <Box
             style={{
               display: 'flex',
@@ -99,18 +115,9 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
               marginTop: -12,
               paddingLeft: 16,
               paddingRight: 16,
-              gap: 0,
             }}
           >
-            <Box
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: '50%',
-                background: '#F5F5F5',
-                flexShrink: 0,
-              }}
-            />
+            <Box style={{ width: 24, height: 24, borderRadius: '50%', background: '#F5F5F5', flexShrink: 0 }} />
             <Box
               style={{
                 flex: 1,
@@ -118,19 +125,44 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
                 marginTop: 12,
               }}
             />
-            <Box
-              style={{
-                width: 24,
-                height: 24,
-                borderRadius: '50%',
-                background: '#F5F5F5',
-                flexShrink: 0,
-              }}
-            />
+            <Box style={{ width: 24, height: 24, borderRadius: '50%', background: '#F5F5F5', flexShrink: 0 }} />
           </Box>
 
-          {/* Code section */}
-          <Box style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 8 }}>
+          {/* QR code – only for unused vouchers */}
+          {!isUsed && (
+            <Box style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 12 }}>
+              <p style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 10, fontWeight: 600, letterSpacing: 0.3 }}>
+                MÃ QR
+              </p>
+              <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8 }}>
+                {qrLoading ? (
+                  <Box
+                    className="animate-pulse rounded-2xl"
+                    style={{ width: 196, height: 196, background: '#E9EBED' }}
+                  />
+                ) : qrValue ? (
+                  <Box
+                    className="bg-white rounded-2xl border border-gray-100"
+                    style={{ padding: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
+                  >
+                    <QRCode
+                      value={qrValue}
+                      size={172}
+                      fgColor="#1a1a1a"
+                      bgColor="#ffffff"
+                      style={{ display: 'block' }}
+                    />
+                  </Box>
+                ) : null}
+                <p style={{ fontSize: 12, color: '#9CA3AF', textAlign: 'center' }}>
+                  💡 Cho nhân viên quét mã này để sử dụng voucher
+                </p>
+              </Box>
+            </Box>
+          )}
+
+          {/* Voucher code */}
+          <Box style={{ paddingLeft: 20, paddingRight: 20, paddingTop: 16 }}>
             <p style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 8, fontWeight: 600, letterSpacing: 0.3 }}>
               MÃ VOUCHER
             </p>
@@ -156,7 +188,7 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
               >
                 {userVoucher.code}
               </p>
-              {!isUsed && (
+              {!isUsed ? (
                 <button
                   onClick={handleCopyCode}
                   style={{
@@ -177,19 +209,16 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
                   <Copy size={13} />
                   Sao chép
                 </button>
-              )}
-              {isUsed && (
+              ) : (
                 <CheckCircle size={22} color="#D1D5DB" />
               )}
             </Box>
           </Box>
 
-          {/* Details section */}
+          {/* Details */}
           <Box
             style={{
-              marginLeft: 20,
-              marginRight: 20,
-              marginTop: 16,
+              margin: '16px 20px 0',
               background: '#F9FAFB',
               borderRadius: 14,
               padding: '14px 16px',
@@ -198,19 +227,12 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
               gap: 10,
             }}
           >
-            {/* Expiry / Used date */}
             {!isUsed && (
               <Box style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Box
                   style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 8,
-                    background: '#DCFCE7',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
+                    width: 32, height: 32, borderRadius: 8, background: '#DCFCE7',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}
                 >
                   <Clock size={15} color="#288F4E" />
@@ -223,18 +245,13 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
                 </Box>
               </Box>
             )}
+
             {isUsed && userVoucher.usedAt && (
               <Box style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                 <Box
                   style={{
-                    width: 32,
-                    height: 32,
-                    borderRadius: 8,
-                    background: '#F3F4F6',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    flexShrink: 0,
+                    width: 32, height: 32, borderRadius: 8, background: '#F3F4F6',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                   }}
                 >
                   <CheckCircle size={15} color="#9CA3AF" />
@@ -248,21 +265,15 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
               </Box>
             )}
 
-            {/* Store */}
             {userVoucher.storeName && (
               <>
                 <Box style={{ height: 1, background: '#F3F4F6' }} />
                 <Box style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                   <Box
                     style={{
-                      width: 32,
-                      height: 32,
-                      borderRadius: 8,
+                      width: 32, height: 32, borderRadius: 8,
                       background: isUsed ? '#F3F4F6' : '#DCFCE7',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      flexShrink: 0,
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0,
                     }}
                   >
                     <MapPin size={15} color={isUsed ? '#9CA3AF' : '#288F4E'} />
@@ -277,6 +288,7 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
               </>
             )}
           </Box>
+
         </Box>
       )}
     </Sheet>

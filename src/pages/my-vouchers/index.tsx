@@ -147,64 +147,63 @@ const MyVouchersPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col overflow-hidden">
-      <Box className="px-4 pt-1 pb-3" />
+      <PullToRefresh onRefresh={loadUserRewards} className="flex-1">
 
-      {/* Tabs */}
-      <Box
-        className="mx-4 mb-3 flex"
-        style={{ background: '#EEF7F1', borderRadius: 100, padding: 3, gap: 2 }}
-      >
-        <TabButton
-          label="Chưa dùng"
-          count={unusedVouchers.length}
-          active={activeTab === 'unused'}
-          onClick={() => setActiveTab('unused')}
-        />
-        <TabButton
-          label="Đã dùng"
-          count={usedVouchers.length}
-          active={activeTab === 'used'}
-          onClick={() => setActiveTab('used')}
-        />
-      </Box>
+        {/* Tabs */}
+        <Box className="px-4 pt-3 pb-3">
+          <Box
+            className="flex"
+            style={{ background: '#EEF7F1', borderRadius: 100, padding: 3, gap: 2 }}
+          >
+            <TabButton
+              label="Chưa dùng"
+              count={unusedVouchers.length}
+              active={activeTab === 'unused'}
+              onClick={() => setActiveTab('unused')}
+            />
+            <TabButton
+              label="Đã dùng"
+              count={usedVouchers.length}
+              active={activeTab === 'used'}
+              onClick={() => setActiveTab('used')}
+            />
+          </Box>
+        </Box>
 
-      {/* List */}
-      <PullToRefresh
-        onRefresh={async () => { await loadUserRewards(); }}
-        className="flex-1 px-4 pb-4"
-        style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
-      >
-        {isInitialLoad ? (
-          <>
-            <VoucherSkeleton />
-            <VoucherSkeleton />
-            <VoucherSkeleton />
-          </>
-        ) : activeVouchers.length === 0 && !loading ? (
-          <EmptyState tab={activeTab} />
-        ) : (
-          <>
-            {activeVouchers.map((uv) => (
-              <VoucherCard
-                key={uv.id}
-                userVoucher={uv}
-                used={uv.usedAt !== null}
-                onClick={() => setSelectedVoucher(uv)}
-              />
-            ))}
+        {/* List */}
+        <Box className="px-4 pb-4" style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+          {isInitialLoad ? (
+            <>
+              <VoucherSkeleton />
+              <VoucherSkeleton />
+              <VoucherSkeleton />
+            </>
+          ) : activeVouchers.length === 0 && !loading ? (
+            <EmptyState tab={activeTab} />
+          ) : (
+            <>
+              {activeVouchers.map((uv) => (
+                <VoucherCard
+                  key={uv.id}
+                  userVoucher={uv}
+                  used={uv.usedAt !== null}
+                  onClick={() => setSelectedVoucher(uv)}
+                />
+              ))}
 
-            {isLoadingMore && <LoadingMore />}
+              {isLoadingMore && <LoadingMore />}
 
-            {/* Sentinel */}
-            <div ref={sentinelRef} style={{ height: 1 }} />
+              <div ref={sentinelRef} style={{ height: 1 }} />
 
-            {!userRewardsHasMore && activeVouchers.length > 0 && (
-              <p style={{ textAlign: 'center', fontSize: 12, color: '#D1D5DB', padding: '4px 0' }}>
-                Đã hiển thị tất cả voucher
-              </p>
-            )}
-          </>
-        )}
+              {!userRewardsHasMore && activeVouchers.length > 0 && (
+                <p style={{ textAlign: 'center', fontSize: 12, color: '#D1D5DB', padding: '4px 0' }}>
+                  Đã hiển thị tất cả voucher
+                </p>
+              )}
+            </>
+          )}
+        </Box>
+
       </PullToRefresh>
 
       <VoucherDetailSheet userVoucher={selectedVoucher} onClose={() => setSelectedVoucher(null)} />

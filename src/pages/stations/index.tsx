@@ -57,12 +57,13 @@ export const StationsPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col">
-      {/* Sub-header */}
-      <Box
-        className="bg-white px-4 py-3"
-        style={{ borderBottom: '1px solid #F0F0F0', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
-      >
-        <Box flex className="items-center justify-between">
+      <PullToRefresh onRefresh={loadStations} className="flex-1">
+
+        {/* Sub-header */}
+        <Box
+          className="bg-white px-4 py-3"
+          style={{ borderBottom: '1px solid #F0F0F0', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
+        >
           <Box flex className="items-center" style={{ gap: 6 }}>
             <Box
               className="flex items-center justify-center rounded-full"
@@ -73,54 +74,56 @@ export const StationsPage: FC = () => {
             <p style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>Danh sách trạm sạc</p>
           </Box>
         </Box>
-      </Box>
 
-      {/* Search & filters */}
-      <SearchFilter />
+        {/* Search & filters */}
+        <SearchFilter />
 
-      <PullToRefresh onRefresh={async () => { await loadStations(); }} className="flex-1 px-4 pt-4 pb-4">
-        {isInitialLoad ? (
-          <>
-            <StationSkeleton />
-            <StationSkeleton />
-            <StationSkeleton />
-            <StationSkeleton />
-          </>
-        ) : stations.length === 0 ? (
-          <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 12 }}>
-            <Box
-              className="flex items-center justify-center rounded-full"
-              style={{ width: 72, height: 72, background: '#EEF7F1' }}
-            >
-              <Zap size={32} color="#288F4E" fill="#288F4E" strokeWidth={0} />
-            </Box>
-            <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>
-              {hasActiveFilters ? 'Không tìm thấy trạm sạc' : 'Chưa có trạm sạc'}
-            </p>
-            <p style={{ fontSize: 13, color: '#9CA3AF', textAlign: 'center' }}>
-              {hasActiveFilters
-                ? 'Thử thay đổi bộ lọc để tìm kết quả khác'
-                : 'Hiện chưa có trạm sạc nào trong khu vực'}
-            </p>
-          </Box>
-        ) : (
-          <>
-            {stations.map((station) => (
-              <StationCard
-                key={station.id}
-                station={station}
-                onClick={() => navigate(`/stations/${station.id}`)}
-              />
-            ))}
-            {loading && stations.length > 0 && <LoadingMore />}
-            <div ref={sentinelRef} style={{ height: 1 }} />
-            {!hasMore && stations.length > 0 && (
-              <p style={{ textAlign: 'center', fontSize: 12, color: '#D1D5DB', padding: '12px 0' }}>
-                Đã hiển thị tất cả trạm sạc
+        {/* List */}
+        <Box className="px-4 pt-4 pb-4">
+          {isInitialLoad ? (
+            <>
+              <StationSkeleton />
+              <StationSkeleton />
+              <StationSkeleton />
+              <StationSkeleton />
+            </>
+          ) : stations.length === 0 ? (
+            <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 12 }}>
+              <Box
+                className="flex items-center justify-center rounded-full"
+                style={{ width: 72, height: 72, background: '#EEF7F1' }}
+              >
+                <Zap size={32} color="#288F4E" fill="#288F4E" strokeWidth={0} />
+              </Box>
+              <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>
+                {hasActiveFilters ? 'Không tìm thấy trạm sạc' : 'Chưa có trạm sạc'}
               </p>
-            )}
-          </>
-        )}
+              <p style={{ fontSize: 13, color: '#9CA3AF', textAlign: 'center' }}>
+                {hasActiveFilters
+                  ? 'Thử thay đổi bộ lọc để tìm kết quả khác'
+                  : 'Hiện chưa có trạm sạc nào trong khu vực'}
+              </p>
+            </Box>
+          ) : (
+            <>
+              {stations.map((station) => (
+                <StationCard
+                  key={station.id}
+                  station={station}
+                  onClick={() => navigate(`/stations/${station.id}`)}
+                />
+              ))}
+              {loading && stations.length > 0 && <LoadingMore />}
+              <div ref={sentinelRef} style={{ height: 1 }} />
+              {!hasMore && stations.length > 0 && (
+                <p style={{ textAlign: 'center', fontSize: 12, color: '#D1D5DB', padding: '12px 0' }}>
+                  Đã hiển thị tất cả trạm sạc
+                </p>
+              )}
+            </>
+          )}
+        </Box>
+
       </PullToRefresh>
     </Page>
   );
