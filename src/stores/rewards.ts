@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Reward, UserReward, REWARD_TYPES } from '@/types/reward';
-import { getRewards, getRewardById, getUserRewards, redeemReward, UserRewardsResponse } from '@/apis/rewards';
+import { getRewards, getRewardById, getUserRewards, redeemReward } from '@/apis/rewards';
 import { getStoreItems } from '@/apis/store-items';
 import { useUserStore } from '@/stores/user';
 

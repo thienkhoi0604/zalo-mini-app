@@ -3,12 +3,13 @@ import { Box } from 'zmp-ui';
 
 interface Props {
   icon: React.ReactNode;
+  iconBg: string;
   label: string;
   value: React.ReactNode;
   last?: boolean;
 }
 
-const InfoRow: FC<Props> = ({ icon, label, value, last }) => (
+const InfoRow: FC<Props> = ({ icon, iconBg, label, value, last }) => (
   <Box
     flex
     className="items-start"
@@ -20,12 +21,14 @@ const InfoRow: FC<Props> = ({ icon, label, value, last }) => (
   >
     <Box
       className="flex items-center justify-center rounded-xl flex-shrink-0"
-      style={{ width: 36, height: 36, background: '#F3F4F6' }}
+      style={{ width: 38, height: 38, background: iconBg }}
     >
       {icon}
     </Box>
-    <Box style={{ flex: 1, minWidth: 0 }}>
-      <p style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 3 }}>{label}</p>
+    <Box style={{ flex: 1, minWidth: 0, paddingTop: 2 }}>
+      <p style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600, letterSpacing: 0.3, textTransform: 'uppercase', marginBottom: 4 }}>
+        {label}
+      </p>
       <Box>{value}</Box>
     </Box>
   </Box>

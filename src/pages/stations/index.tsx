@@ -13,19 +13,14 @@ import PullToRefresh from '@/components/pull-to-refresh';
 const StationSkeleton: FC = () => (
   <Box
     className="bg-white rounded-2xl overflow-hidden animate-pulse"
-    style={{ height: 110, marginBottom: 12, boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
+    style={{ marginBottom: 14, boxShadow: '0 4px 20px rgba(0,0,0,0.07)' }}
   >
-    <Box flex style={{ height: '100%' }}>
-      <Box style={{ width: 110, background: '#E9EBED', flexShrink: 0 }} />
-      <Box className="flex-1 p-3" style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-        <Box style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <Box style={{ width: '70%', height: 13, background: '#E9EBED', borderRadius: 6 }} />
-          <Box style={{ width: '40%', height: 11, background: '#E9EBED', borderRadius: 6 }} />
-        </Box>
-        <Box style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <Box style={{ width: '85%', height: 11, background: '#E9EBED', borderRadius: 6 }} />
-          <Box style={{ width: '35%', height: 20, background: '#E9EBED', borderRadius: 8 }} />
-        </Box>
+    <Box style={{ height: 140, background: '#E9EBED' }} />
+    <Box style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+      <Box style={{ height: 12, width: '80%', background: '#E9EBED', borderRadius: 6 }} />
+      <Box style={{ display: 'flex', gap: 6 }}>
+        <Box style={{ height: 22, width: 70, background: '#E9EBED', borderRadius: 20 }} />
+        <Box style={{ height: 22, width: 90, background: '#E9EBED', borderRadius: 20 }} />
       </Box>
     </Box>
   </Box>
@@ -56,24 +51,8 @@ export const StationsPage: FC = () => {
   const hasActiveFilters = search || provinceCode || wardCode;
 
   return (
-    <Page className="flex-1 flex flex-col">
+    <Page className="flex-1 flex flex-col" style={{ background: '#F6F8F6' }}>
       <PullToRefresh onRefresh={loadStations} className="flex-1">
-
-        {/* Sub-header */}
-        <Box
-          className="bg-white px-4 py-3"
-          style={{ borderBottom: '1px solid #F0F0F0', boxShadow: '0 1px 4px rgba(0,0,0,0.04)' }}
-        >
-          <Box flex className="items-center" style={{ gap: 6 }}>
-            <Box
-              className="flex items-center justify-center rounded-full"
-              style={{ width: 28, height: 28, background: 'linear-gradient(135deg, #43B96B, #288F4E)' }}
-            >
-              <Zap size={14} color="#fff" fill="#fff" strokeWidth={0} />
-            </Box>
-            <p style={{ fontSize: 14, fontWeight: 700, color: '#111827' }}>Danh sách trạm sạc</p>
-          </Box>
-        </Box>
 
         {/* Search & filters */}
         <SearchFilter />
