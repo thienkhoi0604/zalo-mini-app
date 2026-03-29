@@ -2,6 +2,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Box, Page } from 'zmp-ui';
 import { MapPin, Navigation, Zap, Clock, RotateCcw, Store } from 'lucide-react';
+import { openOutApp } from 'zmp-sdk/apis';
 import { Station } from '@/types/station';
 import { getStationById } from '@/apis/stations';
 import StatCard from './stat-card';
@@ -57,7 +58,12 @@ const StationDetailPage: FC = () => {
   const hasStats =
     station.defaultPoint != null ||
     station.maxCheckinPerDay != null ||
-    station.minCheckinIntervalMinutes != null;
+    station.minCheckinIntervalMinutes != null ||
+    (station.distanceKm != null && station.distanceKm > 0);
+
+  const distanceLabel = station.distanceKm != null && station.distanceKm < 1
+    ? `${Math.round(station.distanceKm * 1000)} m`
+    : `${(station.distanceKm ?? 0).toFixed(1)} km`;
 
   return (
     <Page className="flex-1 flex flex-col">
@@ -109,6 +115,15 @@ const StationDetailPage: FC = () => {
           {/* Stats row */}
           {hasStats && (
             <Box flex style={{ gap: 10 }}>
+              {station.distanceKm != null && station.distanceKm > 0 && (
+                <StatCard
+                  icon={<Navigation size={16} color="#2563EB" />}
+                  label="Khoảng cách"
+                  value={distanceLabel}
+                  bg="#EFF6FF"
+                  iconBg="#DBEAFE"
+                />
+              )}
               {station.defaultPoint != null && (
                 <StatCard
                   icon={<Zap size={18} color="#D97706" fill="#D97706" strokeWidth={0} />}
@@ -155,14 +170,12 @@ const StationDetailPage: FC = () => {
               icon={<Navigation size={16} color="#2563EB" />}
               label="Chỉ đường"
               value={
-                <a
-                  href={station.googleMapsDirectionUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  style={{ fontSize: 13, color: '#2563EB', fontWeight: 600 }}
+                <p
+                  style={{ fontSize: 13, color: '#2563EB', fontWeight: 600, cursor: 'pointer' }}
+                  onClick={() => openOutApp({ url: station.googleMapsDirectionUrl })}
                 >
                   Mở trên Google Maps →
-                </a>
+                </p>
               }
               last={!station.storeName}
             />

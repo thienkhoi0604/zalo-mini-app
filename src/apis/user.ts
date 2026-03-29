@@ -1,8 +1,6 @@
 import axiosClient from './client';
 import { User, VehicleInfo } from '@/types/user';
 import { PointWallet } from '@/types/point-wallet';
-import mockVehicles from '@/mock/my-vehicles.json';
-import mockReferralQr from '@/mock/my-referral-qr.json';
 
 export interface VerifyVehiclePayload {
   vehicleTypeId: string;
@@ -25,7 +23,7 @@ export async function fetchVehicleInfo(): Promise<VehicleInfo | null> {
     const { data } = await axiosClient.get<{ data: VehicleInfo[] }>('/me/vehicles');
     return data.data?.[0] ?? null;
   } catch {
-    return (mockVehicles.data?.[0] as VehicleInfo) ?? null;
+    return null;
   }
 }
 
@@ -57,7 +55,7 @@ export async function fetchReferralQR(): Promise<string> {
     const { data } = await axiosClient.get<{ data: string }>('/me/referral-qr');
     return data.data;
   } catch {
-    return mockReferralQr.data;
+    return '';
   }
 }
 

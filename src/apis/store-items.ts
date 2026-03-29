@@ -1,6 +1,5 @@
 import axiosClient from './client';
 import { Reward, StoreItemApiItem, getStoreItemTypeLabel } from '@/types/reward';
-import mockStoreItems from '@/mock/store-items.json';
 
 function mapStoreItemToReward(item: StoreItemApiItem): Reward {
   return {
@@ -31,6 +30,6 @@ export async function getStoreItems(pageNumber = 1, pageSize = 10): Promise<Rewa
     );
     return (data.data.items ?? []).map(mapStoreItemToReward);
   } catch {
-    return (mockStoreItems.data.items as StoreItemApiItem[]).map(mapStoreItemToReward);
+    return [];
   }
 }

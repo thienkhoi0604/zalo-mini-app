@@ -1,79 +1,99 @@
 {
   "success": true,
   "message": "Success",
-  "data": [
-    {
-      "id": "03d11f1f-fd22-41de-8914-7dcf69288571",
-      "code": "PRD-33E70532",
-      "rewardName": "Cơm bò",
-      "storeName": "Cửa hàng tại trạm Nam Hòa",
-      "storeItemId": "45a36a2c-94a0-4274-a20f-5ffce32c7725",
-      "itemType": "Product",
-      "status": "Active",
-      "issuedAt": "2026-03-29T13:19:17.2903501+00:00",
-      "expiredAt": "2026-04-28T13:19:17.2903502+00:00",
-      "usedAt": null
-    },
-    {
-      "id": "00b5fb93-4149-49cd-af17-1761132971bf",
-      "code": "VCH-39BC82B7",
-      "rewardName": "Voucher Giảm Giá 10%",
-      "storeName": null,
-      "storeItemId": null,
-      "itemType": "Reward",
-      "status": "Active",
-      "issuedAt": "2026-03-29T09:53:23.192704+00:00",
-      "expiredAt": "2026-04-28T09:53:23.192704+00:00",
-      "usedAt": null
-    },
-    {
-      "id": "0eb2137a-73f1-4574-b3ef-fb4bc4e8cbc6",
-      "code": "VCH-785EF52D",
-      "rewardName": "voucher giảm giá",
-      "storeName": null,
-      "storeItemId": null,
-      "itemType": "Reward",
-      "status": "Active",
-      "issuedAt": "2026-03-29T07:44:42.354319+00:00",
-      "expiredAt": "2026-04-28T07:44:42.354343+00:00",
-      "usedAt": null
-    },
-    {
-      "id": "9a5fdc91-f242-4c57-932c-8b64e6629623",
-      "code": "VCH-02E8A0C6",
-      "rewardName": "voucher giảm giá",
-      "storeName": null,
-      "storeItemId": null,
-      "itemType": "Reward",
-      "status": "Active",
-      "issuedAt": "2026-03-26T09:06:24.456691+00:00",
-      "expiredAt": "2026-04-25T09:06:24.456691+00:00",
-      "usedAt": null
-    },
-    {
-      "id": "3aa1ba9b-74be-4fe5-bf86-24d5ffb7c663",
-      "code": "VCH-35ECC8C5",
-      "rewardName": "Voucher Giảm Giá 10%",
-      "storeName": null,
-      "storeItemId": null,
-      "itemType": "Reward",
-      "status": "Active",
-      "issuedAt": "2026-03-26T08:54:13.279246+00:00",
-      "expiredAt": "2026-04-25T08:54:13.279247+00:00",
-      "usedAt": null
-    },
-    {
-      "id": "cfc78843-3281-42ea-bd42-59f766ea9fca",
-      "code": "VCH-31409FA5",
-      "rewardName": "Voucher Giảm Giá 10%",
-      "storeName": null,
-      "storeItemId": null,
-      "itemType": "Reward",
-      "status": "Active",
-      "issuedAt": "2026-03-25T17:37:52.24705+00:00",
-      "expiredAt": "2026-04-24T17:37:52.247075+00:00",
-      "usedAt": null
-    }
-  ],
+  "data": {
+    "items": [
+      {
+        "id": "5e118cd8-7bb4-4212-88b8-a4339c290062",
+        "code": "PRD-91B1CFE5",
+        "rewardName": "Cơm bò",
+        "storeName": "Cửa hàng tại trạm Nam Hòa",
+        "storeItemId": "45a36a2c-94a0-4274-a20f-5ffce32c7725",
+        "itemType": "Product",
+        "status": "Active",
+        "issuedAt": "2026-03-29T13:55:24.2764387+00:00",
+        "expiredAt": "2026-04-28T13:55:24.2764388+00:00",
+        "usedAt": null
+      },
+      {
+        "id": "03d11f1f-fd22-41de-8914-7dcf69288571",
+        "code": "PRD-33E70532",
+        "rewardName": "Cơm bò",
+        "storeName": "Cửa hàng tại trạm Nam Hòa",
+        "storeItemId": "45a36a2c-94a0-4274-a20f-5ffce32c7725",
+        "itemType": "Product",
+        "status": "Active",
+        "issuedAt": "2026-03-29T13:19:17.2903501+00:00",
+        "expiredAt": "2026-04-28T13:19:17.2903502+00:00",
+        "usedAt": null
+      },
+      {
+        "id": "00b5fb93-4149-49cd-af17-1761132971bf",
+        "code": "VCH-39BC82B7",
+        "rewardName": "Voucher Giảm Giá 10%",
+        "storeName": null,
+        "storeItemId": null,
+        "itemType": "Reward",
+        "status": "Used",
+        "issuedAt": "2026-03-29T09:53:23.192704+00:00",
+        "expiredAt": "2026-04-28T09:53:23.192704+00:00",
+        "usedAt": "2026-03-29T13:54:05.839689+00:00"
+      },
+      {
+        "id": "0eb2137a-73f1-4574-b3ef-fb4bc4e8cbc6",
+        "code": "VCH-785EF52D",
+        "rewardName": "voucher giảm giá",
+        "storeName": null,
+        "storeItemId": null,
+        "itemType": "Reward",
+        "status": "Active",
+        "issuedAt": "2026-03-29T07:44:42.354319+00:00",
+        "expiredAt": "2026-04-28T07:44:42.354343+00:00",
+        "usedAt": null
+      },
+      {
+        "id": "9a5fdc91-f242-4c57-932c-8b64e6629623",
+        "code": "VCH-02E8A0C6",
+        "rewardName": "voucher giảm giá",
+        "storeName": null,
+        "storeItemId": null,
+        "itemType": "Reward",
+        "status": "Active",
+        "issuedAt": "2026-03-26T09:06:24.456691+00:00",
+        "expiredAt": "2026-04-25T09:06:24.456691+00:00",
+        "usedAt": null
+      },
+      {
+        "id": "3aa1ba9b-74be-4fe5-bf86-24d5ffb7c663",
+        "code": "VCH-35ECC8C5",
+        "rewardName": "Voucher Giảm Giá 10%",
+        "storeName": null,
+        "storeItemId": null,
+        "itemType": "Reward",
+        "status": "Active",
+        "issuedAt": "2026-03-26T08:54:13.279246+00:00",
+        "expiredAt": "2026-04-25T08:54:13.279247+00:00",
+        "usedAt": null
+      },
+      {
+        "id": "cfc78843-3281-42ea-bd42-59f766ea9fca",
+        "code": "VCH-31409FA5",
+        "rewardName": "Voucher Giảm Giá 10%",
+        "storeName": null,
+        "storeItemId": null,
+        "itemType": "Reward",
+        "status": "Active",
+        "issuedAt": "2026-03-25T17:37:52.24705+00:00",
+        "expiredAt": "2026-04-24T17:37:52.247075+00:00",
+        "usedAt": null
+      }
+    ],
+    "pageNumber": 1,
+    "pageSize": 20,
+    "totalCount": 7,
+    "totalPages": 1,
+    "hasPrevious": false,
+    "hasNext": false
+  },
   "errors": null
 }

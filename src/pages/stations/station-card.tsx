@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { MapPin, Zap, Clock } from 'lucide-react';
+import { MapPin, Zap, Clock, Navigation } from 'lucide-react';
 import type { Station } from '@/types/station';
 
 interface Props {
@@ -106,6 +106,18 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
               </p>
             </Box>
 
+            <Box flex className="items-center justify-between">
+              {station.distanceKm != null && station.distanceKm > 0 && (
+                <Box flex className="items-center" style={{ gap: 3, marginBottom: 4 }}>
+                  <Navigation size={10} color="#6B7280" />
+                  <p style={{ fontSize: 10, color: '#6B7280' }}>
+                    {station.distanceKm < 1
+                      ? `${Math.round(station.distanceKm * 1000)} m`
+                      : `${station.distanceKm.toFixed(1)} km`}
+                  </p>
+                </Box>
+              )}
+            </Box>
             <Box flex className="items-center justify-between">
               {station.defaultPoint != null ? (
                 <Box

@@ -104,11 +104,15 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     try {
       const nextPage = userRewardsPage + 1;
       const res = await getUserRewards({ pageNumber: nextPage, pageSize: USER_REWARDS_PAGE_SIZE });
-      set((state) => ({
-        userRewards: [...state.userRewards, ...(res.data.items ?? [])],
-        userRewardsPage: nextPage,
-        userRewardsHasMore: res.data.hasNext ?? false,
-      }));
+      set((state) => {
+        const merged = [...state.userRewards, ...(res.data.items ?? [])];
+        return {
+          userRewards: merged,
+          userRewardsPage: nextPage,
+          userRewardsHasMore: res.data.hasNext ?? false,
+          userRewardsUnusedCount: merged.filter((v) => v.usedAt === null).length,
+        };
+      });
     } catch (error) {
       console.error('Failed to load more user rewards:', error);
     } finally {

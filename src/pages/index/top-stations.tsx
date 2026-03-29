@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Box } from "zmp-ui";
-import { Zap, ChevronRight, MapPin } from "lucide-react";
+import { Zap, ChevronRight, MapPin, Navigation } from "lucide-react";
 import { Station } from '@/types/station';
 import { getStations } from '@/apis/stations';
 
@@ -137,17 +137,29 @@ export const TopStationsCarousel: FC = () => {
                 </p>
               </Box>
 
-              <Box
-                style={{
-                  background: '#EEF7F1',
-                  borderRadius: 6,
-                  padding: '3px 8px',
-                  alignSelf: 'flex-start',
-                }}
-              >
-                <p style={{ fontSize: 10, color: '#288F4E', fontWeight: 600 }}>
-                  {station.stationTypeName}
-                </p>
+              <Box flex className="items-center justify-between">
+                <Box
+                  style={{
+                    background: '#EEF7F1',
+                    borderRadius: 6,
+                    padding: '3px 8px',
+                    alignSelf: 'flex-start',
+                  }}
+                >
+                  <p style={{ fontSize: 10, color: '#288F4E', fontWeight: 600 }}>
+                    {station.stationTypeName}
+                  </p>
+                </Box>
+                {station.distanceKm != null && station.distanceKm > 0 && (
+                  <Box flex className="items-center" style={{ gap: 3 }}>
+                    <Navigation size={10} color="#6B7280" />
+                    <p style={{ fontSize: 10, color: '#6B7280' }}>
+                      {station.distanceKm < 1
+                        ? `${Math.round(station.distanceKm * 1000)} m`
+                        : `${station.distanceKm.toFixed(1)} km`}
+                    </p>
+                  </Box>
+                )}
               </Box>
             </Box>
           </Box>

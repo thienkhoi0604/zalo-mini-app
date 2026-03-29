@@ -1,10 +1,8 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
-import { ChevronRight, Ticket } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
 import { useUserStore } from '@/stores/user';
 import RewardsList from './item-cards-list';
-import { useNavigate } from 'react-router';
 import PullToRefresh from '@/components/pull-to-refresh';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -34,17 +32,15 @@ const SkeletonRow: FC = () => (
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const RewardsPage: FC = () => {
-  const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
-  const { loading, loadAllRewards, loadUserRewards, userRewardsUnusedCount } = useRewardsStore();
+  const { loading, loadAllRewards } = useRewardsStore();
   const { pointWallet, isAuthenticated } = useUserStore();
 
   useEffect(() => {
     const init = async () => {
       try {
         await loadAllRewards();
-        if (isAuthenticated) await loadUserRewards();
         setInitialized(true);
       } catch {
         openSnackbar({ text: 'Không thể tải danh sách phần thưởng', type: 'error' });
@@ -56,7 +52,6 @@ const RewardsPage: FC = () => {
 
   const handleRefresh = async () => {
     await loadAllRewards();
-    if (isAuthenticated) await loadUserRewards();
   };
 
   return (
@@ -86,37 +81,15 @@ const RewardsPage: FC = () => {
               }}
             />
 
-            <Box flex style={{ gap: 0 }}>
-              <Box
-                className="flex-1 text-center"
-                style={{ borderRight: '1px solid rgba(255,255,255,0.2)', paddingRight: 12 }}
-              >
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginBottom: 5 }}>
-                  Xu khả dụng
+            <Box className="text-center">
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginBottom: 5 }}>
+                Xu khả dụng
+              </p>
+              <Box flex className="justify-center items-center" style={{ gap: 5 }}>
+                <span style={{ fontSize: 18 }}>🪙</span>
+                <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
+                  {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
                 </p>
-                <Box flex className="justify-center items-center" style={{ gap: 5 }}>
-                  <span style={{ fontSize: 18 }}>🪙</span>
-                  <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-                    {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
-                  </p>
-                </Box>
-              </Box>
-
-              <Box
-                className="flex-1 text-center cursor-pointer"
-                style={{ paddingLeft: 12 }}
-                onClick={() => navigate('/my-vouchers')}
-              >
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.75)', marginBottom: 5 }}>
-                  Voucher của bạn
-                </p>
-                <Box flex className="justify-center items-center" style={{ gap: 5 }}>
-                  <Ticket size={18} color="#fff" />
-                  <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-                    {initialized ? userRewardsUnusedCount : '—'}
-                  </p>
-                  <ChevronRight size={14} color="rgba(255,255,255,0.7)" />
-                </Box>
               </Box>
             </Box>
           </Box>

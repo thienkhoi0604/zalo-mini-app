@@ -15,6 +15,7 @@ export interface Station {
   id: string;
   code: string;
   name: string;
+  distanceKm?: number;
   stationTypeId: string;
   stationTypeName: string;
   storeId: string | null;

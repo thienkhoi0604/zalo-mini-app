@@ -55,22 +55,26 @@ export async function getUserRewards(
 ): Promise<UserRewardsResponse> {
   const { pageNumber = 1, pageSize = 5 } = params;
   try {
-    const { data } = await axiosClient.get<{ success: boolean; data: UserReward[] }>(
-      '/Rewards/my-vouchers',
-      { params: { pageNumber, pageSize } },
-    );
-    const all: UserReward[] = Array.isArray(data.data) ? data.data : [];
-    const start = (pageNumber - 1) * pageSize;
-    const items = all.slice(start, start + pageSize);
+    const { data } = await axiosClient.get<{
+      success: boolean;
+      data: {
+        items: UserReward[];
+        pageNumber: number;
+        pageSize: number;
+        totalCount: number;
+        hasNext: boolean;
+      };
+    }>('/Rewards/my-vouchers', { params: { pageNumber, pageSize } });
+    const items: UserReward[] = data.data.items ?? [];
     return {
       success: true,
-      unusedCount: all.filter((v) => v.usedAt === null).length,
+      unusedCount: items.filter((v) => v.usedAt === null).length,
       data: {
         items,
-        pageNumber,
-        pageSize,
-        totalCount: all.length,
-        hasNext: start + pageSize < all.length,
+        pageNumber: data.data.pageNumber ?? pageNumber,
+        pageSize: data.data.pageSize ?? pageSize,
+        totalCount: data.data.totalCount ?? items.length,
+        hasNext: data.data.hasNext ?? false,
       },
     };
   } catch {
