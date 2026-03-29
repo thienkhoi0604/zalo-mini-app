@@ -62,6 +62,10 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
         return;
       }
       const reward = await getRewardById(id);
+      if (!reward) {
+        set({ loading: false });
+        return;
+      }
       set((state) => ({
         allRewards: [...state.allRewards, reward],
         loading: false,
@@ -114,7 +118,8 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
   redeemReward: async (rewardId: string) => {
     set({ redeeming: true });
     try {
-      await redeemReward(rewardId);
+      const reward = get().allRewards.find((r) => r.id === rewardId);
+      await redeemReward(rewardId, reward?.source === 'product');
       await Promise.all([
         get().loadUserRewards(),
         useUserStore.getState().loadPointWallet(),

@@ -44,6 +44,8 @@ export function getRewardTypeLabel(type: string): string {
   return type;
 }
 
+export type RewardSource = 'reward' | 'product';
+
 export interface Reward {
   id: string;
   code: string;
@@ -53,6 +55,7 @@ export interface Reward {
   bannerImageUrl: string;
   thumbnailImageUrl: string;
   category: string;
+  source: RewardSource;
   brandName?: string;
   brandLogoUrl?: string;
   stores?: RewardStore[];
@@ -65,11 +68,15 @@ export interface Reward {
   status: 'active' | 'expired';
 }
 
+export type UserRewardItemType = 'Reward' | 'Product';
+
 export interface UserReward {
   id: string;
   code: string;
   rewardName: string;
   storeName: string | null;
+  storeItemId: string | null;
+  itemType: UserRewardItemType;
   status: string;
   issuedAt: string;
   expiredAt: string;

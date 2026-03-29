@@ -12,6 +12,7 @@ function mapApiItemToReward(item: RewardApiItem): Reward {
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
     category: item.type,
+    source: 'reward',
     pointsRequired: item.pointCost,
     applicableTimeStart: item.validFrom ?? '',
     applicableTimeEnd: item.validTo ?? '',
@@ -75,10 +76,15 @@ export async function getUserRewards(
   }
 }
 
-export async function redeemReward(rewardId: string): Promise<{ pointsDeducted: number }> {
+export async function redeemReward(
+  rewardId: string,
+  isProduct = false,
+): Promise<{ pointsDeducted: number }> {
+  const payload: Record<string, unknown> = { rewardId };
+  if (isProduct) payload.itemType = 'Product';
   const { data } = await axiosClient.post<{ data: { pointsDeducted: number } }>(
     '/Rewards/redeem',
-    { rewardId },
+    payload,
   );
   return data.data;
 }

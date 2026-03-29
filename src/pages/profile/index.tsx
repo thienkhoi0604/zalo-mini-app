@@ -37,14 +37,13 @@ const QR_SHEET_CONFIG: Record<
 const Personal: FC = () => {
   const navigate = useNavigate();
   const { user, pointWallet } = useUserStore();
-  const { userRewards, loadUserRewards } = useRewardsStore();
+  const { loadUserRewards } = useRewardsStore();
   const [activeQRSheet, setActiveQRSheet] = useState<QRSheetType>(null);
 
   useEffect(() => {
     loadUserRewards();
   }, []);
 
-  const unusedVoucherCount = userRewards.filter((v) => v.usedAt === null).length;
   const isVehicleApproved = pointWallet?.vehicleStatus === 'Approved';
   const activeConfig = activeQRSheet ? QR_SHEET_CONFIG[activeQRSheet] : null;
 
@@ -60,7 +59,6 @@ const Personal: FC = () => {
           {
             icon: <Gift size={ICON_SIZE} color={ICON_COLOR} />,
             label: 'Voucher của bạn',
-            sub: unusedVoucherCount > 0 ? `${unusedVoucherCount} voucher chưa dùng` : 'Chưa có voucher',
             onPress: () => navigate('/my-vouchers'),
           },
           ...(isVehicleApproved ? [{

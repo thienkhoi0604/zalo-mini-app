@@ -12,6 +12,7 @@ function mapStoreItemToReward(item: StoreItemApiItem): Reward {
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
     category: getStoreItemTypeLabel(item.type),
+    source: 'product',
     brandName: item.storeName,
     pointsRequired: item.coinCost,
     applicableTimeStart: '',

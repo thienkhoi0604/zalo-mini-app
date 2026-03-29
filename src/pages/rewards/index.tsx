@@ -113,7 +113,7 @@ const RewardsPage: FC = () => {
                 <Box flex className="justify-center items-center" style={{ gap: 5 }}>
                   <Ticket size={18} color="#fff" />
                   <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-                    {userRewards.filter((v) => v.usedAt === null).length}
+                    {initialized ? userRewards.filter((v) => v.usedAt === null).length : '—'}
                   </p>
                   <ChevronRight size={14} color="rgba(255,255,255,0.7)" />
                 </Box>

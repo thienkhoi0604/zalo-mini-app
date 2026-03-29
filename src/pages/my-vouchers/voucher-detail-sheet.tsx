@@ -5,7 +5,13 @@ import { Sheet } from '@/components/fullscreen-sheet';
 import { UserReward } from '@/types/reward';
 import { formatDate } from '@/utils/date';
 import { Copy, CheckCircle, Clock, MapPin, Gift } from 'lucide-react';
-import { fetchQRSession } from '@/apis/user';
+import { fetchQRSession, QRSessionType } from '@/apis/user';
+import { UserRewardItemType } from '@/types/reward';
+
+const QR_SESSION_TYPE: Record<UserRewardItemType, QRSessionType> = {
+  Reward: 'Voucher',
+  Product: 'Product',
+};
 
 interface Props {
   userVoucher: UserReward | null;
@@ -27,7 +33,7 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
 
     setQrLoading(true);
     setQrValue(null);
-    fetchQRSession(userVoucher.id, 'Voucher')
+    fetchQRSession(userVoucher.id, QR_SESSION_TYPE[userVoucher.itemType])
       .then((session) => {
         setQrValue(session.token);
         setQrLoading(false);

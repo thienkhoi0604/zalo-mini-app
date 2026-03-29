@@ -35,7 +35,7 @@ export async function scanQRCode(scannedUserId: string): Promise<{ points: numbe
 }
 
 
-export type QRSessionType = 'Checkin' | 'Voucher';
+export type QRSessionType = 'Checkin' | 'Voucher' | 'Product';
 
 export async function fetchQRSession(
   assetId: string | null = null,
