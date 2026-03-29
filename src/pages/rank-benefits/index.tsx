@@ -46,7 +46,7 @@ const RankBenefitsPage: FC = () => {
   const currentIndex = tiers.findIndex((t) => t.code === currentTier?.code);
 
   return (
-    <Page className="flex-1">
+    <Page className="flex-1 flex flex-col overflow-hidden">
       <PullToRefresh onRefresh={loadRanks} className="flex-1">
         {loading ? (
           <Skeleton />
