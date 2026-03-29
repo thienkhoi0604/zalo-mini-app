@@ -1,5 +1,5 @@
 import { getLocation } from 'zmp-sdk';
-import { getAccessToken, authorize } from 'zmp-sdk/apis';
+import { getAccessToken, authorize, getSetting } from 'zmp-sdk/apis';
 
 export type PermissionResult =
   | { status: 'granted' }
@@ -8,6 +8,11 @@ export type PermissionResult =
 
 export async function requestZaloPermissions(): Promise<PermissionResult> {
   try {
+    const { authSetting } = await getSetting();
+    if (authSetting['scope.userInfo'] === true && authSetting['scope.userLocation'] === true) {
+      return { status: 'granted' };
+    }
+
     const data = await authorize({
       scopes: ['scope.userInfo', 'scope.userLocation'],
     });

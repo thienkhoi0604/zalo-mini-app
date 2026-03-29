@@ -46,9 +46,13 @@ export async function getRewardById(id: string): Promise<Reward | null> {
   }
 }
 
+export interface UserRewardsResponse extends PaginatedApiResponse<UserReward> {
+  unusedCount: number;
+}
+
 export async function getUserRewards(
   params: GetUserRewardsParams = {},
-): Promise<PaginatedApiResponse<UserReward>> {
+): Promise<UserRewardsResponse> {
   const { pageNumber = 1, pageSize = 5 } = params;
   try {
     const { data } = await axiosClient.get<{ success: boolean; data: UserReward[] }>(
@@ -60,6 +64,7 @@ export async function getUserRewards(
     const items = all.slice(start, start + pageSize);
     return {
       success: true,
+      unusedCount: all.filter((v) => v.usedAt === null).length,
       data: {
         items,
         pageNumber,
@@ -71,20 +76,21 @@ export async function getUserRewards(
   } catch {
     return {
       success: false,
+      unusedCount: 0,
       data: { items: [], pageNumber, pageSize, totalCount: 0, hasNext: false },
     };
   }
 }
 
+export type RedeemItemType = 'Reward' | 'Product';
+
 export async function redeemReward(
   rewardId: string,
-  isProduct = false,
+  itemType: RedeemItemType,
 ): Promise<{ pointsDeducted: number }> {
-  const payload: Record<string, unknown> = { rewardId };
-  if (isProduct) payload.itemType = 'Product';
   const { data } = await axiosClient.post<{ data: { pointsDeducted: number } }>(
     '/Rewards/redeem',
-    payload,
+    { rewardId, itemType },
   );
   return data.data;
 }

@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Reward, UserReward, REWARD_TYPES } from '@/types/reward';
-import { getRewards, getRewardById, getUserRewards, redeemReward } from '@/apis/rewards';
+import { getRewards, getRewardById, getUserRewards, redeemReward, UserRewardsResponse } from '@/apis/rewards';
 import { getStoreItems } from '@/apis/store-items';
 import { useUserStore } from '@/stores/user';
 
@@ -11,6 +11,7 @@ type RewardsStore = {
   userRewards: UserReward[];
   userRewardsPage: number;
   userRewardsHasMore: boolean;
+  userRewardsUnusedCount: number;
   loading: boolean;
   selectedReward: Reward | null;
   redeeming: boolean;
@@ -31,6 +32,7 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
   userRewards: [],
   userRewardsPage: 0,
   userRewardsHasMore: true,
+  userRewardsUnusedCount: 0,
   loading: false,
   selectedReward: null,
   redeeming: false,
@@ -86,6 +88,7 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
         userRewards: res.data.items ?? [],
         userRewardsPage: 1,
         userRewardsHasMore: res.data.hasNext ?? false,
+        userRewardsUnusedCount: res.unusedCount,
       });
     } catch (error) {
       console.error('Failed to load user rewards:', error);
@@ -119,7 +122,7 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     set({ redeeming: true });
     try {
       const reward = get().allRewards.find((r) => r.id === rewardId);
-      await redeemReward(rewardId, reward?.source === 'product');
+      await redeemReward(rewardId, reward?.source === 'product' ? 'Product' : 'Reward');
       await Promise.all([
         get().loadUserRewards(),
         useUserStore.getState().loadPointWallet(),
