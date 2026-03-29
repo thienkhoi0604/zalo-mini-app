@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { Gift, QrCode, UserCircle2, UserPlus, ShieldCheck, History, Car } from 'lucide-react';
+import { Gift, QrCode, ShieldCheck, History, Car } from 'lucide-react';
 import { useToBeImplemented } from '@/hooks';
 import { useUserStore } from '@/stores/user';
 import { useRewardsStore } from '@/stores/rewards';
@@ -9,13 +9,14 @@ import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
 import SectionList from './section-list';
 import QRCodeSheet from './qr-code-sheet';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 // ─── Personal ────────────────────────────────────────────────────────────────
 
 const Personal: FC = () => {
   const onClick = useToBeImplemented();
   const navigate = useNavigate();
-  const { user, pointWallet } = useUserStore();
+  const { user, pointWallet, loadPointWallet } = useUserStore();
   const { userRewards, loadUserRewards } = useRewardsStore();
   const [qrSheetVisible, setQrSheetVisible] = useState(false);
 
@@ -53,7 +54,7 @@ const Personal: FC = () => {
         title="QR Code"
         onClick={() => setQrSheetVisible(true)}
         items={[
-          { icon: <QrCode size={18} color="#A0784A" />, label: 'QR Code của tôi', sub: 'Cho người khác quét để kiếm điểm' },
+          { icon: <QrCode size={18} color="#A0784A" />, label: 'QR Code của tôi', sub: 'Mã giới thiệu cho người dùng' },
         ]}
       />
 
@@ -72,8 +73,6 @@ const Personal: FC = () => {
             sub: 'Xem các lần check-in tích điểm',
             onPress: () => navigate('/checkin-history'),
           },
-          { icon: <UserCircle2 size={18} color="#A0784A" />, label: 'Giới thiệu khách hàng', onPress: onClick },
-          { icon: <UserPlus size={18} color="#A0784A" />, label: 'Giới thiệu bạn bè tải ứng dụng', onPress: onClick },
         ]}
       />
 
@@ -85,9 +84,17 @@ const Personal: FC = () => {
 // ─── Profile Page ─────────────────────────────────────────────────────────────
 
 const ProfilePage: FC = () => {
+  const { loadPointWallet } = useUserStore();
+  const { loadUserRewards } = useRewardsStore();
+
   return (
-    <Page className="flex-1 flex flex-col bg-gray-50 overflow-y-auto">
-      <Personal />
+    <Page className="flex-1 flex flex-col bg-gray-50">
+      <PullToRefresh
+        onRefresh={async () => { await Promise.all([loadPointWallet(), loadUserRewards()]); }}
+        className="flex-1"
+      >
+        <Personal />
+      </PullToRefresh>
     </Page>
   );
 };

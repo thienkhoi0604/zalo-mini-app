@@ -7,6 +7,7 @@ import HistorySkeleton from './history-skeleton';
 import HistoryItem from './history-item';
 import SummaryBanner from './summary-banner';
 import { groupByDate } from './utils';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 const CheckinHistoryPage: FC = () => {
   const { history, historyLoading, hasMore, loadHistory, loadMoreHistory } = useCheckinsStore();
@@ -21,8 +22,9 @@ const CheckinHistoryPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
-      <Box
-        className="flex-1 overflow-auto px-4 pt-4 pb-8"
+      <PullToRefresh
+        onRefresh={async () => { await loadHistory(); }}
+        className="flex-1 px-4 pt-4 pb-8"
         style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
       >
         {isInitialLoad ? (
@@ -91,7 +93,7 @@ const CheckinHistoryPage: FC = () => {
             )}
           </>
         )}
-      </Box>
+      </PullToRefresh>
     </Page>
   );
 };

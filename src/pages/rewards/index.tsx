@@ -5,6 +5,7 @@ import { useRewardsStore } from '@/stores/rewards';
 import { useUserStore } from '@/stores/user';
 import RewardsList from './item-cards-list';
 import { useNavigate } from 'react-router';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -36,8 +37,8 @@ const RewardsPage: FC = () => {
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
-  const { loading, loadAllRewards, loadUserRewards } = useRewardsStore();
-  const { user, pointWallet, isAuthenticated } = useUserStore();
+  const { loading, loadAllRewards, loadUserRewards, userRewards } = useRewardsStore();
+  const { pointWallet, isAuthenticated } = useUserStore();
 
   useEffect(() => {
     const init = async () => {
@@ -108,7 +109,7 @@ const RewardsPage: FC = () => {
               <Box flex className="justify-center items-center" style={{ gap: 5 }}>
                 <Ticket size={18} color="#fff" />
                 <p style={{ fontSize: 20, fontWeight: 800, color: '#fff' }}>
-                  {user?.voucherCount ?? 0}
+                  {userRewards.filter((v) => v.usedAt === null).length}
                 </p>
                 <ChevronRight size={14} color="rgba(255,255,255,0.7)" />
               </Box>
@@ -118,7 +119,13 @@ const RewardsPage: FC = () => {
       )}
 
       {/* Rewards list */}
-      <Box className="flex-1 overflow-auto py-5">
+      <PullToRefresh
+        onRefresh={async () => {
+          await loadAllRewards();
+          if (isAuthenticated) await loadUserRewards();
+        }}
+        className="flex-1 py-5"
+      >
         {!initialized && loading ? (
           <Box style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
             <SkeletonRow />
@@ -128,7 +135,7 @@ const RewardsPage: FC = () => {
         ) : (
           <RewardsList />
         )}
-      </Box>
+      </PullToRefresh>
     </Page>
   );
 };

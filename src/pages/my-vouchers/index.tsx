@@ -6,6 +6,7 @@ import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import VoucherCard from './voucher-card';
 import VoucherDetailSheet from './voucher-detail-sheet';
 import { UserReward } from '@/types/reward';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 // ─── Tab ─────────────────────────────────────────────────────────────────────
 
@@ -168,8 +169,9 @@ const MyVouchersPage: FC = () => {
       </Box>
 
       {/* List */}
-      <Box
-        className="flex-1 overflow-y-auto px-4 pb-4"
+      <PullToRefresh
+        onRefresh={async () => { await loadUserRewards(); }}
+        className="flex-1 px-4 pb-4"
         style={{ display: 'flex', flexDirection: 'column', gap: 12 }}
       >
         {isInitialLoad ? (
@@ -203,7 +205,7 @@ const MyVouchersPage: FC = () => {
             )}
           </>
         )}
-      </Box>
+      </PullToRefresh>
 
       <VoucherDetailSheet userVoucher={selectedVoucher} onClose={() => setSelectedVoucher(null)} />
     </Page>

@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useUserStore } from '@/stores/user';
 import { fetchAppRanks } from '@/apis/ranks';
@@ -6,6 +6,7 @@ import { buildTierConfig, resolveCurrentTier, TierConfig } from './tiers';
 import HeroBanner from './hero-banner';
 import ProgressSteps from './progress-steps';
 import RankCard from './rank-card';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -26,24 +27,18 @@ const RankBenefitsPage: FC = () => {
   const [tiers, setTiers] = useState<TierConfig[]>([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchAppRanks().then((ranks) => {
-      const sorted = [...ranks]
-        .filter((r) => r.isActive)
-        .sort((a, b) => a.priority - b.priority)
-        .map(buildTierConfig);
-      setTiers(sorted);
-      setLoading(false);
-    });
+  const loadRanks = useCallback(async () => {
+    setLoading(true);
+    const ranks = await fetchAppRanks();
+    const sorted = [...ranks]
+      .filter((r) => r.isActive)
+      .sort((a, b) => a.priority - b.priority)
+      .map(buildTierConfig);
+    setTiers(sorted);
+    setLoading(false);
   }, []);
 
-  if (loading) {
-    return (
-      <Page className="flex-1" style={{ background: 'linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%)' }}>
-        <Skeleton />
-      </Page>
-    );
-  }
+  useEffect(() => { loadRanks(); }, []);
 
   const currentTier = resolveCurrentTier(tiers, user?.rank?.currentRankCode, user?.rank?.currentRankName)
     ?? tiers[0];
@@ -52,24 +47,30 @@ const RankBenefitsPage: FC = () => {
 
   return (
     <Page className="flex-1" style={{ background: 'linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%)' }}>
-      <Box className="px-4 pt-4 pb-8 flex flex-col gap-3">
-        {currentTier && (
-          <HeroBanner tier={currentTier} pointWallet={pointWallet} />
+      <PullToRefresh onRefresh={loadRanks} className="flex-1">
+        {loading ? (
+          <Skeleton />
+        ) : (
+          <Box className="px-4 pt-4 pb-8 flex flex-col gap-3">
+            {currentTier && (
+              <HeroBanner tier={currentTier} pointWallet={pointWallet} />
+            )}
+
+            <ProgressSteps tiers={tiers} currentCode={currentTier?.code ?? ''} />
+
+            <p className="text-xs font-bold text-gray-500 uppercase mt-2">Đặc quyền</p>
+
+            {tiers.map((tier, i) => (
+              <RankCard
+                key={tier.code}
+                tier={tier}
+                isCurrent={tier.code === currentTier?.code}
+                isPast={i < currentIndex}
+              />
+            ))}
+          </Box>
         )}
-
-        <ProgressSteps tiers={tiers} currentCode={currentTier?.code ?? ''} />
-
-        <p className="text-xs font-bold text-gray-500 uppercase mt-2">Đặc quyền</p>
-
-        {tiers.map((tier, i) => (
-          <RankCard
-            key={tier.code}
-            tier={tier}
-            isCurrent={tier.code === currentTier?.code}
-            isPast={i < currentIndex}
-          />
-        ))}
-      </Box>
+      </PullToRefresh>
     </Page>
   );
 };

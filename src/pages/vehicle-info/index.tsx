@@ -1,10 +1,11 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { Car, CheckCircle, CalendarCheck, ImageOff, Pencil, Zap } from 'lucide-react';
 import { fetchVehicleInfo } from '@/apis/user';
 import { VehicleInfo } from '@/types/user';
 import { VEHICLE_TYPES, VEHICLE_TYPE_IDS } from '@/pages/verify-vehicle/vehicle-type-selector';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 // Reverse lookup: vehicleTypeId → VehicleType
 const vehicleTypeById: Record<string, typeof VEHICLE_TYPES[number]> = VEHICLE_TYPES.reduce(
@@ -95,18 +96,20 @@ const VehicleInfoPage: FC = () => {
   const [vehicle, setVehicle] = useState<VehicleInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchVehicleInfo().then((v) => {
-      setVehicle(v);
-      setLoading(false);
-    });
+  const loadVehicle = useCallback(async () => {
+    setLoading(true);
+    const v = await fetchVehicleInfo();
+    setVehicle(v);
+    setLoading(false);
   }, []);
+
+  useEffect(() => { loadVehicle(); }, []);
 
   const vehicleType = vehicle?.vehicleTypeId ? vehicleById(vehicle.vehicleTypeId) : null;
 
   return (
     <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
-      <Box className="flex-1 overflow-auto">
+      <PullToRefresh onRefresh={loadVehicle} className="flex-1">
 
         {/* Hero banner */}
         <Box
@@ -141,19 +144,23 @@ const VehicleInfoPage: FC = () => {
                 <p style={{ fontSize: 18, fontWeight: 800, color: '#fff', lineHeight: '24px' }}>
                   Thông tin xe của tôi
                 </p>
-                <Box
-                  style={{
-                    background: 'rgba(255,255,255,0.25)',
-                    borderRadius: 100,
-                    padding: '2px 8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 4,
-                  }}
-                >
-                  <CheckCircle size={10} color="#fff" />
-                  <span style={{ fontSize: 10, fontWeight: 700, color: '#fff' }}>Đã xác thực</span>
-                </Box>
+                {!loading && vehicle?.approvalStatus && (
+                  <Box
+                    style={{
+                      background: vehicle.approvalStatus === 'Approved' ? 'rgba(255,255,255,0.25)' : 'rgba(251,191,36,0.4)',
+                      borderRadius: 100,
+                      padding: '2px 8px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: 4,
+                    }}
+                  >
+                    <CheckCircle size={10} color="#fff" />
+                    <span style={{ fontSize: 10, fontWeight: 700, color: '#fff' }}>
+                      {vehicle.approvalStatus === 'Approved' ? 'Đã xác thực' : 'Chờ duyệt'}
+                    </span>
+                  </Box>
+                )}
               </Box>
               <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', lineHeight: '18px' }}>
                 Xe điện được xác minh để tích điểm
@@ -207,7 +214,7 @@ const VehicleInfoPage: FC = () => {
                 }
               />
 
-              {vehicle.approvedAt && (
+              {vehicle.reviewedAt && (
                 <>
                   <Box style={{ height: 1, background: '#F3F4F6' }} />
                   <InfoRow
@@ -215,7 +222,7 @@ const VehicleInfoPage: FC = () => {
                     label="NGÀY XÁC THỰC"
                     value={
                       <p style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}>
-                        {formatDate(vehicle.approvedAt)}
+                        {formatDate(vehicle.reviewedAt)}
                       </p>
                     }
                   />
@@ -242,6 +249,27 @@ const VehicleInfoPage: FC = () => {
               </Box>
             </Box>
 
+            {/* Rejection reason */}
+            {vehicle.rejectionReason && (
+              <Box
+                style={{
+                  background: '#FEF2F2',
+                  border: '1px solid #FECACA',
+                  borderRadius: 14,
+                  padding: '12px 14px',
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: 10,
+                }}
+              >
+                <span style={{ fontSize: 16, flexShrink: 0 }}>❌</span>
+                <Box>
+                  <p style={{ fontSize: 12, fontWeight: 700, color: '#B91C1C', marginBottom: 3 }}>Lý do từ chối</p>
+                  <p style={{ fontSize: 12, color: '#991B1B', lineHeight: '18px' }}>{vehicle.rejectionReason}</p>
+                </Box>
+              </Box>
+            )}
+
             {/* Notice */}
             <Box
               style={{
@@ -261,10 +289,10 @@ const VehicleInfoPage: FC = () => {
             </Box>
           </Box>
         )}
-      </Box>
+      </PullToRefresh>
 
       {/* Sticky CTA */}
-      <Box
+      {/* <Box
         style={{
           flexShrink: 0,
           padding: '12px 16px',
@@ -294,7 +322,7 @@ const VehicleInfoPage: FC = () => {
           <Pencil size={17} />
           Cập nhật thông tin xe
         </button>
-      </Box>
+      </Box> */}
     </Page>
   );
 };

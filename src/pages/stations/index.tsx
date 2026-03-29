@@ -6,6 +6,7 @@ import { useStationsStore } from '@/stores/stations';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import StationCard from './station-card';
 import SearchFilter from './search-filter';
+import PullToRefresh from '@/components/pull-to-refresh';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -77,7 +78,7 @@ export const StationsPage: FC = () => {
       {/* Search & filters */}
       <SearchFilter />
 
-      <Box className="flex-1 overflow-auto px-4 pt-4 pb-4">
+      <PullToRefresh onRefresh={async () => { await loadStations(); }} className="flex-1 px-4 pt-4 pb-4">
         {isInitialLoad ? (
           <>
             <StationSkeleton />
@@ -120,7 +121,7 @@ export const StationsPage: FC = () => {
             )}
           </>
         )}
-      </Box>
+      </PullToRefresh>
     </Page>
   );
 };

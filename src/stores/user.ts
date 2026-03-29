@@ -7,8 +7,7 @@ import {
   getAccessToken,
   getRefreshToken,
 } from '@/apis/authorization';
-import axiosClient from '@/apis/client';
-import { fetchUserInfo, fetchPointWallet } from '@/apis/user';
+import { fetchUserInfo, fetchPointWallet, scanQRCode as scanQRCodeApi } from '@/apis/user';
 import { User } from '@/types/user';
 import { PointWallet } from '@/types/point-wallet';
 
@@ -17,24 +16,19 @@ type UserStore = {
   pointWallet: PointWallet | null;
   authLoading: boolean;
   isAuthenticated: boolean;
-  qrCodeUrl: string | null;
-  qrLoading: boolean;
 
   initializeAuth: () => Promise<void>;
   loginWithZalo: () => Promise<'success' | 'permission_denied'>;
   loadPointWallet: () => Promise<void>;
   setUnauthenticated: () => void;
-  loadQRCode: () => Promise<void>;
   scanQRCode: (scannedUserId: string) => Promise<number>;
 };
 
-export const useUserStore = create<UserStore>((set, get) => ({
+export const useUserStore = create<UserStore>((set) => ({
   user: null,
   pointWallet: null,
   authLoading: false,
   isAuthenticated: false,
-  qrCodeUrl: null,
-  qrLoading: false,
 
   initializeAuth: async () => {
     set({ authLoading: true });
@@ -116,28 +110,13 @@ export const useUserStore = create<UserStore>((set, get) => ({
     set({ user: null, pointWallet: null, isAuthenticated: false });
   },
 
-  loadQRCode: async () => {
-    const { user } = get();
-    if (!user?.id) return;
-
-    set({ qrLoading: true });
-    try {
-      const { data } = await axiosClient.get(`/users/${user.id}/qr-code`);
-      set({ qrCodeUrl: data.qrCodeUrl, qrLoading: false });
-    } catch (error) {
-      console.error('Failed to load QR code:', error);
-      set({ qrLoading: false });
-      throw error;
-    }
-  },
-
   scanQRCode: async (scannedUserId: string) => {
     try {
-      const { data } = await axiosClient.post('/qr-code/scan', { scannedUserId });
+      const data = await scanQRCodeApi(scannedUserId);
       if (data.totalPoints !== undefined) {
         set((state) => ({
           pointWallet: state.pointWallet
-            ? { ...state.pointWallet, currentBalance: data.totalPoints }
+            ? { ...state.pointWallet, currentBalance: data.totalPoints! }
             : null,
         }));
       }

@@ -1,13 +1,15 @@
 export type VehicleInfo = {
   id?: string;
+  userId?: string;
   licensePlate: string;
   vehicleTypeId?: string;
   vehicleTypeName?: string;
   photoUrl1: string;
   photoUrl2?: string;
-  status?: string;
-  submittedAt?: string;
-  approvedAt?: string;
+  approvalStatus?: string;
+  rejectionReason?: string | null;
+  reviewedAt?: string;
+  createdAt?: string;
 };
 
 export type UserRank = {

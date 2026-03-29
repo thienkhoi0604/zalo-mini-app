@@ -29,13 +29,13 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
       title="Xác nhận đổi xu"
       onClose={onCancel}
       actions={[
+        { text: 'Huỷ', onClick: onCancel },
         {
           text: redeeming ? 'Đang xử lý...' : 'Xác nhận đổi',
           disabled: !hasEnough || redeeming,
           onClick: onConfirm,
           highLight: hasEnough,
         },
-        { text: 'Huỷ', onClick: onCancel },
       ]}
     >
       <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '4px 0 8px' }}>

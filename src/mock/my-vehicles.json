@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": [
+    {
+      "id": "9af55758-aa01-4b22-b11f-350f4a622272",
+      "userId": "033f1433-b08f-4a3c-a4d7-5b76cce33a52",
+      "vehicleTypeId": "0afdcf7e-0c88-4e1a-b34d-2d4d1067c567",
+      "vehicleTypeName": "Electric Car",
+      "licensePlate": "51G-12345",
+      "photoUrl1": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmyNlF9BMZ25rwOCkO_RYp9MT4HmC4e3Eruw&s",
+      "photoUrl2": "https://i.pinimg.com/564x/60/b3/b8/60b3b888914534cfa940f458c2143798.jpg",
+      "approvalStatus": "Approved",
+      "rejectionReason": null,
+      "reviewedAt": "2026-03-25T08:02:21.042135Z",
+      "createdAt": "2026-03-25T08:02:13.12429Z"
+    }
+  ],
+  "errors": null
+}
