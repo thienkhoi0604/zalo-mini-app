@@ -1,0 +1,11 @@
+{
+  "success": true,
+  "message": "string",
+  "data": {
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L",
+    "expiresInSeconds": 0
+  },
+  "errors": [
+    "string"
+  ]
+}

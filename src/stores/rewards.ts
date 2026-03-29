@@ -1,6 +1,7 @@
 import { create } from 'zustand';
 import { Reward, UserReward, REWARD_TYPES } from '@/types/reward';
 import { getRewards, getRewardById, getUserRewards, redeemReward } from '@/apis/rewards';
+import { getStoreItems } from '@/apis/store-items';
 import { useUserStore } from '@/stores/user';
 
 const USER_REWARDS_PAGE_SIZE = 5;
@@ -37,12 +38,14 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
   loadAllRewards: async () => {
     set({ loading: true });
     try {
-      const results = await Promise.all(
-        Object.values(REWARD_TYPES).map((type) =>
+      const [storeItems, ...rewardResults] = await Promise.all([
+        getStoreItems(1, 50),
+        ...Object.values(REWARD_TYPES).map((type) =>
           getRewards({ pageNumber: 1, pageSize: 10, type }),
         ),
-      );
-      set({ allRewards: ([] as Reward[]).concat(...results), loading: false });
+      ]);
+      const rewards = ([] as Reward[]).concat(...rewardResults);
+      set({ allRewards: [...rewards, ...storeItems], loading: false });
     } catch (error) {
       console.error('Failed to load rewards:', error);
       set({ loading: false });

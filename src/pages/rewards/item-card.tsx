@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Reward } from '@/types/reward';
+import { Reward, getRewardTypeLabel } from '@/types/reward';
 
 interface Props {
   card: Reward;
@@ -95,7 +95,7 @@ const RewardItemCard: FC<Props> = ({ card, onClick }) => {
             className="truncate"
             style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.3 }}
           >
-            {card.brandName || card.category}
+            {card.brandName || getRewardTypeLabel(card.type)}
           </p>
         </Box>
 

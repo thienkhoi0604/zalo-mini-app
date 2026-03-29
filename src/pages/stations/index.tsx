@@ -56,7 +56,7 @@ export const StationsPage: FC = () => {
   const hasActiveFilters = search || provinceCode || wardCode;
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+    <Page className="flex-1 flex flex-col">
       {/* Sub-header */}
       <Box
         className="bg-white px-4 py-3"

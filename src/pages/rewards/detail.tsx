@@ -3,6 +3,7 @@ import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
 import { MapPin, Calendar, FileText, Store, AlertCircle } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
+import { getRewardTypeLabel } from '@/types/reward';
 import { useUserStore } from '@/stores/user';
 
 // ─── Confirm Modal ─────────────────────────────────────────────────────────────
@@ -168,7 +169,7 @@ const RewardDetailPage: FC = () => {
 
   if (!card) {
     return (
-      <Page className="flex-1 flex flex-col items-center justify-center" style={{ background: '#F5F5F7' }}>
+      <Page className="flex-1 flex flex-col items-center justify-center">
         <Box className="flex flex-col items-center" style={{ gap: 12 }}>
           <Box
             className="flex items-center justify-center rounded-full"
@@ -186,7 +187,7 @@ const RewardDetailPage: FC = () => {
   const hasEnough = userPoints >= card.pointsRequired;
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7', position: 'relative' }}>
+    <Page className="flex-1 flex flex-col" style={{ position: 'relative' }}>
       <Box className="flex-1 overflow-y-auto" style={{ paddingBottom: owned ? 16 : 88 }}>
 
         {/* Hero image + overlay */}
@@ -220,7 +221,7 @@ const RewardDetailPage: FC = () => {
               padding: '4px 12px',
             }}
           >
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>{card.category}</p>
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>{getRewardTypeLabel(card.type)}</p>
           </Box>
         </Box>
 

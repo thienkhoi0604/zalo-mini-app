@@ -7,6 +7,7 @@ function mapApiItemToReward(item: RewardApiItem): Reward {
     id: item.id,
     code: item.code,
     name: item.name,
+    type: item.type,
     description: item.description ?? '',
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,

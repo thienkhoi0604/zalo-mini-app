@@ -108,7 +108,7 @@ const VehicleInfoPage: FC = () => {
   const vehicleType = vehicle?.vehicleTypeId ? vehicleById(vehicle.vehicleTypeId) : null;
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+    <Page className="flex-1 flex flex-col">
       <PullToRefresh onRefresh={loadVehicle} className="flex-1">
 
         {/* Hero banner */}

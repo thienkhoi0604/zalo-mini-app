@@ -19,7 +19,7 @@ const HomePage: React.FunctionComponent = () => {
   };
 
   return (
-    <Page className="relative flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+    <Page className="relative flex-1 flex flex-col">
       <PullToRefresh onRefresh={handleRefresh} className="flex-1 pb-4">
         <div key={refreshKey}>
           <HeroHeader />

@@ -134,7 +134,7 @@ const VerifyVehiclePage: FC = () => {
   };
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+    <Page className="flex-1 flex flex-col">
       <Box className="flex-1 overflow-auto">
 
         {/* Hero banner */}

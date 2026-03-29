@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Gift, ChevronRight } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
-import { Reward } from '@/types/reward';
+import { Reward, getRewardTypeLabel } from '@/types/reward';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -74,7 +74,7 @@ const VoucherCard: FC<{ reward: Reward; onClick: () => void }> = ({ reward, onCl
           <Box className="rounded-full flex-shrink-0" style={{ width: 14, height: 14, background: '#C49A6C' }} />
         )}
         <p className="truncate" style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600 }}>
-          {reward.brandName || reward.category}
+          {reward.brandName || getRewardTypeLabel(reward.type)}
         </p>
       </Box>
 

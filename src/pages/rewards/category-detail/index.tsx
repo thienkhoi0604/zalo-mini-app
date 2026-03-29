@@ -3,7 +3,7 @@ import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
 import { Gift, ArrowUpDown, TrendingUp, TrendingDown } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
-import { Reward } from '@/types/reward';
+import { Reward, getRewardTypeLabel } from '@/types/reward';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -86,7 +86,7 @@ const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ car
           className="truncate"
           style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600, textTransform: 'uppercase', letterSpacing: 0.3 }}
         >
-          {card.brandName || card.category}
+          {card.brandName || getRewardTypeLabel(card.type)}
         </p>
       </Box>
 
@@ -164,7 +164,7 @@ const CategoryDetailPage: FC = () => {
   const isLoading = loading && rawCards.length === 0;
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+    <Page className="flex-1 flex flex-col">
       {/* ── Category Banner ─────────────────────────────────────────────── */}
       <Box
         style={{

@@ -55,7 +55,7 @@ const RewardsPage: FC = () => {
   }, [isAuthenticated]);
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+    <Page className="flex-1 flex flex-col">
 
       {/* Stats banner */}
       {isAuthenticated && (

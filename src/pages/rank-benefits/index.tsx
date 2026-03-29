@@ -46,7 +46,7 @@ const RankBenefitsPage: FC = () => {
   const currentIndex = tiers.findIndex((t) => t.code === currentTier?.code);
 
   return (
-    <Page className="flex-1" style={{ background: 'linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%)' }}>
+    <Page className="flex-1">
       <PullToRefresh onRefresh={loadRanks} className="flex-1">
         {loading ? (
           <Skeleton />

@@ -35,6 +35,18 @@ export async function scanQRCode(scannedUserId: string): Promise<{ points: numbe
 }
 
 
+export async function fetchQRSession(): Promise<{ token: string; expiresInSeconds: number }> {
+  const { data } = await axiosClient.post<{ data: { token: string; expiresInSeconds: number } }>(
+    '/me/qr/session',
+    { assetId: null, type: 'Checkin' },
+  );
+  return data.data;
+}
+
+export async function scanReferralCode(referralCode: string): Promise<void> {
+  await axiosClient.post('/app/referrals/scan', { referralCode });
+}
+
 export async function fetchReferralQR(): Promise<string> {
   try {
     const { data } = await axiosClient.get<{ data: string }>('/me/referral-qr');

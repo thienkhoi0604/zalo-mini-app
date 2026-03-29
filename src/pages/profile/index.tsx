@@ -1,48 +1,70 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { Gift, QrCode, ShieldCheck, History, Car } from 'lucide-react';
-import { useToBeImplemented } from '@/hooks';
+import { Car, Gift, History, QrCode, ShieldCheck, UserPlus2 } from 'lucide-react';
 import { useUserStore } from '@/stores/user';
 import { useRewardsStore } from '@/stores/rewards';
+import { fetchQRSession, fetchReferralQR } from '@/apis/user';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
 import SectionList from './section-list';
 import QRCodeSheet from './qr-code-sheet';
 import PullToRefresh from '@/components/pull-to-refresh';
 
+const ICON_COLOR = '#A0784A';
+const ICON_SIZE = 18;
+
+type QRSheetType = 'checkin' | 'referral' | null;
+
+const QR_SHEET_CONFIG: Record<
+  NonNullable<QRSheetType>,
+  { fetchData: () => Promise<string>; title: string; hint: string }
+> = {
+  checkin: {
+    fetchData: () => fetchQRSession().then((d) => d.token),
+    title: 'QR Code của tôi',
+    hint: '💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc',
+  },
+  referral: {
+    fetchData: fetchReferralQR,
+    title: 'QR giới thiệu người dùng',
+    hint: '💡 Chia sẻ mã này để bạn bè quét và nhận điểm thưởng giới thiệu',
+  },
+};
+
 // ─── Personal ────────────────────────────────────────────────────────────────
 
 const Personal: FC = () => {
-  const onClick = useToBeImplemented();
   const navigate = useNavigate();
-  const { user, pointWallet, loadPointWallet } = useUserStore();
+  const { user, pointWallet } = useUserStore();
   const { userRewards, loadUserRewards } = useRewardsStore();
-  const [qrSheetVisible, setQrSheetVisible] = useState(false);
+  const [activeQRSheet, setActiveQRSheet] = useState<QRSheetType>(null);
 
   useEffect(() => {
     loadUserRewards();
   }, []);
 
-  const unusedCount = userRewards.filter((v) => v.usedAt === null).length;
+  const unusedVoucherCount = userRewards.filter((v) => v.usedAt === null).length;
+  const isVehicleApproved = pointWallet?.vehicleStatus === 'Approved';
+  const activeConfig = activeQRSheet ? QR_SHEET_CONFIG[activeQRSheet] : null;
 
   return (
     <Box className="py-7">
       <MemberCard />
 
-      {user && pointWallet?.vehicleStatus !== 'Approved' && <UnverifiedBanner />}
+      {user && !isVehicleApproved && <UnverifiedBanner />}
 
       <SectionList
         title="Tiện ích"
         items={[
           {
-            icon: <Gift size={18} color="#A0784A" />,
+            icon: <Gift size={ICON_SIZE} color={ICON_COLOR} />,
             label: 'Voucher của bạn',
-            sub: unusedCount > 0 ? `${unusedCount} voucher chưa dùng` : 'Chưa có voucher',
+            sub: unusedVoucherCount > 0 ? `${unusedVoucherCount} voucher chưa dùng` : 'Chưa có voucher',
             onPress: () => navigate('/my-vouchers'),
           },
-          ...(pointWallet?.vehicleStatus === 'Approved' ? [{
-            icon: <Car size={18} color="#A0784A" />,
+          ...(isVehicleApproved ? [{
+            icon: <Car size={ICON_SIZE} color={ICON_COLOR} />,
             label: 'Thông tin xe của tôi',
             sub: 'Xe điện đã được xác thực',
             onPress: () => navigate('/vehicle-info'),
@@ -52,9 +74,19 @@ const Personal: FC = () => {
 
       <SectionList
         title="QR Code"
-        onClick={() => setQrSheetVisible(true)}
         items={[
-          { icon: <QrCode size={18} color="#A0784A" />, label: 'QR Code của tôi', sub: 'Mã giới thiệu cho người dùng' },
+          {
+            icon: <QrCode size={ICON_SIZE} color={ICON_COLOR} />,
+            label: 'QR Code của tôi',
+            sub: 'Mã cá nhân để tích điểm',
+            onPress: () => setActiveQRSheet('checkin'),
+          },
+          {
+            icon: <UserPlus2 size={ICON_SIZE} color={ICON_COLOR} />,
+            label: 'QR giới thiệu người dùng',
+            sub: 'Chia sẻ để nhận điểm thưởng',
+            onPress: () => setActiveQRSheet('referral'),
+          },
         ]}
       />
 
@@ -62,13 +94,13 @@ const Personal: FC = () => {
         title="Dành cho bạn"
         items={[
           {
-            icon: <ShieldCheck size={18} color="#A0784A" />,
+            icon: <ShieldCheck size={ICON_SIZE} color={ICON_COLOR} />,
             label: 'Quyền lợi xếp hạng',
             sub: user?.rank?.currentRankName ? `Hạng ${user.rank.currentRankName}` : undefined,
             onPress: () => navigate('/rank-benefits'),
           },
           {
-            icon: <History size={18} color="#A0784A" />,
+            icon: <History size={ICON_SIZE} color={ICON_COLOR} />,
             label: 'Lịch sử điểm',
             sub: 'Xem các lần check-in tích điểm',
             onPress: () => navigate('/checkin-history'),
@@ -76,7 +108,15 @@ const Personal: FC = () => {
         ]}
       />
 
-      <QRCodeSheet visible={qrSheetVisible} onClose={() => setQrSheetVisible(false)} />
+      {activeConfig && (
+        <QRCodeSheet
+          visible={activeQRSheet !== null}
+          onClose={() => setActiveQRSheet(null)}
+          fetchData={activeConfig.fetchData}
+          title={activeConfig.title}
+          hint={activeConfig.hint}
+        />
+      )}
     </Box>
   );
 };

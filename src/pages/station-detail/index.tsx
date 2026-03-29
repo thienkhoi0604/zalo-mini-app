@@ -26,7 +26,7 @@ const StationDetailPage: FC = () => {
 
   if (loading) {
     return (
-      <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+      <Page className="flex-1 flex flex-col">
         <Box className="flex flex-col items-center justify-center py-20" />
       </Page>
     );
@@ -34,7 +34,7 @@ const StationDetailPage: FC = () => {
 
   if (!station) {
     return (
-      <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+      <Page className="flex-1 flex flex-col">
         <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 12 }}>
           <Box
             className="flex items-center justify-center rounded-full"
@@ -58,7 +58,7 @@ const StationDetailPage: FC = () => {
     station.minCheckinIntervalMinutes != null;
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F5F5F7' }}>
+    <Page className="flex-1 flex flex-col">
       <Box className="flex-1 overflow-auto pb-6">
 
         {/* Hero image with gradient overlay */}

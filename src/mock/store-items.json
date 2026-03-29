@@ -1,0 +1,47 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "items": [
+      {
+        "id": "8e24f204-2fc5-41b1-8b84-28468c6aede1",
+        "storeId": "49bd40c1-7df2-487d-af76-d5fd1035493f",
+        "storeName": "Cửa hàng tại trạm Nam Hòa",
+        "type": 1,
+        "typeName": "FnbProduct",
+        "code": "ST-CUAH2603-479_SVC_COM_GA_822",
+        "name": "Cơm gà",
+        "description": "Cơm gà nè hen",
+        "price": 10000,
+        "coinCost": 10000,
+        "imageUrl": "https://admin.ecogreenhub.vn/api/upload/image/permanent/c9c1398d82d1494abba2c36e95198fb1.webp",
+        "stock": null,
+        "totalSales": 0,
+        "distanceKm": null
+      },
+      {
+        "id": "45a36a2c-94a0-4274-a20f-5ffce32c7725",
+        "storeId": "49bd40c1-7df2-487d-af76-d5fd1035493f",
+        "storeName": "Cửa hàng tại trạm Nam Hòa",
+        "type": 1,
+        "typeName": "FnbProduct",
+        "code": "ST-CUAH2603-479_SVC_COM_BO_441",
+        "name": "Cơm bò",
+        "description": null,
+        "price": 40000,
+        "coinCost": 1000,
+        "imageUrl": "https://admin.ecogreenhub.vn/api/upload/image/permanent/4daaf0d62a814fa59535dff01e79d4e5.webp",
+        "stock": null,
+        "totalSales": 0,
+        "distanceKm": null
+      }
+    ],
+    "pageNumber": 1,
+    "pageSize": 20,
+    "totalCount": 2,
+    "totalPages": 1,
+    "hasPrevious": false,
+    "hasNext": false
+  },
+  "errors": null
+}

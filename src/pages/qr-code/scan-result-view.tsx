@@ -3,7 +3,22 @@ import { Box } from 'zmp-ui';
 import type { ScanResult } from './scan';
 
 const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
-  if (result.status === 'success') {
+  if (result.status === 'success' && result.type === 'referral') {
+    return (
+      <Box className="flex flex-col items-center" style={{ gap: 12 }}>
+        <span style={{ fontSize: 56 }}>🎉</span>
+        <p style={{ fontSize: 18, fontWeight: 700, color: '#288F4E' }}>Giới thiệu thành công!</p>
+        <p style={{ fontSize: 14, color: '#6B7280', textAlign: 'center', lineHeight: '20px', maxWidth: 260 }}>
+          Mã giới thiệu đã được ghi nhận.
+        </p>
+        <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
+          Đang chuyển về trang cá nhân...
+        </p>
+      </Box>
+    );
+  }
+
+  if (result.status === 'success' && result.type === 'checkin') {
     return (
       <Box className="flex flex-col items-center" style={{ gap: 12 }}>
         <span style={{ fontSize: 56 }}>🎉</span>
@@ -30,7 +45,7 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
     return (
       <Box className="flex flex-col items-center" style={{ gap: 12 }}>
         <span style={{ fontSize: 56 }}>❌</span>
-        <p style={{ fontSize: 18, fontWeight: 700, color: '#EF4444' }}>Checkin thất bại</p>
+        <p style={{ fontSize: 18, fontWeight: 700, color: '#EF4444' }}>Thất bại</p>
         <p style={{ fontSize: 14, color: '#6B7280', textAlign: 'center', lineHeight: '20px', maxWidth: 260 }}>
           {result.message}
         </p>

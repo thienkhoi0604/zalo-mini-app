@@ -1,44 +1,75 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box } from 'zmp-ui';
 import QRCode from 'react-qr-code';
 import { Sheet } from '@/components/fullscreen-sheet';
-import { fetchReferralQR } from '@/apis/user';
 
-interface Props {
+interface QRCodeSheetProps {
   visible: boolean;
   onClose: () => void;
+  fetchData: () => Promise<string>;
+  title?: string;
+  hint?: string;
 }
 
-const QRCodeSheet: FC<Props> = ({ visible, onClose }) => {
-  const [qrData, setQrData] = useState<string | null>(null);
+const QRCodeSheet: FC<QRCodeSheetProps> = ({
+  visible,
+  onClose,
+  fetchData,
+  title = 'QR Code của tôi',
+  hint = '💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc',
+}) => {
+  const [qrValue, setQrValue] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
+  const fetchedRef = useRef(false);
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible) {
+      fetchedRef.current = false;
+      return;
+    }
+    if (fetchedRef.current) return;
+    fetchedRef.current = true;
+
     setLoading(true);
-    fetchReferralQR().then((data) => {
-      setQrData(data);
-      setLoading(false);
-    });
+    setError(false);
+
+    fetchData()
+      .then((value) => {
+        setQrValue(value);
+        setLoading(false);
+      })
+      .catch(() => {
+        setError(true);
+        setLoading(false);
+      });
   }, [visible]);
 
   return (
     <Sheet visible={visible} onClose={onClose} autoHeight swipeToClose unmountOnClose>
-      <Box className="flex flex-col items-center px-6 pt-2 pb-8" style={{ gap: 16 }}>
-        <p style={{ fontSize: 16, fontWeight: 700, color: '#1a1a1a' }}>QR Code của tôi</p>
+      <Box className="flex flex-col items-center px-6 pt-2 pb-8 gap-4">
+        <p className="text-base font-bold text-gray-900">{title}</p>
 
-        {loading || !qrData ? (
+        {loading && (
           <Box
-            className="animate-pulse rounded-2xl"
-            style={{ width: 224, height: 224, background: '#E9EBED' }}
+            className="animate-pulse rounded-2xl bg-gray-200"
+            style={{ width: 224, height: 224 }}
           />
-        ) : (
+        )}
+
+        {!loading && error && (
           <Box
-            className="bg-white rounded-2xl shadow border border-gray-100"
-            style={{ padding: 16 }}
+            className="flex items-center justify-center rounded-2xl bg-red-50 border border-red-100"
+            style={{ width: 224, height: 224 }}
           >
+            <p className="text-sm text-red-400">Không tải được mã QR</p>
+          </Box>
+        )}
+
+        {!loading && !error && qrValue && (
+          <Box className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
             <QRCode
-              value={qrData}
+              value={qrValue}
               size={192}
               fgColor="#1a1a1a"
               bgColor="#ffffff"
@@ -47,9 +78,7 @@ const QRCodeSheet: FC<Props> = ({ visible, onClose }) => {
           </Box>
         )}
 
-        <p style={{ fontSize: 12, color: '#9CA3AF', textAlign: 'center' }}>
-          💡 Cho người khác quét mã này để lấy điểm giới thiệu
-        </p>
+        <p className="text-xs text-gray-400 text-center">{hint}</p>
       </Box>
     </Sheet>
   );

@@ -20,9 +20,14 @@ const QRCodePage: FC = () => {
         return;
       }
       setResult(res);
-      setTimeout(() => navigate('/profile', { replace: true }), REDIRECT_DELAY_MS);
     });
   }, []);
+
+  useEffect(() => {
+    if (!result) return;
+    const timer = setTimeout(() => navigate('/profile', { replace: true }), REDIRECT_DELAY_MS);
+    return () => clearTimeout(timer);
+  }, [result]);
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
