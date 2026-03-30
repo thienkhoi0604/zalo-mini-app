@@ -1,7 +1,7 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Page } from 'zmp-ui';
-import { Zap } from 'lucide-react';
+import { Zap, SlidersHorizontal } from 'lucide-react';
 import { useStationsStore } from '@/store/stations';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import StationCard from './station-card';
@@ -50,12 +50,36 @@ export const StationsPage: FC = () => {
   const isInitialLoad = loading && stations.length === 0;
   const hasActiveFilters = search || provinceCode || wardCode;
 
+  const filterRef = useRef<HTMLDivElement>(null);
+  const [showFab, setShowFab] = useState(false);
+
+  useEffect(() => {
+    const el = document.querySelector('.zaui-page-content') ?? window as unknown as Element;
+    const handleScroll = () => {
+      const scrollTop = el === (window as unknown as Element) ? window.scrollY : (el as HTMLElement).scrollTop;
+      setShowFab(scrollTop > 80);
+    };
+    el.addEventListener('scroll', handleScroll, { passive: true });
+    return () => el.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToFilter = () => {
+    const el = document.querySelector('.zaui-page-content') as HTMLElement | null;
+    if (el) {
+      el.scrollTo({ top: 0, behavior: 'smooth' });
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   return (
     <Page className="flex-1 flex flex-col" style={{ background: '#F6F8F6' }}>
       <PullToRefresh onRefresh={loadStations} className="flex-1">
 
         {/* Search & filters */}
-        <SearchFilter />
+        <div ref={filterRef}>
+          <SearchFilter />
+        </div>
 
         {/* List */}
         <Box className="px-4 pt-4 pb-4">
@@ -104,6 +128,31 @@ export const StationsPage: FC = () => {
         </Box>
 
       </PullToRefresh>
+
+      {/* Floating back-to-filter button */}
+      {showFab && (
+        <button
+          onClick={scrollToFilter}
+          style={{
+            position: 'fixed',
+            bottom: 'calc(72px + var(--zaui-safe-area-inset-bottom, 0px))',
+            right: 16,
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #43B96B, #288F4E)',
+            border: 'none',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            boxShadow: '0 4px 16px rgba(40,143,78,0.45)',
+            zIndex: 100,
+          }}
+        >
+          <SlidersHorizontal size={18} color="#fff" />
+        </button>
+      )}
     </Page>
   );
 };

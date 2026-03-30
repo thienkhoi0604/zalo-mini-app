@@ -36,7 +36,7 @@ const PickerSheet: FC<PickerSheetProps> = ({
   }, [visible]);
 
   return (
-    <Sheet visible={visible} onClose={onClose} height={72} swipeToClose>
+    <Sheet visible={visible} onClose={onClose} height={88} swipeToClose>
       <Box style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
 
         {/* Handle + title */}
@@ -375,7 +375,7 @@ const SearchFilter: FC = () => {
           >
             <SlidersHorizontal size={13} color="#fff" />
           </Box>
-          <p style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>Bộ lọc</p>
+
           {activeFilterCount > 0 && (
             <Box
               style={{
