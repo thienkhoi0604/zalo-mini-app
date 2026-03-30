@@ -59,7 +59,7 @@ export const Navigation: FC = () => {
         borderTop: '1px solid rgba(0,0,0,0.06)',
         boxShadow: '0 -4px 24px rgba(0,0,0,0.08)',
         paddingBottom: 'calc(var(--zaui-safe-area-inset-bottom, 0px))',
-        zIndex: 50,
+        zIndex: 10,
       }}
     >
       <div

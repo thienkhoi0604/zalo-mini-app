@@ -52,9 +52,9 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
   };
 
   return (
-    <Sheet visible={!!userVoucher} onClose={onClose} autoHeight swipeToClose unmountOnClose>
+    <Sheet visible={!!userVoucher} onClose={onClose} height={90} swipeToClose unmountOnClose>
       {userVoucher && (
-        <Box style={{ display: 'flex', flexDirection: 'column', paddingBottom: 28 }}>
+        <Box style={{ display: 'flex', flexDirection: 'column', height: '100%', overflowY: 'auto', paddingBottom: 'calc(28px + var(--zaui-safe-area-inset-bottom, 0px))' }}>
 
           {/* Header banner */}
           <Box

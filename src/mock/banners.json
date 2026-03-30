@@ -1,0 +1,31 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": [
+    {
+      "id": "53b68e2a-4196-4722-af15-e9e8d060f9bc",
+      "title": "Youtube",
+      "imageUrl": "https://admin.ecogreenhub.vn/api/upload/image/permanent/d8dc9b727b664df3bb391af3ff867153.webp",
+      "targetUrl": "https://www.youtube.com/watch?v=4d3UL3kmAeg&list=RDN5BFlxI_VQQ&index=2",
+      "placement": "Home",
+      "displayOrder": 0,
+      "isActive": true,
+      "validFrom": null,
+      "validTo": null,
+      "createdAt": "2026-03-27T14:39:16.404671Z"
+    },
+    {
+      "id": "261a3ab4-9053-4df9-994d-e129e1c3ba0a",
+      "title": "Facebook",
+      "imageUrl": "https://admin.ecogreenhub.vn/api/upload/image/permanent/4b585e838c714647b4c319ee259aefd8.webp",
+      "targetUrl": "https://www.facebook.com/",
+      "placement": "Home",
+      "displayOrder": 1,
+      "isActive": true,
+      "validFrom": null,
+      "validTo": null,
+      "createdAt": "2026-03-27T14:39:59.741013Z"
+    }
+  ],
+  "errors": null
+}

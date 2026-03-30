@@ -46,8 +46,11 @@ const QRCodeSheet: FC<QRCodeSheetProps> = ({
   }, [visible]);
 
   return (
-    <Sheet visible={visible} onClose={onClose} autoHeight swipeToClose unmountOnClose>
-      <Box className="flex flex-col items-center px-6 pt-2 pb-8 gap-4">
+    <Sheet visible={visible} onClose={onClose} height={75} swipeToClose unmountOnClose>
+      <Box
+        className="flex flex-col items-center px-6 pt-2 gap-4"
+        style={{ height: '100%', overflowY: 'auto', paddingBottom: 'calc(32px + var(--zaui-safe-area-inset-bottom, 0px))' }}
+      >
         <p className="text-base font-bold text-gray-900">{title}</p>
 
         {loading && (

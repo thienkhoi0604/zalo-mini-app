@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { ChevronRight, Gift } from 'lucide-react';
+import { ArrowRight, Gift, Tag } from 'lucide-react';
 import { useRewardsStore } from '@/stores/rewards';
 import { Reward } from '@/types/reward';
 import RewardItemCard from './item-card';
@@ -10,14 +10,15 @@ import { useNavigate } from 'react-router';
 
 const CardSkeleton: FC = () => (
   <Box
-    className="flex-shrink-0 rounded-2xl overflow-hidden animate-pulse"
-    style={{ width: 148, background: '#F3F4F6' }}
+    className="flex-shrink-0 animate-pulse"
+    style={{ width: 156, borderRadius: 16, overflow: 'hidden', background: '#F3F4F6' }}
   >
-    <Box style={{ height: 96, background: '#E9EBED' }} />
-    <Box style={{ padding: '8px 10px 10px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <Box style={{ height: 10, width: '50%', background: '#E9EBED', borderRadius: 5 }} />
+    <Box style={{ height: 108, background: '#E9EBED' }} />
+    <Box style={{ padding: '9px 11px 11px', display: 'flex', flexDirection: 'column', gap: 6 }}>
+      <Box style={{ height: 9, width: '40%', background: '#E9EBED', borderRadius: 5 }} />
       <Box style={{ height: 13, width: '90%', background: '#E9EBED', borderRadius: 5 }} />
       <Box style={{ height: 13, width: '65%', background: '#E9EBED', borderRadius: 5 }} />
+      <Box style={{ height: 26, width: '70%', background: '#E9EBED', borderRadius: 8, marginTop: 2 }} />
     </Box>
   </Box>
 );
@@ -27,41 +28,80 @@ const CardSkeleton: FC = () => (
 interface CategoryRowProps {
   category: string;
   cards: Reward[];
+  accent: string;
+  accentLight: string;
 }
 
-const CategoryRow: FC<CategoryRowProps> = ({ category, cards }) => {
+const ACCENTS = [
+  { accent: '#288F4E', accentLight: '#DCFCE7' },
+  { accent: '#D97706', accentLight: '#FEF3C7' },
+  { accent: '#7C3AED', accentLight: '#EDE9FE' },
+  { accent: '#0891B2', accentLight: '#CFFAFE' },
+  { accent: '#DB2777', accentLight: '#FCE7F3' },
+  { accent: '#059669', accentLight: '#D1FAE5' },
+];
+
+const CategoryRow: FC<CategoryRowProps> = ({ category, cards, accent, accentLight }) => {
   const navigate = useNavigate();
   const visibleCards = cards.slice(0, 8);
   const extra = cards.length - 8;
 
   return (
-    <Box style={{ paddingBottom: 4 }}>
+    <Box
+      style={{
+        margin: '0 12px',
+        background: '#fff',
+        borderRadius: 20,
+        overflow: 'hidden',
+        boxShadow: '0 2px 16px rgba(0,0,0,0.07)',
+        border: '1px solid rgba(0,0,0,0.04)',
+      }}
+    >
       {/* Header */}
-      <Box flex className="items-center justify-between px-4 mb-3">
-        <Box flex className="items-center" style={{ gap: 8 }}>
+      <Box
+        flex
+        className="items-center justify-between"
+        style={{ padding: '14px 14px 12px', borderBottom: `1px solid ${accentLight}` }}
+      >
+        <Box flex className="items-center" style={{ gap: 10 }}>
+          {/* Accent icon */}
           <Box
             style={{
-              width: 4,
-              height: 20,
-              borderRadius: 2,
-              background: 'linear-gradient(180deg, #E8CFA0, #A0784A)',
+              width: 34,
+              height: 34,
+              borderRadius: 10,
+              background: accentLight,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
               flexShrink: 0,
             }}
-          />
-          <p style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>{category}</p>
-          <Box style={{ background: '#FEF9EF', border: '1px solid #FDE68A', borderRadius: 100, padding: '1px 8px' }}>
-            <p style={{ fontSize: 11, color: '#D97706', fontWeight: 700 }}>{cards.length}</p>
+          >
+            <Tag size={15} color={accent} strokeWidth={2.2} />
+          </Box>
+
+          <Box>
+            <p style={{ fontSize: 14, fontWeight: 800, color: '#111827', lineHeight: '18px' }}>{category}</p>
+            <p style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 500, marginTop: 1 }}>
+              {cards.length} phần thưởng
+            </p>
           </Box>
         </Box>
 
         <Box
           flex
           className="items-center cursor-pointer"
-          style={{ gap: 2 }}
+          style={{
+            gap: 4,
+            background: accent,
+            borderRadius: 20,
+            padding: '5px 11px 5px 12px',
+            boxShadow: `0 2px 8px ${accent}44`,
+          }}
           onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
         >
-          <p style={{ fontSize: 13, color: '#C49A6C', fontWeight: 600 }}>Xem tất cả</p>
-          <ChevronRight size={14} color="#C49A6C" strokeWidth={2.5} />
+          <p style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>Xem tất cả</p>
+          <ArrowRight size={11} color="#fff" strokeWidth={2.5} />
         </Box>
       </Box>
 
@@ -70,13 +110,12 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards }) => {
         flex
         style={{
           overflowX: 'auto',
-          paddingLeft: 16,
-          paddingRight: 16,
-          paddingBottom: 4,
+          padding: '12px 14px 14px',
           gap: 10,
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
           flexWrap: 'nowrap',
+          alignItems: 'stretch',
         }}
       >
         {visibleCards.map((card) => (
@@ -91,24 +130,34 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards }) => {
         {extra > 0 && (
           <Box
             onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
-            className="flex-shrink-0 rounded-2xl flex flex-col items-center justify-center cursor-pointer"
+            className="flex-shrink-0 flex flex-col items-center justify-center cursor-pointer"
             style={{
-              width: 100,
-              minHeight: 150,
-              background: 'linear-gradient(135deg, #FEF9EF, #FEF3C7)',
-              border: '1.5px dashed #F0C97A',
+              width: 90,
+              minHeight: 156,
+              borderRadius: 16,
+              background: accentLight,
+              border: `1.5px dashed ${accent}66`,
               gap: 8,
             }}
           >
             <Box
-              className="flex items-center justify-center rounded-full"
-              style={{ width: 40, height: 40, background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)' }}
+              style={{
+                width: 38,
+                height: 38,
+                borderRadius: '50%',
+                background: accent,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                boxShadow: `0 3px 10px ${accent}44`,
+              }}
             >
-              <ChevronRight size={18} color="#fff" strokeWidth={2.5} />
+              <ArrowRight size={18} color="#fff" strokeWidth={2.5} />
             </Box>
-            <p style={{ fontSize: 11, color: '#A0784A', fontWeight: 700, textAlign: 'center', lineHeight: '15px' }}>
-              +{extra} ưu đãi
-            </p>
+            <Box style={{ textAlign: 'center' }}>
+              <p style={{ fontSize: 14, color: accent, fontWeight: 800 }}>+{extra}</p>
+              <p style={{ fontSize: 10, color: accent, fontWeight: 600, opacity: 0.8 }}>ưu đãi</p>
+            </Box>
           </Box>
         )}
       </Box>
@@ -125,24 +174,41 @@ const RewardsList: FC = () => {
 
   if (categories.length === 0) {
     return (
-      <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 12 }}>
+      <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 14 }}>
         <Box
-          className="flex items-center justify-center rounded-full"
-          style={{ width: 72, height: 72, background: '#FEF9EF' }}
+          style={{
+            width: 80,
+            height: 80,
+            borderRadius: '50%',
+            background: 'linear-gradient(145deg, #FEF9EF, #FEF3C7)',
+            boxShadow: '0 4px 16px rgba(217,119,6,0.15)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
         >
-          <Gift size={32} color="#C49A6C" />
+          <Gift size={34} color="#D97706" />
         </Box>
-        <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>Chưa có phần thưởng</p>
+        <p style={{ fontSize: 15, fontWeight: 700, color: '#374151' }}>Chưa có phần thưởng</p>
         <p style={{ fontSize: 13, color: '#9CA3AF' }}>Hãy quay lại sau nhé!</p>
       </Box>
     );
   }
 
   return (
-    <Box style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
-      {categories.map((category) => (
-        <CategoryRow key={category} category={category} cards={grouped[category]} />
-      ))}
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 8 }}>
+      {categories.map((category, i) => {
+        const { accent, accentLight } = ACCENTS[i % ACCENTS.length];
+        return (
+          <CategoryRow
+            key={category}
+            category={category}
+            cards={grouped[category]}
+            accent={accent}
+            accentLight={accentLight}
+          />
+        );
+      })}
     </Box>
   );
 };

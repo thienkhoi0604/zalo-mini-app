@@ -29,83 +29,82 @@ const NativeSelect: FC<SelectProps> = ({
   const selectedLabel = options.find((o) => o.value === value)?.label ?? '';
 
   return (
-    <Box className="flex-1" style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 5 }}>
-      {/* Label row */}
-      <Box flex className="items-center" style={{ gap: 5, paddingLeft: 2 }}>
+    <Box className="flex-1" style={{ minWidth: 0 }}>
+      <Box
+        className="relative flex items-center"
+        style={{
+          background: isActive ? activeBg : '#F8FAFC',
+          border: `1.5px solid ${isActive ? activeBorder : '#E8ECF0'}`,
+          borderRadius: 16,
+          height: 54,
+          minWidth: 0,
+          opacity: disabled ? 0.42 : 1,
+          transition: 'border-color 0.25s, background 0.25s, box-shadow 0.25s',
+          overflow: 'hidden',
+          boxShadow: isActive
+            ? `0 4px 14px ${activeBorder}50, inset 0 1px 0 rgba(255,255,255,0.85)`
+            : 'inset 0 1px 0 rgba(255,255,255,0.7), 0 1px 3px rgba(0,0,0,0.04)',
+        }}
+      >
+        {/* Left icon bubble */}
         <Box
           style={{
-            width: 16,
-            height: 16,
-            borderRadius: 4,
-            background: isActive ? activeIconBg : '#F3F4F6',
+            position: 'absolute',
+            left: 10,
+            width: 28,
+            height: 28,
+            borderRadius: 9,
+            background: isActive ? activeIconBg : '#ECEEF1',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            transition: 'background 0.2s',
+            flexShrink: 0,
+            transition: 'background 0.25s',
+            boxShadow: isActive ? `0 2px 6px ${activeBorder}40` : 'none',
           }}
         >
           {icon}
         </Box>
-        <p
-          style={{
-            fontSize: 10,
-            fontWeight: 700,
-            color: isActive ? activeColor : '#9CA3AF',
-            letterSpacing: 0.4,
-            textTransform: 'uppercase',
-            transition: 'color 0.2s',
-          }}
-        >
-          {label}
-        </p>
-        {isActive && (
-          <Box
-            style={{
-              width: 6,
-              height: 6,
-              borderRadius: '50%',
-              background: activeColor,
-              marginLeft: 1,
-            }}
-          />
-        )}
-      </Box>
 
-      {/* Select wrapper */}
-      <Box
-        className="relative flex items-center"
-        style={{
-          background: isActive ? activeBg : '#F9FAFB',
-          border: `1.5px solid ${isActive ? activeBorder : '#E5E7EB'}`,
-          borderRadius: 12,
-          height: 44,
-          minWidth: 0,
-          opacity: disabled ? 0.45 : 1,
-          transition: 'border-color 0.2s, background 0.2s',
-          overflow: 'hidden',
-          boxShadow: isActive ? `0 2px 8px ${activeBorder}44` : 'none',
-        }}
-      >
-        {/* Selected value display / placeholder */}
-        <p
+        {/* Floating label + value stacked */}
+        <Box
           style={{
             position: 'absolute',
-            left: 11,
-            right: isActive ? 46 : 28,
+            left: 46,
+            right: isActive ? 46 : 30,
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'center',
+            gap: 2,
+            pointerEvents: 'none',
+          }}
+        >
+          <p style={{
+            fontSize: 9,
+            fontWeight: 700,
+            letterSpacing: 0.6,
+            textTransform: 'uppercase',
+            color: isActive ? activeColor : '#A0AAB4',
+            lineHeight: 1,
+            transition: 'color 0.25s',
+          }}>
+            {label}
+          </p>
+          <p style={{
             fontSize: 12,
-            fontWeight: isActive ? 700 : 400,
-            color: isActive ? activeColor : '#9CA3AF',
+            fontWeight: isActive ? 600 : 400,
+            color: isActive ? '#111827' : '#B8BEC6',
             whiteSpace: 'nowrap',
             overflow: 'hidden',
             textOverflow: 'ellipsis',
-            pointerEvents: 'none',
-            transition: 'color 0.2s',
-          }}
-        >
-          {isActive ? selectedLabel : placeholder}
-        </p>
+            lineHeight: 1.3,
+            transition: 'color 0.25s',
+          }}>
+            {isActive ? selectedLabel : placeholder}
+          </p>
+        </Box>
 
-        {/* Invisible native select for interaction */}
+        {/* Invisible native select */}
         <select
           value={value}
           onChange={(e) => onChange(e.target.value)}
@@ -125,22 +124,22 @@ const NativeSelect: FC<SelectProps> = ({
           ))}
         </select>
 
-        {/* Right side: clear button or chevron/spinner */}
+        {/* Right: clear / chevron / spinner */}
         <Box
           className="absolute flex items-center justify-center"
-          style={{ right: 0, top: 0, bottom: 0, width: 36, gap: 2, pointerEvents: isActive ? 'auto' : 'none' }}
+          style={{ right: 8, top: 0, bottom: 0, width: 32, pointerEvents: isActive ? 'auto' : 'none' }}
         >
           {loading ? (
             <Box
               className="animate-spin"
-              style={{ width: 14, height: 14, borderRadius: '50%', border: '2px solid #E5E7EB', borderTopColor: activeColor }}
+              style={{ width: 16, height: 16, borderRadius: '50%', border: '2px solid #E5E7EB', borderTopColor: activeColor }}
             />
           ) : isActive ? (
             <button
               onClick={(e) => { e.stopPropagation(); onClear(); }}
               style={{
-                width: 20,
-                height: 20,
+                width: 22,
+                height: 22,
                 borderRadius: '50%',
                 background: activeBorder,
                 border: 'none',
@@ -150,12 +149,23 @@ const NativeSelect: FC<SelectProps> = ({
                 justifyContent: 'center',
                 flexShrink: 0,
                 zIndex: 1,
+                boxShadow: `0 2px 6px ${activeBorder}70`,
               }}
             >
-              <X size={10} color="#fff" strokeWidth={2.5} />
+              <X size={10} color="#fff" strokeWidth={3} />
             </button>
           ) : (
-            <ChevronDown size={14} color="#C4C4C4" />
+            <Box style={{
+              width: 22,
+              height: 22,
+              borderRadius: 7,
+              background: '#E8ECF0',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+              <ChevronDown size={12} color="#9CA3AF" />
+            </Box>
           )}
         </Box>
       </Box>

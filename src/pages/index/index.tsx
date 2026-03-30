@@ -7,14 +7,16 @@ import { TopStationsCarousel } from "./top-stations";
 import PullToRefresh from "@/components/pull-to-refresh";
 import { useUserStore } from "@/stores/user";
 import { useRewardsStore } from "@/stores/rewards";
+import { useBannersStore } from "@/stores/banners";
 
 const HomePage: React.FunctionComponent = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const { loadPointWallet, isAuthenticated } = useUserStore();
   const { loadAllRewards } = useRewardsStore();
+  const { loadBanners } = useBannersStore();
 
   const handleRefresh = async () => {
-    const tasks: Promise<void>[] = [loadAllRewards()];
+    const tasks: Promise<void>[] = [loadAllRewards(), loadBanners()];
     if (isAuthenticated) tasks.push(loadPointWallet());
     await Promise.all(tasks);
     setRefreshKey((k) => k + 1);
