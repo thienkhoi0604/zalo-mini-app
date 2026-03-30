@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { Zap } from 'lucide-react';
 import { CheckinHistoryItem } from '@/types/checkin';
-import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/store/user';
 
 const SummaryBanner: FC<{ history: CheckinHistoryItem[] }> = ({ history }) => {
   const totalPoints = history.reduce((sum, h) => sum + h.pointEarned, 0);

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { ArrowRight, Gift, Tag } from 'lucide-react';
-import { useRewardsStore } from '@/stores/rewards';
+import { useRewardsStore } from '@/store/rewards';
 import { Reward } from '@/types/reward';
 import RewardItemCard from './item-card';
 import { useNavigate } from 'react-router';

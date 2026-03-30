@@ -4,10 +4,10 @@ import { createRoot } from "react-dom/client";
 import "swiper/css";
 import "swiper/css/pagination";
 import "zmp-ui/zaui.css";
-import "./css/tailwind.css";
-import "./css/app.scss";
+import "./styles/tailwind.css";
+import "./styles/app.scss";
 
-import App from "./components/app";
+import App from "./components/ui/app";
 import appConfig from "../app-config.json";
 
 if (!window.APP_CONFIG) {

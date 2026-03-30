@@ -9,13 +9,13 @@ import {
   Pencil,
   Zap,
 } from 'lucide-react';
-import { fetchVehicleInfo } from '@/apis/user';
+import { fetchVehicleInfo } from '@/api/user';
 import { VehicleInfo } from '@/types/user';
 import {
   VEHICLE_TYPES,
   VEHICLE_TYPE_IDS,
 } from '@/pages/verify-vehicle/vehicle-type-selector';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // Reverse lookup: vehicleTypeId → VehicleType
 const vehicleTypeById: Record<string, (typeof VEHICLE_TYPES)[number]> =

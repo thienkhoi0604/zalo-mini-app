@@ -1,11 +1,11 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box, useSnackbar } from 'zmp-ui';
 import QRCode from 'react-qr-code';
-import { Sheet } from '@/components/fullscreen-sheet';
+import { Sheet } from '@/components/ui/sheet';
 import { UserReward } from '@/types/reward';
 import { formatDate } from '@/utils/date';
 import { Copy, CheckCircle, Clock, MapPin, Gift } from 'lucide-react';
-import { fetchQRSession, QRSessionType } from '@/apis/user';
+import { fetchQRSession, QRSessionType } from '@/api/user';
 import { UserRewardItemType } from '@/types/reward';
 
 const QR_SESSION_TYPE: Record<UserRewardItemType, QRSessionType> = {

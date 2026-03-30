@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box } from 'zmp-ui';
 import QRCode from 'react-qr-code';
-import { Sheet } from '@/components/fullscreen-sheet';
+import { Sheet } from '@/components/ui/sheet';
 
 interface QRCodeSheetProps {
   visible: boolean;

@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { tripUnit } from "utils/dom";
+import { tripUnit } from "@/utils/dom";
 
 export interface ElasticTextareaProps extends HTMLProps<HTMLTextAreaElement> {
   maxRows?: number;

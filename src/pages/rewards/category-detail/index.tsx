@@ -2,9 +2,9 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
 import { Gift, ArrowUpDown, TrendingUp, TrendingDown, Tag, CheckCircle, SlidersHorizontal, X } from 'lucide-react';
-import { useRewardsStore } from '@/stores/rewards';
+import { useRewardsStore } from '@/store/rewards';
 import { Reward, getRewardTypeLabel } from '@/types/reward';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
 

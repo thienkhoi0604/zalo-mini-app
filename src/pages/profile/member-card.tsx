@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/store/user';
 
 function getInitials(fullName: string): string {
   return fullName

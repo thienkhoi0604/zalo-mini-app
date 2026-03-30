@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Page, useSnackbar } from 'zmp-ui';
-import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/store/user';
 
 const RegisterPage: FC = () => {
   const navigate = useNavigate();

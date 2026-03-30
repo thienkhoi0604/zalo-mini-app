@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { Gift } from 'lucide-react';
-import { useRewardsStore } from '@/stores/rewards';
+import { useRewardsStore } from '@/store/rewards';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import VoucherCard from './voucher-card';
 import VoucherDetailSheet from './voucher-detail-sheet';
 import { UserReward } from '@/types/reward';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // ─── Tab ─────────────────────────────────────────────────────────────────────
 

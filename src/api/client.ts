@@ -3,8 +3,8 @@ import axios, {
   AxiosInstance,
   InternalAxiosRequestConfig,
 } from 'axios';
-import { clearTokens, getAccessToken, refreshTokens } from './authorization';
-import { useUserStore } from '@/stores/user';
+import { clearTokens, getAccessToken, refreshTokens } from './auth';
+import { useUserStore } from '@/store/user';
 import { showNotification } from '@/utils/notification';
 
 declare const APP_CONFIG: {

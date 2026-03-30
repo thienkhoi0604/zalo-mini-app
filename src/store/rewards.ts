@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { Reward, UserReward, REWARD_TYPES } from '@/types/reward';
-import { getRewards, getRewardById, getUserRewards, redeemReward } from '@/apis/rewards';
-import { getStoreItems } from '@/apis/store-items';
-import { useUserStore } from '@/stores/user';
+import { getRewards, getRewardById, getUserRewards, redeemReward } from '@/api/rewards';
+import { getStoreItems } from '@/api/store-items';
+import { useUserStore } from '@/store/user';
 
 const USER_REWARDS_PAGE_SIZE = 5;
 

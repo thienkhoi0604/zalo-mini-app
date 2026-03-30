@@ -2,10 +2,10 @@ import React, { FC, useEffect, useState } from 'react';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
 import { MapPin, Calendar, FileText, Store, AlertCircle } from 'lucide-react';
-import { useRewardsStore } from '@/stores/rewards';
+import { useRewardsStore } from '@/store/rewards';
 import { getRewardTypeLabel } from '@/types/reward';
-import { useUserStore } from '@/stores/user';
-import PullToRefresh from '@/components/pull-to-refresh';
+import { useUserStore } from '@/store/user';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // ─── Confirm Modal ─────────────────────────────────────────────────────────────
 

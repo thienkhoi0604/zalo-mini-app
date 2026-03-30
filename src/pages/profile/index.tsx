@@ -2,14 +2,14 @@ import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { Car, Gift, History, QrCode, ShieldCheck, UserPlus2 } from 'lucide-react';
-import { useUserStore } from '@/stores/user';
-import { useRewardsStore } from '@/stores/rewards';
-import { fetchQRSession, fetchReferralQR } from '@/apis/user';
+import { useUserStore } from '@/store/user';
+import { useRewardsStore } from '@/store/rewards';
+import { fetchQRSession, fetchReferralQR } from '@/api/user';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
 import SectionList from './section-list';
 import QRCodeSheet from './qr-code-sheet';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 const ICON_COLOR = '#A0784A';
 const ICON_SIZE = 18;

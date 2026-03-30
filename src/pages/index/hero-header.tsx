@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Zap, Gift, Ticket, QrCode } from 'lucide-react';
-import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/store/user';
 
 // ─── Quick action ──────────────────────────────────────────────────────────────
 

@@ -1,4 +1,4 @@
-import axiosClient from '@/apis/client';
+import axiosClient from '@/api/client';
 import { Station, StationsApiResponse, GetStationsParams } from '@/types/station';
 
 export async function getStations(params: GetStationsParams = {}): Promise<StationsApiResponse> {

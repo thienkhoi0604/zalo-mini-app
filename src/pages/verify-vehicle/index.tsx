@@ -2,9 +2,9 @@ import React, { FC, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { ShieldCheck, Car } from 'lucide-react';
-import { uploadImage } from '@/apis/upload';
-import { verifyVehicle } from '@/apis/user';
-import { useUserStore } from '@/stores/user';
+import { uploadImage } from '@/api/upload';
+import { verifyVehicle } from '@/api/user';
+import { useUserStore } from '@/store/user';
 import VehicleTypeSelector, { VEHICLE_TYPE_IDS } from './vehicle-type-selector';
 import ImagePicker from './image-picker';
 

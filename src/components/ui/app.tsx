@@ -1,8 +1,8 @@
 import React from "react";
 import { App, ZMPRouter, SnackbarProvider } from "zmp-ui";
-import { getConfig } from "utils/config";
-import { Layout } from "./layout";
-import { ConfigProvider } from "./config-provider";
+import { getConfig } from "@/utils/config";
+import { Layout } from "@/components/layout";
+import { ConfigProvider } from "@/components/providers/config-provider";
 
 const MyApp = () => {
   return (

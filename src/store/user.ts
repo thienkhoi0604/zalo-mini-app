@@ -1,13 +1,13 @@
 import { create } from 'zustand';
 import { getUserInfo } from 'zmp-sdk';
-import { getZaloAccessToken, getZaloLocationToken, requestLocationPermissionOnce, requestZaloPermissions } from '@/helpers/user';
+import { getZaloAccessToken, getZaloLocationToken, requestLocationPermissionOnce, requestZaloPermissions } from '@/utils/zalo';
 import {
   loginWithZaloUser,
   clearTokens,
   getAccessToken,
   getRefreshToken,
-} from '@/apis/authorization';
-import { fetchUserInfo, fetchPointWallet, scanQRCode as scanQRCodeApi } from '@/apis/user';
+} from '@/api/auth';
+import { fetchUserInfo, fetchPointWallet, scanQRCode as scanQRCodeApi } from '@/api/user';
 import { User } from '@/types/user';
 import { PointWallet } from '@/types/point-wallet';
 

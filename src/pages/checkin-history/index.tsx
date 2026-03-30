@@ -1,13 +1,13 @@
 import React, { FC, useEffect, useMemo } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { Zap } from 'lucide-react';
-import { useCheckinsStore } from '@/stores/checkins';
+import { useCheckinsStore } from '@/store/checkins';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import HistorySkeleton from './history-skeleton';
 import HistoryItem from './history-item';
 import SummaryBanner from './summary-banner';
 import { groupByDate } from './utils';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 const CheckinHistoryPage: FC = () => {
   const { history, historyLoading, hasMore, loadHistory, loadMoreHistory } = useCheckinsStore();

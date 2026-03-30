@@ -1,4 +1,4 @@
-import axiosClient from '@/apis/client';
+import axiosClient from '@/api/client';
 import { Province } from '@/types/station';
 
 export async function fetchProvinces(): Promise<Province[]> {

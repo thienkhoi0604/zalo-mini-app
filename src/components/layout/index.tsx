@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Route, Routes, useLocation, useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { ChevronLeft } from 'lucide-react';
-import background from '@/static/img/background.png';
+import background from '@/assets/images/background.png';
 import { Navigation } from './navigation';
 import HomePage from '@/pages/index';
 import ProfilePage from '@/pages/profile';
@@ -20,10 +20,10 @@ import VerifyVehiclePage from '@/pages/verify-vehicle';
 import VehicleInfoPage from '@/pages/vehicle-info';
 import { getSystemInfo } from 'zmp-sdk';
 import { ScrollRestoration } from './scroll-restoration';
-import { useUserStore } from '@/stores/user';
+import { useUserStore } from '@/store/user';
 import { useSnackbarInit } from '@/hooks/use-snackbar-init';
-import { ProtectedRoute } from './protected-route';
-import { getZaloAccessToken } from '@/helpers/user';
+import { ProtectedRoute } from '@/components/routing/protected-route';
+import { getZaloAccessToken } from '@/utils/zalo';
 
 if (import.meta.env.DEV) {
   document.body.style.setProperty('--zaui-safe-area-inset-top', '24px');

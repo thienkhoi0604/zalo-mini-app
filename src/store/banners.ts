@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Banner } from '@/types/banner';
-import { getBanners } from '@/apis/banners';
+import { getBanners } from '@/api/banners';
 
 interface BannersState {
   banners: Banner[];

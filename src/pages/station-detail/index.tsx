@@ -4,10 +4,10 @@ import { Box, Page } from 'zmp-ui';
 import { MapPin, Navigation, Zap, Clock, RotateCcw, Store, Tag } from 'lucide-react';
 import { openOutApp } from 'zmp-sdk/apis';
 import { Station } from '@/types/station';
-import { getStationById } from '@/apis/stations';
+import { getStationById } from '@/api/stations';
 import StatCard from './stat-card';
 import InfoRow from './info-row';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 const FALLBACK_IMG =
   'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80&auto=format';

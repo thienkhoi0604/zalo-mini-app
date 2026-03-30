@@ -1,6 +1,6 @@
-import { checkin } from '@/apis/checkins';
-import { scanReferralCode } from '@/apis/user';
-import { getZaloLocationToken, getZaloAccessToken } from '@/helpers/user';
+import { checkin } from '@/api/checkins';
+import { scanReferralCode } from '@/api/user';
+import { getZaloLocationToken, getZaloAccessToken } from '@/utils/zalo';
 
 export type ScanResult =
   | { status: 'success'; type: 'checkin'; points?: number }

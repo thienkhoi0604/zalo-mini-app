@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { Station, Province, Ward } from '@/types/station';
-import { getStations } from '@/apis/stations';
-import { fetchProvinces } from '@/apis/provinces';
-import { fetchWards } from '@/apis/wards';
+import { getStations } from '@/api/stations';
+import { fetchProvinces } from '@/api/provinces';
+import { fetchWards } from '@/api/wards';
 
 const PAGE_SIZE = 10;
 

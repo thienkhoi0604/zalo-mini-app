@@ -2,11 +2,11 @@ import React, { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Page } from 'zmp-ui';
 import { Zap } from 'lucide-react';
-import { useStationsStore } from '@/stores/stations';
+import { useStationsStore } from '@/store/stations';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import StationCard from './station-card';
 import SearchFilter from './search-filter';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 

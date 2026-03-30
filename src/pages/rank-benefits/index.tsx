@@ -1,12 +1,12 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
-import { useUserStore } from '@/stores/user';
-import { fetchAppRanks } from '@/apis/ranks';
+import { useUserStore } from '@/store/user';
+import { fetchAppRanks } from '@/api/ranks';
 import { buildTierConfig, resolveCurrentTier, TierConfig } from './tiers';
 import HeroBanner from './hero-banner';
 import ProgressSteps from './progress-steps';
 import RankCard from './rank-card';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 

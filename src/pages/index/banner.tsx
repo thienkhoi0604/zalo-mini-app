@@ -3,7 +3,7 @@ import { Autoplay, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Box } from 'zmp-ui';
 import { openOutApp } from 'zmp-sdk/apis';
-import { useBannersStore } from '@/stores/banners';
+import { useBannersStore } from '@/store/banners';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 

@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
-import { useRewardsStore } from '@/stores/rewards';
-import { useUserStore } from '@/stores/user';
+import { useRewardsStore } from '@/store/rewards';
+import { useUserStore } from '@/store/user';
 import RewardsList from './item-cards-list';
-import PullToRefresh from '@/components/pull-to-refresh';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 

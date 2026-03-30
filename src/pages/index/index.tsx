@@ -4,10 +4,10 @@ import { HeroHeader } from "./hero-header";
 import { Banner } from "./banner";
 import { TopVouchers } from "./top-vouchers";
 import { TopStationsCarousel } from "./top-stations";
-import PullToRefresh from "@/components/pull-to-refresh";
-import { useUserStore } from "@/stores/user";
-import { useRewardsStore } from "@/stores/rewards";
-import { useBannersStore } from "@/stores/banners";
+import PullToRefresh from "@/components/ui/pull-to-refresh";
+import { useUserStore } from "@/store/user";
+import { useRewardsStore } from "@/store/rewards";
+import { useBannersStore } from "@/store/banners";
 
 const HomePage: React.FunctionComponent = () => {
   const [refreshKey, setRefreshKey] = useState(0);

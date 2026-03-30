@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import { Box } from "zmp-ui";
 import { Zap, ChevronRight, MapPin, Navigation } from "lucide-react";
 import { Station } from '@/types/station';
-import { getStations } from '@/apis/stations';
+import { getStations } from '@/api/stations';
 
 const SectionHeader: FC<{ title: string; onViewAll: () => void }> = ({ title, onViewAll }) => (
   <Box flex className="items-center justify-between px-4 mb-3">

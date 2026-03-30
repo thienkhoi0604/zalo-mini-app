@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Gift, ChevronRight } from 'lucide-react';
-import { useRewardsStore } from '@/stores/rewards';
+import { useRewardsStore } from '@/store/rewards';
 import { Reward, getRewardTypeLabel } from '@/types/reward';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────

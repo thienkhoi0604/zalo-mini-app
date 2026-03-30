@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { CheckinHistoryItem } from '@/types/checkin';
-import { getCheckinHistory } from '@/apis/checkins';
+import { getCheckinHistory } from '@/api/checkins';
 
 const PAGE_SIZE = 5;
 

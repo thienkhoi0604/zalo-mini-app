@@ -1,6 +1,6 @@
 import React, { FC, ReactNode } from "react";
 import { Navigate, useLocation } from "react-router";
-import { useUserStore } from "stores/user";
+import { useUserStore } from "@/store/user";
 
 type Props = {
   children: ReactNode;
