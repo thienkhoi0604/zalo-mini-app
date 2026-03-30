@@ -1,105 +1,159 @@
 # Ecogreen Coin
 
 <p style="display: flex; flex-wrap: wrap; gap: 4px">
-  <img alt="react" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/react" />
-  <img alt="zmp-ui" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/zmp-ui" />
-  <img alt="zmp-sdk" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/zmp-sdk" />
-  <img alt="tailwindcss" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/dev/tailwindcss" />
-  <img alt="scss" src="https://img.shields.io/github/package-json/dependency-version/Zalo-MiniApp/zaui-coffee/dev/sass" />
+  <img alt="react" src="https://img.shields.io/badge/react-18.2.0-blue" />
+  <img alt="zmp-ui" src="https://img.shields.io/badge/zmp--ui-1.11.5-green" />
+  <img alt="zmp-sdk" src="https://img.shields.io/badge/zmp--sdk-2.39.9-green" />
+  <img alt="zustand" src="https://img.shields.io/badge/zustand-4.5.2-orange" />
+  <img alt="tailwindcss" src="https://img.shields.io/badge/tailwindcss-3.4.10-blue" />
+  <img alt="typescript" src="https://img.shields.io/badge/typescript-5.x-blue" />
 </p>
 
-Public template for building a coffee shop on Zalo Mini App. Main features:
+A **Zalo Mini App** for the Ecogreen Coin loyalty program. Users earn points by checking in at charging stations, redeem vouchers and products, track their rank benefits, and manage their EV (electric vehicle) profile — all within the Zalo super-app.
 
-- Zalo OAuth authentication with auto account creation.
-- Multi-location management with province/ward filtering.
-- Notifications management.
-- View customer profile and membership.
+**Key features:**
 
-|                      Demo                       |                  Entrypoint                  |
-| :---------------------------------------------: | :------------------------------------------: |
-| <img src="./docs/preview.webp" alt="Home page"> | <img src="./docs/qr.webp" alt="Entry point"> |
+- Zalo OAuth authentication with auto account creation
+- EV charging station finder with province/ward filtering and infinite scroll
+- QR code check-in at stations to earn loyalty points
+- Rewards catalog (vouchers, physical items, F&B products) with category and store views
+- Membership rank system with tier progression and benefits
+- Vehicle registration and approval workflow
+- Referral program with QR code sharing
+- Point wallet tracking (earned, spent, locked balance)
+- User voucher management with status and expiry
+
+---
 
 ## Setup
 
-### Using Zalo Mini App Extension
+### Prerequisites
 
-1. Install [Visual Studio Code](https://code.visualstudio.com/download) and [Zalo Mini App Extension](https://mini.zalo.me/docs/dev-tools).
-1. Click on **Create Project** > Choose **Ecogreen Coin** template > Wait until the generated project is ready.
-1. **Configure App ID** and **Install Dependencies**, then navigate to the **Run** panel > **Start** to develop your Mini App 🚀
+- [Node.js](https://nodejs.org/en/download/) (LTS recommended)
+- [Zalo Mini App CLI](https://mini.zalo.me/docs/dev-tools/cli/intro/) (`npm i -g zmp-cli`)
 
+### Install dependencies
+
+```bash
+npm install
+```
+
+### Start development server
+
+```bash
+npm start
+# or: zmp start
+```
+
+Open `localhost:3000` in your browser. The app runs inside a Zalo Mini App simulator.
+
+### Using Zalo Mini App Extension (VS Code)
+
+1. Install [VS Code](https://code.visualstudio.com/download) and [Zalo Mini App Extension](https://mini.zalo.me/docs/dev-tools)
+2. Click **Create Project** → Choose **Ecogreen Coin** template
+3. Configure **App ID**, install dependencies, then go to **Run** → **Start**
 
 ### Using Zalo Mini App Studio
 
 1. [Install Zalo Mini App Studio](https://mini.zalo.me/docs/dev-tools)
-1. Click on New project > Enter your Mini App ID > Choose Ecogreen Coin template
-1. Wait until the generated project is ready and click the Start button to run the mini app 🚀
+2. New project → Enter Mini App ID → Choose **Ecogreen Coin** template
+3. Click **Start** to run
 
-### Using Zalo Mini App CLI
+---
 
-1. [Install Node JS](https://nodejs.org/en/download/)
-1. [Install Mini App DevTools CLI](https://mini.zalo.me/docs/dev-tools/cli/intro/)
-1. Download or clone this repository
-1. Install dependencies
+## Environment Variables
 
-   ```bash
-   npm install
-   ```
+| Variable | Default | Description |
+|----------|---------|-------------|
+| `VITE_API_URL` | `http://localhost:3001` | Backend API base URL |
+| `VITE_BASE_URL` | `` | Vite base path (set for deployment) |
 
-1. Start dev server using `zmp-cli`
+---
 
-   ```bash
-   zmp start
-   ```
+## Available Scripts
 
-1. Open `localhost:3000` on your browser and start coding 🔥
+| Command | Description |
+|---------|-------------|
+| `npm start` | Start Zalo Mini App dev server (`zmp start`) |
+| `npm run deploy` | Deploy to Zalo platform (`zmp deploy`) |
+| `npm run build:css` | Recompile Tailwind CSS → `src/styles/styles.css` |
+
+---
 
 ## Deployment
 
-1. Create a mini app. For instruction on how to create a mini app, please refer to [Coffee Shop Tutorial](https://mini.zalo.me/tutorial/coffee-shop)
-
-1. Setup payment methods if you want to accept online payments
-   ![](./docs/payment.png "Payment method")
-
-1. Deploy your mini app to Zalo using the mini app ID created in step 1.
-
-   If you're using `zmp-cli`:
-
+1. Create a mini app at [Zalo Mini App Portal](https://mini.zalo.me/)
+2. Log in via CLI:
    ```bash
    zmp login
+   ```
+3. Deploy using your mini app ID:
+   ```bash
    zmp deploy
    ```
+4. Scan the QR code with Zalo to preview the deployed app
 
-1. Scan the QR code using Zalo to preview your mini app.
+---
 
-## Usage:
+## Project Structure
 
-The repository contains sample UI components for building your application. You may wish to integrate internal APIs to fetch restaurants, menus, and booking history or modify the code to suit your business needs.
+```
+ecogreen-coin/
+├── src/
+│   ├── api/                  # HTTP layer (Axios client + one module per resource)
+│   ├── store/                # Zustand state management (one file per domain)
+│   ├── types/                # TypeScript interfaces and types
+│   ├── components/           # Reusable React components
+│   │   ├── ui/               # Primitive UI components
+│   │   ├── layout/           # App shell, bottom nav, scroll restoration
+│   │   ├── routing/          # ProtectedRoute auth guard
+│   │   └── providers/        # CSS variable injection
+│   ├── pages/                # Route-level page components
+│   ├── hooks/                # Custom React hooks
+│   ├── utils/                # Utility functions
+│   ├── constants/            # Brand colors, fallback images, timing constants
+│   ├── styles/               # Tailwind source + compiled CSS + SCSS + icons
+│   ├── assets/images/        # Static images (background, logo)
+│   ├── app.ts                # App entry point
+│   └── global.d.ts           # Global TypeScript declarations
+├── mocks/                    # Sample API response templates (reference only)
+├── app-config.json           # Zalo Mini App shell configuration
+├── tailwind.config.js        # Tailwind theme and content paths
+├── vite.config.mts           # Vite build config with path alias (@/)
+├── postcss.config.js         # PostCSS pipeline
+└── tsconfig.json             # TypeScript configuration
+```
 
-Folder structure:
+---
 
-- **`src`**: Contains all the logic source code of your Mini App. Inside the `src` folder:
+## Routes
 
-  - **`components`**: Reusable components written in React.JS.
-  - **`css`**: Stylesheets; pre-processors are also supported.
-  - **`pages`**: A Page is also a component but will act as an entire view and must be registered inside `app.tsx` as a [Route](https://mini.zalo.me/docs/zaui/router/ZMPRouter/).
-  - **`statics`**: SVG and images that should be imported directly into bundle source code.
-  - **`types`**: Contains TypeScript type and interface declarations.
-  - **`utils`**: Reusable utility functions, such as distance calculation, date and time format, etc.
-  - **`app.ts`**: Entry point of your Mini App.
-  - **`global.d.ts`**: Contains TypeScript declarations for third-party modules and global objects.
-  - **`stores`**: State management using Zustand.
+| Path | Page | Protected |
+|------|------|-----------|
+| `/` | Home | No |
+| `/register` | Zalo OAuth login | No |
+| `/rewards` | Rewards catalog | No |
+| `/rewards/:id` | Reward detail + redeem | Yes |
+| `/rewards/category/:category` | Category drill-down | No |
+| `/qr-code` | QR scanner | Yes |
+| `/stations` | Station list | Yes |
+| `/stations/:id` | Station detail | Yes |
+| `/profile` | User profile | Yes |
+| `/my-vouchers` | Claimed vouchers | Yes |
+| `/rank-benefits` | Rank tiers | Yes |
+| `/checkin-history` | Check-in history | Yes |
+| `/verify-vehicle` | Vehicle registration | Yes |
+| `/vehicle-info` | Vehicle status | Yes |
 
-- **`mock`**: Example data as \*.json files.
+Protected routes redirect unauthenticated users to `/register`.
 
-- **`app-config.json`**: [Global configuration](https://mini.zalo.me/intro/getting-started/app-config/) for your Mini App.
+---
 
-The other files (such as `tailwind.config.js`, `vite.config.ts`, `tsconfig.json`, `postcss.config.js`) are configurations for libraries used in your application. Visit the library's documentation to learn how to use them.
+## Customization
 
-## Recipes
+### App title
 
-### Changing app's name
-
-Just change the `app.title` property in `app-config.json`:
+Edit `app.title` in `app-config.json`:
 
 ```json
 {
@@ -109,19 +163,43 @@ Just change the `app.title` property in `app-config.json`:
 }
 ```
 
-### Changing coffee shop's logo
+### Brand colors
 
-Visit [Zalo Mini App](https://mini.zalo.me/) and go to your mini app's settings to change the logo.
+Primary color is `#288F4E` (green). Update in:
+- `app-config.json` → `template.primaryColor`
+- `src/constants/index.ts` → `COLORS`
+- `tailwind.config.js` → `theme.extend.colors`
 
-### Customizations
+### Tailwind CSS
 
-You can customizations primary colors and currency displays using [Zalo Mini App Studio](https://mini.zalo.me/docs/dev-tools):
+Edit `src/styles/tailwind.css`, then rebuild:
 
-![Customizations](./docs/customizations.webp)
+```bash
+npm run build:css
+```
+
+Do **not** edit `src/styles/styles.css` directly — it is auto-generated.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | React 18 + TypeScript |
+| Platform | Zalo Mini App (`zmp-sdk`, `zmp-ui`) |
+| State | Zustand 4 |
+| Routing | React Router v6 |
+| HTTP | Axios with JWT interceptors |
+| Styling | Tailwind CSS v3 + SCSS |
+| Icons | Lucide React |
+| Animation | @react-spring/web |
+| Carousel | Swiper 9 |
+| QR Code | react-qr-code |
+| Build | Vite 5 |
+
+---
 
 ## License
 
-Copyright (c) Zalo Group. and its affiliates. All rights reserved.
-
-The examples provided by Zalo Group are for non-commercial testing and evaluation
-purposes only. Zalo Group reserves all rights not expressly granted.
+Copyright (c) Ecogreen. All rights reserved.
