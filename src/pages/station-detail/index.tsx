@@ -2,7 +2,7 @@ import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Box, Page } from 'zmp-ui';
 import { MapPin, Navigation, Zap, Clock, RotateCcw, Store, Tag } from 'lucide-react';
-import { openOutApp } from 'zmp-sdk/apis';
+import { openWebview } from 'zmp-sdk/apis';
 import { Station } from '@/types/station';
 import { getStationById } from '@/api/stations';
 import StatCard from './stat-card';
@@ -293,45 +293,47 @@ const StationDetailPage: FC = () => {
           </Box>
 
           {/* ── Google Maps button ── */}
-          <button
-            onClick={() => openOutApp({ url: station.googleMapsDirectionUrl })}
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 10,
-              background: 'linear-gradient(135deg, #1A73E8, #1558B0)',
-              border: 'none',
-              borderRadius: 16,
-              padding: '15px 20px',
-              cursor: 'pointer',
-              boxShadow: '0 4px 16px rgba(26,115,232,0.35)',
-            }}
-          >
-            <Box
+          {station.googleMapsDirectionUrl && (
+            <button
+              onClick={() => openWebview({ url: station.googleMapsDirectionUrl! })}
               style={{
-                width: 32,
-                height: 32,
-                borderRadius: 8,
-                background: 'rgba(255,255,255,0.18)',
+                width: '100%',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                flexShrink: 0,
+                gap: 10,
+                background: 'linear-gradient(135deg, #1A73E8, #1558B0)',
+                border: 'none',
+                borderRadius: 16,
+                padding: '15px 20px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(26,115,232,0.35)',
               }}
             >
-              <Navigation size={16} color="#fff" />
-            </Box>
-            <Box style={{ textAlign: 'left' }}>
-              <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: '18px' }}>
-                Mở trên Google Maps
-              </p>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 1 }}>
-                Chỉ đường đến trạm sạc
-              </p>
-            </Box>
-          </button>
+              <Box
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  background: 'rgba(255,255,255,0.18)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Navigation size={16} color="#fff" />
+              </Box>
+              <Box style={{ textAlign: 'left' }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: '18px' }}>
+                  Xem chỉ đường
+                </p>
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 1 }}>
+                  Mở Google Maps trong ứng dụng
+                </p>
+              </Box>
+            </button>
+          )}
 
           {/* ── Description ── */}
           {station.description && (

@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Autoplay, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Box } from 'zmp-ui';
-import { openOutApp } from 'zmp-sdk/apis';
+import { openWebview } from 'zmp-sdk/apis';
 import { useBannersStore } from '@/store/banners';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -30,7 +30,7 @@ export const Banner: FC = () => {
 
   const handleTap = (targetUrl: string | null) => {
     if (!targetUrl) return;
-    openOutApp({ url: targetUrl }).catch(() => {});
+    openWebview({ url: targetUrl }).catch(() => {});
   };
 
   return (

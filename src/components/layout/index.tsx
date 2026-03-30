@@ -8,7 +8,7 @@ import HomePage from '@/pages/index';
 import ProfilePage from '@/pages/profile';
 import RewardsPage from '@/pages/rewards';
 import RewardDetailPage from '@/pages/rewards/detail';
-import CategoryDetailPage from '@/pages/rewards/category-detail';
+import CategoryDetailPage from '@/pages/rewards/category-feed';
 import QRCodePage from '@/pages/qr-code';
 import StationsPage from '@/pages/stations';
 import StationDetailPage from '@/pages/station-detail';

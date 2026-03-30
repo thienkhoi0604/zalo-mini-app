@@ -1,7 +1,7 @@
 {
   "permissions": {
-    "openOutApp": {
-      "description": "Mở Google Maps để chỉ đường đến trạm sạc"
+    "openWebview": {
+      "description": "Mở liên kết và bản đồ trong trình duyệt nội bộ"
     }
   },
   "app": {

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Reward, getRewardTypeLabel } from '@/types/reward';
+import { Reward } from '@/types/reward';
 
 interface Props {
   card: Reward;
@@ -9,27 +9,39 @@ interface Props {
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
 
+function getTypeAccent(type: string) {
+  switch (type) {
+    case 'Voucher':      return { chip: 'rgba(217,119,6,0.88)',  label: 'Voucher' };
+    case 'PhysicalItem': return { chip: 'rgba(109,40,217,0.88)', label: 'Quà tặng' };
+    case 'FnbProduct':   return { chip: 'rgba(8,145,178,0.88)',  label: 'Đồ ăn & Uống' };
+    default:             return { chip: 'rgba(75,85,99,0.88)',   label: type };
+  }
+}
+
 const RewardItemCard: FC<Props> = ({ card, onClick }) => {
   const expired = card.status === 'expired';
+  const typeAccent = getTypeAccent(card.type);
+  const lowStock = card.stock != null && card.stock > 0 && card.stock <= 10;
 
   return (
     <Box
       onClick={() => onClick?.(card)}
       className="flex-shrink-0 cursor-pointer"
       style={{
-        width: 156,
-        borderRadius: 16,
+        width: 160,
+        borderRadius: 18,
         overflow: 'hidden',
         background: '#fff',
         boxShadow: expired
           ? '0 1px 6px rgba(0,0,0,0.06)'
-          : '0 4px 14px rgba(0,0,0,0.1)',
-        opacity: expired ? 0.72 : 1,
+          : '0 6px 18px rgba(0,0,0,0.11)',
+        opacity: expired ? 0.7 : 1,
         border: '1px solid rgba(0,0,0,0.05)',
+        transition: 'transform 0.15s, box-shadow 0.15s',
       }}
     >
-      {/* Thumbnail */}
-      <Box style={{ height: 108, background: '#F3EDE3', position: 'relative', overflow: 'hidden' }}>
+      {/* ── Image ── */}
+      <Box style={{ height: 120, background: '#F0EBE3', position: 'relative', overflow: 'hidden' }}>
         <img
           src={card.thumbnailImageUrl}
           alt={card.name}
@@ -37,14 +49,12 @@ const RewardItemCard: FC<Props> = ({ card, onClick }) => {
           onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }}
         />
 
-        {/* Bottom scrim */}
+        {/* Gradient scrim */}
         {!expired && (
           <Box
             style={{
-              position: 'absolute',
-              bottom: 0, left: 0, right: 0,
-              height: 44,
-              background: 'linear-gradient(to top, rgba(0,0,0,0.32), transparent)',
+              position: 'absolute', inset: 0,
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, transparent 40%, rgba(0,0,0,0.28) 100%)',
               pointerEvents: 'none',
             }}
           />
@@ -55,72 +65,84 @@ const RewardItemCard: FC<Props> = ({ card, onClick }) => {
           <Box
             style={{
               position: 'absolute', inset: 0,
-              background: 'rgba(0,0,0,0.38)',
+              background: 'rgba(0,0,0,0.42)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
             }}
           >
-            <Box style={{ background: '#EF4444', borderRadius: 20, padding: '3px 12px', boxShadow: '0 2px 8px rgba(239,68,68,0.4)' }}>
-              <p style={{ fontSize: 10, color: '#fff', fontWeight: 800, letterSpacing: 0.5 }}>HẾT HẠN</p>
+            <Box style={{ background: '#EF4444', borderRadius: 20, padding: '4px 13px', boxShadow: '0 2px 10px rgba(239,68,68,0.5)' }}>
+              <p style={{ fontSize: 10, color: '#fff', fontWeight: 800, letterSpacing: 0.8 }}>HẾT HẠN</p>
             </Box>
           </Box>
         )}
 
-        {/* Points badge */}
+        {/* Type chip – bottom left */}
+        {!expired && (
+          <Box
+            style={{
+              position: 'absolute', bottom: 7, left: 7,
+              background: typeAccent.chip,
+              backdropFilter: 'blur(4px)',
+              borderRadius: 6,
+              padding: '2px 7px',
+            }}
+          >
+            <p style={{ fontSize: 9, color: '#fff', fontWeight: 700, letterSpacing: 0.3 }}>
+              {typeAccent.label}
+            </p>
+          </Box>
+        )}
+
+        {/* Points badge – top right */}
         {!expired && (
           <Box
             style={{
               position: 'absolute', top: 7, right: 7,
               background: 'linear-gradient(135deg, #F59E0B, #D97706)',
               borderRadius: 100,
-              padding: '3px 7px',
+              padding: '3px 8px',
               display: 'flex', alignItems: 'center', gap: 3,
-              boxShadow: '0 2px 6px rgba(217,119,6,0.45)',
+              boxShadow: '0 2px 8px rgba(217,119,6,0.5)',
             }}
           >
             <span style={{ fontSize: 9 }}>🪙</span>
-            <p style={{ fontSize: 10, fontWeight: 800, color: '#fff' }}>
+            <p style={{ fontSize: 10, fontWeight: 800, color: '#fff', letterSpacing: 0.2 }}>
               {card.pointsRequired.toLocaleString('vi-VN')}
             </p>
           </Box>
         )}
-      </Box>
 
-      {/* Info */}
-      <Box style={{ padding: '9px 10px 10px', display: 'flex', flexDirection: 'column', gap: 5 }}>
-        {/* Brand */}
-        <Box flex className="items-center" style={{ gap: 5 }}>
-          {card.brandLogoUrl ? (
-            <img
-              src={card.brandLogoUrl}
-              alt={card.brandName}
-              style={{ width: 14, height: 14, borderRadius: '50%', objectFit: 'cover', flexShrink: 0 }}
-            />
-          ) : (
-            <Box
-              style={{
-                width: 6, height: 6,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
-                flexShrink: 0,
-              }}
-            />
-          )}
-          <p
+        {/* Low stock badge – bottom right */}
+        {!expired && lowStock && (
+          <Box
             style={{
-              fontSize: 9, color: '#B0B7C3', fontWeight: 700,
-              textTransform: 'uppercase', letterSpacing: 0.5,
-              overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+              position: 'absolute', bottom: 7, right: 7,
+              background: 'rgba(239,68,68,0.9)',
+              borderRadius: 6, padding: '2px 6px',
             }}
           >
-            {card.brandName || getRewardTypeLabel(card.type)}
-          </p>
-        </Box>
+            <p style={{ fontSize: 9, color: '#fff', fontWeight: 700 }}>Còn {card.stock}</p>
+          </Box>
+        )}
+      </Box>
+
+      {/* ── Info ── */}
+      <Box style={{ padding: '9px 10px 11px', display: 'flex', flexDirection: 'column', gap: 5 }}>
+        {/* Brand */}
+        <p
+          style={{
+            fontSize: 9, color: '#A0AEC0', fontWeight: 700,
+            textTransform: 'uppercase', letterSpacing: 0.6,
+            overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+          }}
+        >
+          {card.brandName ?? card.category}
+        </p>
 
         {/* Name */}
         <p
           style={{
-            fontSize: 12, color: expired ? '#9CA3AF' : '#111827', fontWeight: 700,
-            lineHeight: '17px',
+            fontSize: 12, fontWeight: 700, lineHeight: '17px',
+            color: expired ? '#9CA3AF' : '#111827',
             display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
             overflow: 'hidden', minHeight: 34,
           }}
@@ -128,23 +150,36 @@ const RewardItemCard: FC<Props> = ({ card, onClick }) => {
           {card.name}
         </p>
 
-        {/* Points strip */}
-        {!expired && (
+        {/* Cost strip */}
+        {expired ? (
           <Box
             style={{
-              marginTop: 1,
-              background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)',
-              border: '1px solid #FDE68A',
-              borderRadius: 8,
-              padding: '5px 8px',
+              marginTop: 1, borderRadius: 9, padding: '5px 9px',
+              background: '#F9FAFB', border: '1px solid #E5E7EB',
               display: 'flex', alignItems: 'center', gap: 5,
             }}
           >
-            <span style={{ fontSize: 12 }}>🪙</span>
-            <p style={{ fontSize: 12, fontWeight: 800, color: '#B45309' }}>
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#9CA3AF' }}>Đã hết hạn</p>
+          </Box>
+        ) : (
+          <Box
+            style={{
+              marginTop: 1, borderRadius: 9, padding: '5px 9px',
+              background: 'linear-gradient(135deg, #FFFBEB, #FEF3C7)',
+              border: '1px solid #FDE68A',
+              display: 'flex', alignItems: 'center', gap: 4,
+            }}
+          >
+            <span style={{ fontSize: 13 }}>🪙</span>
+            <p style={{ fontSize: 13, fontWeight: 800, color: '#B45309' }}>
               {card.pointsRequired.toLocaleString('vi-VN')}
             </p>
-            <p style={{ fontSize: 10, color: '#D97706', fontWeight: 500 }}>xu</p>
+            <p style={{ fontSize: 10, color: '#D97706', fontWeight: 600 }}>xu</p>
+            {card.price != null && (
+              <p style={{ fontSize: 9, color: '#D97706', marginLeft: 'auto', textDecoration: 'line-through', opacity: 0.7 }}>
+                {card.price.toLocaleString('vi-VN')}đ
+              </p>
+            )}
           </Box>
         )}
       </Box>

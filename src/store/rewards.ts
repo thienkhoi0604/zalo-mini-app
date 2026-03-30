@@ -1,10 +1,16 @@
 import { create } from 'zustand';
-import { Reward, UserReward, REWARD_TYPES } from '@/types/reward';
-import { getRewards, getRewardById, getUserRewards, redeemReward } from '@/api/rewards';
-import { getStoreItems } from '@/api/store-items';
+import { Reward, UserReward, FEED_ITEM_TYPES, StoreGroup, GroupedFeedResult } from '@/types/reward';
+import { getFeedItems, getFeedGrouped } from '@/api/feed';
+import { getRewardById, getUserRewards, redeemReward } from '@/api/rewards';
 import { useUserStore } from '@/store/user';
 
 const USER_REWARDS_PAGE_SIZE = 5;
+
+// itemTypes used to load rewards and store items.
+// These are defined here separately; the actual values will be driven by
+// Business Logic in the future.
+const REWARD_ITEM_TYPES = [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM] as const;
+const STORE_ITEM_TYPES  = [FEED_ITEM_TYPES.FNB_PRODUCT] as const;
 
 type RewardsStore = {
   allRewards: Reward[];
@@ -16,12 +22,16 @@ type RewardsStore = {
   selectedReward: Reward | null;
   redeeming: boolean;
 
+  // Grouped (by-store) feed
+  globalRewards: Reward[];
+  storeGroups: StoreGroup[];
+  storeGroupsLoading: boolean;
+
   loadAllRewards: () => Promise<void>;
   loadRewardById: (id: string) => Promise<void>;
-  /** Load page 1, reset userRewards list */
   loadUserRewards: () => Promise<void>;
-  /** Append next page of userRewards */
   loadMoreUserRewards: () => Promise<void>;
+  loadStoreGroups: () => Promise<void>;
   selectReward: (reward: Reward | null) => void;
   redeemReward: (rewardId: string) => Promise<void>;
   getGroupedByCategory: () => Record<string, Reward[]>;
@@ -36,18 +46,22 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
   loading: false,
   selectedReward: null,
   redeeming: false,
+  globalRewards: [],
+  storeGroups: [],
+  storeGroupsLoading: false,
 
   loadAllRewards: async () => {
     set({ loading: true });
     try {
-      const [storeItems, ...rewardResults] = await Promise.all([
-        getStoreItems(1, 50),
-        ...Object.values(REWARD_TYPES).map((type) =>
-          getRewards({ pageNumber: 1, pageSize: 10, type }),
+      const results = await Promise.all([
+        ...REWARD_ITEM_TYPES.map((itemType) =>
+          getFeedItems({ pageNumber: 1, pageSize: 50, itemType }),
+        ),
+        ...STORE_ITEM_TYPES.map((itemType) =>
+          getFeedItems({ pageNumber: 1, pageSize: 50, itemType }),
         ),
       ]);
-      const rewards = ([] as Reward[]).concat(...rewardResults);
-      set({ allRewards: [...rewards, ...storeItems], loading: false });
+      set({ allRewards: ([] as Reward[]).concat(...results), loading: false });
     } catch (error) {
       console.error('Failed to load rewards:', error);
       set({ loading: false });
@@ -120,13 +134,26 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     }
   },
 
+  loadStoreGroups: async () => {
+    if (get().storeGroupsLoading) return;
+    set({ storeGroupsLoading: true });
+    try {
+      const result: GroupedFeedResult = await getFeedGrouped();
+      set({ globalRewards: result.globalRewards, storeGroups: result.stores });
+    } catch (error) {
+      console.error('Failed to load store groups:', error);
+    } finally {
+      set({ storeGroupsLoading: false });
+    }
+  },
+
   selectReward: (reward) => set({ selectedReward: reward }),
 
   redeemReward: async (rewardId: string) => {
     set({ redeeming: true });
     try {
       const reward = get().allRewards.find((r) => r.id === rewardId);
-      await redeemReward(rewardId, reward?.source === 'product' ? 'Product' : 'Reward');
+      await redeemReward(rewardId, reward?.source === 'StoreItem' ? 'Product' : 'Reward');
       await Promise.all([
         get().loadUserRewards(),
         useUserStore.getState().loadPointWallet(),

@@ -1,4 +1,4 @@
-import { Reward, UserReward, RewardApiItem, GetRewardsParams, GetUserRewardsParams } from '@/types/reward';
+import { Reward, UserReward, RewardApiItem, GetUserRewardsParams } from '@/types/reward';
 import { PaginatedApiResponse } from '@/types/common';
 import axiosClient from './client';
 
@@ -12,7 +12,7 @@ function mapApiItemToReward(item: RewardApiItem): Reward {
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
     category: item.type,
-    source: 'reward',
+    source: 'Reward',
     pointsRequired: item.pointCost,
     applicableTimeStart: item.validFrom ?? '',
     applicableTimeEnd: item.validTo ?? '',
@@ -21,20 +21,6 @@ function mapApiItemToReward(item: RewardApiItem): Reward {
     status: item.isActive ? 'active' : 'expired',
     stores: item.storeNames?.map((name) => ({ address: name })),
   };
-}
-
-export async function getRewards(params: GetRewardsParams = {}): Promise<Reward[]> {
-  try {
-    const { pageNumber = 1, pageSize = 10, type } = params;
-    const { data } = await axiosClient.get<{
-      data: { items: RewardApiItem[] };
-    }>('/Rewards', {
-      params: { pageNumber, pageSize, ...(type && { type }) },
-    });
-    return (data.data.items ?? []).map(mapApiItemToReward);
-  } catch {
-    return [];
-  }
 }
 
 export async function getRewardById(id: string): Promise<Reward | null> {

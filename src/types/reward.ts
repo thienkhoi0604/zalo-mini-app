@@ -2,96 +2,70 @@ export interface RewardStore {
   address: string;
 }
 
-export const STORE_ITEM_TYPE_OPTIONS = [
-  { value: 0, label: 'Retail Products (In Stock)' },
-  { value: 1, label: 'F&B Goods (In Store)' },
-  { value: 2, label: 'Services (Consulting, Fees...)' },
-] as const;
+// ─── Feed Item Types ───────────────────────────────────────────────────────────
+// Defined separately — values will be sourced from Business Logic in the future
 
-export type StoreItemType = 0 | 1 | 2;
+export const FEED_ITEM_TYPES = {
+  VOUCHER: 'Voucher',
+  PHYSICAL_ITEM: 'PhysicalItem',
+  FNB_PRODUCT: 'FnbProduct',
+} as const;
 
-export function getStoreItemTypeLabel(type: StoreItemType): string {
-  return STORE_ITEM_TYPE_OPTIONS.find((o) => o.value === type)?.label ?? String(type);
-}
+export type FeedItemType = (typeof FEED_ITEM_TYPES)[keyof typeof FEED_ITEM_TYPES];
 
-export interface StoreItemApiItem {
+// ─── Feed API ──────────────────────────────────────────────────────────────────
+
+export interface FeedApiItem {
   id: string;
-  storeId: string;
-  storeName: string;
-  type: StoreItemType;
-  typeName: string;
+  sourceType: 'Reward' | 'StoreItem';
+  itemType: FeedItemType;
+  itemTypeTranslate: string;
   code: string;
   name: string;
   description: string | null;
-  price: number;
-  coinCost: number;
   imageUrl: string;
-  stock: number | null;
-  totalSales: number;
-  distanceKm: number | null;
-}
-
-export const REWARD_TYPE_OPTIONS = [
-  { value: 'Voucher', label: 'Voucher điện tử', prefix: 'VCR' },
-  { value: 'PhysicalItem', label: 'Quà hiện vật', prefix: 'PHY' },
-] as const;
-
-export function getRewardTypeLabel(type: string): string {
-  const rewardMatch = REWARD_TYPE_OPTIONS.find((o) => o.value === type);
-  if (rewardMatch) return rewardMatch.label;
-  const storeMatch = STORE_ITEM_TYPE_OPTIONS.find((o) => String(o.value) === type);
-  if (storeMatch) return storeMatch.label;
-  return type;
-}
-
-export type RewardSource = 'reward' | 'product';
-
-export interface Reward {
-  id: string;
-  code: string;
-  name: string;
-  type: string;
-  description: string;
-  bannerImageUrl: string;
-  thumbnailImageUrl: string;
-  category: string;
-  source: RewardSource;
-  brandName?: string;
-  brandLogoUrl?: string;
-  stores?: RewardStore[];
-  terms?: string;
-  pointsRequired: number;
-  applicableTimeStart: string;
-  applicableTimeEnd: string;
-  programNotes: string;
-  usageGuide: string;
-  status: 'active' | 'expired';
-}
-
-export type UserRewardItemType = 'Reward' | 'Product';
-
-export interface UserReward {
-  id: string;
-  code: string;
-  rewardName: string;
+  storeId: string | null;
   storeName: string | null;
-  storeItemId: string | null;
-  itemType: UserRewardItemType;
-  status: string;
-  issuedAt: string;
-  expiredAt: string;
-  usedAt: string | null;
+  provinceCode: string | null;
+  provinceName: string | null;
+  wardCode: string | null;
+  wardName: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  distanceKm: number | null;
+  price: number | null;
+  coinCost: number | null;
+  stock: number | null;
+  totalSales: number | null;
+  pointCost: number | null;
+  validFrom: string | null;
+  validTo: string | null;
+  appliesToAll: boolean | null;
 }
 
-export interface RewardsFilter {
-  category?: string;
-  search?: string;
+export interface GetFeedParams {
+  pageNumber?: number;
+  pageSize?: number;
+  itemType?: FeedItemType;
 }
 
-export enum REWARD_TYPES {
-  VOUCHER = 'Voucher',
-  PRODUCT = 'PhysicalItem',
+// ─── Grouped feed (Grouped=true) ──────────────────────────────────────────────
+
+export interface StoreGroup {
+  storeId: string;
+  storeName: string;
+  distanceKm: number | null;
+  latitude: number | null;
+  longitude: number | null;
+  items: Reward[];
 }
+
+export interface GroupedFeedResult {
+  globalRewards: Reward[];
+  stores: StoreGroup[];
+}
+
+// ─── Legacy Reward detail API (single-item endpoint) ──────────────────────────
 
 export interface RewardApiItem {
   id: string;
@@ -110,13 +84,70 @@ export interface RewardApiItem {
   storeNames: string[];
 }
 
-export interface GetRewardsParams {
-  pageNumber?: number;
-  pageSize?: number;
-  type?: REWARD_TYPES;
+// ─── Unified internal Reward type ─────────────────────────────────────────────
+
+export type RewardSource = 'Reward' | 'StoreItem';
+
+export interface Reward {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  description: string;
+  bannerImageUrl: string;
+  thumbnailImageUrl: string;
+  /** itemTypeTranslate from the feed — used as grouping key and route param */
+  category: string;
+  source: RewardSource;
+  brandName?: string;
+  brandLogoUrl?: string;
+  stores?: RewardStore[];
+  terms?: string;
+  /** coinCost for products, pointCost for rewards */
+  pointsRequired: number;
+  /** Original price (store items only) */
+  price?: number | null;
+  /** Remaining stock, null = unlimited */
+  stock?: number | null;
+  applicableTimeStart: string;
+  applicableTimeEnd: string;
+  programNotes: string;
+  usageGuide: string;
+  status: 'active' | 'expired';
+}
+
+export function getRewardTypeLabel(type: string): string {
+  switch (type) {
+    case FEED_ITEM_TYPES.VOUCHER:       return 'Voucher điện tử';
+    case FEED_ITEM_TYPES.PHYSICAL_ITEM: return 'Quà hiện vật';
+    case FEED_ITEM_TYPES.FNB_PRODUCT:   return 'Đồ ăn & Thức uống';
+    default:                             return type;
+  }
+}
+
+// ─── User Rewards (my-vouchers) ────────────────────────────────────────────────
+
+export type UserRewardItemType = 'Reward' | 'Product';
+
+export interface UserReward {
+  id: string;
+  code: string;
+  rewardName: string;
+  storeName: string | null;
+  storeItemId: string | null;
+  itemType: UserRewardItemType;
+  status: string;
+  issuedAt: string;
+  expiredAt: string;
+  usedAt: string | null;
 }
 
 export interface GetUserRewardsParams {
   pageNumber?: number;
   pageSize?: number;
+}
+
+export interface RewardsFilter {
+  category?: string;
+  search?: string;
 }
