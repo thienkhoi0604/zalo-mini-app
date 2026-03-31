@@ -63,7 +63,7 @@ const PageHeader: FC<PageHeaderProps> = ({ children, paddingBottom = 16 }) => {
         style={{
           position: 'relative',
           zIndex: 1,
-          padding: `18px 16px ${paddingBottom + 40}px`,
+          padding: `14px 16px ${paddingBottom + 40}px`,
         }}
       >
         {children}

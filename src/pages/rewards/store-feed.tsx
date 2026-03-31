@@ -5,7 +5,6 @@ import { Globe, Store, Navigation } from 'lucide-react';
 import { useRewardsStore } from '@/store/rewards';
 import { Reward, StoreGroup } from '@/types/reward';
 import RewardItemCard from './item-card';
-import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { ACTIVE_THEME } from '@/constants/theme';
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
@@ -308,25 +307,23 @@ const StoreTab: FC = () => {
   const isEmpty = !storeGroupsLoading && storeGroups.length === 0 && globalRewards.length === 0;
 
   return (
-    <PullToRefresh onRefresh={loadStoreGroups} className="flex-1">
-      <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 6, paddingBottom: 12 }}>
-        {storeGroupsLoading ? (
-          <>
-            <SectionSkeleton />
-            <SectionSkeleton />
-          </>
-        ) : isEmpty ? (
-          <EmptyState />
-        ) : (
-          <>
-            <GlobalSection rewards={globalRewards} onItemClick={handleItemClick} />
-            {storeGroups.map((group, i) => (
-              <StoreSection key={group.storeId} group={group} index={i} onItemClick={handleItemClick} />
-            ))}
-          </>
-        )}
-      </Box>
-    </PullToRefresh>
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 6, paddingBottom: 12 }}>
+      {storeGroupsLoading ? (
+        <>
+          <SectionSkeleton />
+          <SectionSkeleton />
+        </>
+      ) : isEmpty ? (
+        <EmptyState />
+      ) : (
+        <>
+          <GlobalSection rewards={globalRewards} onItemClick={handleItemClick} />
+          {storeGroups.map((group, i) => (
+            <StoreSection key={group.storeId} group={group} index={i} onItemClick={handleItemClick} />
+          ))}
+        </>
+      )}
+    </Box>
   );
 };
 

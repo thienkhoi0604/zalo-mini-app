@@ -2,7 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Autoplay, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Box } from 'zmp-ui';
-import { openWebview } from 'zmp-sdk/apis';
+// import { openWebview } from 'zmp-sdk/apis'; // TODO: enable when openWebview feature is ready
 import { useBannersStore } from '@/store/banners';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -28,9 +28,10 @@ export const Banner: FC = () => {
   if (loading && banners.length === 0) return <BannerSkeleton />;
   if (banners.length === 0) return null;
 
-  const handleTap = (targetUrl: string | null) => {
-    if (!targetUrl) return;
-    openWebview({ url: targetUrl }).catch(() => {});
+  // TODO: enable openWebview when feature is ready
+  const handleTap = (_targetUrl: string | null) => {
+    // if (!_targetUrl) return;
+    // openWebview({ url: _targetUrl }).catch(() => {});
   };
 
   return (
@@ -59,7 +60,7 @@ export const Banner: FC = () => {
                 backgroundImage: `url(${banner.imageUrl})`,
                 aspectRatio: '2 / 1',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-                cursor: banner.targetUrl ? 'pointer' : 'default',
+                cursor: 'default', // TODO: restore 'pointer' when openWebview feature is ready
               }}
             />
           </SwiperSlide>

@@ -97,7 +97,7 @@ const TabSwitcher: FC<TabSwitcherProps> = ({ active, onChange }) => {
             onClick={() => onChange(tab.key)}
             style={{
               display: 'flex', alignItems: 'center', gap: 6,
-              padding: '8px 20px',
+              padding: '5px 16px',
               background: 'transparent', border: 'none',
               borderRadius: 12,
               cursor: 'pointer',
@@ -121,7 +121,7 @@ const RewardsPage: FC = () => {
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>('category');
-  const { loading, loadAllRewards } = useRewardsStore();
+  const { loading, loadAllRewards, loadStoreGroups } = useRewardsStore();
   const { pointWallet, isAuthenticated } = useUserStore();
 
   useEffect(() => {
@@ -138,47 +138,47 @@ const RewardsPage: FC = () => {
   }, [isAuthenticated]);
 
   const handleRefresh = async () => {
-    await loadAllRewards();
+    await Promise.all([loadAllRewards(), loadStoreGroups()]);
   };
 
   return (
     <Page className="flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>
+      <PullToRefresh onRefresh={handleRefresh} className="flex-1">
 
-      {/* ── Header ── */}
-      <PageHeader paddingBottom={12}>
-        {/* Balance */}
-        {isAuthenticated && (
-          <Box className="text-center" style={{ marginBottom: 16 }}>
-            <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 6 }}>
-              Xu khả dụng
-            </p>
-            <Box flex className="justify-center items-center" style={{ gap: 8 }}>
-              <Box
-                style={{
-                  width: 34, height: 34, borderRadius: '50%',
-                  background: 'rgba(255,255,255,0.15)',
-                  border: '1.5px solid rgba(255,255,255,0.22)',
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <span style={{ fontSize: 18 }}>🪙</span>
-              </Box>
-              <p style={{ fontSize: 28, fontWeight: 900, color: '#fff', letterSpacing: -0.5, textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
-                {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+        {/* ── Header ── */}
+        <PageHeader paddingBottom={6}>
+          {/* Balance */}
+          {isAuthenticated && (
+            <Box className="text-center" style={{ marginBottom: 10 }}>
+              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 4 }}>
+                Xu khả dụng
               </p>
+              <Box flex className="justify-center items-center" style={{ gap: 8 }}>
+                <Box
+                  style={{
+                    width: 28, height: 28, borderRadius: '50%',
+                    background: 'rgba(255,255,255,0.15)',
+                    border: '1.5px solid rgba(255,255,255,0.22)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <span style={{ fontSize: 15 }}>🪙</span>
+                </Box>
+                <p style={{ fontSize: 24, fontWeight: 900, color: '#fff', letterSpacing: -0.5, textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
+                  {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+                </p>
+              </Box>
             </Box>
+          )}
+
+          {/* Tab switcher */}
+          <Box flex className="justify-center">
+            <TabSwitcher active={activeTab} onChange={setActiveTab} />
           </Box>
-        )}
+        </PageHeader>
 
-        {/* Tab switcher */}
-        <Box flex className="justify-center">
-          <TabSwitcher active={activeTab} onChange={setActiveTab} />
-        </Box>
-      </PageHeader>
-
-      {/* ── Content ── */}
-      <Box style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
+        {/* ── Content ── */}
         {activeTab === 'category' ? (
           !initialized && loading ? (
             <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 14 }}>
@@ -187,15 +187,15 @@ const RewardsPage: FC = () => {
               <SkeletonRow />
             </Box>
           ) : (
-            <PullToRefresh onRefresh={handleRefresh} className="flex-1 py-3">
+            <div className="py-3">
               <RewardsList />
-            </PullToRefresh>
+            </div>
           )
         ) : (
           <StoreTab />
         )}
-      </Box>
 
+      </PullToRefresh>
     </Page>
   );
 };
