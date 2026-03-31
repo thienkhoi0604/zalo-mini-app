@@ -22,7 +22,7 @@ const QR_SHEET_CONFIG: Record<
 > = {
   checkin: {
     fetchData: () => fetchQRSession(null, 'Checkin').then((d) => d.token),
-    title: 'QR Code của tôi',
+    title: 'Mã QR của tôi',
     hint: '💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc',
   },
   referral: {
@@ -71,11 +71,11 @@ const Personal: FC = () => {
       />
 
       <SectionList
-        title="QR Code"
+        title="Mã QR"
         items={[
           {
             icon: <QrCode size={ICON_SIZE} color={ICON_COLOR} />,
-            label: 'QR Code của tôi',
+            label: 'Mã QR của tôi',
             sub: 'Mã cá nhân để tích điểm',
             onPress: () => setActiveQRSheet('checkin'),
           },

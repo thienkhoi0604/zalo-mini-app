@@ -7,6 +7,8 @@ import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import StationCard from './station-card';
 import SearchFilter from './search-filter';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
+import PageHeader from '@/components/ui/page-header';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -73,8 +75,34 @@ export const StationsPage: FC = () => {
   };
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F6F8F6' }}>
+    <Page className="flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>
       <PullToRefresh onRefresh={loadStations} className="flex-1">
+
+        {/* Themed banner */}
+        <PageHeader paddingBottom={4}>
+          <Box flex className="items-center" style={{ gap: 12 }}>
+            <Box
+              style={{
+                width: 48, height: 48, borderRadius: 14,
+                background: 'rgba(255,255,255,0.16)',
+                border: '1.5px solid rgba(255,255,255,0.26)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                flexShrink: 0,
+                boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
+              }}
+            >
+              <Zap size={22} color="#fff" fill="#fff" strokeWidth={0} />
+            </Box>
+            <Box>
+              <p style={{ fontSize: 19, fontWeight: 900, color: '#fff', lineHeight: '24px', textShadow: '0 1px 6px rgba(0,0,0,0.2)' }}>
+                Trạm sạc EV
+              </p>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.72)', marginTop: 3 }}>
+                Tìm trạm sạc gần bạn
+              </p>
+            </Box>
+          </Box>
+        </PageHeader>
 
         {/* Search & filters */}
         <div ref={filterRef}>

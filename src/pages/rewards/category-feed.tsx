@@ -5,6 +5,8 @@ import { Gift, ArrowUpDown, TrendingUp, TrendingDown, Tag, CheckCircle, Ticket, 
 import { useRewardsStore } from '@/store/rewards';
 import { Reward, getRewardTypeLabel } from '@/types/reward';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
+import PageHeader from '@/components/ui/page-header';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
 
@@ -240,22 +242,10 @@ const CategoryDetailPage: FC = () => {
   };
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F4F5F7' }}>
+    <Page className="flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>
 
       {/* ── Banner ── */}
-      <Box
-        style={{
-          background: 'linear-gradient(135deg, #134E2A 0%, #1e7a42 55%, #288F4E 100%)',
-          padding: '16px 16px 20px',
-          position: 'relative',
-          overflow: 'hidden',
-          flexShrink: 0,
-        }}
-      >
-        <Box style={{ position: 'absolute', top: -28, right: -18, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.06)', pointerEvents: 'none' }} />
-        <Box style={{ position: 'absolute', bottom: -24, left: 40, width: 84, height: 84, borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
-        <Box style={{ position: 'absolute', top: 8, right: 96, width: 50, height: 50, borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
-
+      <PageHeader paddingBottom={8}>
         <Box flex className="items-center" style={{ gap: 14 }}>
           <Box
             style={{
@@ -280,15 +270,15 @@ const CategoryDetailPage: FC = () => {
                   <p style={{ fontSize: 11, color: '#fff', fontWeight: 600 }}>{cards.length} mục</p>
                 </Box>
                 {activeCount > 0 && (
-                  <Box style={{ background: 'rgba(52,210,104,0.22)', border: '1px solid rgba(52,210,104,0.35)', borderRadius: 100, padding: '3px 11px' }}>
-                    <p style={{ fontSize: 11, color: '#A7F3D0', fontWeight: 700 }}>{activeCount} khả dụng</p>
+                  <Box style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 100, padding: '3px 11px' }}>
+                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.9)', fontWeight: 700 }}>{activeCount} khả dụng</p>
                   </Box>
                 )}
               </Box>
             )}
           </Box>
         </Box>
-      </Box>
+      </PageHeader>
 
       {/* ── Sort bar ── */}
       <Box

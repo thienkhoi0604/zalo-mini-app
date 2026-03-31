@@ -15,7 +15,7 @@ const QRCodeSheet: FC<QRCodeSheetProps> = ({
   visible,
   onClose,
   fetchData,
-  title = 'QR Code của tôi',
+  title = 'Mã QR của tôi',
   hint = '💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc',
 }) => {
   const [qrValue, setQrValue] = useState<string | null>(null);

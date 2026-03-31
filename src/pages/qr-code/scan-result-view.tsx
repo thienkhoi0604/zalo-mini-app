@@ -22,7 +22,7 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
     return (
       <Box className="flex flex-col items-center" style={{ gap: 12 }}>
         <span style={{ fontSize: 56 }}>🎉</span>
-        <p style={{ fontSize: 18, fontWeight: 700, color: '#288F4E' }}>Checkin thành công!</p>
+        <p style={{ fontSize: 18, fontWeight: 700, color: '#288F4E' }}>Check-in thành công!</p>
         {result.points != null && result.points > 0 && (
           <Box
             className="flex items-center justify-center rounded-2xl px-5 py-3"

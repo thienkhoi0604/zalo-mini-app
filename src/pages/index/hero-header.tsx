@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Zap, Gift, Ticket, QrCode } from 'lucide-react';
 import { useUserStore } from '@/store/user';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 // ─── Quick action ──────────────────────────────────────────────────────────────
 
@@ -38,7 +39,7 @@ const ACTIONS: QuickAction[] = [
   },
   {
     icon: <QrCode size={20} color="#fff" />,
-    label: 'QR Code',
+    label: 'Mã QR',
     route: '/qr-code',
     bg: '#F5F3FF',
     iconBg: 'linear-gradient(135deg, #A78BFA, #7C3AED)',
@@ -53,82 +54,81 @@ export const HeroHeader: FC = () => {
 
   const firstName = user?.fullName?.split(' ').pop() ?? 'bạn';
 
+  const t = ACTIVE_THEME;
+  const gradient = `linear-gradient(135deg, ${t.headerFrom} 0%, ${t.headerMid} 55%, ${t.headerTo} 100%)`;
+  const blob = `rgba(255,255,255,${t.blobOpacity})`;
+  const blobFaint = `rgba(255,255,255,${t.blobOpacity * 0.65})`;
+
   return (
     <Box>
-      {/* Green gradient top bar */}
+      {/* Themed gradient header */}
       <Box
         style={{
-          background: 'linear-gradient(135deg, #2FA85F 0%, #1A6B38 100%)',
-          padding: '20px 16px 40px',
+          background: gradient,
           position: 'relative',
           overflow: 'hidden',
         }}
       >
-        {/* Decorative circles */}
-        <Box
-          style={{
-            position: 'absolute',
-            top: -30,
-            right: -30,
-            width: 120,
-            height: 120,
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.08)',
-          }}
-        />
-        <Box
-          style={{
-            position: 'absolute',
-            bottom: -20,
-            right: 60,
-            width: 80,
-            height: 80,
-            borderRadius: '50%',
-            background: 'rgba(255,255,255,0.06)',
-          }}
-        />
+        {/* Decorative blobs */}
+        <Box style={{ position: 'absolute', top: -36, right: -28, width: 150, height: 150, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
+        <Box style={{ position: 'absolute', top: 18, right: 90, width: 60, height: 60, borderRadius: '50%', background: blobFaint, pointerEvents: 'none' }} />
+        <Box style={{ position: 'absolute', bottom: 10, left: -18, width: 100, height: 100, borderRadius: '50%', background: blobFaint, pointerEvents: 'none' }} />
 
-        {/* Greeting */}
-        <Box style={{ position: 'relative' }}>
-          <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', marginBottom: 4 }}>
-            {isAuthenticated ? `Xin chào, ${firstName} 👋` : 'Chào mừng đến với'}
-          </p>
-          <p style={{ fontSize: 22, fontWeight: 800, color: '#fff', lineHeight: '28px' }}>
-            EcoGreen 🌿
-          </p>
+        {/* Optional texture */}
+        {t.headerTexture && (
+          <Box style={{ position: 'absolute', inset: 0, backgroundImage: `url(${t.headerTexture})`, backgroundSize: 'cover', opacity: t.headerTextureOpacity ?? 0.08, pointerEvents: 'none' }} />
+        )}
+
+        {/* Content — sits above the wave */}
+        <Box style={{ position: 'relative', zIndex: 1, padding: '20px 16px 56px' }}>
+          {/* Greeting */}
+          <Box>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', marginBottom: 4 }}>
+              {isAuthenticated ? `Xin chào, ${firstName} 👋` : 'Chào mừng đến với'}
+            </p>
+            <p style={{ fontSize: 22, fontWeight: 800, color: '#fff', lineHeight: '28px' }}>
+              EcoGreen 🌿
+            </p>
+          </Box>
+
+          {/* Points pill */}
+          {isAuthenticated && (
+            <Box
+              flex
+              className="items-center"
+              style={{
+                marginTop: 14,
+                background: 'rgba(255,255,255,0.18)',
+                border: '1px solid rgba(255,255,255,0.3)',
+                borderRadius: 100,
+                padding: '7px 14px',
+                gap: 6,
+                display: 'inline-flex',
+                width: 'fit-content',
+              }}
+            >
+              <span style={{ fontSize: 16 }}>🪙</span>
+              <p style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>
+                {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+              </p>
+              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>xu</p>
+            </Box>
+          )}
         </Box>
 
-        {/* Points pill */}
-        {isAuthenticated && (
-          <Box
-            flex
-            className="items-center"
-            style={{
-              marginTop: 14,
-              background: 'rgba(255,255,255,0.18)',
-              border: '1px solid rgba(255,255,255,0.3)',
-              borderRadius: 100,
-              padding: '7px 14px',
-              gap: 6,
-              alignSelf: 'flex-start',
-              display: 'inline-flex',
-              width: 'fit-content',
-            }}
-          >
-            <span style={{ fontSize: 16 }}>🪙</span>
-            <p style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>
-              {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
-            </p>
-            <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>xu</p>
-          </Box>
-        )}
+        {/* Wave divider — blends into page background */}
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
+          <svg viewBox="0 0 390 40" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 40 }}>
+            <path d={t.wavePath} fill={t.pageBg} />
+          </svg>
+        </div>
       </Box>
 
-      {/* Quick actions — overlapping card */}
+      {/* Quick actions — overlapping card, sits over the wave */}
       <Box
         className="bg-white rounded-2xl mx-4"
         style={{
-          marginTop: -24,
+          marginTop: -48,
           boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
           padding: '16px 8px',
           display: 'grid',

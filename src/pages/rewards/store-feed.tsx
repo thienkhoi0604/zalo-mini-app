@@ -6,6 +6,7 @@ import { useRewardsStore } from '@/store/rewards';
 import { Reward, StoreGroup } from '@/types/reward';
 import RewardItemCard from './item-card';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
 
@@ -108,21 +109,25 @@ const ItemRow: FC<{ items: Reward[]; onItemClick: (r: Reward) => void }> = ({ it
 const GlobalSection: FC<{ rewards: Reward[]; onItemClick: (r: Reward) => void }> = ({ rewards, onItemClick }) => {
   if (rewards.length === 0) return null;
 
+  const t = ACTIVE_THEME;
+  const gradient = `linear-gradient(135deg, ${t.headerFrom} 0%, ${t.headerMid} 55%, ${t.headerTo} 100%)`;
+  const blob = `rgba(255,255,255,${t.blobOpacity})`;
+
   return (
     <Box
       style={{
         margin: '0 12px',
         borderRadius: 20,
         overflow: 'hidden',
-        background: 'linear-gradient(135deg, #0f4c2a 0%, #1a7340 55%, #288F4E 100%)',
-        boxShadow: '0 6px 24px rgba(40,143,78,0.32)',
+        background: gradient,
+        boxShadow: `0 6px 24px rgba(0,0,0,0.22)`,
         position: 'relative',
       }}
     >
       {/* Decorative blobs */}
-      <Box style={{ position: 'absolute', top: -24, right: -24, width: 110, height: 110, borderRadius: '50%', background: 'rgba(255,255,255,0.07)', pointerEvents: 'none' }} />
-      <Box style={{ position: 'absolute', bottom: -28, left: 16, width: 80, height: 80, borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
-      <Box style={{ position: 'absolute', top: 14, right: 80, width: 44, height: 44, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
+      <Box style={{ position: 'absolute', top: -24, right: -24, width: 110, height: 110, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
+      <Box style={{ position: 'absolute', bottom: -28, left: 16, width: 80, height: 80, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
+      <Box style={{ position: 'absolute', top: 14, right: 80, width: 44, height: 44, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
 
       {/* Header */}
       <Box

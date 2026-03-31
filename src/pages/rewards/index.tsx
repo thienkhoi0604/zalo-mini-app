@@ -6,6 +6,8 @@ import { useUserStore } from '@/store/user';
 import RewardsList from './item-cards-list';
 import StoreTab from './store-feed';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
+import PageHeader from '@/components/ui/page-header';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -140,23 +142,10 @@ const RewardsPage: FC = () => {
   };
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F4F5F7' }}>
+    <Page className="flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>
 
       {/* ── Header ── */}
-      <Box
-        style={{
-          background: 'linear-gradient(135deg, #134E2A 0%, #1e7a42 50%, #2FA85F 100%)',
-          padding: '16px 16px 20px',
-          position: 'relative',
-          overflow: 'hidden',
-          flexShrink: 0,
-        }}
-      >
-        {/* Decorative blobs */}
-        <Box style={{ position: 'absolute', top: -30, right: -20, width: 120, height: 120, borderRadius: '50%', background: 'rgba(255,255,255,0.07)', pointerEvents: 'none' }} />
-        <Box style={{ position: 'absolute', bottom: -26, left: -14, width: 90, height: 90, borderRadius: '50%', background: 'rgba(255,255,255,0.05)', pointerEvents: 'none' }} />
-        <Box style={{ position: 'absolute', top: 10, left: '45%', width: 54, height: 54, borderRadius: '50%', background: 'rgba(255,255,255,0.04)', pointerEvents: 'none' }} />
-
+      <PageHeader paddingBottom={12}>
         {/* Balance */}
         {isAuthenticated && (
           <Box className="text-center" style={{ marginBottom: 16 }}>
@@ -186,7 +175,7 @@ const RewardsPage: FC = () => {
         <Box flex className="justify-center">
           <TabSwitcher active={activeTab} onChange={setActiveTab} />
         </Box>
-      </Box>
+      </PageHeader>
 
       {/* ── Content ── */}
       <Box style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>

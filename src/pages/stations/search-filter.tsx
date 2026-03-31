@@ -1,6 +1,6 @@
 import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Box } from 'zmp-ui';
-import { Search, X, ChevronDown, MapPin, Building2, SlidersHorizontal, CheckCircle2 } from 'lucide-react';
+import { Search, X, ChevronDown, MapPin, Building2, CheckCircle2 } from 'lucide-react';
 import { useStationsStore } from '@/store/stations';
 import { Sheet } from '@/components/ui/sheet';
 
@@ -362,19 +362,6 @@ const SearchFilter: FC = () => {
       {/* Header row */}
       <Box flex className="items-center justify-between">
         <Box flex className="items-center" style={{ gap: 7 }}>
-          <Box
-            style={{
-              width: 28,
-              height: 28,
-              borderRadius: 8,
-              background: 'linear-gradient(135deg, #43B96B, #288F4E)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <SlidersHorizontal size={13} color="#fff" />
-          </Box>
 
           {activeFilterCount > 0 && (
             <Box

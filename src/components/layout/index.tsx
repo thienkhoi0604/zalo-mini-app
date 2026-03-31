@@ -47,7 +47,7 @@ const getRouteTitle = (pathname: string): string => {
   if (pathname === '/') return 'Trang chủ';
   if (pathname === '/rewards') return 'Phần thưởng';
   if (pathname === '/stations') return 'Trạm sạc';
-  if (pathname === '/qr-code') return 'QR Code';
+  if (pathname === '/qr-code') return 'Mã QR';
   if (pathname === '/register') return 'Đăng nhập';
   if (pathname === '/my-vouchers') return 'Voucher của tôi';
   if (pathname === '/rank-benefits') return 'Đặc quyền';

@@ -8,6 +8,7 @@ import PullToRefresh from "@/components/ui/pull-to-refresh";
 import { useUserStore } from "@/store/user";
 import { useRewardsStore } from "@/store/rewards";
 import { useBannersStore } from "@/store/banners";
+import { ACTIVE_THEME } from "@/constants/theme";
 
 const HomePage: React.FunctionComponent = () => {
   const [refreshKey, setRefreshKey] = useState(0);
@@ -24,7 +25,7 @@ const HomePage: React.FunctionComponent = () => {
 
 
   return (
-    <Page className="relative flex-1 flex flex-col">
+    <Page className="relative flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>
       <PullToRefresh onRefresh={handleRefresh} className="flex-1 pb-4">
         <div key={refreshKey}>
           <HeroHeader />

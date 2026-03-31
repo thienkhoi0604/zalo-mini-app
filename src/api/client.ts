@@ -92,7 +92,7 @@ axiosClient.interceptors.response.use(
         clearTokens();
         useUserStore.getState().setUnauthenticated();
         processQueue(refreshError, null);
-        showNotification('Session expired. Please login again.', 'error');
+        showNotification('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
@@ -111,25 +111,25 @@ function handleHttpError(error: AxiosError): void {
     const data = error.response.data as { message?: string } | undefined;
 
     const messages: Partial<Record<number, string>> = {
-      400: data?.message ?? 'Bad request. Please check your input.',
-      403: "You don't have permission to perform this action.",
-      404: 'Resource not found.',
-      500: 'Server error. Please try again later.',
+      400: data?.message ?? 'Yêu cầu không hợp lệ. Vui lòng kiểm tra lại.',
+      403: 'Bạn không có quyền thực hiện thao tác này.',
+      404: 'Không tìm thấy dữ liệu.',
+      500: 'Lỗi máy chủ. Vui lòng thử lại sau.',
     };
 
     const message =
-      messages[status] ?? data?.message ?? `Error ${status}. Please try again.`;
+      messages[status] ?? data?.message ?? `Lỗi ${status}. Vui lòng thử lại.`;
 
     showNotification(message, 'error');
     return;
   }
 
   if (error.code === 'ECONNABORTED') {
-    showNotification('Request timeout. Please try again.', 'error');
+    showNotification('Yêu cầu quá thời gian. Vui lòng thử lại.', 'error');
   } else if (error.message === 'Network Error') {
-    showNotification('Network error. Please check your connection.', 'error');
+    showNotification('Lỗi kết nối mạng. Vui lòng kiểm tra lại.', 'error');
   } else {
-    showNotification('An error occurred. Please try again.', 'error');
+    showNotification('Đã xảy ra lỗi. Vui lòng thử lại.', 'error');
   }
 }
 

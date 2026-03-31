@@ -8,6 +8,7 @@ import { getStationById } from '@/api/stations';
 import StatCard from './stat-card';
 import InfoRow from './info-row';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
+import { ACTIVE_THEME } from '@/constants/theme';
 
 const FALLBACK_IMG =
   'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80&auto=format';
@@ -15,7 +16,7 @@ const FALLBACK_IMG =
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 const DetailSkeleton: FC = () => (
-  <Page className="flex-1 flex flex-col" style={{ background: '#F6F8F6' }}>
+  <Page className="flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>
     {/* Hero */}
     <Box className="animate-pulse" style={{ height: 260, background: '#D1D5DB' }} />
 
@@ -69,7 +70,7 @@ const StationDetailPage: FC = () => {
 
   if (!station) {
     return (
-      <Page className="flex-1 flex flex-col" style={{ background: '#F6F8F6' }}>
+      <Page className="flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>
         <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 14 }}>
           <Box
             className="flex items-center justify-center rounded-full"
@@ -131,7 +132,7 @@ const StationDetailPage: FC = () => {
   ].filter(Boolean) as Array<{ icon: React.ReactNode; label: string; value: string; bg: string; iconBg: string; accent: string }>;
 
   return (
-    <Page className="flex-1 flex flex-col" style={{ background: '#F6F8F6' }}>
+    <Page className="flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>
       <PullToRefresh onRefresh={loadStation} className="flex-1 pb-8">
 
         {/* ── Hero ── */}
@@ -142,8 +143,8 @@ const StationDetailPage: FC = () => {
             style={{ width: '100%', height: '100%', objectFit: 'cover' }}
             onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMG; }}
           />
-          {/* Two-layer gradient: subtle top vignette + strong bottom */}
-          <Box style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.05) 40%, rgba(0,0,0,0.62) 100%)' }} />
+          {/* Top vignette + strong bottom gradient that fades into pageBg */}
+          <Box style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.04) 38%, rgba(0,0,0,0.58) 80%, rgba(0,0,0,0.72) 100%)' }} />
 
           {/* Status pill — top left */}
           <Box
