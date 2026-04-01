@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { REDIRECT_DELAY_MS } from '@/constants';
 import { runScan, ScanResult } from './scan';
 import ScanResultView from './scan-result-view';
 
@@ -22,12 +21,6 @@ const QRCodePage: FC = () => {
       setResult(res);
     });
   }, []);
-
-  useEffect(() => {
-    if (!result) return;
-    const timer = setTimeout(() => navigate('/profile', { replace: true }), REDIRECT_DELAY_MS);
-    return () => clearTimeout(timer);
-  }, [result]);
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">

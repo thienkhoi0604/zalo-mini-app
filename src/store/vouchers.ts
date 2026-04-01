@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Voucher, UserVoucher, FEED_ITEM_TYPES, StoreGroup, GroupedFeedResult } from '@/types/voucher';
 import { getFeedItems, getFeedGrouped } from '@/api/feed';
-import { getVoucherById, getUserVouchers, redeemVoucher } from '@/api/vouchers';
+import { getVoucherById, getUserVouchers, getUserVouchersCount, redeemVoucher } from '@/api/vouchers';
 import { useUserStore } from '@/store/user';
 
 const USER_VOUCHERS_PAGE_SIZE = 5;
@@ -34,6 +34,7 @@ type VouchersStore = {
   loadVoucherById: (id: string) => Promise<void>;
   loadUserVouchers: () => Promise<void>;
   loadMoreUserVouchers: () => Promise<void>;
+  loadUserVouchersCount: () => Promise<void>;
   loadStoreGroups: () => Promise<void>;
   selectVoucher: (voucher: Voucher | null) => void;
   redeemVoucher: (voucherId: string) => Promise<void>;
@@ -122,19 +123,25 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
     try {
       const nextPage = userVouchersPage + 1;
       const res = await getUserVouchers({ pageNumber: nextPage, pageSize: USER_VOUCHERS_PAGE_SIZE });
-      set((state) => {
-        const merged = [...state.userVouchers, ...(res.data.items ?? [])];
-        return {
-          userVouchers: merged,
-          userVouchersPage: nextPage,
-          userVouchersHasMore: res.data.hasNext ?? false,
-          userVouchersUnusedCount: merged.filter((v) => v.usedAt === null).length,
-        };
-      });
+      set((state) => ({
+        userVouchers: [...state.userVouchers, ...(res.data.items ?? [])],
+        userVouchersPage: nextPage,
+        userVouchersHasMore: res.data.hasNext ?? false,
+        userVouchersUnusedCount: res.unusedCount,
+      }));
     } catch (error) {
       console.error('Failed to load more user vouchers:', error);
     } finally {
       set({ userVouchersLoading: false });
+    }
+  },
+
+  loadUserVouchersCount: async () => {
+    try {
+      const count = await getUserVouchersCount();
+      set({ userVouchersUnusedCount: count });
+    } catch {
+      // silently ignore
     }
   },
 

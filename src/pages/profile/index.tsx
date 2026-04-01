@@ -37,11 +37,11 @@ const QR_SHEET_CONFIG: Record<
 const Personal: FC = () => {
   const navigate = useNavigate();
   const { user, pointWallet } = useUserStore();
-  const { loadUserVouchers } = useVouchersStore();
+  const { loadUserVouchersCount } = useVouchersStore();
   const [activeQRSheet, setActiveQRSheet] = useState<QRSheetType>(null);
 
   useEffect(() => {
-    loadUserVouchers();
+    loadUserVouchersCount();
   }, []);
 
   const isVehicleApproved = pointWallet?.vehicleStatus?.toLowerCase() === 'approved';
@@ -123,12 +123,12 @@ const Personal: FC = () => {
 
 const ProfilePage: FC = () => {
   const { loadPointWallet } = useUserStore();
-  const { loadUserVouchers } = useVouchersStore();
+  const { loadUserVouchersCount } = useVouchersStore();
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
       <PullToRefresh
-        onRefresh={async () => { await Promise.all([loadPointWallet(), loadUserVouchers()]); }}
+        onRefresh={async () => { await Promise.all([loadPointWallet(), loadUserVouchersCount()]); }}
         className="flex-1"
       >
         <Personal />

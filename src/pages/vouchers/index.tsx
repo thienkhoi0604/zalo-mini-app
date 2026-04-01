@@ -121,7 +121,7 @@ const VouchersPage: FC = () => {
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>('category');
-  const { loading, loadAllVouchers, loadStoreGroups } = useVouchersStore();
+  const { loading, loadAllVouchers, loadStoreGroups, userVouchersUnusedCount, loadUserVouchersCount } = useVouchersStore();
   const { pointWallet, isAuthenticated } = useUserStore();
 
   useEffect(() => {
@@ -137,8 +137,14 @@ const VouchersPage: FC = () => {
     init();
   }, [isAuthenticated]);
 
+  useEffect(() => {
+    if (isAuthenticated) loadUserVouchersCount();
+  }, [isAuthenticated]);
+
   const handleRefresh = async () => {
-    await Promise.all([loadAllVouchers(), loadStoreGroups()]);
+    const tasks: Promise<void>[] = [loadAllVouchers(), loadStoreGroups()];
+    if (isAuthenticated) tasks.push(loadUserVouchersCount());
+    await Promise.all(tasks);
   };
 
   return (
@@ -147,27 +153,52 @@ const VouchersPage: FC = () => {
 
         {/* ── Header ── */}
         <PageHeader paddingBottom={6}>
-          {/* Balance */}
+          {/* Stats bar */}
           {isAuthenticated && (
-            <Box className="text-center" style={{ marginBottom: 10 }}>
-              <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 4 }}>
-                GreenCoin khả dụng
-              </p>
-              <Box flex className="justify-center items-center" style={{ gap: 8 }}>
-                <Box
-                  style={{
-                    width: 28, height: 28, borderRadius: '50%',
-                    background: 'rgba(255,255,255,0.15)',
-                    border: '1.5px solid rgba(255,255,255,0.22)',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    flexShrink: 0,
-                  }}
-                >
-                  <span style={{ fontSize: 15 }}>🪙</span>
-                </Box>
-                <p style={{ fontSize: 24, fontWeight: 900, color: '#fff', letterSpacing: -0.5, textShadow: '0 2px 10px rgba(0,0,0,0.2)' }}>
-                  {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+            <Box flex className="justify-center" style={{ gap: 12, marginBottom: 12 }}>
+              {/* Points balance */}
+              <Box
+                style={{
+                  flex: 1, maxWidth: 160,
+                  background: 'rgba(255,255,255,0.14)',
+                  border: '1px solid rgba(255,255,255,0.22)',
+                  borderRadius: 16, padding: '10px 14px',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                }}
+              >
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontWeight: 600, letterSpacing: 0.4, textTransform: 'uppercase' }}>
+                  Points
                 </p>
+                <Box flex className="items-center" style={{ gap: 5 }}>
+                  <span style={{ fontSize: 14 }}>⭐</span>
+                  <p style={{ fontSize: 20, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>
+                    {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+                  </p>
+                </Box>
+              </Box>
+
+              {/* Divider */}
+              <Box style={{ width: 1, background: 'rgba(255,255,255,0.2)', borderRadius: 1, alignSelf: 'stretch' }} />
+
+              {/* Unused vouchers */}
+              <Box
+                style={{
+                  flex: 1, maxWidth: 160,
+                  background: 'rgba(255,255,255,0.14)',
+                  border: '1px solid rgba(255,255,255,0.22)',
+                  borderRadius: 16, padding: '10px 14px',
+                  display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4,
+                }}
+              >
+                <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.65)', fontWeight: 600, letterSpacing: 0.4, textTransform: 'uppercase' }}>
+                  Voucher
+                </p>
+                <Box flex className="items-center" style={{ gap: 5 }}>
+                  <span style={{ fontSize: 14 }}>🎫</span>
+                  <p style={{ fontSize: 20, fontWeight: 900, color: '#fff', letterSpacing: -0.5 }}>
+                    {userVouchersUnusedCount}
+                  </p>
+                </Box>
               </Box>
             </Box>
           )}

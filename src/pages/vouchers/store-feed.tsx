@@ -7,8 +7,6 @@ import { Voucher, StoreGroup } from '@/types/voucher';
 import VoucherItemCard from './item-card';
 import { ACTIVE_THEME } from '@/constants/theme';
 
-const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
-
 // ─── Skeletons ─────────────────────────────────────────────────────────────────
 
 const CardSkeleton: FC = () => (
@@ -40,12 +38,7 @@ const SectionSkeleton: FC = () => (
       <Box style={{ width: 44, height: 44, borderRadius: 13, background: '#E9EBED' }} />
       <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 7 }}>
         <Box style={{ height: 13, width: '55%', background: '#E9EBED', borderRadius: 5 }} />
-        <Box style={{ height: 10, width: '35%', background: '#E9EBED', borderRadius: 5 }} />
-      </Box>
-      <Box style={{ display: 'flex', gap: 5 }}>
-        {[1, 2, 3].map((i) => (
-          <Box key={i} style={{ width: 32, height: 32, borderRadius: 8, background: '#E9EBED' }} />
-        ))}
+        <Box style={{ height: 10, width: '75%', background: '#E9EBED', borderRadius: 5 }} />
       </Box>
     </Box>
     <Box flex style={{ gap: 10, padding: '4px 14px 16px' }}>
@@ -53,34 +46,6 @@ const SectionSkeleton: FC = () => (
     </Box>
   </Box>
 );
-
-// ─── Item thumbnails ───────────────────────────────────────────────────────────
-
-const ItemThumbnails: FC<{ items: Voucher[] }> = ({ items }) => {
-  const preview = items.slice(0, 3);
-  return (
-    <Box flex style={{ gap: 4 }}>
-      {preview.map((item) => (
-        <Box
-          key={item.id}
-          style={{
-            width: 34, height: 34, borderRadius: 9,
-            overflow: 'hidden', flexShrink: 0,
-            border: '2px solid #fff',
-            boxShadow: '0 1px 4px rgba(0,0,0,0.12)',
-          }}
-        >
-          <img
-            src={item.thumbnailImageUrl}
-            alt={item.name}
-            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-            onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }}
-          />
-        </Box>
-      ))}
-    </Box>
-  );
-};
 
 // ─── Item row ──────────────────────────────────────────────────────────────────
 
@@ -234,34 +199,30 @@ const StoreSection: FC<{ group: StoreGroup; index: number; onItemClick: (r: Vouc
           >
             {group.storeName}
           </p>
-          <Box flex className="items-center" style={{ gap: 5, marginTop: 3 }}>
-            <Box
-              style={{
-                display: 'inline-flex', alignItems: 'center', gap: 3,
-                background: '#fff', border: `1px solid ${accent.border}`,
-                borderRadius: 20, padding: '2px 8px',
-              }}
-            >
-              <Box style={{ width: 5, height: 5, borderRadius: '50%', background: accent.dot }} />
-              <p style={{ fontSize: 10, color: '#6B7280', fontWeight: 600 }}>{group.items.length} mục</p>
-            </Box>
-            {distanceLabel && (
-              <Box
-                style={{
+          {(group.address || distanceLabel) && (
+            <Box flex className="items-center" style={{ gap: 5, marginTop: 3 }}>
+              {group.address && (
+                <p style={{
+                  fontSize: 11, color: '#6B7280',
+                  overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+                  flex: 1, minWidth: 0,
+                }}>
+                  {group.address}
+                </p>
+              )}
+              {distanceLabel && (
+                <Box style={{
                   display: 'inline-flex', alignItems: 'center', gap: 3,
                   background: '#fff', border: `1px solid ${accent.border}`,
-                  borderRadius: 20, padding: '2px 8px',
-                }}
-              >
-                <Navigation size={9} color={accent.icon} strokeWidth={2.5} />
-                <p style={{ fontSize: 10, color: '#6B7280', fontWeight: 600 }}>{distanceLabel}</p>
-              </Box>
-            )}
-          </Box>
+                  borderRadius: 20, padding: '2px 8px', flexShrink: 0,
+                }}>
+                  <Navigation size={9} color={accent.icon} strokeWidth={2.5} />
+                  <p style={{ fontSize: 10, color: '#6B7280', fontWeight: 600 }}>{distanceLabel}</p>
+                </Box>
+              )}
+            </Box>
+          )}
         </Box>
-
-        {/* Item thumbnails */}
-        <ItemThumbnails items={group.items} />
       </Box>
 
       {/* Items */}

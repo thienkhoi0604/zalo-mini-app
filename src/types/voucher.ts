@@ -57,6 +57,7 @@ export interface GetFeedParams {
 export interface StoreGroup {
   storeId: string;
   storeName: string;
+  address: string | null;
   distanceKm: number | null;
   latitude: number | null;
   longitude: number | null;

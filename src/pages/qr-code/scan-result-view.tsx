@@ -11,9 +11,6 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
         <p style={{ fontSize: 14, color: '#6B7280', textAlign: 'center', lineHeight: '20px', maxWidth: 260 }}>
           Mã giới thiệu đã được ghi nhận.
         </p>
-        <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
-          Đang chuyển về trang cá nhân...
-        </p>
       </Box>
     );
   }
@@ -34,9 +31,6 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
             </p>
           </Box>
         )}
-        <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
-          Đang chuyển về trang cá nhân...
-        </p>
       </Box>
     );
   }
@@ -48,9 +42,6 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
         <p style={{ fontSize: 18, fontWeight: 700, color: '#EF4444' }}>Thất bại</p>
         <p style={{ fontSize: 14, color: '#6B7280', textAlign: 'center', lineHeight: '20px', maxWidth: 260 }}>
           {result.message}
-        </p>
-        <p style={{ fontSize: 13, color: '#9CA3AF', marginTop: 4 }}>
-          Đang chuyển về trang cá nhân...
         </p>
       </Box>
     );

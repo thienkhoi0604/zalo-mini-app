@@ -46,6 +46,7 @@ export async function getFeedItems(params: GetFeedParams = {}): Promise<Voucher[
 interface RawStoreGroup {
   storeId: string;
   storeName: string;
+  address: string | null;
   distanceKm: number | null;
   latitude: number | null;
   longitude: number | null;
@@ -64,6 +65,7 @@ export async function getFeedGrouped(): Promise<GroupedFeedResult> {
   const stores: StoreGroup[] = (data.data.stores ?? []).map((s) => ({
     storeId: s.storeId,
     storeName: s.storeName,
+    address: s.address ?? null,
     distanceKm: s.distanceKm,
     latitude: s.latitude,
     longitude: s.longitude,

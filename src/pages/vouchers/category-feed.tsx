@@ -183,7 +183,6 @@ const VoucherCard: FC<{ card: Voucher; onClick: (card: Voucher) => void }> = ({ 
             <p style={{ fontSize: 13, fontWeight: 800, color: '#B45309' }}>
               {card.pointsRequired.toLocaleString('vi-VN')}
             </p>
-            <p style={{ fontSize: 10, color: '#D97706', fontWeight: 600 }}>{card.costCurrency}</p>
           </Box>
         )}
       </Box>

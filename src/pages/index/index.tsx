@@ -13,12 +13,16 @@ import { ACTIVE_THEME } from "@/constants/theme";
 const HomePage: React.FunctionComponent = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const { loadPointWallet, isAuthenticated } = useUserStore();
-  const { loadAllVouchers } = useVouchersStore();
+  const { loadAllVouchers, loadUserVouchersCount } = useVouchersStore();
   const { loadBanners } = useBannersStore();
+
+  React.useEffect(() => {
+    if (isAuthenticated) loadUserVouchersCount();
+  }, [isAuthenticated]);
 
   const handleRefresh = async () => {
     const tasks: Promise<void>[] = [loadAllVouchers(), loadBanners()];
-    if (isAuthenticated) tasks.push(loadPointWallet());
+    if (isAuthenticated) tasks.push(loadPointWallet(), loadUserVouchersCount());
     await Promise.all(tasks);
     setRefreshKey((k) => k + 1);
   };

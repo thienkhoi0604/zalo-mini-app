@@ -59,7 +59,7 @@ export async function getUserVouchers(
     const items: UserVoucher[] = data.data.items ?? [];
     return {
       success: true,
-      unusedCount: items.filter((v) => v.usedAt === null).length,
+      unusedCount: data.data.totalCount ?? 0,
       data: {
         items,
         pageNumber: data.data.pageNumber ?? pageNumber,
@@ -74,6 +74,17 @@ export async function getUserVouchers(
       unusedCount: 0,
       data: { items: [], pageNumber, pageSize, totalCount: 0, hasNext: false },
     };
+  }
+}
+
+export async function getUserVouchersCount(): Promise<number> {
+  try {
+    const { data } = await axiosClient.get<{
+      data: { totalCount: number };
+    }>('/Rewards/my-vouchers', { params: { pageNumber: 1, pageSize: 1 } });
+    return data.data.totalCount ?? 0;
+  } catch {
+    return 0;
   }
 }
 

@@ -17,7 +17,4 @@ export const FALLBACK_IMAGES = {
   reward: 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png',
 } as const;
 
-// ─── Timing ───────────────────────────────────────────────────────────────────
-
-export const REDIRECT_DELAY_MS = 2500;
 export const KEYBOARD_HEIGHT_THRESHOLD = 160;

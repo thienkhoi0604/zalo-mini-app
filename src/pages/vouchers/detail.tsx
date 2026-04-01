@@ -184,7 +184,7 @@ const VoucherDetailPage: FC = () => {
                 <Box style={{ height: 32, width: 100, background: '#E9EBED', borderRadius: 100 }} />
               </Box>
             </Box>
-            <Box style={{ margin: '12px 16px', background: '#fff', borderRadius: 18, padding: 20, height: 80, background: '#E9EBED' }} />
+            <Box style={{ margin: '12px 16px', borderRadius: 18, padding: 20, height: 80, background: '#E9EBED' }} />
           </Box>
         </Page>
       );
@@ -297,7 +297,6 @@ const VoucherDetailPage: FC = () => {
                 <p style={{ fontSize: 16, fontWeight: 800, color: '#D97706' }}>
                   {card.pointsRequired.toLocaleString('vi-VN')}
                 </p>
-                <p style={{ fontSize: 11, fontWeight: 600, color: '#D97706' }}>{card.costCurrency}</p>
               </Box>
             </Box>
 
