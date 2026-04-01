@@ -54,8 +54,6 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
   const { accent, accentLight, accentMid, icon } = config;
   const visibleCards = cards.slice(0, 8);
   const extra = cards.length - 8;
-  const activeCount = cards.filter((c) => c.status === 'active').length;
-
   return (
     <Box
       style={{
@@ -102,14 +100,9 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
               >
                 <Box style={{ width: 5, height: 5, borderRadius: '50%', background: accent }} />
                 <p style={{ fontSize: 10, color: accent, fontWeight: 700 }}>
-                  {activeCount} khả dụng
+                  {cards.length} mục
                 </p>
               </Box>
-              {cards.length > activeCount && (
-                <p style={{ fontSize: 10, color: '#C4C4C4', fontWeight: 500 }}>
-                  / {cards.length} tổng
-                </p>
-              )}
             </Box>
           </Box>
         </Box>

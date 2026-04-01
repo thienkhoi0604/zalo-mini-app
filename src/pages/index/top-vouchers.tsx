@@ -167,32 +167,13 @@ export const TopVouchers: FC = () => {
         {isLoading ? (
           [1, 2, 3].map((i) => <CardSkeleton key={i} />)
         ) : topVouchers.length === 0 ? null : (
-          <>
-            {topVouchers.map((reward) => (
-              <VoucherCard
-                key={reward.id}
-                reward={reward}
-                onClick={() => navigate(`/rewards/${reward.id}`)}
-              />
-            ))}
-
-            {/* See all card */}
-            <Box
-              className="flex-shrink-0 bg-white rounded-2xl flex flex-col items-center justify-center cursor-pointer"
-              style={{ width: 100, minHeight: 155, boxShadow: '0 2px 8px rgba(0,0,0,0.06)', gap: 8 }}
-              onClick={() => navigate('/rewards')}
-            >
-              <Box
-                className="flex items-center justify-center rounded-full"
-                style={{ width: 40, height: 40, background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)' }}
-              >
-                <ChevronRight size={20} color="#fff" strokeWidth={2.5} />
-              </Box>
-              <p style={{ fontSize: 12, color: '#A0784A', fontWeight: 600, textAlign: 'center', lineHeight: '16px' }}>
-                Xem thêm
-              </p>
-            </Box>
-          </>
+          topVouchers.map((reward) => (
+            <VoucherCard
+              key={reward.id}
+              reward={reward}
+              onClick={() => navigate(`/rewards/${reward.id}`)}
+            />
+          ))
         )}
       </Box>
     </Box>

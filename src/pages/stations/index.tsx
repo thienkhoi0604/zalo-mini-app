@@ -102,7 +102,7 @@ export const StationsPage: FC = () => {
             </Box>
             <Box>
               <p style={{ fontSize: 19, fontWeight: 900, color: '#fff', lineHeight: '24px', textShadow: '0 1px 6px rgba(0,0,0,0.2)' }}>
-                Trạm sạc EV
+                Trạm sạc
               </p>
               <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.72)', marginTop: 3 }}>
                 Tìm trạm sạc gần bạn

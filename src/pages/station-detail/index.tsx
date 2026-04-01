@@ -197,41 +197,8 @@ const StationDetailPage: FC = () => {
             </Box>
           )}
 
-          {/* Bottom text block */}
+          {/* Bottom text block — station type only */}
           <Box style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 16px 18px' }}>
-            {/* Station code chip */}
-            <Box
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 4,
-                background: 'rgba(255,255,255,0.15)',
-                border: '1px solid rgba(255,255,255,0.25)',
-                borderRadius: 6,
-                padding: '2px 8px',
-                marginBottom: 8,
-                backdropFilter: 'blur(4px)',
-              }}
-            >
-              <Tag size={9} color="rgba(255,255,255,0.8)" />
-              <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.85)', fontWeight: 600, letterSpacing: 0.5 }}>
-                {station.code}
-              </p>
-            </Box>
-
-            <p
-              style={{
-                fontSize: 20,
-                fontWeight: 900,
-                color: '#fff',
-                lineHeight: '26px',
-                textShadow: '0 2px 8px rgba(0,0,0,0.35)',
-                marginBottom: 6,
-              }}
-            >
-              {station.name}
-            </p>
-
             <Box
               style={{
                 display: 'inline-flex',
@@ -251,6 +218,38 @@ const StationDetailPage: FC = () => {
         </Box>
 
         <Box style={{ padding: '16px 16px 0', display: 'flex', flexDirection: 'column', gap: 20 }}>
+
+          {/* ── Station name + code ── */}
+          <Box style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+            {/* Station code chip */}
+            <Box
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 4,
+                background: '#F0FDF4',
+                border: '1px solid #BBF7D0',
+                borderRadius: 6,
+                padding: '2px 8px',
+                alignSelf: 'flex-start',
+              }}
+            >
+              <Tag size={9} color="#288F4E" />
+              <p style={{ fontSize: 10, color: '#288F4E', fontWeight: 600, letterSpacing: 0.5 }}>
+                {station.code}
+              </p>
+            </Box>
+            <p
+              style={{
+                fontSize: 20,
+                fontWeight: 900,
+                color: '#111827',
+                lineHeight: '26px',
+              }}
+            >
+              {station.name}
+            </p>
+          </Box>
 
           {/* ── Stats ── */}
           {statItems.length > 0 && (

@@ -9,19 +9,8 @@ interface Props {
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
 
-function getTypeAccent(type: string) {
-  switch (type) {
-    case 'Voucher':      return { chip: 'rgba(217,119,6,0.88)',  label: 'Voucher' };
-    case 'PhysicalItem': return { chip: 'rgba(109,40,217,0.88)', label: 'Quà tặng' };
-    case 'FnbProduct':   return { chip: 'rgba(8,145,178,0.88)',  label: 'Đồ ăn & Uống' };
-    default:             return { chip: 'rgba(75,85,99,0.88)',   label: type };
-  }
-}
-
 const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
   const expired = card.status === 'expired';
-  const typeAccent = getTypeAccent(card.type);
-  const lowStock = card.stock != null && card.stock > 0 && card.stock <= 10;
 
   return (
     <Box
@@ -49,17 +38,6 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
           onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }}
         />
 
-        {/* Gradient scrim */}
-        {!expired && (
-          <Box
-            style={{
-              position: 'absolute', inset: 0,
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, transparent 40%, rgba(0,0,0,0.28) 100%)',
-              pointerEvents: 'none',
-            }}
-          />
-        )}
-
         {/* Expired overlay */}
         {expired && (
           <Box
@@ -72,55 +50,6 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
             <Box style={{ background: '#EF4444', borderRadius: 20, padding: '4px 13px', boxShadow: '0 2px 10px rgba(239,68,68,0.5)' }}>
               <p style={{ fontSize: 10, color: '#fff', fontWeight: 800, letterSpacing: 0.8 }}>HẾT HẠN</p>
             </Box>
-          </Box>
-        )}
-
-        {/* Type chip – bottom left */}
-        {!expired && (
-          <Box
-            style={{
-              position: 'absolute', bottom: 7, left: 7,
-              background: typeAccent.chip,
-              backdropFilter: 'blur(4px)',
-              borderRadius: 6,
-              padding: '2px 7px',
-            }}
-          >
-            <p style={{ fontSize: 9, color: '#fff', fontWeight: 700, letterSpacing: 0.3 }}>
-              {typeAccent.label}
-            </p>
-          </Box>
-        )}
-
-        {/* Points badge – top right */}
-        {!expired && (
-          <Box
-            style={{
-              position: 'absolute', top: 7, right: 7,
-              background: 'linear-gradient(135deg, #F59E0B, #D97706)',
-              borderRadius: 100,
-              padding: '3px 8px',
-              display: 'flex', alignItems: 'center', gap: 3,
-              boxShadow: '0 2px 8px rgba(217,119,6,0.5)',
-            }}
-          >
-            <span style={{ fontSize: 9 }}>🪙</span>
-            <p style={{ fontSize: 10, fontWeight: 800, color: '#fff', letterSpacing: 0.2 }}>
-              {card.pointsRequired.toLocaleString('vi-VN')}
-            </p>
-          </Box>
-        )}
-
-        {/* Low stock badge – bottom right */}
-        {!expired && lowStock && (
-          <Box
-            style={{
-              position: 'absolute', bottom: 7, right: 7,
-              background: 'rgba(239,68,68,0.9)',
-              borderRadius: 6, padding: '2px 6px',
-            }}
-          >
-            <p style={{ fontSize: 9, color: '#fff', fontWeight: 700 }}>Còn {card.stock}</p>
           </Box>
         )}
       </Box>

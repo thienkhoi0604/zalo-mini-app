@@ -232,7 +232,6 @@ const CategoryDetailPage: FC = () => {
   }, [rawCards, sortOrder]);
 
   const isLoading = loading && rawCards.length === 0;
-  const activeCount = cards.filter((c) => c.status === 'active').length;
 
   const handleRefresh = async () => {
     await loadAllVouchers().catch(() => {
@@ -268,11 +267,6 @@ const CategoryDetailPage: FC = () => {
                 <Box style={{ background: 'rgba(255,255,255,0.16)', border: '1px solid rgba(255,255,255,0.22)', borderRadius: 100, padding: '3px 11px' }}>
                   <p style={{ fontSize: 11, color: '#fff', fontWeight: 600 }}>{cards.length} mục</p>
                 </Box>
-                {activeCount > 0 && (
-                  <Box style={{ background: 'rgba(255,255,255,0.15)', border: '1px solid rgba(255,255,255,0.25)', borderRadius: 100, padding: '3px 11px' }}>
-                    <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.9)', fontWeight: 700 }}>{activeCount} khả dụng</p>
-                  </Box>
-                )}
               </Box>
             )}
           </Box>
@@ -282,7 +276,7 @@ const CategoryDetailPage: FC = () => {
       {/* ── Sort bar ── */}
       <Box
         flex
-        className="items-center justify-between bg-white"
+        className="items-center bg-white"
         style={{
           padding: '10px 14px',
           borderBottom: '1px solid #F0F0F0',
@@ -291,20 +285,6 @@ const CategoryDetailPage: FC = () => {
           gap: 10,
         }}
       >
-        {/* Availability indicator */}
-        <Box flex className="items-center" style={{ gap: 5 }}>
-          <Box
-            style={{
-              width: 7, height: 7, borderRadius: '50%',
-              background: activeCount > 0 ? '#22C55E' : '#D1D5DB',
-              boxShadow: activeCount > 0 ? '0 0 0 3px rgba(34,197,94,0.18)' : 'none',
-            }}
-          />
-          <p style={{ fontSize: 12, color: activeCount > 0 ? '#15803D' : '#9CA3AF', fontWeight: 600 }}>
-            {isLoading ? '—' : `${activeCount} khả dụng`}
-          </p>
-        </Box>
-
         {/* Sort pills */}
         <Box flex style={{ gap: 6 }}>
           {SORT_OPTIONS.map((opt) => {

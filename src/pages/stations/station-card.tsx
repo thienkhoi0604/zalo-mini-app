@@ -102,24 +102,8 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
           </Box>
         )}
 
-        {/* Station name + type — bottom overlay */}
+        {/* Station type — bottom overlay */}
         <Box style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '10px 12px' }}>
-          <p
-            style={{
-              fontSize: 14,
-              fontWeight: 800,
-              color: '#fff',
-              lineHeight: '19px',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              overflow: 'hidden',
-              textShadow: '0 1px 4px rgba(0,0,0,0.3)',
-              marginBottom: 5,
-            }}
-          >
-            {station.name}
-          </p>
           <Box
             style={{
               display: 'inline-flex',
@@ -140,6 +124,21 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
 
       {/* Bottom info section */}
       <Box style={{ padding: '10px 12px 12px', display: 'flex', flexDirection: 'column', gap: 7 }}>
+        {/* Station name */}
+        <p
+          style={{
+            fontSize: 14,
+            fontWeight: 800,
+            color: '#111827',
+            lineHeight: '19px',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}
+        >
+          {station.name}
+        </p>
         {/* Address */}
         <Box flex className="items-start" style={{ gap: 5 }}>
           <MapPin size={12} color="#9CA3AF" style={{ marginTop: 2, flexShrink: 0 }} />
