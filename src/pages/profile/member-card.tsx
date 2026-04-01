@@ -44,7 +44,6 @@ const MemberCard: FC = () => {
           borderRadius: 24,
           overflow: 'hidden',
           position: 'relative',
-          boxShadow: '0 16px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(100,160,255,0.12)',
         }}
       >
         {/* Background image */}

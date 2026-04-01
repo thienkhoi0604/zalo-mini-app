@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
 import { useUserStore } from '@/store/user';
 import coinGold from '@/assets/images/coin-gold.png';
-import coinSilver from '@/assets/images/coin-silver.png';
-import coinPlatinum from '@/assets/images/coin-platinum.png';
+// import coinSilver from '@/assets/images/coin-silver.png';
+// import coinPlatinum from '@/assets/images/coin-platinum.png';
 
 function getCoinImage(rankCode?: string): string {
   switch (rankCode?.toUpperCase()) {
-    case 'SILVER':   return coinSilver;
+    // case 'SILVER':   return coinSilver;
     case 'GOLD':     return coinGold;
-    case 'PLATINUM': return coinPlatinum;
+    // case 'PLATINUM': return coinPlatinum;
     default:         return coinGold;
   }
 }

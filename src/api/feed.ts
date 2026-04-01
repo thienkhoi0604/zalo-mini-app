@@ -50,6 +50,10 @@ interface RawStoreGroup {
   distanceKm: number | null;
   latitude: number | null;
   longitude: number | null;
+  imageUrl: string | null;
+  phone: string | null;
+  openFrom: string | null;
+  openTo: string | null;
   items: FeedApiItem[];
 }
 
@@ -69,6 +73,10 @@ export async function getFeedGrouped(): Promise<GroupedFeedResult> {
     distanceKm: s.distanceKm,
     latitude: s.latitude,
     longitude: s.longitude,
+    imageUrl: s.imageUrl ?? null,
+    phone: s.phone ?? null,
+    openFrom: s.openFrom ?? null,
+    openTo: s.openTo ?? null,
     items: s.items.map(mapFeedItemToVoucher),
   }));
 

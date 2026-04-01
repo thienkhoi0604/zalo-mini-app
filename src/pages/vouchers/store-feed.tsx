@@ -1,48 +1,32 @@
 import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { Globe, Store, Navigation } from 'lucide-react';
+import { Globe, Store, MapPin, Clock, Phone, Navigation } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher, StoreGroup } from '@/types/voucher';
 import VoucherItemCard from './item-card';
 import { ACTIVE_THEME } from '@/constants/theme';
+import defaultStoreImg from '@/assets/images/logo.png';
 
 // ─── Skeletons ─────────────────────────────────────────────────────────────────
 
-const CardSkeleton: FC = () => (
-  <Box
-    className="flex-shrink-0 animate-pulse"
-    style={{ width: 160, borderRadius: 18, overflow: 'hidden', background: '#F3F4F6' }}
-  >
-    <Box style={{ height: 120, background: '#E9EBED' }} />
-    <Box style={{ padding: '9px 10px 11px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <Box style={{ height: 9, width: '40%', background: '#E9EBED', borderRadius: 5 }} />
-      <Box style={{ height: 13, width: '85%', background: '#E9EBED', borderRadius: 5 }} />
-      <Box style={{ height: 28, background: '#E9EBED', borderRadius: 9, marginTop: 2 }} />
-    </Box>
-  </Box>
-);
 
 const SectionSkeleton: FC = () => (
   <Box
+    className="animate-pulse"
     style={{
       margin: '0 12px', background: '#fff', borderRadius: 20, overflow: 'hidden',
       boxShadow: '0 4px 20px rgba(0,0,0,0.07)',
     }}
   >
-    <Box style={{ height: 3, background: '#E9EBED' }} />
-    <Box
-      className="animate-pulse"
-      style={{ padding: '13px 16px 11px', display: 'flex', alignItems: 'center', gap: 12 }}
-    >
-      <Box style={{ width: 44, height: 44, borderRadius: 13, background: '#E9EBED' }} />
-      <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 7 }}>
-        <Box style={{ height: 13, width: '55%', background: '#E9EBED', borderRadius: 5 }} />
-        <Box style={{ height: 10, width: '75%', background: '#E9EBED', borderRadius: 5 }} />
+    <Box style={{ display: 'flex', gap: 0 }}>
+      <Box style={{ width: 120, height: 110, background: '#E9EBED', flexShrink: 0 }} />
+      <Box style={{ flex: 1, padding: '14px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        <Box style={{ height: 14, width: '70%', background: '#E9EBED', borderRadius: 5 }} />
+        <Box style={{ height: 10, width: '90%', background: '#E9EBED', borderRadius: 5 }} />
+        <Box style={{ height: 10, width: '60%', background: '#E9EBED', borderRadius: 5 }} />
+        <Box style={{ height: 10, width: '50%', background: '#E9EBED', borderRadius: 5 }} />
       </Box>
-    </Box>
-    <Box flex style={{ gap: 10, padding: '4px 14px 16px' }}>
-      {[1, 2, 3].map((i) => <CardSkeleton key={i} />)}
     </Box>
   </Box>
 );
@@ -65,6 +49,144 @@ const ItemRow: FC<{ items: Voucher[]; onItemClick: (r: Voucher) => void }> = ({ 
     {items.map((item) => (
       <VoucherItemCard key={item.id} card={item} onClick={onItemClick} />
     ))}
+  </Box>
+);
+
+// ─── Store Card ────────────────────────────────────────────────────────────────
+
+const StoreCard: FC<{ group: StoreGroup }> = ({ group }) => {
+  const distanceLabel = group.distanceKm != null
+    ? group.distanceKm < 1
+      ? `${Math.round(group.distanceKm * 1000)} m`
+      : `${group.distanceKm.toFixed(1)} km`
+    : null;
+
+  const hoursLabel = group.openFrom && group.openTo
+    ? `${group.openFrom} – ${group.openTo}`
+    : null;
+
+  return (
+    <Box
+      style={{
+        display: 'flex',
+        flexDirection: 'row',
+        background: '#fff',
+        overflow: 'hidden',
+      }}
+    >
+      {/* Left: store image */}
+      <Box style={{ width: 120, flexShrink: 0, position: 'relative', background: '#F3F4F6' }}>
+        <img
+          src={group.imageUrl ?? defaultStoreImg}
+          alt={group.storeName}
+          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+          onError={(e) => { (e.target as HTMLImageElement).src = defaultStoreImg; }}
+        />
+      </Box>
+
+      {/* Right: info */}
+      <Box
+        style={{
+          flex: 1,
+          minWidth: 0,
+          padding: '12px 14px 12px 12px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 6,
+          justifyContent: 'center',
+        }}
+      >
+        {/* Store name */}
+        <p
+          style={{
+            fontSize: 15,
+            fontWeight: 800,
+            color: '#111827',
+            lineHeight: '20px',
+            overflow: 'hidden',
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
+          {group.storeName}
+        </p>
+
+        {/* Address */}
+        {group.address && (
+          <Box flex className="items-start" style={{ gap: 5 }}>
+            <MapPin size={11} color="#9CA3AF" style={{ marginTop: 2, flexShrink: 0 }} />
+            <p
+              style={{
+                fontSize: 11,
+                color: '#6B7280',
+                lineHeight: '16px',
+                overflow: 'hidden',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+              }}
+            >
+              {group.address}
+            </p>
+          </Box>
+        )}
+
+        {/* Opening hours */}
+        {hoursLabel && (
+          <Box flex className="items-center" style={{ gap: 5 }}>
+            <Clock size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
+            <p style={{ fontSize: 11, color: '#6B7280', lineHeight: '16px' }}>{hoursLabel}</p>
+          </Box>
+        )}
+
+        {/* Phone */}
+        {group.phone && (
+          <Box flex className="items-center" style={{ gap: 5 }}>
+            <Phone size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
+            <p style={{ fontSize: 11, color: '#6B7280', lineHeight: '16px' }}>{group.phone}</p>
+          </Box>
+        )}
+
+        {/* Distance badge */}
+        {distanceLabel && (
+          <Box flex className="items-center" style={{ gap: 5, marginTop: 2 }}>
+            <Box
+              flex
+              className="items-center"
+              style={{
+                gap: 4,
+                background: '#F0FDF4',
+                border: '1px solid #BBF7D0',
+                borderRadius: 20,
+                padding: '2px 8px',
+                alignSelf: 'flex-start',
+              }}
+            >
+              <Navigation size={9} color="#288F4E" strokeWidth={2.5} />
+              <p style={{ fontSize: 10, color: '#288F4E', fontWeight: 700 }}>{distanceLabel}</p>
+            </Box>
+          </Box>
+        )}
+      </Box>
+    </Box>
+  );
+};
+
+// ─── Store section (card + items) ──────────────────────────────────────────────
+
+const StoreSection: FC<{ group: StoreGroup }> = ({ group }) => (
+  <Box
+    style={{
+      margin: '0 12px',
+      background: '#fff',
+      borderRadius: 20,
+      overflow: 'hidden',
+      boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
+      border: '1px solid rgba(0,0,0,0.04)',
+    }}
+  >
+    <StoreCard group={group} />
   </Box>
 );
 
@@ -132,101 +254,7 @@ const GlobalSection: FC<{ vouchers: Voucher[]; onItemClick: (r: Voucher) => void
         </Box>
       </Box>
 
-      {/* Cards */}
       <ItemRow items={vouchers} onItemClick={onItemClick} />
-    </Box>
-  );
-};
-
-// ─── Store section ─────────────────────────────────────────────────────────────
-
-const STORE_ACCENTS = [
-  { bar: 'linear-gradient(90deg,#3B82F6,#93C5FD)', bg: '#EFF6FF', border: '#BFDBFE', icon: '#2563EB', dot: '#3B82F6' },
-  { bar: 'linear-gradient(90deg,#F97316,#FED7AA)', bg: '#FFF7ED', border: '#FED7AA', icon: '#C2410C', dot: '#F97316' },
-  { bar: 'linear-gradient(90deg,#8B5CF6,#DDD6FE)', bg: '#F5F3FF', border: '#DDD6FE', icon: '#6D28D9', dot: '#8B5CF6' },
-  { bar: 'linear-gradient(90deg,#F43F5E,#FECDD3)', bg: '#FFF1F2', border: '#FECDD3', icon: '#BE123C', dot: '#F43F5E' },
-  { bar: 'linear-gradient(90deg,#14B8A6,#99F6E4)', bg: '#F0FDFA', border: '#99F6E4', icon: '#0F766E', dot: '#14B8A6' },
-];
-
-const StoreSection: FC<{ group: StoreGroup; index: number; onItemClick: (r: Voucher) => void }> = ({ group, index, onItemClick }) => {
-  const accent = STORE_ACCENTS[index % STORE_ACCENTS.length];
-
-  const distanceLabel = group.distanceKm != null
-    ? group.distanceKm < 1
-      ? `${Math.round(group.distanceKm * 1000)} m`
-      : `${group.distanceKm.toFixed(1)} km`
-    : null;
-
-  return (
-    <Box
-      style={{
-        margin: '0 12px',
-        background: '#fff',
-        borderRadius: 20,
-        overflow: 'hidden',
-        boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-        border: '1px solid rgba(0,0,0,0.04)',
-      }}
-    >
-      {/* Accent bar */}
-      <Box style={{ height: 3, background: accent.bar }} />
-
-      {/* Store header */}
-      <Box
-        flex
-        className="items-center"
-        style={{ gap: 11, padding: '13px 14px 11px', background: accent.bg }}
-      >
-        <Box
-          style={{
-            width: 44, height: 44, borderRadius: 13,
-            background: '#fff',
-            border: `1.5px solid ${accent.border}`,
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-            boxShadow: `0 3px 10px ${accent.dot}28`,
-          }}
-        >
-          <Store size={20} color={accent.icon} strokeWidth={1.8} />
-        </Box>
-
-        <Box style={{ flex: 1, minWidth: 0 }}>
-          <p
-            style={{
-              fontSize: 14, fontWeight: 800, color: '#111827', lineHeight: '18px',
-              overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
-            }}
-          >
-            {group.storeName}
-          </p>
-          {(group.address || distanceLabel) && (
-            <Box flex className="items-center" style={{ gap: 5, marginTop: 3 }}>
-              {group.address && (
-                <p style={{
-                  fontSize: 11, color: '#6B7280',
-                  overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
-                  flex: 1, minWidth: 0,
-                }}>
-                  {group.address}
-                </p>
-              )}
-              {distanceLabel && (
-                <Box style={{
-                  display: 'inline-flex', alignItems: 'center', gap: 3,
-                  background: '#fff', border: `1px solid ${accent.border}`,
-                  borderRadius: 20, padding: '2px 8px', flexShrink: 0,
-                }}>
-                  <Navigation size={9} color={accent.icon} strokeWidth={2.5} />
-                  <p style={{ fontSize: 10, color: '#6B7280', fontWeight: 600 }}>{distanceLabel}</p>
-                </Box>
-              )}
-            </Box>
-          )}
-        </Box>
-      </Box>
-
-      {/* Items */}
-      <ItemRow items={group.items} onItemClick={onItemClick} />
     </Box>
   );
 };
@@ -279,8 +307,8 @@ const StoreTab: FC = () => {
       ) : (
         <>
           <GlobalSection vouchers={globalVouchers} onItemClick={handleItemClick} />
-          {storeGroups.map((group, i) => (
-            <StoreSection key={group.storeId} group={group} index={i} onItemClick={handleItemClick} />
+          {storeGroups.map((group) => (
+            <StoreSection key={group.storeId} group={group} />
           ))}
         </>
       )}

@@ -61,6 +61,10 @@ export interface StoreGroup {
   distanceKm: number | null;
   latitude: number | null;
   longitude: number | null;
+  imageUrl: string | null;
+  phone: string | null;
+  openFrom: string | null;
+  openTo: string | null;
   items: Voucher[];
 }
 
