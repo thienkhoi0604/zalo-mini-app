@@ -19,7 +19,11 @@ function mapApiItemToReward(item: RewardApiItem): Reward {
     programNotes: '',
     usageGuide: '',
     status: item.isActive ? 'active' : 'expired',
-    stores: item.storeNames?.map((name) => ({ address: name })),
+    appliesToAll: item.appliesToAll,
+    stores: item.storeNames?.map((name, i) => ({
+      id: item.storeIds?.[i],
+      name,
+    })),
   };
 }
 

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { Box, Page } from 'zmp-ui';
 import { Zap, SlidersHorizontal } from 'lucide-react';
 import { useStationsStore } from '@/store/stations';
@@ -44,9 +44,16 @@ const LoadingMore: FC = () => (
 
 export const StationsPage: FC = () => {
   const navigate = useNavigate();
-  const { stations, loading, hasMore, loadStations, loadMore, search, provinceCode, wardCode } = useStationsStore();
+  const location = useLocation();
+  const { stations, loading, hasMore, loadStations, loadMore, search, provinceCode, wardCode, setFilters } = useStationsStore();
 
-  useEffect(() => { loadStations(); }, []);
+  // Pre-fill search from query param (e.g. navigated from reward detail)
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const q = params.get('search');
+    if (q) setFilters({ search: q });
+    loadStations();
+  }, []);
 
   const sentinelRef = useInfiniteScroll(loadMore, hasMore, loading);
   const isInitialLoad = loading && stations.length === 0;

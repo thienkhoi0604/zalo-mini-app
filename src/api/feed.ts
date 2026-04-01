@@ -25,7 +25,10 @@ export function mapFeedItemToReward(item: FeedApiItem): Reward {
     programNotes: '',
     usageGuide: '',
     status,
-    stores: item.storeName ? [{ address: item.storeName }] : undefined,
+    appliesToAll: item.appliesToAll ?? undefined,
+    stores: item.storeName
+      ? [{ id: item.storeId ?? undefined, name: item.storeName }]
+      : undefined,
   };
 }
 

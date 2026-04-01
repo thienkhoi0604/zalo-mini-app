@@ -11,7 +11,7 @@ const BannerSkeleton: FC = () => (
   <Box className="px-4 pt-1 pb-2">
     <Box
       className="animate-pulse rounded-2xl"
-      style={{ aspectRatio: '2 / 1', background: '#E9EBED' }}
+      style={{ aspectRatio: '16 / 9', background: '#E9EBED' }}
     />
   </Box>
 );
@@ -58,7 +58,7 @@ export const Banner: FC = () => {
               className="w-full rounded-2xl bg-cover bg-center overflow-hidden"
               style={{
                 backgroundImage: `url(${banner.imageUrl})`,
-                aspectRatio: '2 / 1',
+                aspectRatio: '16 / 9',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
                 cursor: 'default', // TODO: restore 'pointer' when openWebview feature is ready
               }}

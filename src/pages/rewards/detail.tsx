@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
-import { MapPin, Calendar, FileText, Store, AlertCircle } from 'lucide-react';
+import { MapPin, Calendar, FileText, Store, AlertCircle, Globe, Zap, ChevronRight } from 'lucide-react';
 import { useRewardsStore } from '@/store/rewards';
 import { getRewardTypeLabel } from '@/types/reward';
 import { useUserStore } from '@/store/user';
@@ -319,28 +319,93 @@ const RewardDetailPage: FC = () => {
             </SectionCard>
           )}
 
-          {card.stores && card.stores.length > 0 && (
+          {/* ── Applicable locations ── */}
+          {card.appliesToAll ? (
             <SectionCard
-              title={`Cửa hàng áp dụng (${card.stores.length})`}
-              icon={<Store size={15} color="#7C3AED" />}
+              title="Địa điểm áp dụng"
+              icon={<Globe size={15} color="#0284C7" />}
             >
-              <Box style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-                {card.stores.slice(0, 5).map((store, i) => (
-                  <Box key={i} flex className="items-start" style={{ gap: 10 }}>
-                    <MapPin size={14} color="#9CA3AF" style={{ marginTop: 2, flexShrink: 0 }} />
-                    <p style={{ fontSize: 13, color: '#374151', lineHeight: '19px', flex: 1 }}>
-                      {store.address}
-                    </p>
-                  </Box>
-                ))}
-                {card.stores.length > 5 && (
-                  <p style={{ fontSize: 12, color: '#9CA3AF', marginTop: 2 }}>
-                    và {card.stores.length - 5} địa điểm khác
+              <Box
+                flex
+                className="items-center"
+                style={{ gap: 10 }}
+                onClick={() => navigate('/stations')}
+              >
+                <Box
+                  style={{
+                    width: 36, height: 36, borderRadius: 10, flexShrink: 0,
+                    background: 'linear-gradient(135deg, #EEF7F1, #DCFCE7)',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >
+                  <Zap size={18} color="#288F4E" fill="#288F4E" strokeWidth={0} />
+                </Box>
+                <Box style={{ flex: 1 }}>
+                  <p style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>
+                    Tất cả trạm sạc EcoGreen
                   </p>
-                )}
+                  <p style={{ fontSize: 11, color: '#6B7280', marginTop: 2 }}>
+                    Áp dụng tại toàn bộ hệ thống trạm sạc
+                  </p>
+                </Box>
+                <ChevronRight size={16} color="#D1D5DB" />
               </Box>
             </SectionCard>
-          )}
+          ) : card.stores && card.stores.length > 0 ? (
+            <SectionCard
+              title={`Địa điểm áp dụng (${card.stores.length})`}
+              icon={<Store size={15} color="#7C3AED" />}
+            >
+              <Box style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {card.stores.map((store, i) => (
+                  <Box
+                    key={i}
+                    flex
+                    className="items-center"
+                    style={{
+                      gap: 10,
+                      padding: '10px 12px',
+                      background: '#F9FAFB',
+                      borderRadius: 12,
+                      border: '1px solid #F3F4F6',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => navigate(`/stations?search=${encodeURIComponent(store.name)}`)}
+                  >
+                    <Box
+                      style={{
+                        width: 34, height: 34, borderRadius: 9, flexShrink: 0,
+                        background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}
+                    >
+                      <Store size={16} color="#7C3AED" />
+                    </Box>
+                    <Box style={{ flex: 1, minWidth: 0 }}>
+                      <p
+                        style={{
+                          fontSize: 13, fontWeight: 600, color: '#111827',
+                          overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+                        }}
+                      >
+                        {store.name}
+                      </p>
+                      {store.address && (
+                        <p style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
+                          {store.address}
+                        </p>
+                      )}
+                    </Box>
+                    <Box flex className="items-center" style={{ gap: 4, flexShrink: 0 }}>
+                      <Zap size={11} color="#288F4E" fill="#288F4E" strokeWidth={0} />
+                      <p style={{ fontSize: 11, color: '#288F4E', fontWeight: 600 }}>Xem trạm</p>
+                      <ChevronRight size={13} color="#D1D5DB" />
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </SectionCard>
+          ) : null}
 
           {(card.terms || card.programNotes || card.usageGuide) && (
             <SectionCard title="Điều khoản sử dụng" icon={<AlertCircle size={15} color="#D97706" />}>

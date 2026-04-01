@@ -1,5 +1,7 @@
 export interface RewardStore {
-  address: string;
+  id?: string;
+  name: string;
+  address?: string;
 }
 
 // ─── Feed Item Types ───────────────────────────────────────────────────────────
@@ -102,6 +104,7 @@ export interface Reward {
   brandName?: string;
   brandLogoUrl?: string;
   stores?: RewardStore[];
+  appliesToAll?: boolean;
   terms?: string;
   /** coinCost for products, pointCost for rewards */
   pointsRequired: number;
