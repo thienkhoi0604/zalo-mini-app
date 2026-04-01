@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import type { ScanResult } from './scan';
+import CoinIcon from '@/components/ui/coin-icon';
 
 const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
   if (result.status === 'success' && result.type === 'referral') {
@@ -25,7 +26,7 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
             className="flex items-center justify-center rounded-2xl px-5 py-3"
             style={{ background: '#EEF7F1', gap: 8 }}
           >
-            <span style={{ fontSize: 22 }}>🪙</span>
+            <CoinIcon size={28} />
             <p style={{ fontSize: 20, fontWeight: 800, color: '#288F4E' }}>
               +{result.points} Points
             </p>

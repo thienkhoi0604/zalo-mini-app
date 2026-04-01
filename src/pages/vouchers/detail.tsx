@@ -6,6 +6,7 @@ import { useVouchersStore } from '@/store/vouchers';
 import { getVoucherTypeLabel } from '@/types/voucher';
 import { useUserStore } from '@/store/user';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
+import CoinIcon from '@/components/ui/coin-icon';
 
 // ─── Confirm Modal ─────────────────────────────────────────────────────────────
 
@@ -62,7 +63,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
           <Box flex className="items-center justify-between">
             <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí</p>
             <Box flex className="items-center" style={{ gap: 5 }}>
-              <span style={{ fontSize: 15 }}>🪙</span>
+              <CoinIcon size={18} />
               <p style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
                 {pointsRequired.toLocaleString('vi-VN')}
               </p>
@@ -74,7 +75,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
           <Box flex className="items-center justify-between">
             <p style={{ fontSize: 13, color: '#6B7280' }}>{costCurrency} hiện có</p>
             <Box flex className="items-center" style={{ gap: 5 }}>
-              <span style={{ fontSize: 15 }}>🪙</span>
+              <CoinIcon size={18} />
               <p style={{ fontSize: 15, fontWeight: 700, color: hasEnough ? '#288F4E' : '#EF4444' }}>
                 {userPoints.toLocaleString('vi-VN')}
               </p>
@@ -87,7 +88,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
               <Box flex className="items-center justify-between">
                 <p style={{ fontSize: 13, color: '#6B7280' }}>Còn lại sau khi đổi</p>
                 <Box flex className="items-center" style={{ gap: 5 }}>
-                  <span style={{ fontSize: 15 }}>🪙</span>
+                  <CoinIcon size={18} />
                   <p style={{ fontSize: 15, fontWeight: 700, color: '#374151' }}>
                     {remaining.toLocaleString('vi-VN')}
                   </p>
@@ -293,7 +294,7 @@ const VoucherDetailPage: FC = () => {
                   padding: '5px 14px',
                 }}
               >
-                <span style={{ fontSize: 16 }}>🪙</span>
+                <CoinIcon size={20} />
                 <p style={{ fontSize: 16, fontWeight: 800, color: '#D97706' }}>
                   {card.pointsRequired.toLocaleString('vi-VN')}
                 </p>
@@ -464,7 +465,7 @@ const VoucherDetailPage: FC = () => {
                 flexShrink: 0,
               }}
             >
-              <span style={{ fontSize: 15 }}>🪙</span>
+              <CoinIcon size={18} />
               <p style={{ fontSize: 14, fontWeight: 700, color: hasEnough ? '#111827' : '#EF4444' }}>
                 {userPoints.toLocaleString('vi-VN')}
               </p>
@@ -483,7 +484,7 @@ const VoucherDetailPage: FC = () => {
                 gap: 6,
               }}
             >
-              <span style={{ fontSize: 16 }}>🪙</span>
+              <CoinIcon size={20} />
               <p style={{ color: hasEnough ? '#fff' : '#9CA3AF', fontWeight: 700, fontSize: 15 }}>
                 Đổi {card.pointsRequired.toLocaleString('vi-VN')} {card.costCurrency}
               </p>

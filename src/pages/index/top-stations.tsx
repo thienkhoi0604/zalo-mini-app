@@ -4,6 +4,7 @@ import { Box } from "zmp-ui";
 import { Zap, ChevronRight, MapPin, Navigation } from "lucide-react";
 import { Station } from '@/types/station';
 import { getStations } from '@/api/stations';
+import CoinIcon from '@/components/ui/coin-icon';
 
 const SectionHeader: FC<{ title: string; onViewAll: () => void }> = ({ title, onViewAll }) => (
   <Box flex className="items-center justify-between px-4 mb-3">
@@ -97,7 +98,7 @@ export const TopStationsCarousel: FC = () => {
                     gap: 3,
                   }}
                 >
-                  <span style={{ fontSize: 11 }}>🪙</span>
+                  <CoinIcon size={14} />
                   <p style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>
                     +{station.defaultPoint}
                   </p>

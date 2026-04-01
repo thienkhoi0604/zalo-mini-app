@@ -7,6 +7,7 @@ import { Voucher, getVoucherTypeLabel } from '@/types/voucher';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import PageHeader from '@/components/ui/page-header';
 import { ACTIVE_THEME } from '@/constants/theme';
+import CoinIcon from '@/components/ui/coin-icon';
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
 
@@ -110,7 +111,7 @@ const VoucherCard: FC<{ card: Voucher; onClick: (card: Voucher) => void }> = ({ 
               boxShadow: '0 2px 8px rgba(217,119,6,0.5)',
             }}
           >
-            <span style={{ fontSize: 9 }}>🪙</span>
+            <CoinIcon size={12} />
             <p style={{ fontSize: 10, fontWeight: 800, color: '#fff' }}>
               {card.pointsRequired.toLocaleString('vi-VN')}
             </p>
@@ -179,7 +180,7 @@ const VoucherCard: FC<{ card: Voucher; onClick: (card: Voucher) => void }> = ({ 
               display: 'flex', alignItems: 'center', gap: 5,
             }}
           >
-            <span style={{ fontSize: 13 }}>🪙</span>
+            <CoinIcon size={16} />
             <p style={{ fontSize: 13, fontWeight: 800, color: '#B45309' }}>
               {card.pointsRequired.toLocaleString('vi-VN')}
             </p>

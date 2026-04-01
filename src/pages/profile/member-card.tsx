@@ -1,95 +1,195 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
+import { ShieldCheck } from 'lucide-react';
 import { useUserStore } from '@/store/user';
-
-function getInitials(fullName: string): string {
-  return fullName
-    .split(' ')
-    .slice(-2)
-    .map((w) => w[0])
-    .join('')
-    .toUpperCase();
-}
+import bgProfile from '@/assets/images/background-profile.png';
+import logoImg from '@/assets/images/logo.png';
+import CoinIcon from '@/components/ui/coin-icon';
 
 const MemberCard: FC = () => {
   const { user, pointWallet } = useUserStore();
-  const initials = user?.fullName ? getInitials(user.fullName) : '';
+  const isVerified = pointWallet?.vehicleStatus?.toLowerCase() === 'approved';
 
   return (
-    <Box
-      className="mx-4 mt-4 rounded-2xl overflow-hidden relative"
-      style={{
-        background: 'linear-gradient(135deg, #D8B07A 0%, #C49A6C 25%, #B4884F 50%, #A0784A 75%, #8C6538 100%)',
-        boxShadow: '0 10px 25px rgba(160,120,74,0.25), inset 0 1px 0 rgba(255,255,255,0.3)',
-        border: '1px solid rgba(255,255,255,0.25)',
-      }}
-    >
-      {/* Shimmer overlay */}
-      <Box
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 60%)',
-        }}
-      />
+    /* Outer wrapper — extra paddingTop so the logo can overflow the card top */
+    <Box className="mx-4 mt-2" style={{ position: 'relative', paddingTop: 36 }}>
 
-      {/* Content */}
-      <Box className="relative px-4 pt-5 pb-4" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10 }}>
-        {/* Avatar */}
-        <Box
-          className="flex items-center justify-center rounded-full overflow-hidden"
+      {/* ── Floating logo ── */}
+      <Box
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 10,
+          width: 68,
+          height: 68,
+          borderRadius: '50%',
+          overflow: 'hidden',
+          border: '3px solid rgba(100,160,255,0.4)',
+          boxShadow: '0 0 0 4px rgba(80,130,255,0.12), 0 6px 20px rgba(0,0,0,0.5)',
+          background: '#0a1428',
+        }}
+      >
+        <img
+          src={logoImg}
+          alt="EcoGreen"
+          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        />
+      </Box>
+
+      {/* ── Card ── */}
+      <Box
+        style={{
+          borderRadius: 24,
+          overflow: 'hidden',
+          position: 'relative',
+          boxShadow: '0 16px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(100,160,255,0.12)',
+        }}
+      >
+        {/* Background image */}
+        <img
+          src={bgProfile}
+          alt=""
+          aria-hidden
           style={{
-            width: 64,
-            height: 64,
-            background: 'linear-gradient(135deg, #E8CFA0 0%, #C49A6C 100%)',
-            border: '3px solid rgba(255,255,255,0.6)',
-            flexShrink: 0,
+            position: 'absolute', inset: 0,
+            width: '100%', height: '100%',
+            objectFit: 'cover', objectPosition: 'center top',
+            pointerEvents: 'none',
+          }}
+        />
+
+        {/* Dark overlay */}
+        <Box
+          className="absolute inset-0 pointer-events-none"
+          style={{ background: 'linear-gradient(170deg, rgba(0,4,22,0.55) 0%, rgba(0,10,35,0.72) 100%)' }}
+        />
+
+        {/* Blue glow at top-center (behind logo) */}
+        <Box
+          className="absolute pointer-events-none"
+          style={{
+            top: -20, left: '50%', transform: 'translateX(-50%)',
+            width: 180, height: 100,
+            background: 'radial-gradient(ellipse, rgba(80,140,255,0.2) 0%, transparent 70%)',
+          }}
+        />
+
+        {/* ── Content ── */}
+        <Box
+          style={{
+            position: 'relative',
+            paddingTop: 46,   /* space below the overlapping logo */
+            paddingBottom: 0,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
           }}
         >
-          {user?.avatarUrl ? (
-            <img
-              src={user.avatarUrl}
-              alt={user.fullName ?? ''}
-              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-            />
-          ) : (
-            <span style={{ fontSize: 20, fontWeight: 700, color: '#7A5230' }}>{initials}</span>
+          {/* Name */}
+          <p
+            style={{
+              color: '#fff',
+              fontWeight: 800,
+              fontSize: 18,
+              lineHeight: '24px',
+              letterSpacing: -0.3,
+              textAlign: 'center',
+              textShadow: '0 1px 10px rgba(0,0,0,0.7)',
+              paddingLeft: 16,
+              paddingRight: 16,
+            }}
+          >
+            {user?.fullName || 'Tên thành viên'}
+          </p>
+
+          {/* Phone */}
+          {user?.phone && (
+            <p
+              style={{
+                color: 'rgba(160,200,255,0.7)',
+                fontSize: 12,
+                fontWeight: 500,
+                marginTop: 4,
+                letterSpacing: 0.5,
+              }}
+            >
+              {user.phone}
+            </p>
           )}
-        </Box>
 
-        {/* Name */}
-        <p style={{ color: '#fff', fontWeight: 700, fontSize: 17, lineHeight: '24px', textAlign: 'center' }}>
-          {user?.fullName || 'Tên thành viên'}
-        </p>
+          {/* Divider */}
+          <Box
+            style={{
+              width: '80%',
+              height: 1,
+              margin: '14px 0 0',
+              background: 'linear-gradient(90deg, transparent, rgba(100,160,255,0.35), transparent)',
+            }}
+          />
 
-        {/* Rank | Points */}
-        <Box
-          flex
-          className="w-full rounded-xl py-3 px-4"
-          style={{ background: 'rgba(255,255,255,0.15)', gap: 0 }}
-        >
-          <Box className="flex-1 text-center">
-            <p style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-              {user?.rank?.currentRankName || 'Member'}
-            </p>
-            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, marginTop: 3 }}>
-              Hạng thành viên
-            </p>
-          </Box>
-
-          <Box style={{ width: 1, background: 'rgba(255,255,255,0.35)', margin: '0 8px' }} />
-
-          <Box className="flex-1 text-center">
-            <Box flex className="justify-center items-center" style={{ gap: 4 }}>
-              <span style={{ fontSize: 15 }}>🪙</span>
-              <p style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-                {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+          {/* Rank | Points row */}
+          <Box
+            flex
+            className="w-full items-center"
+            style={{ padding: '12px 20px 14px' }}
+          >
+            {/* Rank */}
+            <Box className="flex-1 text-center">
+              <p
+                style={{
+                  color: '#fff',
+                  fontWeight: 900,
+                  fontSize: 14,
+                  letterSpacing: 1.2,
+                  textTransform: 'uppercase',
+                  lineHeight: 1,
+                  marginBottom: 4,
+                }}
+              >
+                {user?.rank?.currentRankName || 'Member'}
+              </p>
+              <p style={{ color: 'rgba(160,200,255,0.6)', fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                Hạng thành viên
               </p>
             </Box>
-            <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, marginTop: 3 }}>
-              GreenCoin khả dụng
-            </p>
+
+            {/* Vertical divider */}
+            <Box style={{ width: 1, height: 36, background: 'rgba(100,160,255,0.25)', flexShrink: 0 }} />
+
+            {/* Points */}
+            <Box className="flex-1 text-center">
+              <Box flex className="justify-center items-center" style={{ gap: 4, marginBottom: 4 }}>
+                <CoinIcon size={20} />
+                <p style={{ color: '#fff', fontWeight: 900, fontSize: 16, letterSpacing: -0.4, lineHeight: 1 }}>
+                  {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+                </p>
+              </Box>
+              <p style={{ color: 'rgba(160,200,255,0.6)', fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
+                GreenCoin
+              </p>
+            </Box>
           </Box>
+
+          {/* ── Verified badge ── */}
+          {isVerified && (
+            <Box
+              flex
+              className="items-center justify-center w-full"
+              style={{
+                gap: 7,
+                padding: '10px 20px',
+                borderTop: '1px solid rgba(100,160,255,0.15)',
+                background: 'rgba(30,80,200,0.18)',
+              }}
+            >
+              <ShieldCheck size={14} color="#60A5FA" strokeWidth={2.5} />
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#93C5FD', letterSpacing: 0.3 }}>
+                Tài khoản đã xác thực
+              </p>
+            </Box>
+          )}
         </Box>
       </Box>
     </Box>

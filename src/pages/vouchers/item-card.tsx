@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { Voucher } from '@/types/voucher';
+import CoinIcon from '@/components/ui/coin-icon';
 
 interface Props {
   card: Voucher;
@@ -99,7 +100,7 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
               display: 'flex', alignItems: 'center', gap: 4,
             }}
           >
-            <span style={{ fontSize: 13 }}>🪙</span>
+            <CoinIcon size={16} />
             <p style={{ fontSize: 13, fontWeight: 800, color: '#B45309' }}>
               {card.pointsRequired.toLocaleString('vi-VN')}
             </p>

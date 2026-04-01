@@ -64,7 +64,6 @@ const Personal: FC = () => {
           ...(isVehicleApproved ? [{
             icon: <Car size={ICON_SIZE} color={ICON_COLOR} />,
             label: 'Thông tin xe của tôi',
-            sub: 'Xe điện đã được xác thực',
             onPress: () => navigate('/vehicle-info'),
           }] : []),
         ]}

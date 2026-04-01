@@ -4,6 +4,7 @@ import { Box } from 'zmp-ui';
 import { Gift, ChevronRight } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher, getVoucherTypeLabel } from '@/types/voucher';
+import CoinIcon from '@/components/ui/coin-icon';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -97,7 +98,7 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
 
       {/* Cost */}
       <Box flex className="items-center" style={{ gap: 3 }}>
-        <span style={{ fontSize: 13 }}>🪙</span>
+        <CoinIcon size={16} />
         <p style={{ fontSize: 11, fontWeight: 800, color: '#C49A6C' }}>
           {reward.pointsRequired.toLocaleString('vi-VN')}
         </p>

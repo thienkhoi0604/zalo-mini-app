@@ -5,6 +5,7 @@ import { QrCode, Bell } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import { useVouchersStore } from '@/store/vouchers';
 import { ACTIVE_THEME } from '@/constants/theme';
+import CoinIcon from '@/components/ui/coin-icon';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -131,7 +132,7 @@ export const HeroHeader: FC = () => {
               >
                 {/* GreenCoin */}
                 <Box flex className="items-center" style={{ gap: 6, flex: 1 }}>
-                  <span style={{ fontSize: 18 }}>🪙</span>
+                  <CoinIcon size={24} />
                   <Box>
                     <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
                       {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}

@@ -3,6 +3,7 @@ import { Box } from 'zmp-ui';
 import { Zap } from 'lucide-react';
 import { CheckinHistoryItem } from '@/types/checkin';
 import { useUserStore } from '@/store/user';
+import CoinIcon from '@/components/ui/coin-icon';
 
 const SummaryBanner: FC<{ history: CheckinHistoryItem[] }> = ({ history }) => {
   const totalPoints = history.reduce((sum, h) => sum + h.pointEarned, 0);
@@ -39,7 +40,7 @@ const SummaryBanner: FC<{ history: CheckinHistoryItem[] }> = ({ history }) => {
       <Box flex className="items-center justify-between">
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>GreenCoin hiện tại</p>
         <Box flex className="items-center" style={{ gap: 5 }}>
-          <span style={{ fontSize: 15 }}>🪙</span>
+          <CoinIcon size={20} />
           <p style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>
             {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
           </p>

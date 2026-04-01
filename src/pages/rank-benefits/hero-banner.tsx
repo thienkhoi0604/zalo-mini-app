@@ -3,6 +3,7 @@ import { Box } from 'zmp-ui';
 import { Star } from 'lucide-react';
 import { PointWallet } from '@/types/point-wallet';
 import { TierConfig } from './tiers';
+import CoinIcon from '@/components/ui/coin-icon';
 
 interface Props {
   tier: TierConfig;
@@ -80,7 +81,7 @@ const HeroBanner: FC<Props> = ({ tier, pointWallet }) => (
       <Box style={{ flex: 1, borderRight: '1px solid rgba(255,255,255,0.3)', paddingRight: 10 }}>
         <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', marginBottom: 3 }}>Xu khả dụng</p>
         <Box flex className="items-center" style={{ gap: 5 }}>
-          <span style={{ fontSize: 16 }}>🪙</span>
+          <CoinIcon size={20} />
           <p style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>
             {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
           </p>
