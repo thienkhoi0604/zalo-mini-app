@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { ArrowRight, Gift, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
-import { useRewardsStore } from '@/store/vouchers';
-import { Reward } from '@/types/voucher';
-import RewardItemCard from './item-card';
+import { useVouchersStore } from '@/store/vouchers';
+import { Voucher } from '@/types/voucher';
+import VoucherItemCard from './item-card';
 import { useNavigate } from 'react-router';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -45,7 +45,7 @@ const CATEGORY_CONFIGS: CategoryConfig[] = [
 
 interface CategoryRowProps {
   category: string;
-  cards: Reward[];
+  cards: Voucher[];
   config: CategoryConfig;
 }
 
@@ -145,7 +145,7 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
         }}
       >
         {visibleCards.map((card) => (
-          <RewardItemCard
+          <VoucherItemCard
             key={card.id}
             card={card}
             onClick={(c) => navigate(`/rewards/${c.id}`)}
@@ -189,8 +189,8 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
 
 // ─── Main List ────────────────────────────────────────────────────────────────
 
-const RewardsList: FC = () => {
-  const { getGroupedByCategory } = useRewardsStore();
+const VouchersList: FC = () => {
+  const { getGroupedByCategory } = useVouchersStore();
   const grouped = getGroupedByCategory();
   const categories = Object.keys(grouped).sort();
 
@@ -229,4 +229,4 @@ const RewardsList: FC = () => {
   );
 };
 
-export default RewardsList;
+export default VouchersList;

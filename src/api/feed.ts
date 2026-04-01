@@ -1,7 +1,7 @@
-import { FeedApiItem, GetFeedParams, GroupedFeedResult, Reward, StoreGroup } from '@/types/voucher';
+import { FeedApiItem, GetFeedParams, GroupedFeedResult, Voucher, StoreGroup } from '@/types/voucher';
 import axiosClient from './client';
 
-export function mapFeedItemToReward(item: FeedApiItem): Reward {
+export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
   const isStoreItem = item.sourceType === 'StoreItem';
   const validTo = item.validTo ? new Date(item.validTo) : null;
   const status: 'active' | 'expired' = validTo && validTo < new Date() ? 'expired' : 'active';
@@ -33,14 +33,14 @@ export function mapFeedItemToReward(item: FeedApiItem): Reward {
   };
 }
 
-export async function getFeedItems(params: GetFeedParams = {}): Promise<Reward[]> {
+export async function getFeedItems(params: GetFeedParams = {}): Promise<Voucher[]> {
   const { pageNumber = 1, pageSize = 50, type } = params;
   const { data } = await axiosClient.get<{
     data: { items: FeedApiItem[] };
   }>('/app/feed', {
     params: { pageNumber, pageSize, ...(type && { Type: type }) },
   });
-  return (data.data.items ?? []).map(mapFeedItemToReward);
+  return (data.data.items ?? []).map(mapFeedItemToVoucher);
 }
 
 interface RawStoreGroup {
@@ -60,15 +60,15 @@ export async function getFeedGrouped(): Promise<GroupedFeedResult> {
     };
   }>('/app/feed', { params: { Grouped: true } });
 
-  const globalRewards = (data.data.globalRewards ?? []).map(mapFeedItemToReward);
+  const globalVouchers = (data.data.globalRewards ?? []).map(mapFeedItemToVoucher);
   const stores: StoreGroup[] = (data.data.stores ?? []).map((s) => ({
     storeId: s.storeId,
     storeName: s.storeName,
     distanceKm: s.distanceKm,
     latitude: s.latitude,
     longitude: s.longitude,
-    items: s.items.map(mapFeedItemToReward),
+    items: s.items.map(mapFeedItemToVoucher),
   }));
 
-  return { globalRewards, stores };
+  return { globalVouchers, stores };
 }

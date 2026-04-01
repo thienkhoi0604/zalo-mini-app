@@ -2,9 +2,9 @@ import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { Globe, Store, Navigation } from 'lucide-react';
-import { useRewardsStore } from '@/store/vouchers';
-import { Reward, StoreGroup } from '@/types/voucher';
-import RewardItemCard from './item-card';
+import { useVouchersStore } from '@/store/vouchers';
+import { Voucher, StoreGroup } from '@/types/voucher';
+import VoucherItemCard from './item-card';
 import { ACTIVE_THEME } from '@/constants/theme';
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
@@ -56,7 +56,7 @@ const SectionSkeleton: FC = () => (
 
 // ─── Item thumbnails ───────────────────────────────────────────────────────────
 
-const ItemThumbnails: FC<{ items: Reward[] }> = ({ items }) => {
+const ItemThumbnails: FC<{ items: Voucher[] }> = ({ items }) => {
   const preview = items.slice(0, 3);
   return (
     <Box flex style={{ gap: 4 }}>
@@ -84,7 +84,7 @@ const ItemThumbnails: FC<{ items: Reward[] }> = ({ items }) => {
 
 // ─── Item row ──────────────────────────────────────────────────────────────────
 
-const ItemRow: FC<{ items: Reward[]; onItemClick: (r: Reward) => void }> = ({ items, onItemClick }) => (
+const ItemRow: FC<{ items: Voucher[]; onItemClick: (r: Voucher) => void }> = ({ items, onItemClick }) => (
   <Box
     flex
     style={{
@@ -98,15 +98,15 @@ const ItemRow: FC<{ items: Reward[]; onItemClick: (r: Reward) => void }> = ({ it
     }}
   >
     {items.map((item) => (
-      <RewardItemCard key={item.id} card={item} onClick={onItemClick} />
+      <VoucherItemCard key={item.id} card={item} onClick={onItemClick} />
     ))}
   </Box>
 );
 
 // ─── Global rewards section ────────────────────────────────────────────────────
 
-const GlobalSection: FC<{ rewards: Reward[]; onItemClick: (r: Reward) => void }> = ({ rewards, onItemClick }) => {
-  if (rewards.length === 0) return null;
+const GlobalSection: FC<{ vouchers: Voucher[]; onItemClick: (r: Voucher) => void }> = ({ vouchers, onItemClick }) => {
+  if (vouchers.length === 0) return null;
 
   const t = ACTIVE_THEME;
   const gradient = `linear-gradient(135deg, ${t.headerFrom} 0%, ${t.headerMid} 55%, ${t.headerTo} 100%)`;
@@ -163,12 +163,12 @@ const GlobalSection: FC<{ rewards: Reward[]; onItemClick: (r: Reward) => void }>
             borderRadius: 20, padding: '4px 10px',
           }}
         >
-          <p style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>{rewards.length} ưu đãi</p>
+          <p style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>{vouchers.length} ưu đãi</p>
         </Box>
       </Box>
 
       {/* Cards */}
-      <ItemRow items={rewards} onItemClick={onItemClick} />
+      <ItemRow items={vouchers} onItemClick={onItemClick} />
     </Box>
   );
 };
@@ -183,7 +183,7 @@ const STORE_ACCENTS = [
   { bar: 'linear-gradient(90deg,#14B8A6,#99F6E4)', bg: '#F0FDFA', border: '#99F6E4', icon: '#0F766E', dot: '#14B8A6' },
 ];
 
-const StoreSection: FC<{ group: StoreGroup; index: number; onItemClick: (r: Reward) => void }> = ({ group, index, onItemClick }) => {
+const StoreSection: FC<{ group: StoreGroup; index: number; onItemClick: (r: Voucher) => void }> = ({ group, index, onItemClick }) => {
   const accent = STORE_ACCENTS[index % STORE_ACCENTS.length];
 
   const distanceLabel = group.distanceKm != null
@@ -295,16 +295,16 @@ const EmptyState: FC = () => (
 
 const StoreTab: FC = () => {
   const navigate = useNavigate();
-  const { globalRewards, storeGroups, storeGroupsLoading, loadStoreGroups } = useRewardsStore();
+  const { globalVouchers, storeGroups, storeGroupsLoading, loadStoreGroups } = useVouchersStore();
 
   useEffect(() => {
-    if (storeGroups.length === 0 && globalRewards.length === 0) {
+    if (storeGroups.length === 0 && globalVouchers.length === 0) {
       loadStoreGroups();
     }
   }, []);
 
-  const handleItemClick = (r: Reward) => navigate(`/rewards/${r.id}`);
-  const isEmpty = !storeGroupsLoading && storeGroups.length === 0 && globalRewards.length === 0;
+  const handleItemClick = (r: Voucher) => navigate(`/rewards/${r.id}`);
+  const isEmpty = !storeGroupsLoading && storeGroups.length === 0 && globalVouchers.length === 0;
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 6, paddingBottom: 12 }}>
@@ -317,7 +317,7 @@ const StoreTab: FC = () => {
         <EmptyState />
       ) : (
         <>
-          <GlobalSection rewards={globalRewards} onItemClick={handleItemClick} />
+          <GlobalSection vouchers={globalVouchers} onItemClick={handleItemClick} />
           {storeGroups.map((group, i) => (
             <StoreSection key={group.storeId} group={group} index={i} onItemClick={handleItemClick} />
           ))}

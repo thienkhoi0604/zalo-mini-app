@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Reward } from '@/types/voucher';
+import { Voucher } from '@/types/voucher';
 
 interface Props {
-  card: Reward;
-  onClick?: (card: Reward) => void;
+  card: Voucher;
+  onClick?: (card: Voucher) => void;
 }
 
 const FALLBACK = 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
@@ -18,7 +18,7 @@ function getTypeAccent(type: string) {
   }
 }
 
-const RewardItemCard: FC<Props> = ({ card, onClick }) => {
+const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
   const expired = card.status === 'expired';
   const typeAccent = getTypeAccent(card.type);
   const lowStock = card.stock != null && card.stock > 0 && card.stock <= 10;
@@ -187,4 +187,4 @@ const RewardItemCard: FC<Props> = ({ card, onClick }) => {
   );
 };
 
-export default RewardItemCard;
+export default VoucherItemCard;

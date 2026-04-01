@@ -1,11 +1,11 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { Gift } from 'lucide-react';
-import { useRewardsStore } from '@/store/vouchers';
+import { useVouchersStore } from '@/store/vouchers';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import VoucherCard from './voucher-card';
 import VoucherDetailSheet from './voucher-detail-sheet';
-import { UserReward } from '@/types/voucher';
+import { UserVoucher } from '@/types/voucher';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // ─── Tab ─────────────────────────────────────────────────────────────────────
@@ -129,25 +129,25 @@ const LoadingMore: FC = () => (
 
 const MyVouchersPage: FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('unused');
-  const [selectedVoucher, setSelectedVoucher] = useState<UserReward | null>(null);
-  const { userRewards, userRewardsLoading: loading, userRewardsHasMore, loadUserRewards, loadMoreUserRewards } = useRewardsStore();
+  const [selectedVoucher, setSelectedVoucher] = useState<UserVoucher | null>(null);
+  const { userVouchers, userVouchersLoading: loading, userVouchersHasMore, loadUserVouchers, loadMoreUserVouchers } = useVouchersStore();
 
   useEffect(() => {
-    loadUserRewards();
+    loadUserVouchers();
   }, []);
 
-  const sentinelRef = useInfiniteScroll(loadMoreUserRewards, userRewardsHasMore, loading);
+  const sentinelRef = useInfiniteScroll(loadMoreUserVouchers, userVouchersHasMore, loading);
 
-  const unusedVouchers = userRewards.filter((v) => v.usedAt === null);
-  const usedVouchers = userRewards.filter((v) => v.usedAt !== null);
+  const unusedVouchers = userVouchers.filter((v) => v.usedAt === null);
+  const usedVouchers = userVouchers.filter((v) => v.usedAt !== null);
   const activeVouchers = activeTab === 'unused' ? unusedVouchers : usedVouchers;
 
-  const isInitialLoad = loading && userRewards.length === 0;
-  const isLoadingMore = loading && userRewards.length > 0;
+  const isInitialLoad = loading && userVouchers.length === 0;
+  const isLoadingMore = loading && userVouchers.length > 0;
 
   return (
     <Page className="flex-1 flex flex-col overflow-hidden">
-      <PullToRefresh onRefresh={loadUserRewards} className="flex-1">
+      <PullToRefresh onRefresh={loadUserVouchers} className="flex-1">
 
         {/* Tabs */}
         <Box className="px-4 pt-3 pb-3">
@@ -195,7 +195,7 @@ const MyVouchersPage: FC = () => {
 
               <div ref={sentinelRef} style={{ height: 1 }} />
 
-              {!userRewardsHasMore && activeVouchers.length > 0 && (
+              {!userVouchersHasMore && activeVouchers.length > 0 && (
                 <p style={{ textAlign: 'center', fontSize: 12, color: '#D1D5DB', padding: '4px 0' }}>
                   Đã hiển thị tất cả voucher
                 </p>

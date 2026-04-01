@@ -1,4 +1,4 @@
-export interface RewardStore {
+export interface VoucherStore {
   id?: string;
   name: string;
   address?: string;
@@ -60,17 +60,17 @@ export interface StoreGroup {
   distanceKm: number | null;
   latitude: number | null;
   longitude: number | null;
-  items: Reward[];
+  items: Voucher[];
 }
 
 export interface GroupedFeedResult {
-  globalRewards: Reward[];
+  globalVouchers: Voucher[];
   stores: StoreGroup[];
 }
 
-// ─── Legacy Reward detail API (single-item endpoint) ──────────────────────────
+// ─── Legacy Voucher detail API (single-item endpoint) ──────────────────────────
 
-export interface RewardApiItem {
+export interface VoucherApiItem {
   id: string;
   code: string;
   name: string;
@@ -87,14 +87,14 @@ export interface RewardApiItem {
   storeNames: string[];
 }
 
-// ─── Unified internal Reward type ─────────────────────────────────────────────
+// ─── Unified internal Voucher type ─────────────────────────────────────────────
 
-export type RewardSource = 'Reward' | 'StoreItem';
+export type VoucherSource = 'Reward' | 'StoreItem';
 
-/** GreenCoin = wallet balance spent on StoreItems; Points = earned from QR check-ins, spent on Rewards */
-export type RewardCostCurrency = 'GreenCoin' | 'Points';
+/** GreenCoin = wallet balance spent on StoreItems; Points = earned from QR check-ins, spent on Vouchers */
+export type VoucherCostCurrency = 'GreenCoin' | 'Points';
 
-export interface Reward {
+export interface Voucher {
   id: string;
   code: string;
   name: string;
@@ -104,14 +104,14 @@ export interface Reward {
   thumbnailImageUrl: string;
   /** itemTypeTranslate from the feed — used as grouping key and route param */
   category: string;
-  source: RewardSource;
+  source: VoucherSource;
   brandName?: string;
   brandLogoUrl?: string;
-  stores?: RewardStore[];
+  stores?: VoucherStore[];
   appliesToAll?: boolean;
   terms?: string;
-  /** Currency required to redeem: GreenCoin (store items via coinCost) or Points (rewards via pointCost) */
-  costCurrency: RewardCostCurrency;
+  /** Currency required to redeem: GreenCoin (store items via coinCost) or Points (vouchers via pointCost) */
+  costCurrency: VoucherCostCurrency;
   /** Cost in the currency indicated by costCurrency */
   pointsRequired: number;
   /** Original price (store items only) */
@@ -125,7 +125,7 @@ export interface Reward {
   status: 'active' | 'expired';
 }
 
-export function getRewardTypeLabel(type: string): string {
+export function getVoucherTypeLabel(type: string): string {
   switch (type) {
     case FEED_ITEM_TYPES.VOUCHER:       return 'Voucher điện tử';
     case FEED_ITEM_TYPES.PHYSICAL_ITEM: return 'Quà hiện vật';
@@ -134,29 +134,29 @@ export function getRewardTypeLabel(type: string): string {
   }
 }
 
-// ─── User Rewards (my-vouchers) ────────────────────────────────────────────────
+// ─── User Vouchers (my-vouchers) ────────────────────────────────────────────────
 
-export type UserRewardItemType = 'Reward' | 'Product';
+export type UserVoucherItemType = 'Reward' | 'Product';
 
-export interface UserReward {
+export interface UserVoucher {
   id: string;
   code: string;
   rewardName: string;
   storeName: string | null;
   storeItemId: string | null;
-  itemType: UserRewardItemType;
+  itemType: UserVoucherItemType;
   status: string;
   issuedAt: string;
   expiredAt: string;
   usedAt: string | null;
 }
 
-export interface GetUserRewardsParams {
+export interface GetUserVouchersParams {
   pageNumber?: number;
   pageSize?: number;
 }
 
-export interface RewardsFilter {
+export interface VouchersFilter {
   category?: string;
   search?: string;
 }

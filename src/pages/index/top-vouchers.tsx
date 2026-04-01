@@ -2,8 +2,8 @@ import React, { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Gift, ChevronRight } from 'lucide-react';
-import { useRewardsStore } from '@/store/vouchers';
-import { Reward, getRewardTypeLabel } from '@/types/voucher';
+import { useVouchersStore } from '@/store/vouchers';
+import { Voucher, getVoucherTypeLabel } from '@/types/voucher';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -24,7 +24,7 @@ const CardSkeleton: FC = () => (
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-const VoucherCard: FC<{ reward: Reward; onClick: () => void }> = ({ reward, onClick }) => (
+const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onClick }) => (
   <Box
     className="flex-shrink-0 bg-white rounded-2xl overflow-hidden cursor-pointer"
     style={{ width: 140, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
@@ -74,7 +74,7 @@ const VoucherCard: FC<{ reward: Reward; onClick: () => void }> = ({ reward, onCl
           <Box className="rounded-full flex-shrink-0" style={{ width: 14, height: 14, background: '#C49A6C' }} />
         )}
         <p className="truncate" style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600 }}>
-          {reward.brandName || getRewardTypeLabel(reward.type)}
+          {reward.brandName || getVoucherTypeLabel(reward.type)}
         </p>
       </Box>
 
@@ -111,17 +111,17 @@ const VoucherCard: FC<{ reward: Reward; onClick: () => void }> = ({ reward, onCl
 
 export const TopVouchers: FC = () => {
   const navigate = useNavigate();
-  const { allRewards, loading, loadAllRewards } = useRewardsStore();
+  const { allVouchers, loading, loadAllVouchers } = useVouchersStore();
 
   useEffect(() => {
-    if (!allRewards.length) loadAllRewards();
+    if (!allVouchers.length) loadAllVouchers();
   }, []);
 
-  const topRewards = allRewards
+  const topVouchers = allVouchers
     .filter((r) => r.status === 'active')
     .slice(0, 8);
 
-  const isLoading = loading && allRewards.length === 0;
+  const isLoading = loading && allVouchers.length === 0;
 
   return (
     <Box className="py-4">
@@ -167,9 +167,9 @@ export const TopVouchers: FC = () => {
       >
         {isLoading ? (
           [1, 2, 3].map((i) => <CardSkeleton key={i} />)
-        ) : topRewards.length === 0 ? null : (
+        ) : topVouchers.length === 0 ? null : (
           <>
-            {topRewards.map((reward) => (
+            {topVouchers.map((reward) => (
               <VoucherCard
                 key={reward.id}
                 reward={reward}

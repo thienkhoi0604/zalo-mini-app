@@ -6,8 +6,8 @@ import background from '@/assets/images/background.png';
 import { Navigation } from './navigation';
 import HomePage from '@/pages/index';
 import ProfilePage from '@/pages/profile';
-import RewardsPage from '@/pages/vouchers';
-import RewardDetailPage from '@/pages/vouchers/detail';
+import VouchersPage from '@/pages/vouchers';
+import VoucherDetailPage from '@/pages/vouchers/detail';
 import CategoryDetailPage from '@/pages/vouchers/category-feed';
 import QRCodePage from '@/pages/qr-code';
 import StationsPage from '@/pages/stations';
@@ -181,13 +181,13 @@ export const Layout: FC = () => {
           <Route path="/register" element={<RegisterPage />} />
 
           {/* Rewards — category phải đứng trước :id để tránh match nhầm */}
-          <Route path="/rewards" element={<RewardsPage />} />
+          <Route path="/rewards" element={<VouchersPage />} />
           <Route path="/rewards/category/:category" element={<CategoryDetailPage />} />
           <Route
             path="/rewards/:id"
             element={
               <ProtectedRoute>
-                <RewardDetailPage />
+                <VoucherDetailPage />
               </ProtectedRoute>
             }
           />

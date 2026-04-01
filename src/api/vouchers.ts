@@ -1,8 +1,8 @@
-import { Reward, UserReward, RewardApiItem, GetUserRewardsParams } from '@/types/voucher';
+import { Voucher, UserVoucher, VoucherApiItem, GetUserVouchersParams } from '@/types/voucher';
 import { PaginatedApiResponse } from '@/types/common';
 import axiosClient from './client';
 
-function mapApiItemToReward(item: RewardApiItem): Reward {
+function mapApiItemToVoucher(item: VoucherApiItem): Voucher {
   return {
     id: item.id,
     code: item.code,
@@ -28,35 +28,35 @@ function mapApiItemToReward(item: RewardApiItem): Reward {
   };
 }
 
-export async function getRewardById(id: string): Promise<Reward | null> {
+export async function getVoucherById(id: string): Promise<Voucher | null> {
   try {
-    const { data } = await axiosClient.get<{ data: RewardApiItem }>(`/Rewards/${id}`);
-    return mapApiItemToReward(data.data);
+    const { data } = await axiosClient.get<{ data: VoucherApiItem }>(`/Rewards/${id}`);
+    return mapApiItemToVoucher(data.data);
   } catch {
     return null;
   }
 }
 
-export interface UserRewardsResponse extends PaginatedApiResponse<UserReward> {
+export interface UserVouchersResponse extends PaginatedApiResponse<UserVoucher> {
   unusedCount: number;
 }
 
-export async function getUserRewards(
-  params: GetUserRewardsParams = {},
-): Promise<UserRewardsResponse> {
+export async function getUserVouchers(
+  params: GetUserVouchersParams = {},
+): Promise<UserVouchersResponse> {
   const { pageNumber = 1, pageSize = 5 } = params;
   try {
     const { data } = await axiosClient.get<{
       success: boolean;
       data: {
-        items: UserReward[];
+        items: UserVoucher[];
         pageNumber: number;
         pageSize: number;
         totalCount: number;
         hasNext: boolean;
       };
     }>('/Rewards/my-vouchers', { params: { pageNumber, pageSize } });
-    const items: UserReward[] = data.data.items ?? [];
+    const items: UserVoucher[] = data.data.items ?? [];
     return {
       success: true,
       unusedCount: items.filter((v) => v.usedAt === null).length,
@@ -79,7 +79,7 @@ export async function getUserRewards(
 
 export type RedeemItemType = 'Reward' | 'Product';
 
-export async function redeemReward(
+export async function redeemVoucher(
   rewardId: string,
   itemType: RedeemItemType,
 ): Promise<{ pointsDeducted: number }> {

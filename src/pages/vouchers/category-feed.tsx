@@ -2,8 +2,8 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
 import { Gift, ArrowUpDown, TrendingUp, TrendingDown, Tag, CheckCircle, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
-import { useRewardsStore } from '@/store/vouchers';
-import { Reward, getRewardTypeLabel } from '@/types/voucher';
+import { useVouchersStore } from '@/store/vouchers';
+import { Voucher, getVoucherTypeLabel } from '@/types/voucher';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import PageHeader from '@/components/ui/page-header';
 import { ACTIVE_THEME } from '@/constants/theme';
@@ -46,7 +46,7 @@ const CardSkeleton: FC = () => (
 
 // ─── Reward Card (grid) ────────────────────────────────────────────────────────
 
-const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ card, onClick }) => {
+const VoucherCard: FC<{ card: Voucher; onClick: (card: Voucher) => void }> = ({ card, onClick }) => {
   const expired = card.status === 'expired';
   const chip = getTypeChipStyle(card.type);
   const lowStock = card.stock != null && card.stock > 0 && card.stock <= 10;
@@ -142,7 +142,7 @@ const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ car
           }}
         >
           <p style={{ fontSize: 9, color: chip.text, fontWeight: 700, letterSpacing: 0.3 }}>
-            {getRewardTypeLabel(card.type)}
+            {getVoucherTypeLabel(card.type)}
           </p>
         </Box>
 
@@ -207,24 +207,24 @@ const CategoryDetailPage: FC = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
-  const { getGroupedByCategory, loadAllRewards, allRewards, loading } = useRewardsStore();
+  const { getGroupedByCategory, loadAllVouchers, allVouchers, loading } = useVouchersStore();
   const [sortOrder, setSortOrder] = useState<SortOrder>('default');
 
   const decodedCategory = decodeURIComponent(category || '');
 
   // Detect item type from the category string
-  const itemType = allRewards.find((r) => r.category === decodedCategory)?.type ?? '';
+  const itemType = allVouchers.find((r) => r.category === decodedCategory)?.type ?? '';
 
   useEffect(() => {
-    if (!allRewards.length) {
-      loadAllRewards().catch(() => {
+    if (!allVouchers.length) {
+      loadAllVouchers().catch(() => {
         openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
       });
     }
   }, []);
 
   const grouped = getGroupedByCategory();
-  const rawCards: Reward[] = grouped[decodedCategory] || [];
+  const rawCards: Voucher[] = grouped[decodedCategory] || [];
 
   const cards = useMemo(() => {
     if (sortOrder === 'asc')  return [...rawCards].sort((a, b) => a.pointsRequired - b.pointsRequired);
@@ -236,7 +236,7 @@ const CategoryDetailPage: FC = () => {
   const activeCount = cards.filter((c) => c.status === 'active').length;
 
   const handleRefresh = async () => {
-    await loadAllRewards().catch(() => {
+    await loadAllVouchers().catch(() => {
       openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
     });
   };
@@ -370,7 +370,7 @@ const CategoryDetailPage: FC = () => {
             </Box>
           ) : (
             cards.map((card) => (
-              <RewardCard key={card.id} card={card} onClick={(c) => navigate(`/rewards/${c.id}`)} />
+              <VoucherCard key={card.id} card={card} onClick={(c) => navigate(`/rewards/${c.id}`)} />
             ))
           )}
         </div>

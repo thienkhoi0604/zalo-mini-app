@@ -1,9 +1,9 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { LayoutGrid, Store } from 'lucide-react';
-import { useRewardsStore } from '@/store/vouchers';
+import { useVouchersStore } from '@/store/vouchers';
 import { useUserStore } from '@/store/user';
-import RewardsList from './item-cards-list';
+import VouchersList from './item-cards-list';
 import StoreTab from './store-feed';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import PageHeader from '@/components/ui/page-header';
@@ -117,17 +117,17 @@ const TabSwitcher: FC<TabSwitcherProps> = ({ active, onChange }) => {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-const RewardsPage: FC = () => {
+const VouchersPage: FC = () => {
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
   const [activeTab, setActiveTab] = useState<TabKey>('category');
-  const { loading, loadAllRewards, loadStoreGroups } = useRewardsStore();
+  const { loading, loadAllVouchers, loadStoreGroups } = useVouchersStore();
   const { pointWallet, isAuthenticated } = useUserStore();
 
   useEffect(() => {
     const init = async () => {
       try {
-        await loadAllRewards();
+        await loadAllVouchers();
         setInitialized(true);
       } catch {
         openSnackbar({ text: 'Không thể tải danh sách voucher', type: 'error' });
@@ -138,7 +138,7 @@ const RewardsPage: FC = () => {
   }, [isAuthenticated]);
 
   const handleRefresh = async () => {
-    await Promise.all([loadAllRewards(), loadStoreGroups()]);
+    await Promise.all([loadAllVouchers(), loadStoreGroups()]);
   };
 
   return (
@@ -188,7 +188,7 @@ const RewardsPage: FC = () => {
             </Box>
           ) : (
             <div className="py-3">
-              <RewardsList />
+              <VouchersList />
             </div>
           )
         ) : (
@@ -200,4 +200,4 @@ const RewardsPage: FC = () => {
   );
 };
 
-export default RewardsPage;
+export default VouchersPage;

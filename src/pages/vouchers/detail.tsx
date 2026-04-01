@@ -2,8 +2,8 @@ import React, { FC, useEffect, useState } from 'react';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
 import { MapPin, Calendar, FileText, Store, AlertCircle, Globe, Zap, ChevronRight } from 'lucide-react';
-import { useRewardsStore } from '@/store/vouchers';
-import { getRewardTypeLabel } from '@/types/voucher';
+import { useVouchersStore } from '@/store/vouchers';
+import { getVoucherTypeLabel } from '@/types/voucher';
 import { useUserStore } from '@/store/user';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 
@@ -140,26 +140,26 @@ const SectionCard: FC<{ title: string; icon: React.ReactNode; children: React.Re
 
 // ─── Detail Page ──────────────────────────────────────────────────────────────
 
-const RewardDetailPage: FC = () => {
+const VoucherDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation() as { state?: { owned?: boolean } };
   const owned = location.state?.owned === true;
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
-  const { allRewards, loading, loadRewardById, redeemReward, redeeming } = useRewardsStore();
+  const { allVouchers, loading, loadVoucherById, redeemVoucher, redeeming } = useVouchersStore();
   const { pointWallet } = useUserStore();
   const [confirmVisible, setConfirmVisible] = useState(false);
 
   useEffect(() => {
-    if (id) loadRewardById(id).catch(() => openSnackbar({ text: 'Không thể tải thông tin', type: 'error' }));
+    if (id) loadVoucherById(id).catch(() => openSnackbar({ text: 'Không thể tải thông tin', type: 'error' }));
   }, [id]);
 
-  const card = allRewards.find((c) => c.id === id);
+  const card = allVouchers.find((c) => c.id === id);
 
   const handleBuy = async () => {
     if (!id) return;
     try {
-      await redeemReward(id);
+      await redeemVoucher(id);
       setConfirmVisible(false);
       openSnackbar({ text: `Đổi ${card?.costCurrency ?? 'GreenCoin'} thành công! Voucher đã được thêm vào tài khoản.`, type: 'success' });
       setTimeout(() => navigate('/my-vouchers', { replace: true }), 1200);
@@ -208,7 +208,7 @@ const RewardDetailPage: FC = () => {
   const hasEnough = userPoints >= card.pointsRequired;
 
   const handleRefresh = async () => {
-    if (id) await loadRewardById(id).catch(() => {});
+    if (id) await loadVoucherById(id).catch(() => {});
   };
 
   return (
@@ -246,7 +246,7 @@ const RewardDetailPage: FC = () => {
               padding: '4px 12px',
             }}
           >
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>{getRewardTypeLabel(card.type)}</p>
+            <p style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>{getVoucherTypeLabel(card.type)}</p>
           </Box>
         </Box>
 
@@ -507,4 +507,4 @@ const RewardDetailPage: FC = () => {
   );
 };
 
-export default RewardDetailPage;
+export default VoucherDetailPage;

@@ -3,7 +3,7 @@ import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { Car, Gift, History, QrCode, ShieldCheck, UserPlus2 } from 'lucide-react';
 import { useUserStore } from '@/store/user';
-import { useRewardsStore } from '@/store/vouchers';
+import { useVouchersStore } from '@/store/vouchers';
 import { fetchQRSession, fetchReferralQR } from '@/api/user';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
@@ -37,11 +37,11 @@ const QR_SHEET_CONFIG: Record<
 const Personal: FC = () => {
   const navigate = useNavigate();
   const { user, pointWallet } = useUserStore();
-  const { loadUserRewards } = useRewardsStore();
+  const { loadUserVouchers } = useVouchersStore();
   const [activeQRSheet, setActiveQRSheet] = useState<QRSheetType>(null);
 
   useEffect(() => {
-    loadUserRewards();
+    loadUserVouchers();
   }, []);
 
   const isVehicleApproved = pointWallet?.vehicleStatus?.toLowerCase() === 'approved';
@@ -123,12 +123,12 @@ const Personal: FC = () => {
 
 const ProfilePage: FC = () => {
   const { loadPointWallet } = useUserStore();
-  const { loadUserRewards } = useRewardsStore();
+  const { loadUserVouchers } = useVouchersStore();
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
       <PullToRefresh
-        onRefresh={async () => { await Promise.all([loadPointWallet(), loadUserRewards()]); }}
+        onRefresh={async () => { await Promise.all([loadPointWallet(), loadUserVouchers()]); }}
         className="flex-1"
       >
         <Personal />

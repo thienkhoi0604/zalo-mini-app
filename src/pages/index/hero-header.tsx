@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { QrCode, Bell } from 'lucide-react';
 import { useUserStore } from '@/store/user';
-import { useRewardsStore } from '@/store/vouchers';
+import { useVouchersStore } from '@/store/vouchers';
 import { ACTIVE_THEME } from '@/constants/theme';
 
 // ─── Component ────────────────────────────────────────────────────────────────
@@ -11,11 +11,11 @@ import { ACTIVE_THEME } from '@/constants/theme';
 export const HeroHeader: FC = () => {
   const navigate = useNavigate();
   const { user, pointWallet, isAuthenticated } = useUserStore();
-  const { userRewardsUnusedCount } = useRewardsStore();
+  const { userVouchersUnusedCount } = useVouchersStore();
 
   const firstName = user?.fullName?.split(' ').pop() ?? 'bạn';
   const rankName = user?.rank?.currentRankName;
-  const voucherCount = userRewardsUnusedCount ?? 0;
+  const voucherCount = userVouchersUnusedCount ?? 0;
 
   const t = ACTIVE_THEME;
   const gradient = `linear-gradient(135deg, ${t.headerFrom} 0%, ${t.headerMid} 55%, ${t.headerTo} 100%)`;

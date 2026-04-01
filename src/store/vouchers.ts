@@ -1,140 +1,140 @@
 import { create } from 'zustand';
-import { Reward, UserReward, FEED_ITEM_TYPES, StoreGroup, GroupedFeedResult } from '@/types/voucher';
+import { Voucher, UserVoucher, FEED_ITEM_TYPES, StoreGroup, GroupedFeedResult } from '@/types/voucher';
 import { getFeedItems, getFeedGrouped } from '@/api/feed';
-import { getRewardById, getUserRewards, redeemReward } from '@/api/vouchers';
+import { getVoucherById, getUserVouchers, redeemVoucher } from '@/api/vouchers';
 import { useUserStore } from '@/store/user';
 
-const USER_REWARDS_PAGE_SIZE = 5;
+const USER_VOUCHERS_PAGE_SIZE = 5;
 
-// itemTypes used to load rewards and store items.
+// itemTypes used to load vouchers and store items.
 // These are defined here separately; the actual values will be driven by
 // Business Logic in the future.
-const REWARD_ITEM_TYPES = [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM] as const;
+const VOUCHER_ITEM_TYPES = [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM] as const;
 const STORE_ITEM_TYPES  = [FEED_ITEM_TYPES.FNB_PRODUCT] as const;
 
-type RewardsStore = {
-  allRewards: Reward[];
-  userRewards: UserReward[];
-  userRewardsPage: number;
-  userRewardsHasMore: boolean;
-  userRewardsUnusedCount: number;
-  /** Loading flag for allRewards / reward detail / storeGroups */
+type VouchersStore = {
+  allVouchers: Voucher[];
+  userVouchers: UserVoucher[];
+  userVouchersPage: number;
+  userVouchersHasMore: boolean;
+  userVouchersUnusedCount: number;
+  /** Loading flag for allVouchers / voucher detail / storeGroups */
   loading: boolean;
-  /** Loading flag exclusively for userRewards (my-vouchers) */
-  userRewardsLoading: boolean;
-  selectedReward: Reward | null;
+  /** Loading flag exclusively for userVouchers (my-vouchers) */
+  userVouchersLoading: boolean;
+  selectedVoucher: Voucher | null;
   redeeming: boolean;
 
   // Grouped (by-store) feed
-  globalRewards: Reward[];
+  globalVouchers: Voucher[];
   storeGroups: StoreGroup[];
   storeGroupsLoading: boolean;
 
-  loadAllRewards: () => Promise<void>;
-  loadRewardById: (id: string) => Promise<void>;
-  loadUserRewards: () => Promise<void>;
-  loadMoreUserRewards: () => Promise<void>;
+  loadAllVouchers: () => Promise<void>;
+  loadVoucherById: (id: string) => Promise<void>;
+  loadUserVouchers: () => Promise<void>;
+  loadMoreUserVouchers: () => Promise<void>;
   loadStoreGroups: () => Promise<void>;
-  selectReward: (reward: Reward | null) => void;
-  redeemReward: (rewardId: string) => Promise<void>;
-  getGroupedByCategory: () => Record<string, Reward[]>;
+  selectVoucher: (voucher: Voucher | null) => void;
+  redeemVoucher: (voucherId: string) => Promise<void>;
+  getGroupedByCategory: () => Record<string, Voucher[]>;
 };
 
-export const useRewardsStore = create<RewardsStore>((set, get) => ({
-  allRewards: [],
-  userRewards: [],
-  userRewardsPage: 0,
-  userRewardsHasMore: true,
-  userRewardsUnusedCount: 0,
+export const useVouchersStore = create<VouchersStore>((set, get) => ({
+  allVouchers: [],
+  userVouchers: [],
+  userVouchersPage: 0,
+  userVouchersHasMore: true,
+  userVouchersUnusedCount: 0,
   loading: false,
-  userRewardsLoading: false,
-  selectedReward: null,
+  userVouchersLoading: false,
+  selectedVoucher: null,
   redeeming: false,
-  globalRewards: [],
+  globalVouchers: [],
   storeGroups: [],
   storeGroupsLoading: false,
 
-  loadAllRewards: async () => {
+  loadAllVouchers: async () => {
     set({ loading: true });
     try {
       const results = await Promise.all([
-        ...REWARD_ITEM_TYPES.map((type) =>
+        ...VOUCHER_ITEM_TYPES.map((type) =>
           getFeedItems({ pageNumber: 1, pageSize: 50, type }),
         ),
         ...STORE_ITEM_TYPES.map((type) =>
           getFeedItems({ pageNumber: 1, pageSize: 50, type }),
         ),
       ]);
-      set({ allRewards: ([] as Reward[]).concat(...results), loading: false });
+      set({ allVouchers: ([] as Voucher[]).concat(...results), loading: false });
     } catch (error) {
-      console.error('Failed to load rewards:', error);
+      console.error('Failed to load vouchers:', error);
       set({ loading: false });
       throw error;
     }
   },
 
-  loadRewardById: async (id: string) => {
+  loadVoucherById: async (id: string) => {
     set({ loading: true });
     try {
-      const existing = get().allRewards.find((r) => r.id === id);
+      const existing = get().allVouchers.find((r) => r.id === id);
       if (existing) {
         set({ loading: false });
         return;
       }
-      const reward = await getRewardById(id);
-      if (!reward) {
+      const voucher = await getVoucherById(id);
+      if (!voucher) {
         set({ loading: false });
         return;
       }
       set((state) => ({
-        allRewards: [...state.allRewards, reward],
+        allVouchers: [...state.allVouchers, voucher],
         loading: false,
       }));
     } catch (error) {
-      console.error('Failed to load reward detail:', error);
+      console.error('Failed to load voucher detail:', error);
       set({ loading: false });
       throw error;
     }
   },
 
-  loadUserRewards: async () => {
-    if (get().userRewardsLoading) return;
-    set({ userRewardsLoading: true });
+  loadUserVouchers: async () => {
+    if (get().userVouchersLoading) return;
+    set({ userVouchersLoading: true });
     try {
-      const res = await getUserRewards({ pageNumber: 1, pageSize: USER_REWARDS_PAGE_SIZE });
+      const res = await getUserVouchers({ pageNumber: 1, pageSize: USER_VOUCHERS_PAGE_SIZE });
       set({
-        userRewards: res.data.items ?? [],
-        userRewardsPage: 1,
-        userRewardsHasMore: res.data.hasNext ?? false,
-        userRewardsUnusedCount: res.unusedCount,
+        userVouchers: res.data.items ?? [],
+        userVouchersPage: 1,
+        userVouchersHasMore: res.data.hasNext ?? false,
+        userVouchersUnusedCount: res.unusedCount,
       });
     } catch (error) {
-      console.error('Failed to load user rewards:', error);
+      console.error('Failed to load user vouchers:', error);
     } finally {
-      set({ userRewardsLoading: false });
+      set({ userVouchersLoading: false });
     }
   },
 
-  loadMoreUserRewards: async () => {
-    const { userRewardsLoading, userRewardsHasMore, userRewardsPage } = get();
-    if (userRewardsLoading || !userRewardsHasMore) return;
-    set({ userRewardsLoading: true });
+  loadMoreUserVouchers: async () => {
+    const { userVouchersLoading, userVouchersHasMore, userVouchersPage } = get();
+    if (userVouchersLoading || !userVouchersHasMore) return;
+    set({ userVouchersLoading: true });
     try {
-      const nextPage = userRewardsPage + 1;
-      const res = await getUserRewards({ pageNumber: nextPage, pageSize: USER_REWARDS_PAGE_SIZE });
+      const nextPage = userVouchersPage + 1;
+      const res = await getUserVouchers({ pageNumber: nextPage, pageSize: USER_VOUCHERS_PAGE_SIZE });
       set((state) => {
-        const merged = [...state.userRewards, ...(res.data.items ?? [])];
+        const merged = [...state.userVouchers, ...(res.data.items ?? [])];
         return {
-          userRewards: merged,
-          userRewardsPage: nextPage,
-          userRewardsHasMore: res.data.hasNext ?? false,
-          userRewardsUnusedCount: merged.filter((v) => v.usedAt === null).length,
+          userVouchers: merged,
+          userVouchersPage: nextPage,
+          userVouchersHasMore: res.data.hasNext ?? false,
+          userVouchersUnusedCount: merged.filter((v) => v.usedAt === null).length,
         };
       });
     } catch (error) {
-      console.error('Failed to load more user rewards:', error);
+      console.error('Failed to load more user vouchers:', error);
     } finally {
-      set({ userRewardsLoading: false });
+      set({ userVouchersLoading: false });
     }
   },
 
@@ -143,7 +143,7 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     set({ storeGroupsLoading: true });
     try {
       const result: GroupedFeedResult = await getFeedGrouped();
-      set({ globalRewards: result.globalRewards, storeGroups: result.stores });
+      set({ globalVouchers: result.globalVouchers, storeGroups: result.stores });
     } catch (error) {
       console.error('Failed to load store groups:', error);
     } finally {
@@ -151,30 +151,30 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     }
   },
 
-  selectReward: (reward) => set({ selectedReward: reward }),
+  selectVoucher: (voucher) => set({ selectedVoucher: voucher }),
 
-  redeemReward: async (rewardId: string) => {
+  redeemVoucher: async (voucherId: string) => {
     set({ redeeming: true });
     try {
-      const reward = get().allRewards.find((r) => r.id === rewardId);
-      await redeemReward(rewardId, reward?.source === 'StoreItem' ? 'Product' : 'Reward');
+      const voucher = get().allVouchers.find((r) => r.id === voucherId);
+      await redeemVoucher(voucherId, voucher?.source === 'StoreItem' ? 'Product' : 'Reward');
       await Promise.all([
-        get().loadUserRewards(),
+        get().loadUserVouchers(),
         useUserStore.getState().loadPointWallet(),
       ]);
       set({ redeeming: false });
     } catch (error) {
-      console.error('Failed to redeem reward:', error);
+      console.error('Failed to redeem voucher:', error);
       set({ redeeming: false });
       throw error;
     }
   },
 
   getGroupedByCategory: () => {
-    const grouped: Record<string, Reward[]> = {};
-    get().allRewards.forEach((reward) => {
-      if (!grouped[reward.category]) grouped[reward.category] = [];
-      grouped[reward.category].push(reward);
+    const grouped: Record<string, Voucher[]> = {};
+    get().allVouchers.forEach((voucher) => {
+      if (!grouped[voucher.category]) grouped[voucher.category] = [];
+      grouped[voucher.category].push(voucher);
     });
     return grouped;
   },

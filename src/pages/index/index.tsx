@@ -6,18 +6,18 @@ import { TopVouchers } from "./top-vouchers";
 import { TopStationsCarousel } from "./top-stations";
 import PullToRefresh from "@/components/ui/pull-to-refresh";
 import { useUserStore } from "@/store/user";
-import { useRewardsStore } from "@/store/vouchers";
+import { useVouchersStore } from "@/store/vouchers";
 import { useBannersStore } from "@/store/banners";
 import { ACTIVE_THEME } from "@/constants/theme";
 
 const HomePage: React.FunctionComponent = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const { loadPointWallet, isAuthenticated } = useUserStore();
-  const { loadAllRewards } = useRewardsStore();
+  const { loadAllVouchers } = useVouchersStore();
   const { loadBanners } = useBannersStore();
 
   const handleRefresh = async () => {
-    const tasks: Promise<void>[] = [loadAllRewards(), loadBanners()];
+    const tasks: Promise<void>[] = [loadAllVouchers(), loadBanners()];
     if (isAuthenticated) tasks.push(loadPointWallet());
     await Promise.all(tasks);
     setRefreshKey((k) => k + 1);
