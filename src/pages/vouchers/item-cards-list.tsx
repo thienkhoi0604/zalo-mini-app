@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { ArrowRight, Gift, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
-import { useRewardsStore } from '@/store/rewards';
-import { Reward } from '@/types/reward';
+import { useRewardsStore } from '@/store/vouchers';
+import { Reward } from '@/types/voucher';
 import RewardItemCard from './item-card';
 import { useNavigate } from 'react-router';
 
@@ -208,7 +208,7 @@ const RewardsList: FC = () => {
           <Gift size={36} color="#D97706" />
         </Box>
         <Box style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 6 }}>
-          <p style={{ fontSize: 16, fontWeight: 800, color: '#374151' }}>Chưa có phần thưởng</p>
+          <p style={{ fontSize: 16, fontWeight: 800, color: '#374151' }}>Chưa có voucher</p>
           <p style={{ fontSize: 13, color: '#9CA3AF' }}>Hãy quay lại sau nhé!</p>
         </Box>
       </Box>

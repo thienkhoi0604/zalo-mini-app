@@ -3,7 +3,7 @@ import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { Car, Gift, History, QrCode, ShieldCheck, UserPlus2 } from 'lucide-react';
 import { useUserStore } from '@/store/user';
-import { useRewardsStore } from '@/store/rewards';
+import { useRewardsStore } from '@/store/vouchers';
 import { fetchQRSession, fetchReferralQR } from '@/api/user';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';

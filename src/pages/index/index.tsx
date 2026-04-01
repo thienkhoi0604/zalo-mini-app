@@ -6,7 +6,7 @@ import { TopVouchers } from "./top-vouchers";
 import { TopStationsCarousel } from "./top-stations";
 import PullToRefresh from "@/components/ui/pull-to-refresh";
 import { useUserStore } from "@/store/user";
-import { useRewardsStore } from "@/store/rewards";
+import { useRewardsStore } from "@/store/vouchers";
 import { useBannersStore } from "@/store/banners";
 import { ACTIVE_THEME } from "@/constants/theme";
 

@@ -31,7 +31,7 @@ const TABS: Tab[] = [
   },
   {
     path: '/rewards',
-    label: 'Phần thưởng',
+    label: 'Voucher',
     icon: (active) => <Gift size={22} strokeWidth={active ? 2.2 : 1.8} fill={active ? 'currentColor' : 'none'} />,
   },
   {

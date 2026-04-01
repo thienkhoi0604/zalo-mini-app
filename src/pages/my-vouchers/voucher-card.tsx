@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { UserReward } from '@/types/reward';
+import { UserReward } from '@/types/voucher';
 import { formatDate } from '@/utils/date';
 import { Gift, Clock, ChevronRight, MapPin } from 'lucide-react';
 

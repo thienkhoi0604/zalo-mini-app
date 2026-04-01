@@ -2,8 +2,8 @@ import React, { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Gift, ChevronRight } from 'lucide-react';
-import { useRewardsStore } from '@/store/rewards';
-import { Reward, getRewardTypeLabel } from '@/types/reward';
+import { useRewardsStore } from '@/store/vouchers';
+import { Reward, getRewardTypeLabel } from '@/types/voucher';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 

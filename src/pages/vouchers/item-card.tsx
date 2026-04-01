@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Reward } from '@/types/reward';
+import { Reward } from '@/types/voucher';
 
 interface Props {
   card: Reward;

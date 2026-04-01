@@ -1,4 +1,4 @@
-import { FeedApiItem, GetFeedParams, GroupedFeedResult, Reward, StoreGroup } from '@/types/reward';
+import { FeedApiItem, GetFeedParams, GroupedFeedResult, Reward, StoreGroup } from '@/types/voucher';
 import axiosClient from './client';
 
 export function mapFeedItemToReward(item: FeedApiItem): Reward {

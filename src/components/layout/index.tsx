@@ -6,9 +6,9 @@ import background from '@/assets/images/background.png';
 import { Navigation } from './navigation';
 import HomePage from '@/pages/index';
 import ProfilePage from '@/pages/profile';
-import RewardsPage from '@/pages/rewards';
-import RewardDetailPage from '@/pages/rewards/detail';
-import CategoryDetailPage from '@/pages/rewards/category-feed';
+import RewardsPage from '@/pages/vouchers';
+import RewardDetailPage from '@/pages/vouchers/detail';
+import CategoryDetailPage from '@/pages/vouchers/category-feed';
 import QRCodePage from '@/pages/qr-code';
 import StationsPage from '@/pages/stations';
 import StationDetailPage from '@/pages/station-detail';
@@ -44,7 +44,7 @@ const showBackButton = (pathname: string) => !NO_BACK_ROUTES.includes(pathname);
 const getRouteTitle = (pathname: string): string => {
   if (pathname === '/profile') return '';
   if (pathname === '/') return 'Trang chủ';
-  if (pathname === '/rewards') return 'Phần thưởng';
+  if (pathname === '/rewards') return 'Voucher';
   if (pathname === '/stations') return 'Trạm sạc';
   if (pathname === '/qr-code') return 'Mã QR';
   if (pathname === '/register') return 'Đăng nhập';
@@ -55,7 +55,7 @@ const getRouteTitle = (pathname: string): string => {
   if (pathname === '/vehicle-info') return 'Thông tin xe';
   if (pathname.startsWith('/rewards/category/'))
     return decodeURIComponent(pathname.replace('/rewards/category/', ''));
-  if (pathname.startsWith('/rewards/')) return 'Chi tiết phần thưởng';
+  if (pathname.startsWith('/rewards/')) return 'Chi tiết voucher';
   if (pathname.startsWith('/stations/')) return 'Chi tiết trạm sạc';
   return '';
 };

@@ -80,7 +80,7 @@ export function buildTierConfig(rank: AppRank): TierConfig {
   const visual = VISUAL_BY_CODE[rank.code.toUpperCase()] ?? DEFAULT_VISUAL;
 
   const benefits: { icon: string; label: string }[] = [
-    { icon: '🏷️', label: `Giảm ${rank.rewardProductDiscountPercent}% khi đổi phần thưởng` },
+    { icon: '🏷️', label: `Giảm ${rank.rewardProductDiscountPercent}% khi đổi voucher` },
     { icon: '⚡', label: `Điểm bonus check-in +${rank.bonusPointCheckinPercent}%` },
     { icon: '🪙', label: `Giảm ${rank.rewardExchangeCoinDiscountPercent}% khi đổi xu` },
   ];

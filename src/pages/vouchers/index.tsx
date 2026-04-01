@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { LayoutGrid, Store } from 'lucide-react';
-import { useRewardsStore } from '@/store/rewards';
+import { useRewardsStore } from '@/store/vouchers';
 import { useUserStore } from '@/store/user';
 import RewardsList from './item-cards-list';
 import StoreTab from './store-feed';
@@ -130,7 +130,7 @@ const RewardsPage: FC = () => {
         await loadAllRewards();
         setInitialized(true);
       } catch {
-        openSnackbar({ text: 'Không thể tải danh sách phần thưởng', type: 'error' });
+        openSnackbar({ text: 'Không thể tải danh sách voucher', type: 'error' });
         setInitialized(true);
       }
     };

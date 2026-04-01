@@ -1,5 +1,5 @@
 export * from './user';
-export * from './rewards';
+export * from './vouchers';
 export * from './checkins';
 export * from './stations';
 export * from './banners';

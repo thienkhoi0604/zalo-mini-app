@@ -2,8 +2,8 @@ import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { Globe, Store, Navigation } from 'lucide-react';
-import { useRewardsStore } from '@/store/rewards';
-import { Reward, StoreGroup } from '@/types/reward';
+import { useRewardsStore } from '@/store/vouchers';
+import { Reward, StoreGroup } from '@/types/voucher';
 import RewardItemCard from './item-card';
 import { ACTIVE_THEME } from '@/constants/theme';
 

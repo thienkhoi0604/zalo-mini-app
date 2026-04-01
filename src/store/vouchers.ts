@@ -1,7 +1,7 @@
 import { create } from 'zustand';
-import { Reward, UserReward, FEED_ITEM_TYPES, StoreGroup, GroupedFeedResult } from '@/types/reward';
+import { Reward, UserReward, FEED_ITEM_TYPES, StoreGroup, GroupedFeedResult } from '@/types/voucher';
 import { getFeedItems, getFeedGrouped } from '@/api/feed';
-import { getRewardById, getUserRewards, redeemReward } from '@/api/rewards';
+import { getRewardById, getUserRewards, redeemReward } from '@/api/vouchers';
 import { useUserStore } from '@/store/user';
 
 const USER_REWARDS_PAGE_SIZE = 5;

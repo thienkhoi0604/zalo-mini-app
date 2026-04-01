@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { QrCode, Bell } from 'lucide-react';
 import { useUserStore } from '@/store/user';
-import { useRewardsStore } from '@/store/rewards';
+import { useRewardsStore } from '@/store/vouchers';
 import { ACTIVE_THEME } from '@/constants/theme';
 
 // ─── Component ────────────────────────────────────────────────────────────────

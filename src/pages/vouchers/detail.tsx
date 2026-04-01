@@ -2,8 +2,8 @@ import React, { FC, useEffect, useState } from 'react';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
 import { MapPin, Calendar, FileText, Store, AlertCircle, Globe, Zap, ChevronRight } from 'lucide-react';
-import { useRewardsStore } from '@/store/rewards';
-import { getRewardTypeLabel } from '@/types/reward';
+import { useRewardsStore } from '@/store/vouchers';
+import { getRewardTypeLabel } from '@/types/voucher';
 import { useUserStore } from '@/store/user';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 
@@ -105,7 +105,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
           >
             <AlertCircle size={16} color="#EF4444" style={{ flexShrink: 0 }} />
             <p style={{ fontSize: 13, color: '#DC2626' }}>
-              Bạn cần thêm {(pointsRequired - userPoints).toLocaleString('vi-VN')} {costCurrency} để đổi phần thưởng này
+              Bạn cần thêm {(pointsRequired - userPoints).toLocaleString('vi-VN')} {costCurrency} để đổi voucher này
             </p>
           </Box>
         )}
@@ -198,7 +198,7 @@ const RewardDetailPage: FC = () => {
           >
             <span style={{ fontSize: 32 }}>🎁</span>
           </Box>
-          <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>Không tìm thấy phần thưởng</p>
+          <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>Không tìm thấy voucher</p>
         </Box>
       </Page>
     );
@@ -324,7 +324,7 @@ const RewardDetailPage: FC = () => {
                 style={{ gap: 7, background: '#FEF2F2', border: '1px solid #FECACA', padding: '8px 12px' }}
               >
                 <AlertCircle size={14} color="#EF4444" />
-                <p style={{ fontSize: 12, color: '#DC2626', fontWeight: 600 }}>Phần thưởng này đã hết hạn</p>
+                <p style={{ fontSize: 12, color: '#DC2626', fontWeight: 600 }}>Voucher này đã hết hạn</p>
               </Box>
             )}
           </Box>

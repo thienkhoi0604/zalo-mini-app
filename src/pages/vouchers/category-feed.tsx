@@ -2,8 +2,8 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
 import { Gift, ArrowUpDown, TrendingUp, TrendingDown, Tag, CheckCircle, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
-import { useRewardsStore } from '@/store/rewards';
-import { Reward, getRewardTypeLabel } from '@/types/reward';
+import { useRewardsStore } from '@/store/vouchers';
+import { Reward, getRewardTypeLabel } from '@/types/voucher';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import PageHeader from '@/components/ui/page-header';
 import { ACTIVE_THEME } from '@/constants/theme';
@@ -364,8 +364,8 @@ const CategoryDetailPage: FC = () => {
                 <Gift size={36} color="#288F4E" />
               </Box>
               <Box style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 6 }}>
-                <p style={{ fontSize: 16, fontWeight: 800, color: '#374151' }}>Chưa có phần thưởng</p>
-                <p style={{ fontSize: 13, color: '#9CA3AF' }}>Danh mục này chưa có phần thưởng nào</p>
+                <p style={{ fontSize: 16, fontWeight: 800, color: '#374151' }}>Chưa có voucher</p>
+                <p style={{ fontSize: 13, color: '#9CA3AF' }}>Danh mục này chưa có voucher nào</p>
               </Box>
             </Box>
           ) : (
