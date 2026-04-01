@@ -44,7 +44,7 @@ const Personal: FC = () => {
     loadUserRewards();
   }, []);
 
-  const isVehicleApproved = pointWallet?.vehicleStatus === 'Approved';
+  const isVehicleApproved = pointWallet?.vehicleStatus?.toLowerCase() === 'approved';
   const activeConfig = activeQRSheet ? QR_SHEET_CONFIG[activeQRSheet] : null;
 
   return (

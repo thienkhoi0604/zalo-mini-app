@@ -48,7 +48,8 @@ export interface FeedApiItem {
 export interface GetFeedParams {
   pageNumber?: number;
   pageSize?: number;
-  itemType?: FeedItemType;
+  /** Maps to the `Type` query param on /app/feed */
+  type?: FeedItemType;
 }
 
 // ─── Grouped feed (Grouped=true) ──────────────────────────────────────────────
@@ -90,6 +91,9 @@ export interface RewardApiItem {
 
 export type RewardSource = 'Reward' | 'StoreItem';
 
+/** GreenCoin = wallet balance spent on StoreItems; Points = earned from QR check-ins, spent on Rewards */
+export type RewardCostCurrency = 'GreenCoin' | 'Points';
+
 export interface Reward {
   id: string;
   code: string;
@@ -106,7 +110,9 @@ export interface Reward {
   stores?: RewardStore[];
   appliesToAll?: boolean;
   terms?: string;
-  /** coinCost for products, pointCost for rewards */
+  /** Currency required to redeem: GreenCoin (store items via coinCost) or Points (rewards via pointCost) */
+  costCurrency: RewardCostCurrency;
+  /** Cost in the currency indicated by costCurrency */
   pointsRequired: number;
   /** Original price (store items only) */
   price?: number | null;

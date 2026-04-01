@@ -17,6 +17,7 @@ export function mapFeedItemToReward(item: FeedApiItem): Reward {
     category: item.itemTypeTranslate,
     source: item.sourceType,
     brandName: item.storeName ?? undefined,
+    costCurrency: isStoreItem ? 'GreenCoin' : 'Points',
     pointsRequired: isStoreItem ? (item.coinCost ?? 0) : (item.pointCost ?? 0),
     price: item.price,
     stock: item.stock,
@@ -33,11 +34,11 @@ export function mapFeedItemToReward(item: FeedApiItem): Reward {
 }
 
 export async function getFeedItems(params: GetFeedParams = {}): Promise<Reward[]> {
-  const { pageNumber = 1, pageSize = 50, itemType } = params;
+  const { pageNumber = 1, pageSize = 50, type } = params;
   const { data } = await axiosClient.get<{
     data: { items: FeedApiItem[] };
   }>('/app/feed', {
-    params: { pageNumber, pageSize, ...(itemType && { itemType }) },
+    params: { pageNumber, pageSize, ...(type && { Type: type }) },
   });
   return (data.data.items ?? []).map(mapFeedItemToReward);
 }

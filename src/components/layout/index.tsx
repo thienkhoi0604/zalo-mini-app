@@ -23,7 +23,6 @@ import { ScrollRestoration } from './scroll-restoration';
 import { useUserStore } from '@/store/user';
 import { useSnackbarInit } from '@/hooks/use-snackbar-init';
 import { ProtectedRoute } from '@/components/routing/protected-route';
-import { getZaloAccessToken } from '@/utils/zalo';
 
 if (import.meta.env.DEV) {
   document.body.style.setProperty('--zaui-safe-area-inset-top', '24px');
@@ -146,14 +145,6 @@ export const Layout: FC = () => {
   useEffect(() => {
     initializeAuth();
   }, [initializeAuth]);
-
-  useEffect(() => {
-    async function fetchToken() {
-      const zaloAccessToken = await getZaloAccessToken();
-      console.log('Zalo Access Token:', zaloAccessToken);
-    }
-    fetchToken();
-  }, []);
 
   if (authLoading) {
     return (

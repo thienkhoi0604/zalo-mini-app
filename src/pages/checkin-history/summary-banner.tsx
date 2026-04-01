@@ -16,12 +16,12 @@ const SummaryBanner: FC<{ history: CheckinHistoryItem[] }> = ({ history }) => {
       {/* Top row: earned + icon */}
       <Box flex className="items-center" style={{ marginBottom: 12 }}>
         <Box style={{ flex: 1 }}>
-          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', marginBottom: 4 }}>Tổng điểm đã tích</p>
+          <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', marginBottom: 4 }}>Tổng Points đã tích</p>
           <p style={{ fontSize: 28, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
             {totalPoints.toLocaleString('vi-VN')}
           </p>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', marginTop: 4 }}>
-            điểm từ {history.length} lần check-in
+            Points từ {history.length} lần check-in
           </p>
         </Box>
         <Box
@@ -37,7 +37,7 @@ const SummaryBanner: FC<{ history: CheckinHistoryItem[] }> = ({ history }) => {
 
       {/* Bottom row: current balance */}
       <Box flex className="items-center justify-between">
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>Xu hiện tại</p>
+        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>GreenCoin hiện tại</p>
         <Box flex className="items-center" style={{ gap: 5 }}>
           <span style={{ fontSize: 15 }}>🪙</span>
           <p style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>

@@ -13,6 +13,7 @@ interface ConfirmBuyModalProps {
   visible: boolean;
   name: string;
   pointsRequired: number;
+  costCurrency: string;
   userPoints: number;
   redeeming: boolean;
   onConfirm: () => void;
@@ -20,7 +21,7 @@ interface ConfirmBuyModalProps {
 }
 
 const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
-  visible, name, pointsRequired, userPoints, redeeming, onConfirm, onCancel,
+  visible, name, pointsRequired, costCurrency, userPoints, redeeming, onConfirm, onCancel,
 }) => {
   const hasEnough = userPoints >= pointsRequired;
   const remaining = userPoints - pointsRequired;
@@ -28,7 +29,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
   return (
     <Modal
       visible={visible}
-      title="Xác nhận đổi xu"
+      title={`Xác nhận đổi ${costCurrency}`}
       onClose={onCancel}
       actions={[
         { text: 'Huỷ', onClick: onCancel },
@@ -42,7 +43,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
     >
       <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, padding: '4px 0 8px' }}>
         <p style={{ fontSize: 13, color: '#6B7280', textAlign: 'center', lineHeight: '19px' }}>
-          Đổi xu để nhận
+          Đổi {costCurrency} để nhận
         </p>
         <p style={{ fontSize: 15, fontWeight: 700, color: '#111827', textAlign: 'center', lineHeight: '22px' }}>
           {name}
@@ -71,7 +72,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
           <Box style={{ height: 1, background: '#E5E7EB' }} />
 
           <Box flex className="items-center justify-between">
-            <p style={{ fontSize: 13, color: '#6B7280' }}>Xu hiện có</p>
+            <p style={{ fontSize: 13, color: '#6B7280' }}>{costCurrency} hiện có</p>
             <Box flex className="items-center" style={{ gap: 5 }}>
               <span style={{ fontSize: 15 }}>🪙</span>
               <p style={{ fontSize: 15, fontWeight: 700, color: hasEnough ? '#288F4E' : '#EF4444' }}>
@@ -104,7 +105,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
           >
             <AlertCircle size={16} color="#EF4444" style={{ flexShrink: 0 }} />
             <p style={{ fontSize: 13, color: '#DC2626' }}>
-              Bạn cần thêm {(pointsRequired - userPoints).toLocaleString('vi-VN')} xu để đổi phần thưởng này
+              Bạn cần thêm {(pointsRequired - userPoints).toLocaleString('vi-VN')} {costCurrency} để đổi phần thưởng này
             </p>
           </Box>
         )}
@@ -145,7 +146,7 @@ const RewardDetailPage: FC = () => {
   const owned = location.state?.owned === true;
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
-  const { allRewards, loadRewardById, redeemReward, redeeming } = useRewardsStore();
+  const { allRewards, loading, loadRewardById, redeemReward, redeeming } = useRewardsStore();
   const { pointWallet } = useUserStore();
   const [confirmVisible, setConfirmVisible] = useState(false);
 
@@ -160,15 +161,34 @@ const RewardDetailPage: FC = () => {
     try {
       await redeemReward(id);
       setConfirmVisible(false);
-      openSnackbar({ text: 'Đổi xu thành công! Voucher đã được thêm vào tài khoản.', type: 'success' });
+      openSnackbar({ text: `Đổi ${card?.costCurrency ?? 'GreenCoin'} thành công! Voucher đã được thêm vào tài khoản.`, type: 'success' });
       setTimeout(() => navigate('/my-vouchers', { replace: true }), 1200);
     } catch {
       setConfirmVisible(false);
-      openSnackbar({ text: 'Đổi xu thất bại. Vui lòng thử lại.', type: 'error' });
+      openSnackbar({ text: `Đổi ${card?.costCurrency ?? 'GreenCoin'} thất bại. Vui lòng thử lại.`, type: 'error' });
     }
   };
 
   if (!card) {
+    if (loading) {
+      return (
+        <Page className="flex-1 flex flex-col">
+          <Box className="animate-pulse" style={{ padding: '0 0 88px' }}>
+            <Box style={{ height: 240, background: '#E9EBED' }} />
+            <Box style={{ margin: '-28px 16px 0', background: '#fff', borderRadius: 18, padding: 20, boxShadow: '0 4px 20px rgba(0,0,0,0.12)', display: 'flex', flexDirection: 'column', gap: 12 }}>
+              <Box style={{ height: 16, width: '40%', background: '#E9EBED', borderRadius: 6 }} />
+              <Box style={{ height: 22, width: '80%', background: '#E9EBED', borderRadius: 6 }} />
+              <Box style={{ height: 1, background: '#F3F4F6' }} />
+              <Box flex className="items-center justify-between">
+                <Box style={{ height: 14, width: 60, background: '#E9EBED', borderRadius: 6 }} />
+                <Box style={{ height: 32, width: 100, background: '#E9EBED', borderRadius: 100 }} />
+              </Box>
+            </Box>
+            <Box style={{ margin: '12px 16px', background: '#fff', borderRadius: 18, padding: 20, height: 80, background: '#E9EBED' }} />
+          </Box>
+        </Page>
+      );
+    }
     return (
       <Page className="flex-1 flex flex-col items-center justify-center">
         <Box className="flex flex-col items-center" style={{ gap: 12 }}>
@@ -277,6 +297,7 @@ const RewardDetailPage: FC = () => {
                 <p style={{ fontSize: 16, fontWeight: 800, color: '#D97706' }}>
                   {card.pointsRequired.toLocaleString('vi-VN')}
                 </p>
+                <p style={{ fontSize: 11, fontWeight: 600, color: '#D97706' }}>{card.costCurrency}</p>
               </Box>
             </Box>
 
@@ -465,7 +486,7 @@ const RewardDetailPage: FC = () => {
             >
               <span style={{ fontSize: 16 }}>🪙</span>
               <p style={{ color: hasEnough ? '#fff' : '#9CA3AF', fontWeight: 700, fontSize: 15 }}>
-                Đổi {card.pointsRequired.toLocaleString('vi-VN')} xu
+                Đổi {card.pointsRequired.toLocaleString('vi-VN')} {card.costCurrency}
               </p>
             </Box>
           </Box>
@@ -476,6 +497,7 @@ const RewardDetailPage: FC = () => {
         visible={confirmVisible}
         name={card.name}
         pointsRequired={card.pointsRequired}
+        costCurrency={card.costCurrency}
         userPoints={userPoints}
         redeeming={redeeming}
         onConfirm={handleBuy}

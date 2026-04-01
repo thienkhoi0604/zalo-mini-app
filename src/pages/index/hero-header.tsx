@@ -1,74 +1,44 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
-import { Zap, Gift, Ticket, QrCode } from 'lucide-react';
+import { QrCode, Bell } from 'lucide-react';
 import { useUserStore } from '@/store/user';
+import { useRewardsStore } from '@/store/rewards';
 import { ACTIVE_THEME } from '@/constants/theme';
-
-// ─── Quick action ──────────────────────────────────────────────────────────────
-
-interface QuickAction {
-  icon: React.ReactNode;
-  label: string;
-  route: string;
-  bg: string;
-  iconBg: string;
-}
-
-const ACTIONS: QuickAction[] = [
-  {
-    icon: <Zap size={20} color="#fff" fill="#fff" strokeWidth={0} />,
-    label: 'Trạm sạc',
-    route: '/stations',
-    bg: '#EEF7F1',
-    iconBg: 'linear-gradient(135deg, #43B96B, #288F4E)',
-  },
-  {
-    icon: <Gift size={20} color="#fff" />,
-    label: 'Phần thưởng',
-    route: '/rewards',
-    bg: '#FEF9EF',
-    iconBg: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
-  },
-  {
-    icon: <Ticket size={20} color="#fff" />,
-    label: 'Voucher',
-    route: '/my-vouchers',
-    bg: '#EFF6FF',
-    iconBg: 'linear-gradient(135deg, #60A5FA, #2563EB)',
-  },
-  {
-    icon: <QrCode size={20} color="#fff" />,
-    label: 'Mã QR',
-    route: '/qr-code',
-    bg: '#F5F3FF',
-    iconBg: 'linear-gradient(135deg, #A78BFA, #7C3AED)',
-  },
-];
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
 export const HeroHeader: FC = () => {
   const navigate = useNavigate();
   const { user, pointWallet, isAuthenticated } = useUserStore();
+  const { userRewardsUnusedCount } = useRewardsStore();
 
   const firstName = user?.fullName?.split(' ').pop() ?? 'bạn';
+  const rankName = user?.rank?.currentRankName;
+  const voucherCount = userRewardsUnusedCount ?? 0;
 
   const t = ACTIVE_THEME;
   const gradient = `linear-gradient(135deg, ${t.headerFrom} 0%, ${t.headerMid} 55%, ${t.headerTo} 100%)`;
   const blob = `rgba(255,255,255,${t.blobOpacity})`;
   const blobFaint = `rgba(255,255,255,${t.blobOpacity * 0.65})`;
 
+  const iconBtn: React.CSSProperties = {
+    width: 38,
+    height: 38,
+    borderRadius: '50%',
+    background: 'rgba(255,255,255,0.18)',
+    border: '1.5px solid rgba(255,255,255,0.3)',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    cursor: 'pointer',
+    flexShrink: 0,
+  };
+
   return (
     <Box>
       {/* Themed gradient header */}
-      <Box
-        style={{
-          background: gradient,
-          position: 'relative',
-          overflow: 'hidden',
-        }}
-      >
+      <Box style={{ background: gradient, position: 'relative', overflow: 'hidden' }}>
         {/* Decorative blobs */}
         <Box style={{ position: 'absolute', top: -36, right: -28, width: 150, height: 150, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
         <Box style={{ position: 'absolute', top: 18, right: 90, width: 60, height: 60, borderRadius: '50%', background: blobFaint, pointerEvents: 'none' }} />
@@ -79,82 +49,138 @@ export const HeroHeader: FC = () => {
           <Box style={{ position: 'absolute', inset: 0, backgroundImage: `url(${t.headerTexture})`, backgroundSize: 'cover', opacity: t.headerTextureOpacity ?? 0.08, pointerEvents: 'none' }} />
         )}
 
-        {/* Content — sits above the wave */}
-        <Box style={{ position: 'relative', zIndex: 1, padding: '20px 16px 56px' }}>
-          {/* Greeting */}
-          <Box>
-            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', marginBottom: 4 }}>
-              {isAuthenticated ? `Xin chào, ${firstName} 👋` : 'Chào mừng đến với'}
-            </p>
-            <p style={{ fontSize: 22, fontWeight: 800, color: '#fff', lineHeight: '28px' }}>
-              EcoGreen 🌿
-            </p>
-          </Box>
+        <Box style={{ position: 'relative', zIndex: 1, padding: '20px 16px 24px' }}>
+          {isAuthenticated ? (
+            <>
+              {/* Top row: avatar + greeting left | QR + bell right */}
+              <Box flex className="items-center justify-between" style={{ gap: 12 }}>
+                {/* Left: avatar + greeting */}
+                <Box flex className="items-center" style={{ gap: 10, minWidth: 0 }}>
+                  {/* Avatar */}
+                  <Box
+                    style={{
+                      width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
+                      background: 'rgba(255,255,255,0.25)',
+                      border: '2px solid rgba(255,255,255,0.5)',
+                      overflow: 'hidden',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    {user?.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.fullName ?? ''}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>
+                        {firstName.charAt(0).toUpperCase()}
+                      </span>
+                    )}
+                  </Box>
 
-          {/* Points pill */}
-          {isAuthenticated && (
-            <Box
-              flex
-              className="items-center"
-              style={{
-                marginTop: 14,
-                background: 'rgba(255,255,255,0.18)',
-                border: '1px solid rgba(255,255,255,0.3)',
-                borderRadius: 100,
-                padding: '7px 14px',
-                gap: 6,
-                display: 'inline-flex',
-                width: 'fit-content',
-              }}
-            >
-              <span style={{ fontSize: 16 }}>🪙</span>
-              <p style={{ fontSize: 15, fontWeight: 700, color: '#fff' }}>
-                {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
-              </p>
-              <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>xu</p>
+                  {/* Name + rank */}
+                  <Box style={{ minWidth: 0 }}>
+                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', marginBottom: 2 }}>
+                      Xin chào,
+                    </p>
+                    <p style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: '22px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                      {firstName}
+                    </p>
+                    {rankName && (
+                      <Box
+                        style={{
+                          marginTop: 4,
+                          display: 'inline-flex', alignItems: 'center',
+                          background: 'rgba(255,255,255,0.2)',
+                          border: '1px solid rgba(255,255,255,0.35)',
+                          borderRadius: 100,
+                          padding: '2px 8px',
+                        }}
+                      >
+                        <p style={{ fontSize: 10, fontWeight: 700, color: '#fff' }}>⭐ {rankName}</p>
+                      </Box>
+                    )}
+                  </Box>
+                </Box>
+
+                {/* Right: QR + bell */}
+                <Box flex className="items-center" style={{ gap: 8, flexShrink: 0 }}>
+                  <div style={iconBtn} onClick={() => navigate('/qr-code')}>
+                    <QrCode size={18} color="#fff" />
+                  </div>
+                  <div style={iconBtn}>
+                    <Bell size={18} color="#fff" />
+                  </div>
+                </Box>
+              </Box>
+
+              {/* Bottom row: GreenCoin + Voucher stats */}
+              <Box
+                flex
+                className="items-center"
+                style={{
+                  marginTop: 14,
+                  background: 'rgba(255,255,255,0.15)',
+                  border: '1px solid rgba(255,255,255,0.25)',
+                  borderRadius: 14,
+                  padding: '10px 14px',
+                  gap: 0,
+                }}
+              >
+                {/* GreenCoin */}
+                <Box flex className="items-center" style={{ gap: 6, flex: 1 }}>
+                  <span style={{ fontSize: 18 }}>🪙</span>
+                  <Box>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
+                      {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+                    </p>
+                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.72)', marginTop: 2 }}>GreenCoin</p>
+                  </Box>
+                </Box>
+
+                {/* Divider */}
+                <Box style={{ width: 1, height: 32, background: 'rgba(255,255,255,0.3)', margin: '0 12px' }} />
+
+                {/* Voucher */}
+                <Box flex className="items-center" style={{ gap: 6, flex: 1 }} onClick={() => navigate('/my-vouchers')}>
+                  <span style={{ fontSize: 18 }}>🎫</span>
+                  <Box>
+                    <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
+                      {voucherCount}
+                    </p>
+                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.72)', marginTop: 2 }}>Voucher</p>
+                  </Box>
+                </Box>
+              </Box>
+            </>
+          ) : (
+            /* Unauthenticated: greeting left + login button right */
+            <Box flex className="items-start justify-between" style={{ gap: 12 }}>
+              <Box>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.8)', marginBottom: 4 }}>
+                  Chào mừng đến với hệ sinh thái
+                </p>
+                <p style={{ fontSize: 22, fontWeight: 800, color: '#fff', lineHeight: '28px' }}>
+                  EcoGreen 🌿
+                </p>
+              </Box>
+              <button
+                onClick={() => navigate('/register')}
+                style={{
+                  flexShrink: 0, marginTop: 4,
+                  background: 'rgba(255,255,255,0.2)',
+                  border: '1.5px solid rgba(255,255,255,0.5)',
+                  borderRadius: 100, padding: '7px 18px',
+                  cursor: 'pointer', color: '#fff', fontSize: 13, fontWeight: 700,
+                }}
+              >
+                Đăng nhập
+              </button>
             </Box>
           )}
         </Box>
-
-        {/* Wave divider — blends into page background */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, lineHeight: 0, pointerEvents: 'none' }}>
-          <svg viewBox="0 0 390 40" preserveAspectRatio="none" style={{ display: 'block', width: '100%', height: 40 }}>
-            <path d={t.wavePath} fill={t.pageBg} />
-          </svg>
-        </div>
-      </Box>
-
-      {/* Quick actions — overlapping card, sits over the wave */}
-      <Box
-        className="bg-white rounded-2xl mx-4"
-        style={{
-          marginTop: -48,
-          boxShadow: '0 4px 20px rgba(0,0,0,0.1)',
-          padding: '16px 8px',
-          display: 'grid',
-          gridTemplateColumns: 'repeat(4, 1fr)',
-          position: 'relative',
-          zIndex: 2,
-        }}
-      >
-        {ACTIONS.map((action) => (
-          <Box
-            key={action.route}
-            className="flex flex-col items-center cursor-pointer"
-            style={{ gap: 8 }}
-            onClick={() => navigate(action.route)}
-          >
-            <Box
-              className="flex items-center justify-center rounded-2xl"
-              style={{ width: 48, height: 48, background: action.iconBg }}
-            >
-              {action.icon}
-            </Box>
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#374151', textAlign: 'center' }}>
-              {action.label}
-            </p>
-          </Box>
-        ))}
       </Box>
     </Box>
   );

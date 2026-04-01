@@ -87,7 +87,7 @@ const MemberCard: FC = () => {
               </p>
             </Box>
             <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, marginTop: 3 }}>
-              Xu khả dụng
+              GreenCoin khả dụng
             </p>
           </Box>
         </Box>

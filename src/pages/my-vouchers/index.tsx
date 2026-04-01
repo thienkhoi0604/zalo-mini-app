@@ -84,7 +84,7 @@ const EmptyState: FC<{ tab: Tab }> = ({ tab }) => (
       <p style={{ fontSize: 13, color: '#9CA3AF', textAlign: 'center', lineHeight: '20px' }}>
         {tab === 'used'
           ? 'Các voucher bạn đã sử dụng sẽ hiển thị ở đây'
-          : 'Hãy đổi điểm xanh để nhận voucher ưu đãi!'}
+          : 'Hãy đổi GreenCoin để nhận voucher ưu đãi!'}
       </p>
     </Box>
   </Box>
@@ -130,7 +130,7 @@ const LoadingMore: FC = () => (
 const MyVouchersPage: FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('unused');
   const [selectedVoucher, setSelectedVoucher] = useState<UserReward | null>(null);
-  const { userRewards, loading, userRewardsHasMore, loadUserRewards, loadMoreUserRewards } = useRewardsStore();
+  const { userRewards, userRewardsLoading: loading, userRewardsHasMore, loadUserRewards, loadMoreUserRewards } = useRewardsStore();
 
   useEffect(() => {
     loadUserRewards();

@@ -183,7 +183,7 @@ const RewardCard: FC<{ card: Reward; onClick: (card: Reward) => void }> = ({ car
             <p style={{ fontSize: 13, fontWeight: 800, color: '#B45309' }}>
               {card.pointsRequired.toLocaleString('vi-VN')}
             </p>
-            <p style={{ fontSize: 10, color: '#D97706', fontWeight: 600 }}>xu</p>
+            <p style={{ fontSize: 10, color: '#D97706', fontWeight: 600 }}>{card.costCurrency}</p>
           </Box>
         )}
       </Box>
@@ -197,7 +197,7 @@ type SortOrder = 'default' | 'asc' | 'desc';
 
 const SORT_OPTIONS: { key: SortOrder; label: string; icon: React.ReactNode }[] = [
   { key: 'default', label: 'Mặc định',    icon: <ArrowUpDown size={12} strokeWidth={2.2} /> },
-  { key: 'asc',     label: 'Ít xu nhất',  icon: <TrendingDown size={12} strokeWidth={2.2} /> },
+  { key: 'asc',     label: 'Ít nhất',     icon: <TrendingDown size={12} strokeWidth={2.2} /> },
   { key: 'desc',    label: 'Nhiều nhất',  icon: <TrendingUp size={12} strokeWidth={2.2} /> },
 ];
 

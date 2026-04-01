@@ -151,7 +151,7 @@ const RewardsPage: FC = () => {
           {isAuthenticated && (
             <Box className="text-center" style={{ marginBottom: 10 }}>
               <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.65)', fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase', marginBottom: 4 }}>
-                Xu khả dụng
+                GreenCoin khả dụng
               </p>
               <Box flex className="justify-center items-center" style={{ gap: 8 }}>
                 <Box

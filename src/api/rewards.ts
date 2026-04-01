@@ -13,6 +13,7 @@ function mapApiItemToReward(item: RewardApiItem): Reward {
     bannerImageUrl: item.imageUrl,
     category: item.type,
     source: 'Reward',
+    costCurrency: 'Points',
     pointsRequired: item.pointCost,
     applicableTimeStart: item.validFrom ?? '',
     applicableTimeEnd: item.validTo ?? '',

@@ -95,12 +95,13 @@ const VoucherCard: FC<{ reward: Reward; onClick: () => void }> = ({ reward, onCl
         {reward.name}
       </p>
 
-      {/* Points */}
+      {/* Cost */}
       <Box flex className="items-center" style={{ gap: 3 }}>
         <span style={{ fontSize: 13 }}>🪙</span>
-        <p style={{ fontSize: 13, fontWeight: 800, color: '#C49A6C' }}>
+        <p style={{ fontSize: 11, fontWeight: 800, color: '#C49A6C' }}>
           {reward.pointsRequired.toLocaleString('vi-VN')}
         </p>
+        <p style={{ fontSize: 9, color: '#D97706', fontWeight: 600 }}>{reward.costCurrency}</p>
       </Box>
     </Box>
   </Box>

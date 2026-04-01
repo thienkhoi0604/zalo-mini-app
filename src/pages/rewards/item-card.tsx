@@ -174,7 +174,7 @@ const RewardItemCard: FC<Props> = ({ card, onClick }) => {
             <p style={{ fontSize: 13, fontWeight: 800, color: '#B45309' }}>
               {card.pointsRequired.toLocaleString('vi-VN')}
             </p>
-            <p style={{ fontSize: 10, color: '#D97706', fontWeight: 600 }}>xu</p>
+            <p style={{ fontSize: 10, color: '#D97706', fontWeight: 600 }}>{card.costCurrency}</p>
             {card.price != null && (
               <p style={{ fontSize: 9, color: '#D97706', marginLeft: 'auto', textDecoration: 'line-through', opacity: 0.7 }}>
                 {card.price.toLocaleString('vi-VN')}đ

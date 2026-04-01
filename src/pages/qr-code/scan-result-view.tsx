@@ -30,7 +30,7 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
           >
             <span style={{ fontSize: 22 }}>🪙</span>
             <p style={{ fontSize: 20, fontWeight: 800, color: '#288F4E' }}>
-              +{result.points} điểm
+              +{result.points} Points
             </p>
           </Box>
         )}

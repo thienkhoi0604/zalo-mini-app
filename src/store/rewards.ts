@@ -18,7 +18,10 @@ type RewardsStore = {
   userRewardsPage: number;
   userRewardsHasMore: boolean;
   userRewardsUnusedCount: number;
+  /** Loading flag for allRewards / reward detail / storeGroups */
   loading: boolean;
+  /** Loading flag exclusively for userRewards (my-vouchers) */
+  userRewardsLoading: boolean;
   selectedReward: Reward | null;
   redeeming: boolean;
 
@@ -44,6 +47,7 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
   userRewardsHasMore: true,
   userRewardsUnusedCount: 0,
   loading: false,
+  userRewardsLoading: false,
   selectedReward: null,
   redeeming: false,
   globalRewards: [],
@@ -54,11 +58,11 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     set({ loading: true });
     try {
       const results = await Promise.all([
-        ...REWARD_ITEM_TYPES.map((itemType) =>
-          getFeedItems({ pageNumber: 1, pageSize: 50, itemType }),
+        ...REWARD_ITEM_TYPES.map((type) =>
+          getFeedItems({ pageNumber: 1, pageSize: 50, type }),
         ),
-        ...STORE_ITEM_TYPES.map((itemType) =>
-          getFeedItems({ pageNumber: 1, pageSize: 50, itemType }),
+        ...STORE_ITEM_TYPES.map((type) =>
+          getFeedItems({ pageNumber: 1, pageSize: 50, type }),
         ),
       ]);
       set({ allRewards: ([] as Reward[]).concat(...results), loading: false });
@@ -94,8 +98,8 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
   },
 
   loadUserRewards: async () => {
-    if (get().loading) return;
-    set({ loading: true });
+    if (get().userRewardsLoading) return;
+    set({ userRewardsLoading: true });
     try {
       const res = await getUserRewards({ pageNumber: 1, pageSize: USER_REWARDS_PAGE_SIZE });
       set({
@@ -107,14 +111,14 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     } catch (error) {
       console.error('Failed to load user rewards:', error);
     } finally {
-      set({ loading: false });
+      set({ userRewardsLoading: false });
     }
   },
 
   loadMoreUserRewards: async () => {
-    const { loading, userRewardsHasMore, userRewardsPage } = get();
-    if (loading || !userRewardsHasMore) return;
-    set({ loading: true });
+    const { userRewardsLoading, userRewardsHasMore, userRewardsPage } = get();
+    if (userRewardsLoading || !userRewardsHasMore) return;
+    set({ userRewardsLoading: true });
     try {
       const nextPage = userRewardsPage + 1;
       const res = await getUserRewards({ pageNumber: nextPage, pageSize: USER_REWARDS_PAGE_SIZE });
@@ -130,7 +134,7 @@ export const useRewardsStore = create<RewardsStore>((set, get) => ({
     } catch (error) {
       console.error('Failed to load more user rewards:', error);
     } finally {
-      set({ loading: false });
+      set({ userRewardsLoading: false });
     }
   },
 
