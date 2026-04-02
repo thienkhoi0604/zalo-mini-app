@@ -1,17 +1,5 @@
 import React, { FC } from 'react';
 import { useUserStore } from '@/store/user';
-import coinGold from '@/assets/images/coin-gold.png';
-// import coinSilver from '@/assets/images/coin-silver.png';
-// import coinPlatinum from '@/assets/images/coin-platinum.png';
-
-function getCoinImage(rankCode?: string): string {
-  switch (rankCode?.toUpperCase()) {
-    // case 'SILVER':   return coinSilver;
-    case 'GOLD':     return coinGold;
-    // case 'PLATINUM': return coinPlatinum;
-    default:         return coinGold;
-  }
-}
 
 interface CoinIconProps {
   size?: number;
@@ -20,7 +8,9 @@ interface CoinIconProps {
 
 const CoinIcon: FC<CoinIconProps> = ({ size = 16, style }) => {
   const { user } = useUserStore();
-  const src = getCoinImage(user?.rank?.currentRankCode);
+  const src = user?.rank?.currentRankIconUrl;
+
+  if (!src) return null;
 
   return (
     <img

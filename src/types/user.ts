@@ -16,11 +16,16 @@ export type UserRank = {
   currentTotalSpent: number;
   currentRankCode: string;
   currentRankName: string;
+  currentRankIconUrl: string;
   nextRankCode: string;
   nextRankName: string;
+  nextRankIconUrl: string;
   nextRankRequiredTotalSpent: number;
   pointsToNext: number;
   progressToNextPercent: number;
+  rewardProductDiscountPercent: number;
+  bonusPointCheckinPercent: number;
+  rewardExchangeCoinDiscountPercent: number;
 };
 
 export type User = {
@@ -43,6 +48,7 @@ export type User = {
   lastLoginAt?: string;
   createdAt?: string;
   rank?: UserRank;
+  referralCode?: string;
   // Fields used by app logic (may come from login response or separate endpoints)
   points?: number;
   verified?: boolean;
