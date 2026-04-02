@@ -9,9 +9,9 @@ import StatCard from './stat-card';
 import InfoRow from './info-row';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { ACTIVE_THEME } from '@/constants/theme';
+import logoImg from '@/assets/images/logo.png';
 
-const FALLBACK_IMG =
-  'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=1200&q=80&auto=format';
+const FALLBACK_IMG = logoImg;
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 

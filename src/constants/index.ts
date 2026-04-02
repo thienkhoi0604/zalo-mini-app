@@ -12,9 +12,11 @@ export const COLORS = {
 
 // ─── Fallback Assets ──────────────────────────────────────────────────────────
 
+import logoImg from '@/assets/images/logo.png';
+
 export const FALLBACK_IMAGES = {
-  station: 'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=400&q=80&auto=format',
-  reward: 'https://cdn-icons-png.flaticon.com/512/1170/1170678.png',
-} as const;
+  station: logoImg,
+  reward: logoImg,
+};
 
 export const KEYBOARD_HEIGHT_THRESHOLD = 160;

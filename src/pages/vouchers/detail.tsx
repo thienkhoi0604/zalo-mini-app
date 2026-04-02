@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import logoImg from '@/assets/images/logo.png';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
 import { MapPin, Calendar, FileText, Store, AlertCircle, Globe, Zap } from 'lucide-react';
@@ -230,8 +231,7 @@ const VoucherDetailPage: FC = () => {
             alt={card.name}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             onError={(e) => {
-              (e.target as HTMLImageElement).src =
-                'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
+              (e.target as HTMLImageElement).src = logoImg;
             }}
           />
           <Box

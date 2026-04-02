@@ -3,109 +3,105 @@ import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Gift, ChevronRight } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
-import { Voucher, getVoucherTypeLabel } from '@/types/voucher';
+import { Voucher } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
+
+import logoImg from '@/assets/images/logo.png';
+
+const FALLBACK = logoImg;
+const NOTCH = 9;
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 const CardSkeleton: FC = () => (
-  <Box
-    className="flex-shrink-0 bg-white rounded-2xl overflow-hidden animate-pulse"
-    style={{ width: 140, boxShadow: '0 2px 8px rgba(0,0,0,0.07)' }}
+  <div
+    className="flex-shrink-0 animate-pulse"
+    style={{ width: 140, borderRadius: 18, overflow: 'hidden', background: '#fff', boxShadow: '0 4px 14px rgba(0,0,0,0.08)' }}
   >
-    <Box style={{ height: 90, background: '#E9EBED' }} />
-    <Box className="p-2" style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <Box style={{ height: 10, width: '45%', background: '#E9EBED', borderRadius: 6 }} />
-      <Box style={{ height: 12, width: '90%', background: '#E9EBED', borderRadius: 6 }} />
-      <Box style={{ height: 12, width: '60%', background: '#E9EBED', borderRadius: 6 }} />
-      <Box style={{ height: 18, width: '40%', background: '#E9EBED', borderRadius: 8 }} />
-    </Box>
-  </Box>
+    <div style={{ height: 3, background: '#E9EBED' }} />
+    <div style={{ height: 93, background: '#EDEEF2' }} />
+    <div style={{ height: NOTCH * 2, background: '#EDEEF2' }} />
+    <div style={{ padding: '8px 10px 12px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 5 }}>
+      <div style={{ height: 9, width: '45%', background: '#E9EBED', borderRadius: 5 }} />
+      <div style={{ height: 12, width: '90%', background: '#E9EBED', borderRadius: 5 }} />
+      <div style={{ height: 12, width: '65%', background: '#E9EBED', borderRadius: 5 }} />
+      <div style={{ height: 22, width: '50%', background: '#E9EBED', borderRadius: 7 }} />
+    </div>
+  </div>
 );
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onClick }) => (
-  <Box
-    className="flex-shrink-0 bg-white rounded-2xl overflow-hidden cursor-pointer"
-    style={{ width: 140, boxShadow: '0 2px 8px rgba(0,0,0,0.08)' }}
-    onClick={onClick}
-  >
-    {/* Thumbnail */}
-    <Box style={{ height: 90, background: '#F3EDE3', position: 'relative', overflow: 'hidden' }}>
-      <img
-        src={reward.thumbnailImageUrl}
-        alt={reward.name}
-        className="w-full h-full object-cover"
-        onError={(e) => {
-          (e.target as HTMLImageElement).src =
-            'https://cdn-icons-png.flaticon.com/512/1170/1170678.png';
-        }}
-      />
-      {reward.status === 'expired' && (
-        <Box
-          style={{
-            position: 'absolute',
-            inset: 0,
-            background: 'rgba(0,0,0,0.4)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Box style={{ background: '#EF4444', borderRadius: 20, padding: '2px 8px' }}>
-            <p style={{ fontSize: 10, color: '#fff', fontWeight: 700 }}>Hết hạn</p>
-          </Box>
-        </Box>
-      )}
-    </Box>
+const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onClick }) => {
+  const brandLabel = reward.brandName ?? reward.category ?? '';
+  return (
+    <div
+      className="flex-shrink-0 cursor-pointer"
+      style={{
+        width: 140,
+        borderRadius: 18,
+        overflow: 'hidden',
+        background: '#fff',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.08), 0 16px 28px rgba(0,0,0,0.07)',
+        border: '1px solid rgba(0,0,0,0.04)',
+        position: 'relative',
+      }}
+      onClick={onClick}
+    >
+      {/* Accent strip */}
+      <div style={{ height: 3, background: 'linear-gradient(90deg, #288F4E, #34D17A)' }} />
 
-    {/* Info */}
-    <Box className="px-2 py-2" style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
-      {/* Brand */}
-      <Box flex className="items-center" style={{ gap: 4 }}>
-        {reward.brandLogoUrl ? (
-          <img
-            src={reward.brandLogoUrl}
-            alt={reward.brandName}
-            className="rounded-full object-cover flex-shrink-0"
-            style={{ width: 14, height: 14 }}
-          />
-        ) : (
-          <Box className="rounded-full flex-shrink-0" style={{ width: 14, height: 14, background: '#C49A6C' }} />
-        )}
-        <p className="truncate" style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600 }}>
-          {reward.brandName || getVoucherTypeLabel(reward.type)}
+      {/* Top: image */}
+      <div style={{ height: 92, background: 'linear-gradient(160deg, #F7F8FA 0%, #EDEEF2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12, overflow: 'hidden' }}>
+        <img
+          src={reward.thumbnailImageUrl}
+          alt={reward.name}
+          style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.12))' }}
+          onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }}
+        />
+      </div>
+
+      {/* Perforation divider */}
+      <div style={{ position: 'relative', height: NOTCH * 2, background: 'linear-gradient(160deg, #F7F8FA 0%, #EDEEF2 100%)' }}>
+        <div style={{ position: 'absolute', left: -NOTCH, top: 0, width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%', background: '#fff', boxShadow: 'inset 2px 0 4px rgba(0,0,0,0.06)' }} />
+        <div style={{
+          position: 'absolute', top: '50%', left: NOTCH + 3, right: NOTCH + 3,
+          transform: 'translateY(-50%)',
+          backgroundImage: 'radial-gradient(circle, #C4C9D4 1.2px, transparent 1.2px)',
+          backgroundSize: '7px 100%',
+          backgroundRepeat: 'repeat-x',
+          backgroundPosition: 'center',
+          height: 2,
+        }} />
+        <div style={{ position: 'absolute', right: -NOTCH, top: 0, width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%', background: '#fff', boxShadow: 'inset -2px 0 4px rgba(0,0,0,0.06)' }} />
+      </div>
+
+      {/* Bottom: brand + name + cost */}
+      <div style={{ padding: '8px 10px 12px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 4 }}>
+        {/* Brand */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'linear-gradient(135deg, #D1FAE5, #A7F3D0)', border: '1.5px solid #6EE7B7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 3px rgba(40,143,78,0.2)' }}>
+            <span style={{ fontSize: 6, fontWeight: 900, color: '#065F46' }}>{brandLabel.charAt(0).toUpperCase()}</span>
+          </div>
+          <p style={{ fontSize: 8.5, color: '#9CA3AF', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.6, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+            {brandLabel}
+          </p>
+        </div>
+
+        {/* Name */}
+        <p style={{ fontSize: 11.5, fontWeight: 700, color: '#0F172A', lineHeight: '16px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: 32, letterSpacing: -0.1 }}>
+          {reward.name}
         </p>
-      </Box>
 
-      {/* Name */}
-      <p
-        style={{
-          fontSize: 12,
-          color: '#1a1a1a',
-          fontWeight: 700,
-          lineHeight: '16px',
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical',
-          overflow: 'hidden',
-          minHeight: 32,
-        }}
-      >
-        {reward.name}
-      </p>
-
-      {/* Cost */}
-      <Box flex className="items-center" style={{ gap: 3 }}>
-        <CoinIcon size={16} />
-        <p style={{ fontSize: 11, fontWeight: 800, color: '#C49A6C' }}>
-          {reward.pointsRequired.toLocaleString('vi-VN')}
-        </p>
-      </Box>
-    </Box>
-  </Box>
-);
+        {/* Cost */}
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 3, alignSelf: 'flex-start', background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)', border: '1px solid #FCD34D', borderRadius: 8, padding: '3px 8px', marginTop: 1, boxShadow: '0 1px 4px rgba(245,158,11,0.20)' }}>
+          <CoinIcon size={11} />
+          <p style={{ fontSize: 10.5, fontWeight: 800, color: '#92400E', letterSpacing: -0.2 }}>{reward.pointsRequired.toLocaleString('vi-VN')}</p>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // ─── Section ──────────────────────────────────────────────────────────────────
 

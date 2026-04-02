@@ -2,14 +2,14 @@ import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { MapPin, Zap, Navigation, Store } from 'lucide-react';
 import type { Station } from '@/types/station';
+import logoImg from '@/assets/images/logo.png';
 
 interface Props {
   station: Station;
   onClick: () => void;
 }
 
-const FALLBACK_IMG =
-  'https://images.unsplash.com/photo-1619767886558-efdc259cde1a?w=600&q=80&auto=format';
+const FALLBACK_IMG = logoImg;
 
 const StationCard: FC<Props> = ({ station, onClick }) => {
   const address = [station.address, station.wardName, station.provinceName]
