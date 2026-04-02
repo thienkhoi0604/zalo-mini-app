@@ -54,14 +54,16 @@ export async function getFeedItems(params: GetFeedParams = {}): Promise<Voucher[
 interface RawStoreGroup {
   storeId: string;
   storeName: string;
-  storeAddress: string | null;
+  storeAddress?: string | null;
+  address?: string | null;
   distanceKm: number | null;
   latitude: number | null;
   longitude: number | null;
   storeImageUrl: string | null;
-  phone: string | null;
-  openTime: string | null;
-  closeTime: string | null;
+  phone?: string | null;
+  storePhone?: string | null;
+  openTime?: string | null;
+  closeTime?: string | null;
   workingStatus: string | null;
   items: FeedApiItem[];
 }
@@ -80,12 +82,12 @@ export async function getFeedGrouped(): Promise<GroupedFeedResult> {
     return {
       storeId: s.storeId,
       storeName: s.storeName,
-      address: s.storeAddress ?? firstItem?.storeAddress ?? null,
+      address: s.storeAddress ?? s.address ?? firstItem?.storeAddress ?? null,
       distanceKm: s.distanceKm ?? firstItem?.distanceKm ?? null,
       latitude: s.latitude ?? firstItem?.latitude ?? null,
       longitude: s.longitude ?? firstItem?.longitude ?? null,
       imageUrl: s.storeImageUrl ?? firstItem?.storeImageUrl ?? null,
-      phone: s.phone ?? firstItem?.storePhone ?? null,
+      phone: s.phone ?? s.storePhone ?? firstItem?.storePhone ?? null,
       openFrom: s.openTime ?? firstItem?.storeOpenTime ?? null,
       openTo: s.closeTime ?? firstItem?.storeCloseTime ?? null,
       workingStatus: s.workingStatus ?? null,

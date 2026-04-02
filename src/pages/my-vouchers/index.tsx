@@ -5,7 +5,6 @@ import { Gift } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import VoucherCard from './voucher-card';
-import { UserVoucher } from '@/types/voucher';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // ─── Tab ─────────────────────────────────────────────────────────────────────
@@ -187,7 +186,7 @@ const MyVouchersPage: FC = () => {
                   key={uv.id}
                   userVoucher={uv}
                   used={uv.usedAt !== null}
-                  onClick={(uv: UserVoucher) => navigate(`/my-vouchers/${uv.id}`, { state: { userVoucher: uv } })}
+                  onClick={() => navigate(`/my-vouchers/${uv.id}`, { state: { userVoucher: uv } })}
                 />
               ))}
 

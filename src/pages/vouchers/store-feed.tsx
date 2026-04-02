@@ -97,6 +97,7 @@ const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ 
 
 const StoreCard: FC<{ group: StoreGroup; onItemClick: (v: Voucher) => void; onCardClick: () => void }> = ({ group, onCardClick }) => {
   const activeCount = group.items.filter((v) => v.status !== 'expired').length;
+  const address = group.address ?? group.items[0]?.stores?.[0]?.address ?? null;
 
   const distanceLabel = group.distanceKm != null
     ? group.distanceKm < 1
@@ -206,8 +207,8 @@ const StoreCard: FC<{ group: StoreGroup; onItemClick: (v: Voucher) => void; onCa
           }}
         >
           {/* Info rows */}
-          {group.address && (
-            <InfoRow icon={<MapPin size={11} color="#9CA3AF" />} text={group.address} clamp={2} />
+          {address && (
+            <InfoRow icon={<MapPin size={11} color="#9CA3AF" />} text={address} clamp={2} />
           )}
           {hoursLabel && (
             <InfoRow icon={<Clock size={11} color="#9CA3AF" />} text={hoursLabel} />
@@ -242,7 +243,6 @@ const StoreCard: FC<{ group: StoreGroup; onItemClick: (v: Voucher) => void; onCa
             style={{
               marginTop: 'auto',
               paddingTop: 8,
-              borderTop: '1px dashed #E9EBED',
               display: 'flex',
               alignItems: 'center',
               gap: 5,

@@ -241,6 +241,8 @@ const StoreDetailPage: FC = () => {
 
   if (!group) return <NotFound />;
 
+  const address = group.address ?? group.items[0]?.stores?.[0]?.address ?? null;
+
   const distanceLabel = group.distanceKm != null
     ? group.distanceKm < 1
       ? `${Math.round(group.distanceKm * 1000)} m`
@@ -359,7 +361,7 @@ const StoreDetailPage: FC = () => {
       </Box>
 
       {/* ── Info card ── */}
-      {(group.address || hoursLabel || group.phone) && (
+      {(address || hoursLabel || group.phone) && (
         <Box
           style={{
             margin: '0 16px',
@@ -373,14 +375,14 @@ const StoreDetailPage: FC = () => {
             boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
           }}
         >
-          {group.address && (
+          {address && (
             <InfoRow
               icon={<MapPin size={16} color={COLORS.primary} />}
               label="ĐỊA CHỈ"
-              value={group.address}
+              value={address}
             />
           )}
-          {group.address && (hoursLabel || group.phone) && (
+          {address && (hoursLabel || group.phone) && (
             <Box style={{ height: 1, background: '#F3F4F6' }} />
           )}
           {hoursLabel && (
