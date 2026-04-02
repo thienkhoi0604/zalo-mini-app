@@ -187,7 +187,14 @@ export const Layout: FC = () => {
           {/* Rewards — category phải đứng trước :id để tránh match nhầm */}
           <Route path="/rewards" element={<VouchersPage />} />
           <Route path="/rewards/category/:category" element={<CategoryDetailPage />} />
-          <Route path="/stores/:storeId" element={<StoreDetailPage />} />
+          <Route
+            path="/stores/:storeId"
+            element={
+              <ProtectedRoute>
+                <StoreDetailPage />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/rewards/:id"
             element={

@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
-import { MapPin, Calendar, FileText, Store, AlertCircle, Globe, Zap, ChevronRight } from 'lucide-react';
+import { MapPin, Calendar, FileText, Store, AlertCircle, Globe, Zap } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { getVoucherTypeLabel } from '@/types/voucher';
 import { useUserStore } from '@/store/user';
@@ -357,7 +357,6 @@ const VoucherDetailPage: FC = () => {
                 flex
                 className="items-center"
                 style={{ gap: 10 }}
-                onClick={() => navigate('/stations')}
               >
                 <Box
                   style={{
@@ -376,7 +375,6 @@ const VoucherDetailPage: FC = () => {
                     Áp dụng tại toàn bộ hệ thống trạm sạc
                   </p>
                 </Box>
-                <ChevronRight size={16} color="#D1D5DB" />
               </Box>
             </SectionCard>
           ) : card.stores && card.stores.length > 0 ? (
@@ -396,9 +394,7 @@ const VoucherDetailPage: FC = () => {
                       background: '#F9FAFB',
                       borderRadius: 12,
                       border: '1px solid #F3F4F6',
-                      cursor: 'pointer',
                     }}
-                    onClick={() => navigate(`/stations?search=${encodeURIComponent(store.name)}`)}
                   >
                     <Box
                       style={{
@@ -423,11 +419,6 @@ const VoucherDetailPage: FC = () => {
                           {store.address}
                         </p>
                       )}
-                    </Box>
-                    <Box flex className="items-center" style={{ gap: 4, flexShrink: 0 }}>
-                      <Zap size={11} color="#288F4E" fill="#288F4E" strokeWidth={0} />
-                      <p style={{ fontSize: 11, color: '#288F4E', fontWeight: 600 }}>Xem trạm</p>
-                      <ChevronRight size={13} color="#D1D5DB" />
                     </Box>
                   </Box>
                 ))}
