@@ -8,7 +8,7 @@ import { ActionSheetProps } from 'zmp-ui/sheet';
 export interface SheetProps {
   visible: boolean;
   onClose?: () => void;
-  /** Initial height as a percentage of the viewport (0–100). Default: 60 */
+  /** Initial height as a percentage of the viewport (0–100). Default: 45 */
   height?: number;
   children?: React.ReactNode;
   unmountOnClose?: boolean;
@@ -28,7 +28,7 @@ const CLOSE_VELOCITY_THRESHOLD = 0.4; // px/ms — flick velocity to close
 export const Sheet: FC<SheetProps> = ({
   visible,
   onClose,
-  height: initialPct = 60,
+  height: initialPct = 45,
   children,
   unmountOnClose = false,
   swipeToClose = true,
