@@ -8,30 +8,45 @@ import VoucherItemCard from './item-card';
 import { ACTIVE_THEME } from '@/constants/theme';
 import defaultStoreImg from '@/assets/images/logo.png';
 
-// ─── Skeletons ─────────────────────────────────────────────────────────────────
+// ─── Skeleton ──────────────────────────────────────────────────────────────────
 
-
-const SectionSkeleton: FC = () => (
+const StoreSkeleton: FC = () => (
   <Box
     className="animate-pulse"
     style={{
-      margin: '0 12px', background: '#fff', borderRadius: 20, overflow: 'hidden',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.07)',
+      margin: '0 16px',
+      background: '#fff',
+      borderRadius: 18,
+      overflow: 'hidden',
+      border: '1px solid #F3F4F6',
     }}
   >
-    <Box style={{ display: 'flex', gap: 0 }}>
-      <Box style={{ width: 120, height: 110, background: '#E9EBED', flexShrink: 0 }} />
-      <Box style={{ flex: 1, padding: '14px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
-        <Box style={{ height: 14, width: '70%', background: '#E9EBED', borderRadius: 5 }} />
+    <Box style={{ display: 'flex', minHeight: 112 }}>
+      <Box style={{ width: 112, flexShrink: 0, background: '#E9EBED' }} />
+      <Box style={{ flex: 1, padding: '14px 14px 14px 12px', display: 'flex', flexDirection: 'column', gap: 9 }}>
+        <Box style={{ height: 15, width: '65%', background: '#E9EBED', borderRadius: 6 }} />
         <Box style={{ height: 10, width: '90%', background: '#E9EBED', borderRadius: 5 }} />
-        <Box style={{ height: 10, width: '60%', background: '#E9EBED', borderRadius: 5 }} />
-        <Box style={{ height: 10, width: '50%', background: '#E9EBED', borderRadius: 5 }} />
+        <Box style={{ height: 10, width: '55%', background: '#E9EBED', borderRadius: 5 }} />
+        <Box style={{ height: 10, width: '45%', background: '#E9EBED', borderRadius: 5 }} />
       </Box>
     </Box>
   </Box>
 );
 
-// ─── Item row ──────────────────────────────────────────────────────────────────
+const GlobalSkeleton: FC = () => (
+  <Box
+    className="animate-pulse"
+    style={{
+      margin: '0 16px',
+      borderRadius: 20,
+      overflow: 'hidden',
+      background: '#E9EBED',
+      height: 56,
+    }}
+  />
+);
+
+// ─── Item row (global section) ─────────────────────────────────────────────────
 
 const ItemRow: FC<{ items: Voucher[]; onItemClick: (r: Voucher) => void }> = ({ items, onItemClick }) => (
   <Box
@@ -52,6 +67,27 @@ const ItemRow: FC<{ items: Voucher[]; onItemClick: (r: Voucher) => void }> = ({ 
   </Box>
 );
 
+// ─── Info row helper ───────────────────────────────────────────────────────────
+
+const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ icon, text, clamp = 1 }) => (
+  <Box flex className="items-start" style={{ gap: 6 }}>
+    <Box style={{ marginTop: 1, flexShrink: 0 }}>{icon}</Box>
+    <p
+      style={{
+        fontSize: 11.5,
+        color: '#6B7280',
+        lineHeight: '16px',
+        overflow: 'hidden',
+        display: '-webkit-box',
+        WebkitLineClamp: clamp,
+        WebkitBoxOrient: 'vertical',
+      }}
+    >
+      {text}
+    </p>
+  </Box>
+);
+
 // ─── Store Card ────────────────────────────────────────────────────────────────
 
 const StoreCard: FC<{ group: StoreGroup }> = ({ group }) => {
@@ -68,127 +104,114 @@ const StoreCard: FC<{ group: StoreGroup }> = ({ group }) => {
   return (
     <Box
       style={{
-        display: 'flex',
-        flexDirection: 'row',
+        margin: '0 16px',
         background: '#fff',
+        borderRadius: 18,
         overflow: 'hidden',
+        border: '1px solid #F0F1F3',
+        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
       }}
     >
-      {/* Left: store image */}
-      <Box style={{ width: 120, flexShrink: 0, position: 'relative', background: '#F3F4F6' }}>
-        <img
-          src={group.imageUrl ?? defaultStoreImg}
-          alt={group.storeName}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          onError={(e) => { (e.target as HTMLImageElement).src = defaultStoreImg; }}
-        />
-      </Box>
+      <Box style={{ display: 'flex', minHeight: 112 }}>
 
-      {/* Right: info */}
-      <Box
-        style={{
-          flex: 1,
-          minWidth: 0,
-          padding: '12px 14px 12px 12px',
-          display: 'flex',
-          flexDirection: 'column',
-          gap: 6,
-          justifyContent: 'center',
-        }}
-      >
-        {/* Store name */}
-        <p
+        {/* Left: image */}
+        <Box
           style={{
-            fontSize: 15,
-            fontWeight: 800,
-            color: '#111827',
-            lineHeight: '20px',
+            width: 112,
+            flexShrink: 0,
+            position: 'relative',
+            background: '#F3F4F6',
             overflow: 'hidden',
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical',
           }}
         >
-          {group.storeName}
-        </p>
+          <img
+            src={group.imageUrl ?? defaultStoreImg}
+            alt={group.storeName}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', inset: 0 }}
+            onError={(e) => { (e.target as HTMLImageElement).src = defaultStoreImg; }}
+          />
+        </Box>
 
-        {/* Address */}
-        {group.address && (
-          <Box flex className="items-start" style={{ gap: 5 }}>
-            <MapPin size={11} color="#9CA3AF" style={{ marginTop: 2, flexShrink: 0 }} />
-            <p
-              style={{
-                fontSize: 11,
-                color: '#6B7280',
-                lineHeight: '16px',
-                overflow: 'hidden',
-                display: '-webkit-box',
-                WebkitLineClamp: 2,
-                WebkitBoxOrient: 'vertical',
-              }}
-            >
-              {group.address}
-            </p>
-          </Box>
-        )}
+        {/* Right: info */}
+        <Box
+          style={{
+            flex: 1,
+            minWidth: 0,
+            padding: '13px 12px 13px 12px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: 5,
+            justifyContent: 'center',
+          }}
+        >
+          {/* Store name */}
+          <p
+            style={{
+              fontSize: 14,
+              fontWeight: 800,
+              color: '#111827',
+              lineHeight: '19px',
+              overflow: 'hidden',
+              display: '-webkit-box',
+              WebkitLineClamp: 2,
+              WebkitBoxOrient: 'vertical',
+              marginBottom: 2,
+            }}
+          >
+            {group.storeName}
+          </p>
 
-        {/* Opening hours */}
-        {hoursLabel && (
-          <Box flex className="items-center" style={{ gap: 5 }}>
-            <Clock size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
-            <p style={{ fontSize: 11, color: '#6B7280', lineHeight: '16px' }}>{hoursLabel}</p>
-          </Box>
-        )}
+          {/* Address */}
+          {group.address && (
+            <InfoRow
+              icon={<MapPin size={11} color="#9CA3AF" />}
+              text={group.address}
+              clamp={2}
+            />
+          )}
 
-        {/* Phone */}
-        {group.phone && (
-          <Box flex className="items-center" style={{ gap: 5 }}>
-            <Phone size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
-            <p style={{ fontSize: 11, color: '#6B7280', lineHeight: '16px' }}>{group.phone}</p>
-          </Box>
-        )}
+          {/* Hours */}
+          {hoursLabel && (
+            <InfoRow
+              icon={<Clock size={11} color="#9CA3AF" />}
+              text={hoursLabel}
+            />
+          )}
 
-        {/* Distance badge */}
-        {distanceLabel && (
-          <Box flex className="items-center" style={{ gap: 5, marginTop: 2 }}>
-            <Box
-              flex
-              className="items-center"
-              style={{
-                gap: 4,
-                background: '#F0FDF4',
-                border: '1px solid #BBF7D0',
-                borderRadius: 20,
-                padding: '2px 8px',
-                alignSelf: 'flex-start',
-              }}
-            >
-              <Navigation size={9} color="#288F4E" strokeWidth={2.5} />
-              <p style={{ fontSize: 10, color: '#288F4E', fontWeight: 700 }}>{distanceLabel}</p>
+          {/* Phone */}
+          {group.phone && (
+            <InfoRow
+              icon={<Phone size={11} color="#9CA3AF" />}
+              text={group.phone}
+            />
+          )}
+
+          {/* Distance badge */}
+          {distanceLabel && (
+            <Box style={{ marginTop: 4 }}>
+              <Box
+                flex
+                className="items-center"
+                style={{
+                  gap: 4,
+                  background: '#F0FDF4',
+                  border: '1px solid #BBF7D0',
+                  borderRadius: 20,
+                  padding: '3px 9px',
+                  alignSelf: 'flex-start',
+                  display: 'inline-flex',
+                }}
+              >
+                <Navigation size={9} color="#288F4E" strokeWidth={2.5} />
+                <p style={{ fontSize: 10.5, color: '#288F4E', fontWeight: 700 }}>{distanceLabel}</p>
+              </Box>
             </Box>
-          </Box>
-        )}
+          )}
+        </Box>
       </Box>
     </Box>
   );
 };
-
-// ─── Store section (card + items) ──────────────────────────────────────────────
-
-const StoreSection: FC<{ group: StoreGroup }> = ({ group }) => (
-  <Box
-    style={{
-      margin: '0 12px',
-      background: '#fff',
-      borderRadius: 20,
-      overflow: 'hidden',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.08)',
-      border: '1px solid rgba(0,0,0,0.04)',
-    }}
-  >
-    <StoreCard group={group} />
-  </Box>
-);
 
 // ─── Global rewards section ────────────────────────────────────────────────────
 
@@ -200,61 +223,80 @@ const GlobalSection: FC<{ vouchers: Voucher[]; onItemClick: (r: Voucher) => void
   const blob = `rgba(255,255,255,${t.blobOpacity})`;
 
   return (
-    <Box
-      style={{
-        margin: '0 12px',
-        borderRadius: 20,
-        overflow: 'hidden',
-        background: gradient,
-        boxShadow: `0 6px 24px rgba(0,0,0,0.22)`,
-        position: 'relative',
-      }}
-    >
-      {/* Decorative blobs */}
-      <Box style={{ position: 'absolute', top: -24, right: -24, width: 110, height: 110, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
-      <Box style={{ position: 'absolute', bottom: -28, left: 16, width: 80, height: 80, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
-      <Box style={{ position: 'absolute', top: 14, right: 80, width: 44, height: 44, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
-
-      {/* Header */}
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      {/* Gradient card */}
       <Box
-        flex
-        className="items-center justify-between"
-        style={{ padding: '14px 16px 12px', borderBottom: '1px solid rgba(255,255,255,0.12)', position: 'relative' }}
+        style={{
+          margin: '0 16px',
+          borderRadius: 20,
+          overflow: 'hidden',
+          background: gradient,
+          boxShadow: '0 6px 24px rgba(0,0,0,0.18)',
+          position: 'relative',
+        }}
       >
-        <Box flex className="items-center" style={{ gap: 11 }}>
+        {/* Decorative blobs */}
+        <Box style={{ position: 'absolute', top: -20, right: -20, width: 90, height: 90, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
+        <Box style={{ position: 'absolute', bottom: -24, left: 10, width: 70, height: 70, borderRadius: '50%', background: blob, pointerEvents: 'none' }} />
+
+        {/* Header row */}
+        <Box
+          flex
+          className="items-center"
+          style={{ padding: '12px 14px 10px', gap: 10, position: 'relative' }}
+        >
           <Box
             style={{
-              width: 44, height: 44, borderRadius: 13,
-              background: 'rgba(255,255,255,0.16)',
-              border: '1.5px solid rgba(255,255,255,0.24)',
+              width: 38, height: 38, borderRadius: 12,
+              background: 'rgba(255,255,255,0.18)',
+              border: '1.5px solid rgba(255,255,255,0.26)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
-              boxShadow: '0 4px 14px rgba(0,0,0,0.18)',
             }}
           >
-            <Globe size={20} color="#fff" strokeWidth={1.8} />
+            <Globe size={18} color="#fff" strokeWidth={1.8} />
           </Box>
           <Box>
-            <p style={{ fontSize: 14, fontWeight: 800, color: '#fff', lineHeight: '18px' }}>
-              Ưu đãi toàn hệ thống
+            <p style={{ fontSize: 13, fontWeight: 800, color: '#fff', lineHeight: '17px' }}>
+              Áp dụng tại tất cả cửa hàng
             </p>
             <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', marginTop: 2 }}>
-              Áp dụng tại tất cả cửa hàng
+              Không giới hạn địa điểm
             </p>
           </Box>
         </Box>
+
+        <ItemRow items={vouchers} onItemClick={onItemClick} />
+      </Box>
+    </Box>
+  );
+};
+
+// ─── Store list section ────────────────────────────────────────────────────────
+
+const StoreListSection: FC<{ groups: StoreGroup[] }> = ({ groups }) => {
+  if (groups.length === 0) return null;
+
+  return (
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+      {/* Section label */}
+      <Box flex className="items-center" style={{ gap: 8, paddingLeft: 16, paddingRight: 16, marginBottom: 10 }}>
         <Box
           style={{
-            background: 'rgba(255,255,255,0.18)',
-            border: '1px solid rgba(255,255,255,0.28)',
-            borderRadius: 20, padding: '4px 10px',
+            width: 3, height: 14, borderRadius: 2,
+            background: 'linear-gradient(180deg, #288F4E, #1A6B38)',
+            flexShrink: 0,
           }}
-        >
-          <p style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>{vouchers.length} ưu đãi</p>
-        </Box>
+        />
+        <p style={{ fontSize: 13, fontWeight: 700, color: '#374151' }}>Cửa hàng tham gia</p>
       </Box>
 
-      <ItemRow items={vouchers} onItemClick={onItemClick} />
+      {/* Store cards */}
+      <Box style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+        {groups.map((group) => (
+          <StoreCard key={group.storeId} group={group} />
+        ))}
+      </Box>
     </Box>
   );
 };
@@ -262,16 +304,16 @@ const GlobalSection: FC<{ vouchers: Voucher[]; onItemClick: (r: Voucher) => void
 // ─── Empty state ───────────────────────────────────────────────────────────────
 
 const EmptyState: FC = () => (
-  <Box className="flex flex-col items-center justify-center py-24" style={{ gap: 14 }}>
+  <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 14 }}>
     <Box
       style={{
         width: 84, height: 84, borderRadius: '50%',
-        background: 'linear-gradient(145deg, #EFF6FF, #DBEAFE)',
-        boxShadow: '0 6px 20px rgba(37,99,235,0.14)',
+        background: 'linear-gradient(145deg, #F0FDF4, #DCFCE7)',
+        boxShadow: '0 6px 20px rgba(40,143,78,0.14)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}
     >
-      <Store size={36} color="#2563EB" />
+      <Store size={36} color="#288F4E" />
     </Box>
     <Box style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', gap: 6 }}>
       <p style={{ fontSize: 16, fontWeight: 800, color: '#374151' }}>Chưa có cửa hàng</p>
@@ -296,20 +338,22 @@ const StoreTab: FC = () => {
   const isEmpty = !storeGroupsLoading && storeGroups.length === 0 && globalVouchers.length === 0;
 
   return (
-    <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 6, paddingBottom: 12 }}>
+    <Box style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingTop: 8, paddingBottom: 16 }}>
       {storeGroupsLoading ? (
         <>
-          <SectionSkeleton />
-          <SectionSkeleton />
+          <GlobalSkeleton />
+          <Box style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <StoreSkeleton />
+            <StoreSkeleton />
+            <StoreSkeleton />
+          </Box>
         </>
       ) : isEmpty ? (
         <EmptyState />
       ) : (
         <>
           <GlobalSection vouchers={globalVouchers} onItemClick={handleItemClick} />
-          {storeGroups.map((group) => (
-            <StoreSection key={group.storeId} group={group} />
-          ))}
+          <StoreListSection groups={storeGroups} />
         </>
       )}
     </Box>

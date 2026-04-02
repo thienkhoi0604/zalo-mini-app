@@ -102,12 +102,15 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
     if (get().userVouchersLoading) return;
     set({ userVouchersLoading: true });
     try {
-      const res = await getUserVouchers({ pageNumber: 1, pageSize: USER_VOUCHERS_PAGE_SIZE });
+      const [res, unusedCount] = await Promise.all([
+        getUserVouchers({ pageNumber: 1, pageSize: USER_VOUCHERS_PAGE_SIZE }),
+        getUserVouchersCount(),
+      ]);
       set({
         userVouchers: res.data.items ?? [],
         userVouchersPage: 1,
         userVouchersHasMore: res.data.hasNext ?? false,
-        userVouchersUnusedCount: res.unusedCount,
+        userVouchersUnusedCount: unusedCount,
       });
     } catch (error) {
       console.error('Failed to load user vouchers:', error);
@@ -127,7 +130,6 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
         userVouchers: [...state.userVouchers, ...(res.data.items ?? [])],
         userVouchersPage: nextPage,
         userVouchersHasMore: res.data.hasNext ?? false,
-        userVouchersUnusedCount: res.unusedCount,
       }));
     } catch (error) {
       console.error('Failed to load more user vouchers:', error);

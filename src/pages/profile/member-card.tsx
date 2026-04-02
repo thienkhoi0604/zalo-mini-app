@@ -14,7 +14,7 @@ const MemberCard: FC = () => {
     /* Outer wrapper — extra paddingTop so the logo can overflow the card top */
     <Box className="mx-4 mt-2" style={{ position: 'relative', paddingTop: 36 }}>
 
-      {/* ── Floating logo ── */}
+      {/* ── Floating avatar ── */}
       <Box
         style={{
           position: 'absolute',
@@ -32,9 +32,10 @@ const MemberCard: FC = () => {
         }}
       >
         <img
-          src={logoImg}
-          alt="EcoGreen"
+          src={user?.avatarUrl || logoImg}
+          alt={user?.fullName || 'EcoGreen'}
           style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+          onError={(e) => { (e.target as HTMLImageElement).src = logoImg; }}
         />
       </Box>
 
@@ -104,7 +105,7 @@ const MemberCard: FC = () => {
           </p>
 
           {/* Phone */}
-          {user?.phone && (
+          {/* {user?.phone && (
             <p
               style={{
                 color: 'rgba(160,200,255,0.7)',
@@ -116,7 +117,7 @@ const MemberCard: FC = () => {
             >
               {user.phone}
             </p>
-          )}
+          )} */}
 
           {/* Divider */}
           <Box

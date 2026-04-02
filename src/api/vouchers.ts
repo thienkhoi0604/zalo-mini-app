@@ -37,13 +37,9 @@ export async function getVoucherById(id: string): Promise<Voucher | null> {
   }
 }
 
-export interface UserVouchersResponse extends PaginatedApiResponse<UserVoucher> {
-  unusedCount: number;
-}
-
 export async function getUserVouchers(
   params: GetUserVouchersParams = {},
-): Promise<UserVouchersResponse> {
+): Promise<PaginatedApiResponse<UserVoucher>> {
   const { pageNumber = 1, pageSize = 5 } = params;
   try {
     const { data } = await axiosClient.get<{
@@ -59,7 +55,6 @@ export async function getUserVouchers(
     const items: UserVoucher[] = data.data.items ?? [];
     return {
       success: true,
-      unusedCount: data.data.totalCount ?? 0,
       data: {
         items,
         pageNumber: data.data.pageNumber ?? pageNumber,
@@ -71,7 +66,6 @@ export async function getUserVouchers(
   } catch {
     return {
       success: false,
-      unusedCount: 0,
       data: { items: [], pageNumber, pageSize, totalCount: 0, hasNext: false },
     };
   }
@@ -81,7 +75,7 @@ export async function getUserVouchersCount(): Promise<number> {
   try {
     const { data } = await axiosClient.get<{
       data: { totalCount: number };
-    }>('/Rewards/my-vouchers', { params: { pageNumber: 1, pageSize: 1 } });
+    }>('/Rewards/my-vouchers', { params: { pageNumber: 1, pageSize: 1, IsUsed: false } });
     return data.data.totalCount ?? 0;
   } catch {
     return 0;

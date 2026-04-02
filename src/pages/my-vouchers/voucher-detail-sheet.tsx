@@ -54,18 +54,21 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
   return (
     <Sheet visible={!!userVoucher} onClose={onClose} height={95} swipeToClose unmountOnClose>
       {userVoucher && (
-        <Box style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+        <Box>
 
-          {/* Compact header: name + status */}
+          {/* Sticky header: name + status */}
           <Box
             style={{
+              position: 'sticky',
+              top: 0,
+              zIndex: 10,
+              background: '#fff',
               padding: '4px 20px 14px',
               borderBottom: `2px dashed ${isUsed ? '#E5E7EB' : '#BBF7D0'}`,
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
               gap: 10,
-              flexShrink: 0,
             }}
           >
             <p
@@ -95,8 +98,8 @@ const VoucherDetailSheet: FC<Props> = ({ userVoucher, onClose }) => {
             </span>
           </Box>
 
-          {/* Scrollable content */}
-          <Box style={{ flex: 1, overflowY: 'auto', paddingBottom: 'calc(24px + var(--zaui-safe-area-inset-bottom, 0px))' }}>
+          {/* Content */}
+          <Box style={{ paddingBottom: 'calc(24px + var(--zaui-safe-area-inset-bottom, 0px))' }}>
 
             {/* QR code – only for unused vouchers */}
             {!isUsed && (
