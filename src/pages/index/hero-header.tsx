@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { useNavigate } from 'react-router';
-import { Box } from 'zmp-ui';
+import { Box, useSnackbar } from 'zmp-ui';
 import { QrCode, Bell } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import { useVouchersStore } from '@/store/vouchers';
@@ -11,8 +11,27 @@ import CoinIcon from '@/components/ui/coin-icon';
 
 export const HeroHeader: FC = () => {
   const navigate = useNavigate();
-  const { user, pointWallet, isAuthenticated } = useUserStore();
+  const { openSnackbar } = useSnackbar();
+  const { user, pointWallet, isAuthenticated, authLoading } = useUserStore();
   const { userVouchersUnusedCount } = useVouchersStore();
+
+  const handleLogin = async () => {
+    if (isAuthenticated) return;
+    try {
+      const result = await useUserStore.getState().loginWithZalo();
+      if (result === 'permission_denied_info') {
+        openSnackbar({ text: 'Bạn cần cấp quyền thông tin cá nhân để đăng nhập.', type: 'warning' });
+        return;
+      }
+      if (result === 'permission_denied_location') {
+        openSnackbar({ text: 'Bạn cần cấp quyền vị trí để đăng nhập.', type: 'warning' });
+        return;
+      }
+      openSnackbar({ text: 'Đăng nhập thành công!', type: 'success' });
+    } catch {
+      openSnackbar({ text: 'Đăng nhập thất bại. Vui lòng thử lại.', type: 'error' });
+    }
+  };
 
   const firstName = user?.fullName?.split(' ').pop() ?? 'bạn';
   const rankName = user?.rank?.currentRankName;
@@ -168,16 +187,19 @@ export const HeroHeader: FC = () => {
                 </p>
               </Box>
               <button
-                onClick={() => navigate('/register')}
+                onClick={handleLogin}
+                disabled={authLoading}
                 style={{
                   flexShrink: 0, marginTop: 4,
                   background: 'rgba(255,255,255,0.2)',
                   border: '1.5px solid rgba(255,255,255,0.5)',
                   borderRadius: 100, padding: '7px 18px',
-                  cursor: 'pointer', color: '#fff', fontSize: 13, fontWeight: 700,
+                  cursor: authLoading ? 'not-allowed' : 'pointer',
+                  opacity: authLoading ? 0.6 : 1,
+                  color: '#fff', fontSize: 13, fontWeight: 700,
                 }}
               >
-                Đăng nhập
+                {authLoading ? 'Đang xử lý...' : 'Đăng nhập'}
               </button>
             </Box>
           )}

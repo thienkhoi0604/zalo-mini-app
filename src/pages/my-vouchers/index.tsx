@@ -1,10 +1,10 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
+import { useNavigate } from 'react-router';
 import { Box, Page } from 'zmp-ui';
 import { Gift } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
 import VoucherCard from './voucher-card';
-import VoucherDetailSheet from './voucher-detail-sheet';
 import { UserVoucher } from '@/types/voucher';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 
@@ -128,8 +128,8 @@ const LoadingMore: FC = () => (
 // ─── My Vouchers Page ─────────────────────────────────────────────────────────
 
 const MyVouchersPage: FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('unused');
-  const [selectedVoucher, setSelectedVoucher] = useState<UserVoucher | null>(null);
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = React.useState<Tab>('unused');
   const { userVouchers, userVouchersLoading: loading, userVouchersHasMore, loadUserVouchers, loadMoreUserVouchers } = useVouchersStore();
 
   useEffect(() => {
@@ -187,7 +187,7 @@ const MyVouchersPage: FC = () => {
                   key={uv.id}
                   userVoucher={uv}
                   used={uv.usedAt !== null}
-                  onClick={() => setSelectedVoucher(uv)}
+                  onClick={(uv: UserVoucher) => navigate(`/my-vouchers/${uv.id}`, { state: { userVoucher: uv } })}
                 />
               ))}
 
@@ -206,7 +206,6 @@ const MyVouchersPage: FC = () => {
 
       </PullToRefresh>
 
-      <VoucherDetailSheet userVoucher={selectedVoucher} onClose={() => setSelectedVoucher(null)} />
     </Page>
   );
 };

@@ -2,6 +2,7 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { LayoutGrid, Store } from 'lucide-react';
+import CoinIcon from '@/components/ui/coin-icon';
 import { useVouchersStore } from '@/store/vouchers';
 import { useUserStore } from '@/store/user';
 import VouchersList from './item-cards-list';
@@ -170,7 +171,7 @@ const VouchersPage: FC = () => {
             >
               {/* Points balance */}
               <Box flex className="items-center" style={{ gap: 6, flex: 1, justifyContent: 'center' }}>
-                <span style={{ fontSize: 13 }}>⭐</span>
+                <CoinIcon size={18} />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#fff', letterSpacing: -0.2 }}>
                   {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
                 </p>

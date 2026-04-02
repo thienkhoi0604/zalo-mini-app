@@ -77,18 +77,15 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
   loadVoucherById: async (id: string) => {
     set({ loading: true });
     try {
-      const existing = get().allVouchers.find((r) => r.id === id);
-      if (existing) {
-        set({ loading: false });
-        return;
-      }
       const voucher = await getVoucherById(id);
       if (!voucher) {
         set({ loading: false });
         return;
       }
       set((state) => ({
-        allVouchers: [...state.allVouchers, voucher],
+        allVouchers: state.allVouchers.some((r) => r.id === id)
+          ? state.allVouchers.map((r) => (r.id === id ? voucher : r))
+          : [...state.allVouchers, voucher],
         loading: false,
       }));
     } catch (error) {

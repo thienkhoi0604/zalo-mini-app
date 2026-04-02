@@ -28,7 +28,7 @@ export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
     status,
     appliesToAll: item.appliesToAll ?? undefined,
     stores: item.storeName
-      ? [{ id: item.storeId ?? undefined, name: item.storeName }]
+      ? [{ id: item.storeId ?? undefined, name: item.storeName, address: item.storeAddress ?? undefined }]
       : undefined,
   };
 }
@@ -36,24 +36,33 @@ export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
 export async function getFeedItems(params: GetFeedParams = {}): Promise<Voucher[]> {
   const { pageNumber = 1, pageSize = 50, type } = params;
   const { data } = await axiosClient.get<{
-    data: { items: FeedApiItem[] };
+    data: {
+      items: FeedApiItem[];
+      pageNumber: number;
+      pageSize: number;
+      totalCount: number;
+      totalPages: number;
+      hasPrevious: boolean;
+      hasNext: boolean;
+    };
   }>('/app/feed', {
     params: { pageNumber, pageSize, ...(type && { Type: type }) },
   });
-  return (data.data.items ?? []).map(mapFeedItemToVoucher);
+  return (data.data?.items ?? []).map(mapFeedItemToVoucher);
 }
 
 interface RawStoreGroup {
   storeId: string;
   storeName: string;
-  address: string | null;
+  storeAddress: string | null;
   distanceKm: number | null;
   latitude: number | null;
   longitude: number | null;
-  imageUrl: string | null;
+  storeImageUrl: string | null;
   phone: string | null;
-  openFrom: string | null;
-  openTo: string | null;
+  openTime: string | null;
+  closeTime: string | null;
+  workingStatus: string | null;
   items: FeedApiItem[];
 }
 
@@ -66,19 +75,23 @@ export async function getFeedGrouped(): Promise<GroupedFeedResult> {
   }>('/app/feed', { params: { Grouped: true } });
 
   const globalVouchers = (data.data.globalRewards ?? []).map(mapFeedItemToVoucher);
-  const stores: StoreGroup[] = (data.data.stores ?? []).map((s) => ({
-    storeId: s.storeId,
-    storeName: s.storeName,
-    address: s.address ?? null,
-    distanceKm: s.distanceKm,
-    latitude: s.latitude,
-    longitude: s.longitude,
-    imageUrl: s.imageUrl ?? null,
-    phone: s.phone ?? null,
-    openFrom: s.openFrom ?? null,
-    openTo: s.openTo ?? null,
-    items: s.items.map(mapFeedItemToVoucher),
-  }));
+  const stores: StoreGroup[] = (data.data.stores ?? []).map((s) => {
+    const firstItem = s.items[0] ?? null;
+    return {
+      storeId: s.storeId,
+      storeName: s.storeName,
+      address: s.storeAddress ?? firstItem?.storeAddress ?? null,
+      distanceKm: s.distanceKm ?? firstItem?.distanceKm ?? null,
+      latitude: s.latitude ?? firstItem?.latitude ?? null,
+      longitude: s.longitude ?? firstItem?.longitude ?? null,
+      imageUrl: s.storeImageUrl ?? firstItem?.storeImageUrl ?? null,
+      phone: s.phone ?? firstItem?.storePhone ?? null,
+      openFrom: s.openTime ?? firstItem?.storeOpenTime ?? null,
+      openTo: s.closeTime ?? firstItem?.storeCloseTime ?? null,
+      workingStatus: s.workingStatus ?? null,
+      items: s.items.map(mapFeedItemToVoucher),
+    };
+  });
 
   return { globalVouchers, stores };
 }

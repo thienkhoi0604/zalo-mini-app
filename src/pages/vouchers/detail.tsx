@@ -150,6 +150,13 @@ const VoucherDetailPage: FC = () => {
   const { allVouchers, loading, loadVoucherById, redeemVoucher, redeeming } = useVouchersStore();
   const { pointWallet } = useUserStore();
   const [confirmVisible, setConfirmVisible] = useState(false);
+  const redirectTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimerRef.current) clearTimeout(redirectTimerRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     if (id) loadVoucherById(id).catch(() => openSnackbar({ text: 'Không thể tải thông tin', type: 'error' }));
@@ -163,7 +170,7 @@ const VoucherDetailPage: FC = () => {
       await redeemVoucher(id);
       setConfirmVisible(false);
       openSnackbar({ text: `Đổi ${card?.costCurrency ?? 'GreenCoin'} thành công! Voucher đã được thêm vào tài khoản.`, type: 'success' });
-      setTimeout(() => navigate('/my-vouchers', { replace: true }), 1200);
+      redirectTimerRef.current = setTimeout(() => navigate('/my-vouchers', { replace: true }), 1200);
     } catch {
       setConfirmVisible(false);
       openSnackbar({ text: `Đổi ${card?.costCurrency ?? 'GreenCoin'} thất bại. Vui lòng thử lại.`, type: 'error' });

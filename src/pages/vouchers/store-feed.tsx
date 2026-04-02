@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { Globe, Store, MapPin, Clock, Phone, Navigation } from 'lucide-react';
+import { Globe, Store, MapPin, Clock, Phone, Navigation, Tag } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher, StoreGroup } from '@/types/voucher';
 import VoucherItemCard from './item-card';
@@ -21,13 +21,18 @@ const StoreSkeleton: FC = () => (
       border: '1px solid #F3F4F6',
     }}
   >
-    <Box style={{ display: 'flex', minHeight: 112 }}>
-      <Box style={{ width: 112, flexShrink: 0, background: '#E9EBED' }} />
-      <Box style={{ flex: 1, padding: '14px 14px 14px 12px', display: 'flex', flexDirection: 'column', gap: 9 }}>
-        <Box style={{ height: 15, width: '65%', background: '#E9EBED', borderRadius: 6 }} />
+    {/* Header skeleton */}
+    <Box style={{ padding: '12px 14px 10px', borderBottom: '1px solid #F3F4F6' }}>
+      <Box style={{ height: 18, width: '55%', background: '#E9EBED', borderRadius: 6 }} />
+    </Box>
+    {/* Body skeleton */}
+    <Box style={{ display: 'flex', minHeight: 100 }}>
+      <Box style={{ width: '32%', flexShrink: 0, background: '#E9EBED' }} />
+      <Box style={{ flex: 1, padding: '10px 12px', display: 'flex', flexDirection: 'column', gap: 8 }}>
         <Box style={{ height: 10, width: '90%', background: '#E9EBED', borderRadius: 5 }} />
-        <Box style={{ height: 10, width: '55%', background: '#E9EBED', borderRadius: 5 }} />
-        <Box style={{ height: 10, width: '45%', background: '#E9EBED', borderRadius: 5 }} />
+        <Box style={{ height: 10, width: '60%', background: '#E9EBED', borderRadius: 5 }} />
+        <Box style={{ height: 10, width: '50%', background: '#E9EBED', borderRadius: 5 }} />
+        <Box style={{ marginTop: 'auto', height: 44, background: '#E9EBED', borderRadius: 10 }} />
       </Box>
     </Box>
   </Box>
@@ -90,7 +95,9 @@ const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ 
 
 // ─── Store Card ────────────────────────────────────────────────────────────────
 
-const StoreCard: FC<{ group: StoreGroup }> = ({ group }) => {
+const StoreCard: FC<{ group: StoreGroup; onItemClick: (v: Voucher) => void; onCardClick: () => void }> = ({ group, onCardClick }) => {
+  const activeCount = group.items.filter((v) => v.status !== 'expired').length;
+
   const distanceLabel = group.distanceKm != null
     ? group.distanceKm < 1
       ? `${Math.round(group.distanceKm * 1000)} m`
@@ -103,110 +110,149 @@ const StoreCard: FC<{ group: StoreGroup }> = ({ group }) => {
 
   return (
     <Box
+      onClick={onCardClick}
       style={{
         margin: '0 16px',
         background: '#fff',
         borderRadius: 18,
         overflow: 'hidden',
         border: '1px solid #F0F1F3',
-        boxShadow: '0 2px 12px rgba(0,0,0,0.06)',
+        boxShadow: '0 4px 16px rgba(0,0,0,0.10)',
+        cursor: 'pointer',
       }}
     >
-      <Box style={{ display: 'flex', minHeight: 112 }}>
+      {/* ── Header ── */}
+      <Box
+        style={{
+          padding: '10px 14px 9px',
+          borderBottom: '1px solid #F3F4F6',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: 8,
+          position: 'relative',
+        }}
+      >
+        <p
+          style={{
+            fontSize: 16,
+            fontWeight: 800,
+            color: '#111827',
+            lineHeight: '21px',
+            overflow: 'hidden',
+            display: '-webkit-box',
+            WebkitLineClamp: 1,
+            WebkitBoxOrient: 'vertical',
+          }}
+        >
+          {group.storeName}
+        </p>
+        {group.workingStatus && (
+          <span
+            style={{
+              fontSize: 9.5,
+              fontWeight: 700,
+              letterSpacing: 0.3,
+              padding: '2px 7px',
+              borderRadius: 20,
+              flexShrink: 0,
+              background: group.workingStatus === 'Open' ? '#DCFCE7' : '#FEE2E2',
+              color: group.workingStatus === 'Open' ? '#166534' : '#991B1B',
+            }}
+          >
+            {group.workingStatus === 'Open' ? 'Đang mở' : 'Đóng cửa'}
+          </span>
+        )}
+      </Box>
 
-        {/* Left: image */}
+      {/* ── Body ── */}
+      <Box style={{ display: 'flex', minHeight: 100 }}>
+
+        {/* Left: 16:9 image ~32% */}
         <Box
           style={{
-            width: 112,
+            width: '32%',
             flexShrink: 0,
             position: 'relative',
             background: '#F3F4F6',
             overflow: 'hidden',
+            alignSelf: 'stretch',
           }}
         >
           <img
             src={group.imageUrl ?? defaultStoreImg}
             alt={group.storeName}
-            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', inset: 0 }}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+              position: 'absolute',
+              inset: 0,
+            }}
             onError={(e) => { (e.target as HTMLImageElement).src = defaultStoreImg; }}
           />
         </Box>
 
-        {/* Right: info */}
+        {/* Right: info + voucher count */}
         <Box
           style={{
             flex: 1,
             minWidth: 0,
-            padding: '13px 12px 13px 12px',
+            padding: '10px 12px 10px 11px',
             display: 'flex',
             flexDirection: 'column',
-            gap: 5,
-            justifyContent: 'center',
+            gap: 4,
           }}
         >
-          {/* Store name */}
-          <p
-            style={{
-              fontSize: 14,
-              fontWeight: 800,
-              color: '#111827',
-              lineHeight: '19px',
-              overflow: 'hidden',
-              display: '-webkit-box',
-              WebkitLineClamp: 2,
-              WebkitBoxOrient: 'vertical',
-              marginBottom: 2,
-            }}
-          >
-            {group.storeName}
-          </p>
-
-          {/* Address */}
+          {/* Info rows */}
           {group.address && (
-            <InfoRow
-              icon={<MapPin size={11} color="#9CA3AF" />}
-              text={group.address}
-              clamp={2}
-            />
+            <InfoRow icon={<MapPin size={11} color="#9CA3AF" />} text={group.address} clamp={2} />
           )}
-
-          {/* Hours */}
           {hoursLabel && (
-            <InfoRow
-              icon={<Clock size={11} color="#9CA3AF" />}
-              text={hoursLabel}
-            />
+            <InfoRow icon={<Clock size={11} color="#9CA3AF" />} text={hoursLabel} />
           )}
-
-          {/* Phone */}
           {group.phone && (
-            <InfoRow
-              icon={<Phone size={11} color="#9CA3AF" />}
-              text={group.phone}
-            />
+            <InfoRow icon={<Phone size={11} color="#9CA3AF" />} text={group.phone} />
           )}
 
           {/* Distance badge */}
           {distanceLabel && (
-            <Box style={{ marginTop: 4 }}>
-              <Box
-                flex
-                className="items-center"
-                style={{
-                  gap: 4,
-                  background: '#F0FDF4',
-                  border: '1px solid #BBF7D0',
-                  borderRadius: 20,
-                  padding: '3px 9px',
-                  alignSelf: 'flex-start',
-                  display: 'inline-flex',
-                }}
-              >
-                <Navigation size={9} color="#288F4E" strokeWidth={2.5} />
-                <p style={{ fontSize: 10.5, color: '#288F4E', fontWeight: 700 }}>{distanceLabel}</p>
-              </Box>
+            <Box
+              flex
+              className="items-center"
+              style={{
+                gap: 4,
+                background: '#F0FDF4',
+                border: '1px solid #BBF7D0',
+                borderRadius: 20,
+                padding: '3px 9px',
+                display: 'inline-flex',
+                alignSelf: 'flex-start',
+                marginTop: 2,
+              }}
+            >
+              <Navigation size={9} color="#288F4E" strokeWidth={2.5} />
+              <p style={{ fontSize: 10.5, color: '#288F4E', fontWeight: 700 }}>{distanceLabel}</p>
             </Box>
           )}
+
+          {/* Voucher count */}
+          <Box
+            style={{
+              marginTop: 'auto',
+              paddingTop: 8,
+              borderTop: '1px dashed #E9EBED',
+              display: 'flex',
+              alignItems: 'center',
+              gap: 5,
+            }}
+          >
+            <Tag size={11} color="#288F4E" />
+            <p style={{ fontSize: 11.5, fontWeight: 700, color: '#288F4E' }}>
+              {activeCount > 0 ? `${activeCount} ưu đãi` : 'Không có ưu đãi'}
+            </p>
+          </Box>
         </Box>
       </Box>
     </Box>
@@ -274,7 +320,9 @@ const GlobalSection: FC<{ vouchers: Voucher[]; onItemClick: (r: Voucher) => void
 
 // ─── Store list section ────────────────────────────────────────────────────────
 
-const StoreListSection: FC<{ groups: StoreGroup[] }> = ({ groups }) => {
+const StoreListSection: FC<{ groups: StoreGroup[]; onItemClick: (v: Voucher) => void }> = ({ groups, onItemClick }) => {
+  const navigate = useNavigate();
+
   if (groups.length === 0) return null;
 
   return (
@@ -288,13 +336,18 @@ const StoreListSection: FC<{ groups: StoreGroup[] }> = ({ groups }) => {
             flexShrink: 0,
           }}
         />
-        <p style={{ fontSize: 13, fontWeight: 700, color: '#374151' }}>Cửa hàng tham gia</p>
+        <p style={{ fontSize: 13, fontWeight: 700, color: '#374151' }}>Danh mục cửa hàng</p>
       </Box>
 
       {/* Store cards */}
       <Box style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
         {groups.map((group) => (
-          <StoreCard key={group.storeId} group={group} />
+          <StoreCard
+            key={group.storeId}
+            group={group}
+            onItemClick={onItemClick}
+            onCardClick={() => navigate(`/stores/${group.storeId}`, { state: { group } })}
+          />
         ))}
       </Box>
     </Box>
@@ -329,7 +382,7 @@ const StoreTab: FC = () => {
   const { globalVouchers, storeGroups, storeGroupsLoading, loadStoreGroups } = useVouchersStore();
 
   useEffect(() => {
-    if (storeGroups.length === 0 && globalVouchers.length === 0) {
+    if (!storeGroupsLoading && storeGroups.length === 0 && globalVouchers.length === 0) {
       loadStoreGroups();
     }
   }, []);
@@ -353,7 +406,7 @@ const StoreTab: FC = () => {
       ) : (
         <>
           <GlobalSection vouchers={globalVouchers} onItemClick={handleItemClick} />
-          <StoreListSection groups={storeGroups} />
+          <StoreListSection groups={storeGroups} onItemClick={handleItemClick} />
         </>
       )}
     </Box>

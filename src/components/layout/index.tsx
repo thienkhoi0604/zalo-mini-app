@@ -9,11 +9,13 @@ import ProfilePage from '@/pages/profile';
 import VouchersPage from '@/pages/vouchers';
 import VoucherDetailPage from '@/pages/vouchers/detail';
 import CategoryDetailPage from '@/pages/vouchers/category-feed';
+import StoreDetailPage from '@/pages/vouchers/store-detail';
 import QRCodePage from '@/pages/qr-code';
 import StationsPage from '@/pages/stations';
 import StationDetailPage from '@/pages/station-detail';
 import RegisterPage from '@/pages/register';
 import MyVouchersPage from '@/pages/my-vouchers';
+import MyVoucherDetailPage from '@/pages/my-vouchers/voucher-detail';
 import RankBenefitsPage from '@/pages/rank-benefits';
 import CheckinHistoryPage from '@/pages/checkin-history';
 import VerifyVehiclePage from '@/pages/verify-vehicle';
@@ -49,6 +51,7 @@ const getRouteTitle = (pathname: string): string => {
   if (pathname === '/qr-code') return 'Mã QR';
   if (pathname === '/register') return 'Đăng nhập';
   if (pathname === '/my-vouchers') return 'Voucher của tôi';
+  if (pathname.startsWith('/my-vouchers/')) return 'Chi tiết voucher';
   if (pathname === '/rank-benefits') return 'Đặc quyền';
   if (pathname === '/checkin-history') return 'Lịch sử điểm';
   if (pathname === '/verify-vehicle') return 'Xác thực xe';
@@ -57,6 +60,7 @@ const getRouteTitle = (pathname: string): string => {
     return decodeURIComponent(pathname.replace('/rewards/category/', ''));
   if (pathname.startsWith('/rewards/')) return 'Chi tiết voucher';
   if (pathname.startsWith('/stations/')) return 'Chi tiết trạm sạc';
+  if (pathname.startsWith('/stores/')) return 'Cửa hàng';
   return '';
 };
 
@@ -183,6 +187,7 @@ export const Layout: FC = () => {
           {/* Rewards — category phải đứng trước :id để tránh match nhầm */}
           <Route path="/rewards" element={<VouchersPage />} />
           <Route path="/rewards/category/:category" element={<CategoryDetailPage />} />
+          <Route path="/stores/:storeId" element={<StoreDetailPage />} />
           <Route
             path="/rewards/:id"
             element={
@@ -229,6 +234,14 @@ export const Layout: FC = () => {
             element={
               <ProtectedRoute>
                 <MyVouchersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-vouchers/:id"
+            element={
+              <ProtectedRoute>
+                <MyVoucherDetailPage />
               </ProtectedRoute>
             }
           />

@@ -26,6 +26,7 @@ export interface FeedApiItem {
   name: string;
   description: string | null;
   imageUrl: string;
+  storeImageUrl: string | null;
   storeId: string | null;
   storeName: string | null;
   provinceCode: string | null;
@@ -35,6 +36,12 @@ export interface FeedApiItem {
   latitude: number | null;
   longitude: number | null;
   distanceKm: number | null;
+  storeAddress: string | null;
+  storePhone: string | null;
+  storeOperatingHours: string | null;
+  storeOpenTime: string | null;
+  storeCloseTime: string | null;
+  workingStatus: string | null;
   price: number | null;
   coinCost: number | null;
   stock: number | null;
@@ -65,6 +72,7 @@ export interface StoreGroup {
   phone: string | null;
   openFrom: string | null;
   openTo: string | null;
+  workingStatus: string | null;
   items: Voucher[];
 }
 
