@@ -7,11 +7,13 @@ import HeroBanner from './hero-banner';
 import ProgressSteps from './progress-steps';
 import RankCard from './rank-card';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
+import RankMemberCard from './rank-member-card';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 const Skeleton: FC = () => (
   <Box className="px-4 pt-4 pb-8 flex flex-col gap-3">
+    <Box className="animate-pulse rounded-3xl" style={{ aspectRatio: '9 / 14', width: '100%', background: '#E9EBED' }} />
     <Box className="animate-pulse rounded-2xl" style={{ height: 160, background: '#E9EBED' }} />
     <Box className="animate-pulse rounded-2xl" style={{ height: 80, background: '#E9EBED' }} />
     {[1, 2, 3].map((i) => (
@@ -52,6 +54,8 @@ const RankBenefitsPage: FC = () => {
           <Skeleton />
         ) : (
           <Box className="px-4 pt-4 pb-8 flex flex-col gap-3">
+            <RankMemberCard />
+
             {currentTier && (
               <HeroBanner tier={currentTier} pointWallet={pointWallet} />
             )}

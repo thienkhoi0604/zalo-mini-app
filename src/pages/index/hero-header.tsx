@@ -119,7 +119,14 @@ export const HeroHeader: FC = () => {
                           padding: '2px 8px',
                         }}
                       >
-                        <p style={{ fontSize: 10, fontWeight: 700, color: '#fff' }}>⭐ {rankName}</p>
+                        {user?.rank?.currentRankIconUrl && (
+                          <img
+                            src={user.rank.currentRankIconUrl}
+                            alt={rankName}
+                            style={{ width: 12, height: 12, objectFit: 'contain', marginRight: 4 }}
+                          />
+                        )}
+                        <p style={{ fontSize: 10, fontWeight: 700, color: '#fff' }}>{rankName}</p>
                       </Box>
                     )}
                   </Box>
