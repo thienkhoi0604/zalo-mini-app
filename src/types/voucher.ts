@@ -11,6 +11,8 @@ export const FEED_ITEM_TYPES = {
   VOUCHER: 'Voucher',
   PHYSICAL_ITEM: 'PhysicalItem',
   FNB_PRODUCT: 'FnbProduct',
+  SERVICE: 'Service',
+  RETAIL_PRODUCT: 'RetailProduct',
 } as const;
 
 export type FeedItemType = (typeof FEED_ITEM_TYPES)[keyof typeof FEED_ITEM_TYPES];
@@ -81,6 +83,31 @@ export interface GroupedFeedResult {
   stores: StoreGroup[];
 }
 
+// ─── Store item detail API (/app/store-items/:id) ──────────────────────────────
+
+export interface StoreItemApiResponse {
+  id: string;
+  storeId: string;
+  storeName: string;
+  provinceCode: string | null;
+  provinceName: string | null;
+  wardCode: string | null;
+  wardName: string | null;
+  type: number;
+  typeName: string;
+  code: string;
+  name: string;
+  description: string | null;
+  price: number | null;
+  coinCost: number | null;
+  imageUrl: string;
+  stock: number | null;
+  totalSales: number | null;
+  latitude: number | null;
+  longitude: number | null;
+  distanceKm: number | null;
+}
+
 // ─── Legacy Voucher detail API (single-item endpoint) ──────────────────────────
 
 export interface VoucherApiItem {
@@ -140,10 +167,12 @@ export interface Voucher {
 
 export function getVoucherTypeLabel(type: string): string {
   switch (type) {
-    case FEED_ITEM_TYPES.VOUCHER:       return 'Voucher điện tử';
-    case FEED_ITEM_TYPES.PHYSICAL_ITEM: return 'Quà hiện vật';
-    case FEED_ITEM_TYPES.FNB_PRODUCT:   return 'Đồ ăn & Thức uống';
-    default:                             return type;
+    case FEED_ITEM_TYPES.VOUCHER:        return 'Voucher điện tử';
+    case FEED_ITEM_TYPES.PHYSICAL_ITEM:  return 'Quà hiện vật';
+    case FEED_ITEM_TYPES.FNB_PRODUCT:    return 'Đồ ăn & Thức uống';
+    case FEED_ITEM_TYPES.SERVICE:        return 'Dịch vụ';
+    case FEED_ITEM_TYPES.RETAIL_PRODUCT: return 'Sản phẩm bán lẻ';
+    default:                              return type;
   }
 }
 

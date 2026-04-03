@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { Voucher, UserVoucher, FEED_ITEM_TYPES, StoreGroup, GroupedFeedResult } from '@/types/voucher';
 import { getFeedItems, getFeedGrouped } from '@/api/feed';
-import { getVoucherById, getUserVouchers, getUserVouchersCount, redeemVoucher } from '@/api/vouchers';
+import { getVoucherById, getStoreItemById, getUserVouchers, getUserVouchersCount, redeemVoucher } from '@/api/vouchers';
 import { useUserStore } from '@/store/user';
 
 const USER_VOUCHERS_PAGE_SIZE = 5;
@@ -10,7 +10,7 @@ const USER_VOUCHERS_PAGE_SIZE = 5;
 // These are defined here separately; the actual values will be driven by
 // Business Logic in the future.
 const VOUCHER_ITEM_TYPES = [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM] as const;
-const STORE_ITEM_TYPES  = [FEED_ITEM_TYPES.FNB_PRODUCT] as const;
+const STORE_ITEM_TYPES  = [FEED_ITEM_TYPES.FNB_PRODUCT, FEED_ITEM_TYPES.SERVICE, FEED_ITEM_TYPES.RETAIL_PRODUCT] as const;
 
 type VouchersStore = {
   allVouchers: Voucher[];
@@ -77,7 +77,11 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
   loadVoucherById: async (id: string) => {
     set({ loading: true });
     try {
-      const voucher = await getVoucherById(id);
+      const existing = get().allVouchers.find((r) => r.id === id);
+      const source = existing?.source ?? 'Reward';
+      const voucher = source === 'StoreItem'
+        ? await getStoreItemById(id)
+        : await getVoucherById(id);
       if (!voucher) {
         set({ loading: false });
         return;

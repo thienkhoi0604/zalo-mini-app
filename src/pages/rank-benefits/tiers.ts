@@ -81,8 +81,8 @@ export function buildTierConfig(rank: AppRank): TierConfig {
 
   const benefits: { icon: string; label: string }[] = [
     { icon: '🏷️', label: `Giảm ${rank.rewardProductDiscountPercent}% khi đổi voucher` },
-    { icon: '⚡', label: `Điểm bonus check-in +${rank.bonusPointCheckinPercent}%` },
-    { icon: '🪙', label: `Giảm ${rank.rewardExchangeCoinDiscountPercent}% khi đổi xu` },
+    { icon: '⚡', label: `Lá bonus +${rank.bonusPointCheckinPercent}%` },
+    { icon: '🪙', label: `Giảm ${rank.rewardExchangeCoinDiscountPercent}% khi đổi GreenCoin` },
   ];
 
   return {

@@ -1,4 +1,4 @@
-import { Voucher, UserVoucher, VoucherApiItem, GetUserVouchersParams } from '@/types/voucher';
+import { Voucher, UserVoucher, VoucherApiItem, StoreItemApiResponse, GetUserVouchersParams } from '@/types/voucher';
 import { PaginatedApiResponse } from '@/types/common';
 import axiosClient from './client';
 
@@ -32,6 +32,40 @@ export async function getVoucherById(id: string): Promise<Voucher | null> {
   try {
     const { data } = await axiosClient.get<{ data: VoucherApiItem }>(`/Rewards/${id}`);
     return mapApiItemToVoucher(data.data);
+  } catch {
+    return null;
+  }
+}
+
+function mapStoreItemToVoucher(item: StoreItemApiResponse): Voucher {
+  return {
+    id: item.id,
+    code: item.code,
+    name: item.name,
+    type: item.typeName,
+    description: item.description ?? '',
+    thumbnailImageUrl: item.imageUrl,
+    bannerImageUrl: item.imageUrl,
+    category: item.typeName,
+    source: 'StoreItem',
+    brandName: item.storeName,
+    costCurrency: 'GreenCoin',
+    pointsRequired: item.coinCost ?? 0,
+    price: item.price,
+    stock: item.stock,
+    applicableTimeStart: '',
+    applicableTimeEnd: '',
+    programNotes: '',
+    usageGuide: '',
+    status: 'active',
+    stores: [{ id: item.storeId, name: item.storeName }],
+  };
+}
+
+export async function getStoreItemById(id: string): Promise<Voucher | null> {
+  try {
+    const { data } = await axiosClient.get<{ data: StoreItemApiResponse }>(`/app/store-items/${id}`);
+    return mapStoreItemToVoucher(data.data);
   } catch {
     return null;
   }

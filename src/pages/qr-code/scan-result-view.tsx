@@ -28,7 +28,7 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
           >
             <CoinIcon size={28} />
             <p style={{ fontSize: 20, fontWeight: 800, color: '#288F4E' }}>
-              +{result.points} Points
+              +{result.points} Lá
             </p>
           </Box>
         )}

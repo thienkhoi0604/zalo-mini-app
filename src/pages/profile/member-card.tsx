@@ -167,7 +167,7 @@ const MemberCard: FC = () => {
                 </p>
               </Box>
               <p style={{ color: 'rgba(160,200,255,0.6)', fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
-                GreenCoin
+                Lá
               </p>
             </Box>
           </Box>

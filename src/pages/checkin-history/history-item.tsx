@@ -43,7 +43,7 @@ const HistoryItem: FC<{ item: CheckinHistoryItem; isLast: boolean }> = ({ item, 
       className="flex items-center justify-center rounded-full flex-shrink-0"
       style={{ background: '#EEF7F1', padding: '4px 10px', minWidth: 56 }}
     >
-      <p style={{ fontSize: 13, fontWeight: 700, color: '#288F4E' }}>+{item.pointEarned} Points</p>
+      <p style={{ fontSize: 13, fontWeight: 700, color: '#288F4E' }}>+{item.pointEarned} Lá</p>
     </Box>
   </Box>
 );

@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
-import { Gift, ArrowUpDown, TrendingUp, TrendingDown, Tag, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
+import { Gift, ArrowUpDown, TrendingUp, TrendingDown, Tag, Ticket, ShoppingBag, UtensilsCrossed, Wrench, Store } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher } from '@/types/voucher';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
@@ -13,10 +13,12 @@ import VoucherCard from './voucher-card';
 
 function getCategoryIcon(type: string, size = 22) {
   switch (type) {
-    case 'Voucher':      return <Ticket size={size} color="#fff" strokeWidth={1.8} />;
-    case 'PhysicalItem': return <ShoppingBag size={size} color="#fff" strokeWidth={1.8} />;
-    case 'FnbProduct':   return <UtensilsCrossed size={size} color="#fff" strokeWidth={1.8} />;
-    default:             return <Tag size={size} color="#fff" strokeWidth={1.8} />;
+    case 'Voucher':        return <Ticket size={size} color="#fff" strokeWidth={1.8} />;
+    case 'PhysicalItem':   return <ShoppingBag size={size} color="#fff" strokeWidth={1.8} />;
+    case 'FnbProduct':     return <UtensilsCrossed size={size} color="#fff" strokeWidth={1.8} />;
+    case 'Service':        return <Wrench size={size} color="#fff" strokeWidth={1.8} />;
+    case 'RetailProduct':  return <Store size={size} color="#fff" strokeWidth={1.8} />;
+    default:               return <Tag size={size} color="#fff" strokeWidth={1.8} />;
   }
 }
 

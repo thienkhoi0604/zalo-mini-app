@@ -9,7 +9,7 @@ interface Props {
 }
 
 const formatSpent = (value: number) =>
-  value > 0 ? value.toLocaleString('vi-VN') + ' xu' : null;
+  value > 0 ? value.toLocaleString('vi-VN') + ' GreenCoin' : null;
 
 const RankCard: FC<Props> = ({ tier, isCurrent, isPast }) => {
   const spentRange = tier.maxTotalSpent > 0

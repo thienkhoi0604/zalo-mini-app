@@ -79,7 +79,7 @@ const HeroBanner: FC<Props> = ({ tier, pointWallet }) => (
       }}
     >
       <Box style={{ flex: 1, borderRight: '1px solid rgba(255,255,255,0.3)', paddingRight: 10 }}>
-        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', marginBottom: 3 }}>Xu khả dụng</p>
+        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', marginBottom: 3 }}>Lá</p>
         <Box flex className="items-center" style={{ gap: 5 }}>
           <CoinIcon size={20} />
           <p style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>
@@ -88,7 +88,7 @@ const HeroBanner: FC<Props> = ({ tier, pointWallet }) => (
         </Box>
       </Box>
       <Box style={{ flex: 1, paddingLeft: 10 }}>
-        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', marginBottom: 3 }}>Đã sử dụng</p>
+        <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', marginBottom: 3 }}>GreenCoin</p>
         <p style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>
           {(pointWallet?.totalSpent ?? 0).toLocaleString('vi-VN')}
         </p>

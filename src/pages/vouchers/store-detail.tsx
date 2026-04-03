@@ -43,9 +43,11 @@ const InfoRow: FC<{ icon: React.ReactNode; label: string; value: string }> = ({ 
 
 function getTypeColor(type: string): { bg: string; text: string } {
   switch (type) {
-    case FEED_ITEM_TYPES.FNB_PRODUCT:   return { bg: '#FEF3C7', text: '#92400E' };
-    case FEED_ITEM_TYPES.PHYSICAL_ITEM: return { bg: '#EDE9FE', text: '#5B21B6' };
-    default:                            return { bg: COLORS.primaryLight, text: COLORS.primaryDark };
+    case FEED_ITEM_TYPES.FNB_PRODUCT:    return { bg: '#FEF3C7', text: '#92400E' };
+    case FEED_ITEM_TYPES.PHYSICAL_ITEM:  return { bg: '#EDE9FE', text: '#5B21B6' };
+    case FEED_ITEM_TYPES.SERVICE:        return { bg: '#DBEAFE', text: '#1E40AF' };
+    case FEED_ITEM_TYPES.RETAIL_PRODUCT: return { bg: '#FCE7F3', text: '#9D174D' };
+    default:                             return { bg: COLORS.primaryLight, text: COLORS.primaryDark };
   }
 }
 
