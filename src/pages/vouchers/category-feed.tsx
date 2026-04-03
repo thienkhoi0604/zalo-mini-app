@@ -24,8 +24,7 @@ function getCategoryIcon(type: string, size = 22) {
 
 const CardSkeleton: FC = () => (
   <div className="animate-pulse" style={{ borderRadius: 18, overflow: 'hidden', background: '#fff', boxShadow: '0 4px 14px rgba(0,0,0,0.07)' }}>
-    <div style={{ height: 3, background: '#E9EBED' }} />
-    <div style={{ height: 122, background: '#EDEEF2' }} />
+    <div style={{ height: 122, background: '#E9EBED' }} />
     <div style={{ height: 26, background: '#EDEEF2' }} />
     <div style={{ padding: '10px 12px 14px', display: 'flex', flexDirection: 'column', gap: 5 }}>
       <div style={{ height: 9, width: '40%', background: '#E9EBED', borderRadius: 5 }} />

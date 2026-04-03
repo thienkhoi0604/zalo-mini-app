@@ -5,11 +5,12 @@ import { Gift, ChevronRight } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
-
+import { ACTIVE_THEME } from '@/constants/theme';
 import logoImg from '@/assets/images/logo.png';
 
 const FALLBACK = logoImg;
-const NOTCH = 9;
+const NOTCH = 10;
+const IMG_BG = '#F0F2F5';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
@@ -18,8 +19,7 @@ const CardSkeleton: FC = () => (
     className="flex-shrink-0 animate-pulse"
     style={{ width: 140, borderRadius: 18, overflow: 'hidden', background: '#fff', boxShadow: '0 4px 14px rgba(0,0,0,0.08)' }}
   >
-    <div style={{ height: 3, background: '#E9EBED' }} />
-    <div style={{ height: 93, background: '#EDEEF2' }} />
+    <div style={{ height: 95, background: '#E9EBED' }} />
     <div style={{ height: NOTCH * 2, background: '#EDEEF2' }} />
     <div style={{ padding: '8px 10px 12px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 5 }}>
       <div style={{ height: 9, width: '45%', background: '#E9EBED', borderRadius: 5 }} />
@@ -42,17 +42,13 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
         borderRadius: 18,
         overflow: 'hidden',
         background: '#fff',
-        boxShadow: '0 1px 2px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.08), 0 16px 28px rgba(0,0,0,0.07)',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08), 0 16px 28px rgba(0,0,0,0.06)',
         border: '1px solid rgba(0,0,0,0.04)',
-        position: 'relative',
       }}
       onClick={onClick}
     >
-      {/* Accent strip */}
-      <div style={{ height: 3, background: 'linear-gradient(90deg, #288F4E, #34D17A)' }} />
-
       {/* Top: image */}
-      <div style={{ height: 92, background: 'linear-gradient(160deg, #F7F8FA 0%, #EDEEF2 100%)', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12, overflow: 'hidden' }}>
+      <div style={{ height: 95, background: IMG_BG, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12, overflow: 'hidden' }}>
         <img
           src={reward.thumbnailImageUrl}
           alt={reward.name}
@@ -62,21 +58,21 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
       </div>
 
       {/* Perforation divider */}
-      <div style={{ position: 'relative', height: NOTCH * 2, background: 'linear-gradient(160deg, #F7F8FA 0%, #EDEEF2 100%)' }}>
-        <div style={{ position: 'absolute', left: -NOTCH, top: 0, width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%', background: '#fff', boxShadow: 'inset 2px 0 4px rgba(0,0,0,0.06)' }} />
+      <div style={{ position: 'relative', height: NOTCH * 2, background: IMG_BG }}>
+        <div style={{ position: 'absolute', left: -NOTCH, top: 0, width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%', background: ACTIVE_THEME.pageBg }} />
         <div style={{
-          position: 'absolute', top: '50%', left: NOTCH + 3, right: NOTCH + 3,
+          position: 'absolute', top: '50%', left: NOTCH + 4, right: NOTCH + 4,
           transform: 'translateY(-50%)',
-          backgroundImage: 'radial-gradient(circle, #C4C9D4 1.2px, transparent 1.2px)',
-          backgroundSize: '7px 100%',
+          backgroundImage: 'radial-gradient(circle, #B8BFC9 1.4px, transparent 1.4px)',
+          backgroundSize: '8px 100%',
           backgroundRepeat: 'repeat-x',
           backgroundPosition: 'center',
           height: 2,
         }} />
-        <div style={{ position: 'absolute', right: -NOTCH, top: 0, width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%', background: '#fff', boxShadow: 'inset -2px 0 4px rgba(0,0,0,0.06)' }} />
+        <div style={{ position: 'absolute', right: -NOTCH, top: 0, width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%', background: ACTIVE_THEME.pageBg }} />
       </div>
 
-      {/* Bottom: brand + name + cost */}
+      {/* Bottom: brand + name + cost (white) */}
       <div style={{ padding: '8px 10px 12px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 4 }}>
         {/* Brand */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
@@ -159,6 +155,7 @@ export const TopVouchers: FC = () => {
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
           flexWrap: 'nowrap',
+          justifyContent: 'flex-start',
         }}
       >
         {isLoading ? (

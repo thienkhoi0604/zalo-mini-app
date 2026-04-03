@@ -135,6 +135,7 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
           msOverflowStyle: 'none',
           flexWrap: 'nowrap',
           alignItems: 'stretch',
+          justifyContent: 'flex-start',
         }}
       >
         {visibleCards.map((card) => (

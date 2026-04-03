@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Voucher } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
+import { ACTIVE_THEME } from '@/constants/theme';
 import logoImg from '@/assets/images/logo.png';
 
 interface Props {
@@ -10,6 +11,7 @@ interface Props {
 
 const FALLBACK = logoImg;
 const NOTCH = 13;
+const IMG_BG = '#F0F2F5';
 
 const VoucherCard: FC<Props> = ({ card, onClick }) => {
   const brandLabel = card.brandName ?? card.category ?? '';
@@ -22,19 +24,15 @@ const VoucherCard: FC<Props> = ({ card, onClick }) => {
         borderRadius: 18,
         overflow: 'hidden',
         background: '#fff',
-        boxShadow: '0 1px 2px rgba(0,0,0,0.06), 0 4px 10px rgba(0,0,0,0.08), 0 16px 28px rgba(0,0,0,0.07)',
+        boxShadow: '0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08), 0 16px 28px rgba(0,0,0,0.06)',
         border: '1px solid rgba(0,0,0,0.04)',
-        position: 'relative',
       }}
     >
-      {/* ── Accent strip ── */}
-      <div style={{ height: 3, background: 'linear-gradient(90deg, #288F4E, #34D17A)' }} />
-
-      {/* ── Top: image on gradient background ── */}
+      {/* ── Top: image on gray ── */}
       <div
         style={{
           height: 122,
-          background: 'linear-gradient(160deg, #F7F8FA 0%, #EDEEF2 100%)',
+          background: IMG_BG,
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -51,19 +49,18 @@ const VoucherCard: FC<Props> = ({ card, onClick }) => {
       </div>
 
       {/* ── Perforation divider ── */}
-      <div style={{ position: 'relative', height: NOTCH * 2, background: 'linear-gradient(160deg, #F7F8FA 0%, #EDEEF2 100%)' }}>
-        {/* Left notch */}
+      <div style={{ position: 'relative', height: NOTCH * 2, background: IMG_BG }}>
+        {/* Left notch — page-bg colored circle clips to a right-facing semicircle */}
         <div style={{
           position: 'absolute', left: -NOTCH, top: 0,
           width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%',
-          background: '#fff',
-          boxShadow: 'inset 2px 0 5px rgba(0,0,0,0.07)',
+          background: ACTIVE_THEME.pageBg,
         }} />
-        {/* Dots */}
+        {/* Dot perforation */}
         <div style={{
           position: 'absolute', top: '50%', left: NOTCH + 4, right: NOTCH + 4,
           transform: 'translateY(-50%)',
-          backgroundImage: 'radial-gradient(circle, #C4C9D4 1.3px, transparent 1.3px)',
+          backgroundImage: 'radial-gradient(circle, #B8BFC9 1.4px, transparent 1.4px)',
           backgroundSize: '8px 100%',
           backgroundRepeat: 'repeat-x',
           backgroundPosition: 'center',
@@ -73,12 +70,11 @@ const VoucherCard: FC<Props> = ({ card, onClick }) => {
         <div style={{
           position: 'absolute', right: -NOTCH, top: 0,
           width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%',
-          background: '#fff',
-          boxShadow: 'inset -2px 0 5px rgba(0,0,0,0.07)',
+          background: ACTIVE_THEME.pageBg,
         }} />
       </div>
 
-      {/* ── Bottom: brand + name + cost ── */}
+      {/* ── Bottom: brand + name + cost (white) ── */}
       <div style={{ padding: '10px 12px 14px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 5 }}>
 
         {/* Brand row */}
