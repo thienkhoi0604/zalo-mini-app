@@ -1,10 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Box } from "zmp-ui";
-import { Zap, MapPin, Navigation, ChevronRight } from "lucide-react";
+import { Zap, ChevronRight } from "lucide-react";
 import { Station } from '@/types/station';
 import { getStations } from '@/api/stations';
-import CoinIcon from '@/components/ui/coin-icon';
+import StationCard from '@/pages/stations/station-card';
 
 const SectionHeader: FC<{ title: string }> = ({ title }) => (
   <Box flex className="items-center px-4 mb-3" style={{ gap: 8 }}>
@@ -53,140 +53,49 @@ export const TopStationsCarousel: FC = () => {
           scrollbarWidth: 'none',
           msOverflowStyle: 'none',
           flexWrap: 'nowrap',
+          alignItems: 'stretch',
         }}
       >
-        <>
         {topStations.map((station) => (
-          <Box
-            key={station.id}
-            className="flex-shrink-0 bg-white rounded-2xl overflow-hidden cursor-pointer"
-            style={{ width: 200, boxShadow: '0 2px 10px rgba(0,0,0,0.08)', flexShrink: 0 }}
-            onClick={() => navigate(`/stations/${station.id}`)}
-          >
-            {/* Image */}
-            <Box style={{ height: 100, position: 'relative', overflow: 'hidden', background: '#E9EBED' }}>
-              <img
-                src={station.imageUrl ?? ''}
-                alt={station.name}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
-              {/* Points badge */}
-              {station.defaultPoint != null && (
-                <Box
-                  style={{
-                    position: 'absolute',
-                    top: 8,
-                    right: 8,
-                    background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
-                    borderRadius: 100,
-                    padding: '3px 8px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: 3,
-                  }}
-                >
-                  <CoinIcon size={14} />
-                  <p style={{ fontSize: 11, fontWeight: 700, color: '#fff' }}>
-                    +{station.defaultPoint}
-                  </p>
-                </Box>
-              )}
-            </Box>
-
-            {/* Info */}
-            <Box className="p-3" style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
-              <p
-                style={{
-                  fontSize: 13,
-                  fontWeight: 700,
-                  color: '#1a1a1a',
-                  whiteSpace: 'nowrap',
-                  overflow: 'hidden',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {station.name}
-              </p>
-
-              <Box flex className="items-start" style={{ gap: 4 }}>
-                <MapPin size={11} color="#9CA3AF" style={{ marginTop: 2, flexShrink: 0 }} />
-                <p
-                  style={{
-                    fontSize: 11,
-                    color: '#9CA3AF',
-                    lineHeight: '15px',
-                    display: '-webkit-box',
-                    WebkitLineClamp: 2,
-                    WebkitBoxOrient: 'vertical',
-                    overflow: 'hidden',
-                  }}
-                >
-                  {station.address}
-                </p>
-              </Box>
-
-              <Box flex className="items-center justify-between">
-                <Box
-                  style={{
-                    background: '#EEF7F1',
-                    borderRadius: 6,
-                    padding: '3px 8px',
-                    alignSelf: 'flex-start',
-                  }}
-                >
-                  <p style={{ fontSize: 10, color: '#288F4E', fontWeight: 600 }}>
-                    {station.stationTypeName}
-                  </p>
-                </Box>
-                {station.distanceKm != null && station.distanceKm > 0 && (
-                  <Box flex className="items-center" style={{ gap: 3 }}>
-                    <Navigation size={10} color="#6B7280" />
-                    <p style={{ fontSize: 10, color: '#6B7280' }}>
-                      {station.distanceKm < 1
-                        ? `${Math.round(station.distanceKm * 1000)} m`
-                        : `${station.distanceKm.toFixed(1)} km`}
-                    </p>
-                  </Box>
-                )}
-              </Box>
-            </Box>
-          </Box>
+          <div key={station.id} style={{ width: 240, flexShrink: 0 }}>
+            <StationCard
+              station={station}
+              onClick={() => navigate(`/stations/${station.id}`)}
+            />
+          </div>
         ))}
-        {/* View all card */}
+
+        {/* View all */}
         <div
           className="flex-shrink-0 cursor-pointer"
           style={{
-            width: 80,
+            width: 64,
+            alignSelf: 'stretch',
             borderRadius: 18,
-            background: 'linear-gradient(135deg, #EEF7F1, #D1FAE5)',
-            border: '1.5px solid #A7F3D0',
+            border: '1.5px dashed #4ADE80',
+            background: 'rgba(40,143,78,0.05)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 8,
-            boxShadow: '0 2px 10px rgba(40,143,78,0.10)',
-            minHeight: 160,
+            gap: 7,
           }}
           onClick={() => navigate('/stations')}
         >
           <div style={{
-            width: 36,
-            height: 36,
+            width: 32,
+            height: 32,
             borderRadius: '50%',
             background: 'linear-gradient(135deg, #43B96B, #288F4E)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            boxShadow: '0 2px 8px rgba(40,143,78,0.35)',
           }}>
-            <ChevronRight size={18} color="#fff" strokeWidth={2.5} />
+            <ChevronRight size={15} color="#fff" strokeWidth={2.5} />
           </div>
-          <p style={{ fontSize: 11, fontWeight: 700, color: '#288F4E', textAlign: 'center' }}>Tất cả</p>
+          <p style={{ fontSize: 10, fontWeight: 700, color: '#288F4E', letterSpacing: 0.2 }}>Tất cả</p>
         </div>
-        </>
       </Box>
     </Box>
   );

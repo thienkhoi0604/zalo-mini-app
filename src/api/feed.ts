@@ -17,7 +17,7 @@ export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
     category: item.itemTypeTranslate,
     source: item.sourceType,
     brandName: item.storeName ?? undefined,
-    costCurrency: isStoreItem ? 'GreenCoin' : 'Points',
+    costCurrency: isStoreItem ? 'GreenCoin' : 'Lá',
     pointsRequired: isStoreItem ? (item.coinCost ?? 0) : (item.pointCost ?? 0),
     price: item.price,
     stock: item.stock,

@@ -172,7 +172,6 @@ export const HeroHeader: FC = () => {
                   <p style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>
                     {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
                   </p>
-                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.72)' }}>Lá</p>
                 </Box>
 
                 {/* Divider */}

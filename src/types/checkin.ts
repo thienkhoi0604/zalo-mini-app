@@ -10,8 +10,16 @@ export type CheckinResponse = {
   success: boolean;
   message?: string;
   data?: {
-    points?: number;
+    checkinId?: string;
+    stationName?: string;
+    pointEarned?: number;
+    isPointLocked?: boolean;
+    currentPointBalance?: number;
+    lockedBalance?: number;
+    ruleApplied?: string | null;
+    checkinTime?: string;
   };
+  errors?: unknown;
 };
 
 export interface CheckinHistoryItem {

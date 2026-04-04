@@ -148,22 +148,6 @@ const StoreCard: FC<{ group: StoreGroup; onItemClick: (v: Voucher) => void; onCa
         >
           {group.storeName}
         </p>
-        {group.workingStatus && (
-          <span
-            style={{
-              fontSize: 9.5,
-              fontWeight: 700,
-              letterSpacing: 0.3,
-              padding: '2px 7px',
-              borderRadius: 20,
-              flexShrink: 0,
-              background: group.workingStatus === 'Open' ? '#DCFCE7' : '#FEE2E2',
-              color: group.workingStatus === 'Open' ? '#166534' : '#991B1B',
-            }}
-          >
-            {group.workingStatus === 'Open' ? 'Đang mở' : 'Đóng cửa'}
-          </span>
-        )}
       </Box>
 
       {/* ── Body ── */}

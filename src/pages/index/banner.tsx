@@ -41,6 +41,8 @@ export const Banner: FC = () => {
         pagination={{ clickable: true }}
         autoplay={{ delay: 3500, disableOnInteraction: false }}
         loop={banners.length > 1}
+        spaceBetween={12}
+        speed={400}
         style={
           {
             '--swiper-pagination-color': '#288F4E',
@@ -53,16 +55,23 @@ export const Banner: FC = () => {
       >
         {banners.map((banner) => (
           <SwiperSlide key={banner.id}>
-            <Box
+            <div
               onClick={() => handleTap(banner.targetUrl)}
-              className="w-full rounded-2xl bg-cover bg-center overflow-hidden"
               style={{
-                backgroundImage: `url(${banner.imageUrl})`,
+                width: '100%',
                 aspectRatio: '16 / 9',
+                borderRadius: 16,
+                overflow: 'hidden',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-                cursor: 'default', // TODO: restore 'pointer' when openWebview feature is ready
+                cursor: 'default',
               }}
-            />
+            >
+              <img
+                src={banner.imageUrl}
+                alt=""
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+              />
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>

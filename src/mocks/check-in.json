@@ -1,0 +1,15 @@
+{
+  "success": true,
+  "message": "Check-in thành công",
+  "data": {
+    "checkinId": "744cf3d3-559a-4ea3-b24c-6c922f7c3b3e",
+    "stationName": "Khôi đi test station",
+    "pointEarned": 11,
+    "isPointLocked": false,
+    "currentPointBalance": 1809,
+    "lockedBalance": 0,
+    "ruleApplied": null,
+    "checkinTime": "2026-04-04T07:50:31.567Z"
+  },
+  "errors": null
+}

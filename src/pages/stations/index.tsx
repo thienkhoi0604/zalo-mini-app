@@ -145,11 +145,12 @@ export const StationsPage: FC = () => {
           ) : (
             <>
               {stations.map((station) => (
-                <StationCard
-                  key={station.id}
-                  station={station}
-                  onClick={() => navigate(`/stations/${station.id}`)}
-                />
+                <div key={station.id} style={{ marginBottom: 14 }}>
+                  <StationCard
+                    station={station}
+                    onClick={() => navigate(`/stations/${station.id}`)}
+                  />
+                </div>
               ))}
               {loading && stations.length > 0 && <LoadingMore />}
               <div ref={sentinelRef} style={{ height: 1 }} />

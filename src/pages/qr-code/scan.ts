@@ -2,8 +2,14 @@ import { checkin } from '@/api/checkins';
 import { scanReferralCode } from '@/api/user';
 import { getZaloLocationToken, getZaloAccessToken } from '@/utils/zalo';
 
+export type CheckinStation = {
+  stationName?: string;
+  isPointLocked?: boolean;
+  checkinTime?: string;
+};
+
 export type ScanResult =
-  | { status: 'success'; type: 'checkin'; points?: number }
+  | { status: 'success'; type: 'checkin'; points?: number; station?: CheckinStation }
   | { status: 'success'; type: 'referral' }
   | { status: 'error'; message: string }
   | { status: 'cancelled' };
@@ -54,7 +60,16 @@ export async function runScan(): Promise<ScanResult> {
       code: locationToken,
     });
 
-    return { status: 'success', type: 'checkin', points: response?.data?.points };
+    return {
+      status: 'success',
+      type: 'checkin',
+      points: response?.data?.pointEarned,
+      station: {
+        stationName: response?.data?.stationName,
+        isPointLocked: response?.data?.isPointLocked,
+        checkinTime: response?.data?.checkinTime,
+      },
+    };
   } catch (error) {
     const err = error as { response?: { data?: { message?: string } }; message?: string };
     return {

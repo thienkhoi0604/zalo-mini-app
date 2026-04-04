@@ -167,35 +167,36 @@ export const TopVouchers: FC = () => {
                 onClick={() => navigate(`/rewards/${reward.id}`)}
               />
             ))}
-            {/* View all card */}
+            {/* View all */}
             <div
               className="flex-shrink-0 cursor-pointer"
               style={{
-                width: 80,
+                width: 64,
+                alignSelf: 'stretch',
                 borderRadius: 18,
-                background: 'linear-gradient(135deg, #FDF6EE, #F5ECD8)',
-                border: '1.5px solid #E8CFA0',
+                border: '1.5px dashed #D4A96A',
+                background: 'rgba(196,154,108,0.06)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 8,
-                boxShadow: '0 2px 10px rgba(196,154,108,0.12)',
+                gap: 7,
               }}
               onClick={() => navigate('/rewards')}
             >
               <div style={{
-                width: 36,
-                height: 36,
+                width: 32,
+                height: 32,
                 borderRadius: '50%',
                 background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
+                boxShadow: '0 2px 8px rgba(196,154,108,0.35)',
               }}>
-                <ChevronRight size={18} color="#fff" strokeWidth={2.5} />
+                <ChevronRight size={15} color="#fff" strokeWidth={2.5} />
               </div>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#C49A6C', textAlign: 'center' }}>Tất cả</p>
+              <p style={{ fontSize: 10, fontWeight: 700, color: '#C49A6C', letterSpacing: 0.2 }}>Tất cả</p>
             </div>
           </>
         )}

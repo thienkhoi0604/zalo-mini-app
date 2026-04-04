@@ -131,8 +131,8 @@ export interface VoucherApiItem {
 
 export type VoucherSource = 'Reward' | 'StoreItem';
 
-/** GreenCoin = wallet balance spent on StoreItems; Points = earned from QR check-ins, spent on Vouchers */
-export type VoucherCostCurrency = 'GreenCoin' | 'Points';
+/** GreenCoin = wallet balance spent on StoreItems; Lá = earned from QR check-ins, spent on Vouchers */
+export type VoucherCostCurrency = 'GreenCoin' | 'Lá';
 
 export interface Voucher {
   id: string;

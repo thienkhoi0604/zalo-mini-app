@@ -175,7 +175,6 @@ const VouchersPage: FC = () => {
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#fff', letterSpacing: -0.2 }}>
                   {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
                 </p>
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.6)', fontWeight: 500 }}>điểm</p>
               </Box>
 
               {/* Divider */}

@@ -160,13 +160,21 @@ const MemberCard: FC = () => {
             {/* Points spent */}
             <Box className="flex-1 text-center">
               <Box flex className="justify-center items-center" style={{ gap: 4, marginBottom: 4 }}>
-                <ShoppingBag size={16} color="#93C5FD" strokeWidth={2} />
+                {user?.rank?.currentRankIconUrl ? (
+                  <img
+                    src={user.rank.currentRankIconUrl}
+                    alt={user.rank.currentRankName ?? ''}
+                    style={{ width: 18, height: 18, objectFit: 'contain' }}
+                  />
+                ) : (
+                  <ShoppingBag size={16} color="#93C5FD" strokeWidth={2} />
+                )}
                 <p style={{ color: '#fff', fontWeight: 900, fontSize: 16, letterSpacing: -0.4, lineHeight: 1 }}>
                   {(pointWallet?.totalSpent ?? 0).toLocaleString('vi-VN')}
                 </p>
               </Box>
               <p style={{ color: 'rgba(160,200,255,0.6)', fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
-                Đã chi tiêu
+                GreenPoint
               </p>
             </Box>
           </Box>

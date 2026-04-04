@@ -31,7 +31,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
   return (
     <Modal
       visible={visible}
-      title={`Xác nhận đổi ${costCurrency}`}
+      title='Xác nhận đổi voucher'
       onClose={onCancel}
       actions={[
         { text: 'Huỷ', onClick: onCancel },
@@ -242,21 +242,6 @@ const VoucherDetailPage: FC = () => {
               background: 'linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.6) 100%)',
             }}
           />
-          {/* Category badge */}
-          <Box
-            style={{
-              position: 'absolute',
-              top: 12,
-              right: 12,
-              background: 'rgba(255,255,255,0.2)',
-              backdropFilter: 'blur(8px)',
-              border: '1px solid rgba(255,255,255,0.35)',
-              borderRadius: 100,
-              padding: '4px 12px',
-            }}
-          >
-            <p style={{ fontSize: 11, fontWeight: 600, color: '#fff' }}>{getVoucherTypeLabel(card.type)}</p>
-          </Box>
         </Box>
 
         {/* Info card — overlapping hero */}
@@ -280,6 +265,19 @@ const VoucherDetailPage: FC = () => {
                     {card.brandName}
                   </p>
                 )}
+                <Box
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    background: '#EEF7F1',
+                    border: '1px solid #A7F3D0',
+                    borderRadius: 100,
+                    padding: '3px 10px',
+                    marginBottom: 6,
+                  }}
+                >
+                  <p style={{ fontSize: 11, fontWeight: 700, color: '#288F4E' }}>{getVoucherTypeLabel(card.type)}</p>
+                </Box>
                 <p style={{ fontSize: 17, fontWeight: 800, color: '#111827', lineHeight: '24px' }}>
                   {card.name}
                 </p>
@@ -313,7 +311,7 @@ const VoucherDetailPage: FC = () => {
             {(card.applicableTimeStart || card.applicableTimeEnd) && (
               <Box flex className="items-center" style={{ gap: 6 }}>
                 <Calendar size={13} color="#9CA3AF" />
-                <p style={{ fontSize: 12, color: '#9CA3AF' }}>
+                <p style={{ fontSize: 12, color: '#9CA3AF', fontWeight: 700 }}>
                   {card.applicableTimeStart
                     ? `Từ ${new Date(card.applicableTimeStart).toLocaleDateString('vi-VN')}`
                     : ''}
@@ -483,10 +481,10 @@ const VoucherDetailPage: FC = () => {
                 gap: 6,
               }}
             >
-              <CoinIcon size={20} />
               <p style={{ color: hasEnough ? '#fff' : '#9CA3AF', fontWeight: 700, fontSize: 15 }}>
-                Đổi {card.pointsRequired.toLocaleString('vi-VN')} {card.costCurrency}
+                Đổi {card.pointsRequired.toLocaleString('vi-VN')}
               </p>
+              <CoinIcon size={20} />
             </Box>
           </Box>
         </Box>
