@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router';
 const CardSkeleton: FC = () => (
   <Box
     className="flex-shrink-0 animate-pulse"
-    style={{ width: 160, borderRadius: 18, overflow: 'hidden', background: '#F3F4F6' }}
+    style={{ width: 175, borderRadius: 18, overflow: 'hidden', background: '#F3F4F6' }}
   >
     <Box style={{ height: 120, background: '#E9EBED' }} />
     <Box style={{ padding: '9px 10px 11px', display: 'flex', flexDirection: 'column', gap: 6 }}>
@@ -132,7 +132,7 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
         ))}
 
         {/* View-all end card */}
-        <div
+        {cards.length > 2 && <div
           className="flex-shrink-0 cursor-pointer"
           style={{
             width: 64,
@@ -161,7 +161,7 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
             <LayoutGrid size={18} color="#fff" strokeWidth={2} />
           </div>
           <p style={{ fontSize: 10, fontWeight: 700, color: '#288F4E', letterSpacing: 0.3, textAlign: 'center' }}>Tất cả</p>
-        </div>
+        </div>}
       </Box>
     </Box>
   );

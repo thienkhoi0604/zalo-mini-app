@@ -1,7 +1,6 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Page, useSnackbar } from 'zmp-ui';
-import { LayoutGrid, Store } from 'lucide-react';
 import CoinIcon from '@/components/ui/coin-icon';
 import { useVouchersStore } from '@/store/vouchers';
 import { useUserStore } from '@/store/user';
@@ -40,82 +39,6 @@ const SkeletonRow: FC = () => (
   </Box>
 );
 
-// ─── Tab switcher ──────────────────────────────────────────────────────────────
-
-type TabKey = 'category' | 'store';
-
-const TABS: { key: TabKey; label: string; icon: React.ReactNode }[] = [
-  { key: 'category', label: 'Danh mục', icon: <LayoutGrid size={14} strokeWidth={2} /> },
-  { key: 'store',    label: 'Cửa hàng', icon: <Store size={14} strokeWidth={2} /> },
-];
-
-interface TabSwitcherProps {
-  active: TabKey;
-  onChange: (key: TabKey) => void;
-}
-
-const TabSwitcher: FC<TabSwitcherProps> = ({ active, onChange }) => {
-  const indicatorRef = useRef<HTMLDivElement>(null);
-  const tabRefs = useRef<Record<TabKey, HTMLButtonElement | null>>({ category: null, store: null });
-
-  useEffect(() => {
-    const el = tabRefs.current[active];
-    const indicator = indicatorRef.current;
-    if (!el || !indicator) return;
-    indicator.style.width  = `${el.offsetWidth}px`;
-    indicator.style.transform = `translateX(${el.offsetLeft}px)`;
-  }, [active]);
-
-  return (
-    <Box
-      style={{
-        background: 'rgba(255,255,255,0.14)',
-        borderRadius: 16,
-        padding: 4,
-        display: 'inline-flex',
-        position: 'relative',
-      }}
-    >
-      {/* Sliding indicator */}
-      <div
-        ref={indicatorRef}
-        style={{
-          position: 'absolute',
-          top: 4, left: 4,
-          height: 'calc(100% - 8px)',
-          background: '#fff',
-          borderRadius: 12,
-          boxShadow: '0 2px 10px rgba(0,0,0,0.16)',
-          transition: 'width 0.22s ease, transform 0.22s ease',
-          pointerEvents: 'none',
-        }}
-      />
-      {TABS.map((tab) => {
-        const isActive = tab.key === active;
-        return (
-          <button
-            key={tab.key}
-            ref={(el) => { tabRefs.current[tab.key] = el; }}
-            onClick={() => onChange(tab.key)}
-            style={{
-              display: 'flex', alignItems: 'center', gap: 6,
-              padding: '5px 16px',
-              background: 'transparent', border: 'none',
-              borderRadius: 12,
-              cursor: 'pointer',
-              position: 'relative', zIndex: 1,
-              transition: 'color 0.18s',
-              color: isActive ? '#1A6B38' : 'rgba(255,255,255,0.78)',
-            }}
-          >
-            {tab.icon}
-            <p style={{ fontSize: 13, fontWeight: 700, lineHeight: 1 }}>{tab.label}</p>
-          </button>
-        );
-      })}
-    </Box>
-  );
-};
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
@@ -123,7 +46,6 @@ const VouchersPage: FC = () => {
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
-  const [activeTab, setActiveTab] = useState<TabKey>('category');
   const { loading, loadAllVouchers, loadStoreGroups, userVouchersUnusedCount, loadUserVouchersCount } = useVouchersStore();
   const { pointWallet, isAuthenticated } = useUserStore();
 
@@ -196,27 +118,20 @@ const VouchersPage: FC = () => {
             </Box>
           )}
 
-          {/* Tab switcher */}
-          <Box flex className="justify-center">
-            <TabSwitcher active={activeTab} onChange={setActiveTab} />
-          </Box>
         </PageHeader>
 
         {/* ── Content ── */}
-        {activeTab === 'category' ? (
-          !initialized && loading ? (
-            <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 14 }}>
-              <SkeletonRow />
-              <SkeletonRow />
-              <SkeletonRow />
-            </Box>
-          ) : (
-            <div className="py-3">
-              <VouchersList />
-            </div>
-          )
+        {!initialized && loading ? (
+          <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingTop: 14 }}>
+            <SkeletonRow />
+            <SkeletonRow />
+            <SkeletonRow />
+          </Box>
         ) : (
-          <StoreTab />
+          <div className="py-3">
+            <StoreTab />
+            <VouchersList />
+          </div>
         )}
 
       </PullToRefresh>

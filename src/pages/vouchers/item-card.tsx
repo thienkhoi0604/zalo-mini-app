@@ -21,7 +21,7 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
       onClick={() => onClick?.(card)}
       className="flex-shrink-0 cursor-pointer"
       style={{
-        width: 160,
+        width: 175,
         borderRadius: 18,
         overflow: 'hidden',
         background: '#fff',
@@ -32,7 +32,7 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
       {/* ── Top: image on gray ── */}
       <div
         style={{
-          height: 108,
+          height: 120,
           background: IMG_BG,
           display: 'flex',
           alignItems: 'center',

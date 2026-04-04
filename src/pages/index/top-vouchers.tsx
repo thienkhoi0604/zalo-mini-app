@@ -168,7 +168,7 @@ export const TopVouchers: FC = () => {
               />
             ))}
             {/* View all */}
-            <div
+            {topVouchers.length > 2 && <div
               className="flex-shrink-0 cursor-pointer"
               style={{
                 width: 64,
@@ -197,7 +197,7 @@ export const TopVouchers: FC = () => {
                 <LayoutGrid size={18} color="#fff" strokeWidth={2} />
               </div>
               <p style={{ fontSize: 10, fontWeight: 700, color: '#288F4E', letterSpacing: 0.3, textAlign: 'center' }}>Tất cả</p>
-            </div>
+            </div>}
           </>
         )}
       </Box>
