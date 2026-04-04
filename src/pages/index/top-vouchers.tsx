@@ -48,13 +48,22 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
       onClick={onClick}
     >
       {/* Top: image */}
-      <div style={{ height: 95, background: IMG_BG, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12, overflow: 'hidden' }}>
+      <div style={{ height: 95, background: IMG_BG, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 12, overflow: 'hidden', position: 'relative' }}>
         <img
           src={reward.thumbnailImageUrl}
           alt={reward.name}
           style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block', filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.12))' }}
           onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }}
         />
+        {reward.stock != null && (
+          <div style={{
+            position: 'absolute', top: 7, right: 7,
+            background: reward.stock <= 5 ? '#EF4444' : '#F97316',
+            borderRadius: 6, padding: '2px 6px',
+          }}>
+            <p style={{ fontSize: 9, fontWeight: 700, color: '#fff' }}>Còn {reward.stock}</p>
+          </div>
+        )}
       </div>
 
       {/* Perforation divider */}
@@ -118,29 +127,18 @@ export const TopVouchers: FC = () => {
   return (
     <Box className="py-4">
       {/* Header */}
-      <Box flex className="items-center justify-between px-4 mb-3">
-        <Box flex className="items-center" style={{ gap: 8 }}>
-          <Box
-            className="flex items-center justify-center rounded-full flex-shrink-0"
-            style={{
-              width: 28,
-              height: 28,
-              background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
-            }}
-          >
-            <Gift size={14} color="#fff" />
-          </Box>
-          <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>Ưu đãi nổi bật</p>
-        </Box>
+      <Box flex className="items-center px-4 mb-3" style={{ gap: 8 }}>
         <Box
-          flex
-          className="items-center cursor-pointer"
-          style={{ gap: 2 }}
-          onClick={() => navigate('/rewards')}
+          className="flex items-center justify-center rounded-full flex-shrink-0"
+          style={{
+            width: 28,
+            height: 28,
+            background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
+          }}
         >
-          <p style={{ fontSize: 13, color: '#C49A6C', fontWeight: 600 }}>Xem tất cả</p>
-          <ChevronRight size={14} color="#C49A6C" strokeWidth={2.5} />
+          <Gift size={14} color="#fff" />
         </Box>
+        <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>Vouchers</p>
       </Box>
 
       {/* Horizontal scroll */}
@@ -161,13 +159,45 @@ export const TopVouchers: FC = () => {
         {isLoading ? (
           [1, 2, 3].map((i) => <CardSkeleton key={i} />)
         ) : topVouchers.length === 0 ? null : (
-          topVouchers.map((reward) => (
-            <VoucherCard
-              key={reward.id}
-              reward={reward}
-              onClick={() => navigate(`/rewards/${reward.id}`)}
-            />
-          ))
+          <>
+            {topVouchers.map((reward) => (
+              <VoucherCard
+                key={reward.id}
+                reward={reward}
+                onClick={() => navigate(`/rewards/${reward.id}`)}
+              />
+            ))}
+            {/* View all card */}
+            <div
+              className="flex-shrink-0 cursor-pointer"
+              style={{
+                width: 80,
+                borderRadius: 18,
+                background: 'linear-gradient(135deg, #FDF6EE, #F5ECD8)',
+                border: '1.5px solid #E8CFA0',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 8,
+                boxShadow: '0 2px 10px rgba(196,154,108,0.12)',
+              }}
+              onClick={() => navigate('/rewards')}
+            >
+              <div style={{
+                width: 36,
+                height: 36,
+                borderRadius: '50%',
+                background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}>
+                <ChevronRight size={18} color="#fff" strokeWidth={2.5} />
+              </div>
+              <p style={{ fontSize: 11, fontWeight: 700, color: '#C49A6C', textAlign: 'center' }}>Tất cả</p>
+            </div>
+          </>
         )}
       </Box>
     </Box>

@@ -1,4 +1,4 @@
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, useSnackbar } from 'zmp-ui';
 import { QrCode, Bell } from 'lucide-react';
@@ -6,6 +6,8 @@ import { useUserStore } from '@/store/user';
 import { useVouchersStore } from '@/store/vouchers';
 import { ACTIVE_THEME } from '@/constants/theme';
 import CoinIcon from '@/components/ui/coin-icon';
+import QRCodeSheet from '@/pages/profile/qr-code-sheet';
+import { fetchQRSession } from '@/api/user';
 
 // ─── Component ────────────────────────────────────────────────────────────────
 
@@ -14,6 +16,7 @@ export const HeroHeader: FC = () => {
   const { openSnackbar } = useSnackbar();
   const { user, pointWallet, isAuthenticated, authLoading } = useUserStore();
   const { userVouchersUnusedCount } = useVouchersStore();
+  const [qrSheetVisible, setQrSheetVisible] = useState(false);
 
   const handleLogin = async () => {
     if (isAuthenticated) return;
@@ -57,6 +60,13 @@ export const HeroHeader: FC = () => {
 
   return (
     <Box>
+      <QRCodeSheet
+        visible={qrSheetVisible}
+        onClose={() => setQrSheetVisible(false)}
+        fetchData={() => fetchQRSession(null, 'Checkin').then((d) => d.token)}
+        title="Mã QR của tôi"
+        hint="💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc"
+      />
       {/* Themed gradient header */}
       <Box style={{ background: gradient, position: 'relative', overflow: 'hidden' }}>
         {/* Decorative blobs */}
@@ -134,7 +144,7 @@ export const HeroHeader: FC = () => {
 
                 {/* Right: QR + bell */}
                 <Box flex className="items-center" style={{ gap: 8, flexShrink: 0 }}>
-                  <div style={iconBtn} onClick={() => navigate('/qr-code')}>
+                  <div style={iconBtn} onClick={() => setQrSheetVisible(true)}>
                     <QrCode size={18} color="#fff" />
                   </div>
                   <div style={iconBtn}>
@@ -143,7 +153,7 @@ export const HeroHeader: FC = () => {
                 </Box>
               </Box>
 
-              {/* Bottom row: GreenCoin + Voucher stats */}
+              {/* Bottom row: Lá + Voucher */}
               <Box
                 flex
                 className="items-center"
@@ -156,29 +166,25 @@ export const HeroHeader: FC = () => {
                   gap: 0,
                 }}
               >
-                {/* GreenCoin */}
+                {/* Lá — balance */}
                 <Box flex className="items-center" style={{ gap: 6, flex: 1 }}>
-                  <CoinIcon size={24} />
-                  <Box>
-                    <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
-                      {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
-                    </p>
-                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.72)', marginTop: 2 }}>Lá</p>
-                  </Box>
+                  <CoinIcon size={20} />
+                  <p style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>
+                    {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+                  </p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.72)' }}>Lá</p>
                 </Box>
 
                 {/* Divider */}
-                <Box style={{ width: 1, height: 32, background: 'rgba(255,255,255,0.3)', margin: '0 12px' }} />
+                <Box style={{ width: 1, height: 28, background: 'rgba(255,255,255,0.3)', margin: '0 12px' }} />
 
                 {/* Voucher */}
                 <Box flex className="items-center" style={{ gap: 6, flex: 1 }} onClick={() => navigate('/my-vouchers')}>
                   <span style={{ fontSize: 18 }}>🎫</span>
-                  <Box>
-                    <p style={{ fontSize: 16, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
-                      {voucherCount}
-                    </p>
-                    <p style={{ fontSize: 10, color: 'rgba(255,255,255,0.72)', marginTop: 2 }}>Voucher</p>
-                  </Box>
+                  <p style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>
+                    {voucherCount}
+                  </p>
+                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.72)' }}>Voucher</p>
                 </Box>
               </Box>
             </>

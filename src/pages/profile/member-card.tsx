@@ -1,10 +1,9 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { ShieldCheck } from 'lucide-react';
+import { ShieldCheck, ShoppingBag } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import bgProfile from '@/assets/images/background-profile.png';
 import logoImg from '@/assets/images/logo.png';
-import CoinIcon from '@/components/ui/coin-icon';
 
 const MemberCard: FC = () => {
   const { user, pointWallet } = useUserStore();
@@ -158,16 +157,16 @@ const MemberCard: FC = () => {
             {/* Vertical divider */}
             <Box style={{ width: 1, height: 36, background: 'rgba(100,160,255,0.25)', flexShrink: 0 }} />
 
-            {/* Points */}
+            {/* Points spent */}
             <Box className="flex-1 text-center">
               <Box flex className="justify-center items-center" style={{ gap: 4, marginBottom: 4 }}>
-                <CoinIcon size={20} />
+                <ShoppingBag size={16} color="#93C5FD" strokeWidth={2} />
                 <p style={{ color: '#fff', fontWeight: 900, fontSize: 16, letterSpacing: -0.4, lineHeight: 1 }}>
-                  {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+                  {(pointWallet?.totalSpent ?? 0).toLocaleString('vi-VN')}
                 </p>
               </Box>
               <p style={{ color: 'rgba(160,200,255,0.6)', fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
-                Lá
+                Đã chi tiêu
               </p>
             </Box>
           </Box>

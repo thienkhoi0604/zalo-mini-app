@@ -170,6 +170,7 @@ const VoucherDetailPage: FC = () => {
     try {
       await redeemVoucher(id);
       setConfirmVisible(false);
+      useUserStore.getState().loadPointWallet();
       openSnackbar({ text: `Đổi ${card?.costCurrency ?? 'GreenCoin'} thành công! Voucher đã được thêm vào tài khoản.`, type: 'success' });
       redirectTimerRef.current = setTimeout(() => navigate('/my-vouchers', { replace: true }), 1200);
     } catch {

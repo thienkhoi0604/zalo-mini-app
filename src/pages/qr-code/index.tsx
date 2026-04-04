@@ -1,26 +1,29 @@
-import React, { FC, useEffect, useRef, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
-import { useNavigate } from 'react-router';
+import { useNavigate, useLocation } from 'react-router';
 import { runScan, ScanResult } from './scan';
 import ScanResultView from './scan-result-view';
+import { useUserStore } from '@/store/user';
 
 const QRCodePage: FC = () => {
   const navigate = useNavigate();
-  const hasRun = useRef(false);
+  const location = useLocation();
   const [result, setResult] = useState<ScanResult | null>(null);
+  const scanKey = (location.state as { rescan?: number } | null)?.rescan ?? 0;
 
   useEffect(() => {
-    if (hasRun.current) return;
-    hasRun.current = true;
-
+    setResult(null);
     runScan().then((res) => {
       if (res.status === 'cancelled') {
-        navigate('/profile', { replace: true });
+        navigate(-1 as never);
         return;
       }
       setResult(res);
+      if (res.status === 'success') {
+        useUserStore.getState().loadPointWallet();
+      }
     });
-  }, []);
+  }, [scanKey]);
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">

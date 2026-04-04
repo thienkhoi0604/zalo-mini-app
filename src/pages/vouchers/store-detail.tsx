@@ -430,7 +430,7 @@ const StoreDetailPage: FC = () => {
             }}
           />
           <p style={{ fontSize: 16, fontWeight: 800, color: '#111827' }}>
-            Ưu đãi tại cửa hàng
+            Vouchers tại cửa hàng
           </p>
           {group.items.length > 0 && (
             <Box

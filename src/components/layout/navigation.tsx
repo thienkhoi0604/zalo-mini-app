@@ -77,7 +77,13 @@ export const Navigation: FC = () => {
             return (
               <button
                 key={tab.path}
-                onClick={() => navigate(tab.path)}
+                onClick={() => {
+                  if (pathname === '/qr-code') {
+                    navigate('/qr-code', { replace: true, state: { rescan: Date.now() } });
+                  } else {
+                    navigate(tab.path);
+                  }
+                }}
                 style={{
                   flex: 1,
                   display: 'flex',

@@ -3,6 +3,7 @@ import { Box } from 'zmp-ui';
 import { Zap } from 'lucide-react';
 import { CheckinHistoryItem } from '@/types/checkin';
 import { formatTime } from './utils';
+import CoinIcon from '@/components/ui/coin-icon';
 
 const HistoryItem: FC<{ item: CheckinHistoryItem; isLast: boolean }> = ({ item, isLast }) => (
   <Box
@@ -43,7 +44,10 @@ const HistoryItem: FC<{ item: CheckinHistoryItem; isLast: boolean }> = ({ item, 
       className="flex items-center justify-center rounded-full flex-shrink-0"
       style={{ background: '#EEF7F1', padding: '4px 10px', minWidth: 56 }}
     >
-      <p style={{ fontSize: 13, fontWeight: 700, color: '#288F4E' }}>+{item.pointEarned} Lá</p>
+      <Box flex className="items-center" style={{ gap: 3 }}>
+        <CoinIcon size={14} />
+        <p style={{ fontSize: 13, fontWeight: 700, color: '#288F4E' }}>+{item.pointEarned}</p>
+      </Box>
     </Box>
   </Box>
 );

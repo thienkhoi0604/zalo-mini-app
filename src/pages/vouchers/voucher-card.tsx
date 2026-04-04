@@ -38,6 +38,7 @@ const VoucherCard: FC<Props> = ({ card, onClick }) => {
           justifyContent: 'center',
           padding: 16,
           overflow: 'hidden',
+          position: 'relative',
         }}
       >
         <img
@@ -46,6 +47,15 @@ const VoucherCard: FC<Props> = ({ card, onClick }) => {
           style={{ maxWidth: '100%', maxHeight: '100%', objectFit: 'contain', display: 'block', filter: 'drop-shadow(0 2px 8px rgba(0,0,0,0.13))' }}
           onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK; }}
         />
+        {card.stock != null && (
+          <div style={{
+            position: 'absolute', top: 7, right: 7,
+            background: card.stock <= 5 ? '#EF4444' : '#F97316',
+            borderRadius: 6, padding: '2px 6px',
+          }}>
+            <p style={{ fontSize: 9, fontWeight: 700, color: '#fff' }}>Còn {card.stock}</p>
+          </div>
+        )}
       </div>
 
       {/* ── Perforation divider ── */}

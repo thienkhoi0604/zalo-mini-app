@@ -1,35 +1,24 @@
 import React, { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Box } from "zmp-ui";
-import { Zap, ChevronRight, MapPin, Navigation } from "lucide-react";
+import { Zap, MapPin, Navigation, ChevronRight } from "lucide-react";
 import { Station } from '@/types/station';
 import { getStations } from '@/api/stations';
 import CoinIcon from '@/components/ui/coin-icon';
 
-const SectionHeader: FC<{ title: string; onViewAll: () => void }> = ({ title, onViewAll }) => (
-  <Box flex className="items-center justify-between px-4 mb-3">
-    <Box flex className="items-center" style={{ gap: 8 }}>
-      <Box
-        className="flex items-center justify-center rounded-full flex-shrink-0"
-        style={{
-          width: 28,
-          height: 28,
-          background: 'linear-gradient(135deg, #43B96B, #288F4E)',
-        }}
-      >
-        <Zap size={14} color="#fff" fill="#fff" strokeWidth={0} />
-      </Box>
-      <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>{title}</p>
-    </Box>
+const SectionHeader: FC<{ title: string }> = ({ title }) => (
+  <Box flex className="items-center px-4 mb-3" style={{ gap: 8 }}>
     <Box
-      flex
-      className="items-center cursor-pointer"
-      style={{ gap: 2 }}
-      onClick={onViewAll}
+      className="flex items-center justify-center rounded-full flex-shrink-0"
+      style={{
+        width: 28,
+        height: 28,
+        background: 'linear-gradient(135deg, #43B96B, #288F4E)',
+      }}
     >
-      <p style={{ fontSize: 13, color: '#288F4E', fontWeight: 600 }}>Xem tất cả</p>
-      <ChevronRight size={14} color="#288F4E" strokeWidth={2.5} />
+      <Zap size={14} color="#fff" fill="#fff" strokeWidth={0} />
     </Box>
+    <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>{title}</p>
   </Box>
 );
 
@@ -50,7 +39,7 @@ export const TopStationsCarousel: FC = () => {
 
   return (
     <Box className="pt-4 pb-2">
-      <SectionHeader title="Trạm sạc nổi bật" onViewAll={() => navigate('/stations')} />
+      <SectionHeader title="Trạm sạc" />
 
       {/* Horizontal scroll */}
       <Box
@@ -66,11 +55,12 @@ export const TopStationsCarousel: FC = () => {
           flexWrap: 'nowrap',
         }}
       >
+        <>
         {topStations.map((station) => (
           <Box
             key={station.id}
             className="flex-shrink-0 bg-white rounded-2xl overflow-hidden cursor-pointer"
-            style={{ width: 200, boxShadow: '0 2px 10px rgba(0,0,0,0.08)' }}
+            style={{ width: 200, boxShadow: '0 2px 10px rgba(0,0,0,0.08)', flexShrink: 0 }}
             onClick={() => navigate(`/stations/${station.id}`)}
           >
             {/* Image */}
@@ -165,6 +155,38 @@ export const TopStationsCarousel: FC = () => {
             </Box>
           </Box>
         ))}
+        {/* View all card */}
+        <div
+          className="flex-shrink-0 cursor-pointer"
+          style={{
+            width: 80,
+            borderRadius: 18,
+            background: 'linear-gradient(135deg, #EEF7F1, #D1FAE5)',
+            border: '1.5px solid #A7F3D0',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+            boxShadow: '0 2px 10px rgba(40,143,78,0.10)',
+            minHeight: 160,
+          }}
+          onClick={() => navigate('/stations')}
+        >
+          <div style={{
+            width: 36,
+            height: 36,
+            borderRadius: '50%',
+            background: 'linear-gradient(135deg, #43B96B, #288F4E)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <ChevronRight size={18} color="#fff" strokeWidth={2.5} />
+          </div>
+          <p style={{ fontSize: 11, fontWeight: 700, color: '#288F4E', textAlign: 'center' }}>Tất cả</p>
+        </div>
+        </>
       </Box>
     </Box>
   );
