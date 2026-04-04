@@ -8,16 +8,17 @@ import ProgressSteps from './progress-steps';
 import RankCard from './rank-card';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import RankMemberCard from './rank-member-card';
+import bgVertical from '@/assets/images/background-profile-vertical.png';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 const Skeleton: FC = () => (
   <Box className="px-4 pt-4 pb-8 flex flex-col gap-3">
-    <Box className="animate-pulse rounded-3xl" style={{ aspectRatio: '9 / 14', width: '100%', background: '#E9EBED' }} />
-    <Box className="animate-pulse rounded-2xl" style={{ height: 160, background: '#E9EBED' }} />
-    <Box className="animate-pulse rounded-2xl" style={{ height: 80, background: '#E9EBED' }} />
+    <Box className="animate-pulse rounded-3xl" style={{ aspectRatio: '3 / 4', width: '100%', background: 'rgba(255,255,255,0.12)' }} />
+    <Box className="animate-pulse rounded-2xl" style={{ height: 160, background: 'rgba(255,255,255,0.12)' }} />
+    <Box className="animate-pulse rounded-2xl" style={{ height: 80, background: 'rgba(255,255,255,0.12)' }} />
     {[1, 2, 3].map((i) => (
-      <Box key={i} className="animate-pulse rounded-2xl" style={{ height: 120, background: '#E9EBED' }} />
+      <Box key={i} className="animate-pulse rounded-2xl" style={{ height: 120, background: 'rgba(255,255,255,0.12)' }} />
     ))}
   </Box>
 );
@@ -48,22 +49,61 @@ const RankBenefitsPage: FC = () => {
   const currentIndex = tiers.findIndex((t) => t.code === currentTier?.code);
 
   return (
-    <Page className="flex-1 flex flex-col overflow-hidden">
-      <PullToRefresh onRefresh={loadRanks} className="flex-1">
+    <Page className="flex-1 flex flex-col overflow-hidden" style={{ position: 'relative' }}>
+      {/* ── Full-screen background ── */}
+      <img
+        src={bgVertical}
+        alt=""
+        aria-hidden
+        style={{
+          position: 'fixed', inset: 0,
+          width: '100%', height: '100%',
+          objectFit: 'cover', objectPosition: 'center top',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+      {/* Dark overlay for content readability */}
+      <Box
+        className="pointer-events-none"
+        style={{
+          position: 'fixed', inset: 0,
+          background: 'rgba(4, 10, 28, 0.72)',
+          zIndex: 0,
+        }}
+      />
+
+      <PullToRefresh onRefresh={loadRanks} className="flex-1" style={{ position: 'relative', zIndex: 1 }}>
         {loading ? (
           <Skeleton />
         ) : (
-          <Box className="px-4 pt-4 pb-8 flex flex-col gap-3">
+          <Box className="px-4 pt-4 pb-8 flex flex-col gap-4">
+            {/* Membership card */}
             <RankMemberCard />
 
+            {/* Stats banner */}
             {currentTier && (
               <HeroBanner tier={currentTier} pointWallet={pointWallet} />
             )}
 
+            {/* Progress through tiers */}
             <ProgressSteps tiers={tiers} currentCode={currentTier?.code ?? ''} />
 
-            <p className="text-xs font-bold text-gray-500 uppercase mt-2">Đặc quyền</p>
+            {/* Section label */}
+            <p
+              style={{
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: 3,
+                textTransform: 'uppercase',
+                color: 'rgba(255,255,255,0.65)',
+                marginTop: 4,
+              }}
+            >
+              Đặc quyền hạng
+            </p>
 
+            {/* Rank tier cards */}
             {tiers.map((tier, i) => (
               <RankCard
                 key={tier.code}

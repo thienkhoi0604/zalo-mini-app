@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { TierConfig } from './tiers';
+import logoImg from '@/assets/images/logo.png';
 
 interface Props {
   tier: TierConfig;
@@ -18,73 +19,147 @@ const RankCard: FC<Props> = ({ tier, isCurrent, isPast }) => {
 
   return (
     <Box
-      className="rounded-2xl overflow-hidden"
       style={{
-        background: '#fff',
-        transform: isCurrent ? 'scale(1.02)' : 'scale(1)',
-        opacity: isPast ? 0.85 : isCurrent ? 1 : 0.6,
+        position: 'relative',
+        borderRadius: 20,
+        overflow: 'hidden',
+        opacity: isPast ? 0.75 : isCurrent ? 1 : 0.6,
         transition: 'all 0.25s',
-        border: isCurrent ? `2px solid ${tier.color}` : '1px solid #eee',
-        boxShadow: isCurrent ? `0 8px 24px ${tier.color}30` : '0 2px 6px rgba(0,0,0,0.05)',
+        background: '#fff',
+        border: isCurrent ? `1.5px solid ${tier.color}` : '1px solid #E5E7EB',
+        boxShadow: isCurrent
+          ? `0 8px 24px ${tier.color}25`
+          : '0 2px 8px rgba(0,0,0,0.06)',
       }}
     >
-      {/* Header */}
+      {/* ── Left accent bar ── */}
       <Box
         style={{
+          position: 'absolute',
+          left: 0, top: 0, bottom: 0,
+          width: 4,
           background: tier.gradient,
-          padding: '12px 16px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
+          opacity: isCurrent ? 1 : 0.6,
         }}
-      >
-        <Box>
-          <p style={{ color: '#fff', fontWeight: 700, fontSize: 15 }}>
-            {tier.emoji} {tier.name}
-          </p>
-          <p style={{ color: 'rgba(255,255,255,0.8)', fontSize: 11, marginTop: 2 }}>
-            {tier.description}
-          </p>
-        </Box>
-        {isCurrent && (
+      />
+
+      <Box style={{ padding: '14px 16px 14px 20px' }}>
+
+        {/* ── Header row: icon + name + badge ── */}
+        <Box flex className="items-center" style={{ gap: 12, marginBottom: 10 }}>
+          {/* Rank icon */}
           <Box
             style={{
-              background: 'rgba(255,255,255,0.25)',
-              border: '1px solid rgba(255,255,255,0.4)',
-              borderRadius: 100,
-              padding: '3px 10px',
+              width: 44,
+              height: 44,
+              borderRadius: 12,
+              flexShrink: 0,
+              background: `linear-gradient(135deg, ${tier.color}20, ${tier.color}0D)`,
+              border: `1px solid ${tier.color}30`,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
             }}
           >
-            <p style={{ color: '#fff', fontSize: 10, fontWeight: 700 }}>Hạng của bạn</p>
+            {tier.iconUrl ? (
+              <img
+                src={tier.iconUrl}
+                alt={tier.name}
+                style={{ width: 28, height: 28, objectFit: 'contain' }}
+                onError={(e) => { (e.target as HTMLImageElement).src = logoImg; }}
+              />
+            ) : (
+              <span style={{ fontSize: 22 }}>{tier.emoji}</span>
+            )}
           </Box>
-        )}
-      </Box>
 
-      {/* Spending range */}
-      <Box
-        style={{
-          background: tier.lightBg,
-          padding: '6px 16px',
-          borderBottom: '1px solid #F3F4F6',
-        }}
-      >
-        <p style={{ fontSize: 11, color: tier.accentColor, fontWeight: 600 }}>
-          💳 {spentRange}
-        </p>
-      </Box>
-
-      {/* Benefits */}
-      <Box className="p-3 flex flex-col gap-2">
-        {tier.benefits.map((b, i) => (
-          <Box
-            key={i}
-            className="flex items-center gap-3 rounded-xl px-2 py-2"
-            style={{ background: tier.lightBg }}
-          >
-            <span style={{ fontSize: 16, flexShrink: 0 }}>{b.icon}</span>
-            <p style={{ fontSize: 13, fontWeight: 600, color: tier.accentColor }}>{b.label}</p>
+          {/* Name + description */}
+          <Box style={{ flex: 1, minWidth: 0 }}>
+            <p
+              style={{
+                fontSize: 15,
+                fontWeight: 800,
+                letterSpacing: 0.5,
+                textTransform: 'uppercase',
+                color: '#111827',
+                lineHeight: 1.2,
+              }}
+            >
+              {tier.name}
+            </p>
+            {tier.description ? (
+              <p style={{ fontSize: 11, color: '#6B7280', marginTop: 2 }}>
+                {tier.description}
+              </p>
+            ) : null}
           </Box>
-        ))}
+
+          {/* Current badge */}
+          {isCurrent && (
+            <Box
+              style={{
+                flexShrink: 0,
+                background: tier.gradient,
+                borderRadius: 100,
+                padding: '4px 10px',
+              }}
+            >
+              <p style={{ fontSize: 10, fontWeight: 700, color: '#fff', letterSpacing: 0.5 }}>
+                Hạng của bạn
+              </p>
+            </Box>
+          )}
+        </Box>
+
+        {/* ── Spending range ── */}
+        <Box
+          style={{
+            marginBottom: 10,
+            padding: '6px 10px',
+            borderRadius: 8,
+            background: tier.lightBg,
+            border: `1px solid ${tier.color}20`,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6,
+          }}
+        >
+          <span style={{ fontSize: 12 }}>💳</span>
+          <p style={{ fontSize: 11, fontWeight: 600, color: tier.accentColor, letterSpacing: 0.2 }}>
+            {spentRange}
+          </p>
+        </Box>
+
+        {/* ── Divider ── */}
+        <Box style={{ height: 1, background: '#F3F4F6', marginBottom: 10 }} />
+
+        {/* ── Benefits ── */}
+        <Box style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+          {tier.benefits.map((b, i) => (
+            <Box key={i} flex className="items-center" style={{ gap: 10 }}>
+              <Box
+                style={{
+                  width: 28,
+                  height: 28,
+                  borderRadius: 8,
+                  flexShrink: 0,
+                  background: tier.lightBg,
+                  border: `1px solid ${tier.color}25`,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontSize: 13,
+                }}
+              >
+                {b.icon}
+              </Box>
+              <p style={{ fontSize: 13, fontWeight: 500, color: '#374151' }}>
+                {b.label}
+              </p>
+            </Box>
+          ))}
+        </Box>
+
       </Box>
     </Box>
   );

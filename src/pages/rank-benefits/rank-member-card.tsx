@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { useUserStore } from '@/store/user';
-import bgVertical from '@/assets/images/background-profile-vertical.png';
 import logoImg from '@/assets/images/logo.png';
 
 const RankMemberCard: FC = () => {
@@ -14,54 +13,42 @@ const RankMemberCard: FC = () => {
     <Box
       style={{
         position: 'relative',
-        borderRadius: 28,
+        borderRadius: 24,
         overflow: 'hidden',
-        aspectRatio: '9 / 14',
         width: '100%',
+        aspectRatio: '3 / 4',
       }}
     >
-      {/* ── Background image ── */}
+      {/* ── Rank icon as full-bleed background ── */}
       <img
-        src={bgVertical}
+        src={rankIconUrl || logoImg}
         alt=""
         aria-hidden
         style={{
           position: 'absolute', inset: 0,
           width: '100%', height: '100%',
-          objectFit: 'cover', objectPosition: 'center',
+          objectFit: 'cover',
+          objectPosition: 'center',
+          transform: 'scale(1.1)',
+          filter: 'blur(28px) saturate(1.6) brightness(0.7)',
           pointerEvents: 'none',
         }}
       />
 
-      {/* ── Base dark overlay ── */}
-      <Box
-        className="absolute inset-0 pointer-events-none"
-        style={{ background: 'rgba(2, 6, 20, 0.62)' }}
-      />
-
-      {/* ── Center vignette — darkens the card focus zone ── */}
+      {/* ── Dark vignette overlay ── */}
       <Box
         className="absolute inset-0 pointer-events-none"
         style={{
-          background: 'radial-gradient(ellipse 70% 55% at 50% 52%, rgba(0,0,0,0.45) 0%, transparent 100%)',
+          background: 'linear-gradient(180deg, rgba(4,8,24,0.35) 0%, rgba(4,8,24,0.55) 60%, rgba(4,8,24,0.80) 100%)',
         }}
       />
 
-      {/* ── Edge glow — brightens outer rim for depth ── */}
-      <Box
-        className="absolute inset-0 pointer-events-none"
-        style={{
-          background: 'radial-gradient(ellipse 120% 120% at 50% 50%, transparent 55%, rgba(80,120,255,0.10) 100%)',
-        }}
-      />
-
-      {/* ── Subtle top light leak ── */}
+      {/* ── Sheen at top ── */}
       <Box
         className="absolute pointer-events-none"
         style={{
-          top: 0, left: '50%', transform: 'translateX(-50%)',
-          width: '80%', height: 220,
-          background: 'radial-gradient(ellipse at 50% 0%, rgba(120,160,255,0.18) 0%, transparent 70%)',
+          top: 0, left: 0, right: 0, height: 1,
+          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
         }}
       />
 
@@ -74,68 +61,38 @@ const RankMemberCard: FC = () => {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          padding: '32px 24px 40px',
-          gap: 0,
+          padding: '32px 24px',
+          gap: 24,
         }}
       >
-        {/* ── Rank name ── */}
+        {/* Rank icon — sharp focal image */}
+        <img
+          src={rankIconUrl || logoImg}
+          alt={rankName}
+          style={{
+            width: '55%',
+            aspectRatio: '1 / 1',
+            objectFit: 'contain',
+            filter: 'drop-shadow(0 0 32px rgba(255,255,255,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))',
+          }}
+          onError={(e) => { (e.target as HTMLImageElement).src = logoImg; }}
+        />
+
+        {/* Rank name */}
         <p
           style={{
-            fontSize: 28,
+            fontSize: 26,
             fontWeight: 900,
-            letterSpacing: 8,
+            letterSpacing: 7,
             textTransform: 'uppercase',
             color: '#fff',
             textAlign: 'center',
-            textShadow: '0 0 40px rgba(120,160,255,0.6), 0 2px 16px rgba(0,0,0,0.8)',
+            textShadow: '0 2px 24px rgba(0,0,0,0.7)',
             lineHeight: 1.1,
-            marginBottom: 36,
           }}
         >
           {rankName}
         </p>
-
-        {/* ── Main rank card ── */}
-        <Box
-          style={{
-            position: 'relative',
-            width: '78%',
-            aspectRatio: '1 / 1',
-            borderRadius: 32,
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: 'linear-gradient(145deg, rgba(255,255,255,0.09) 0%, rgba(255,255,255,0.03) 100%)',
-            border: '1px solid rgba(255,255,255,0.14)',
-            boxShadow: '0 8px 48px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06) inset, 0 0 80px rgba(80,120,255,0.12)',
-            backdropFilter: 'blur(12px)',
-          }}
-        >
-          {/* Inner glow behind icon */}
-          <Box
-            className="absolute pointer-events-none"
-            style={{
-              inset: 0,
-              borderRadius: 32,
-              background: 'radial-gradient(ellipse 70% 70% at 50% 40%, rgba(100,140,255,0.18) 0%, transparent 70%)',
-            }}
-          />
-
-          {/* Rank icon */}
-          <img
-            src={rankIconUrl || logoImg}
-            alt={rankName}
-            style={{
-              width: '62%',
-              height: '62%',
-              objectFit: 'contain',
-              position: 'relative',
-              filter: 'drop-shadow(0 0 24px rgba(180,210,255,0.5)) drop-shadow(0 4px 16px rgba(0,0,0,0.6))',
-            }}
-            onError={(e) => { (e.target as HTMLImageElement).src = logoImg; }}
-          />
-        </Box>
-
       </Box>
     </Box>
   );
