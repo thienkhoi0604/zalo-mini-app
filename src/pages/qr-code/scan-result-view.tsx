@@ -40,14 +40,25 @@ const ScanResultView: FC<{ result: ScanResult }> = ({ result }) => {
 
         {/* Points badge */}
         {result.points != null && result.points > 0 && (
-          <Box
-            className="flex items-center justify-center rounded-2xl px-6 py-3"
-            style={{ background: 'linear-gradient(135deg, #EEF7F1, #D1FAE5)', border: '1px solid #A7F3D0', gap: 8 }}
-          >
-            <CoinIcon size={26} />
-            <p style={{ fontSize: 22, fontWeight: 900, color: '#288F4E', letterSpacing: -0.5 }}>
-              +{result.points}
-            </p>
+          <Box className="flex flex-col items-center" style={{ gap: 6 }}>
+            <Box
+              className="flex items-center justify-center rounded-2xl px-6 py-3"
+              style={{ background: 'linear-gradient(135deg, #EEF7F1, #D1FAE5)', border: '1px solid #A7F3D0', gap: 8 }}
+            >
+              <CoinIcon size={26} />
+              <p style={{ fontSize: 22, fontWeight: 900, color: '#288F4E', letterSpacing: -0.5 }}>
+                +{result.points}
+              </p>
+            </Box>
+            {result.currentPointBalance != null && (
+              <Box flex className="items-center" style={{ gap: 5 }}>
+                <p style={{ fontSize: 12, color: '#9CA3AF' }}>Số dư hiện tại:</p>
+                <CoinIcon size={13} />
+                <p style={{ fontSize: 12, fontWeight: 700, color: '#374151' }}>
+                  {result.currentPointBalance.toLocaleString('vi-VN')}
+                </p>
+              </Box>
+            )}
           </Box>
         )}
 

@@ -105,9 +105,7 @@ export const Navigation: FC = () => {
                     width: 56,
                     height: 56,
                     borderRadius: '50%',
-                    background: isActive
-                      ? 'linear-gradient(145deg, #34D268, #1A6B38)'
-                      : 'linear-gradient(145deg, #2FA85F, #1e7a42)',
+                    background: '#288F4E',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',

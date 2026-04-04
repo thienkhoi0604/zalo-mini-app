@@ -11,7 +11,7 @@ import SectionList from './section-list';
 import QRCodeSheet from './qr-code-sheet';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 
-const ICON_COLOR = '#A0784A';
+const ICON_COLOR = '#fff';
 const ICON_SIZE = 18;
 
 type QRSheetType = 'checkin' | 'referral' | null;

@@ -106,7 +106,9 @@ const AppHeader: FC = () => {
                 height: 36,
                 borderRadius: '50%',
                 border: 'none',
-                background: 'rgba(40,143,78,0.12)',
+                background: location.pathname === '/rank-benefits'
+                  ? '#fff'
+                  : 'rgba(40,143,78,0.12)',
                 cursor: 'pointer',
                 flexShrink: 0,
                 zIndex: 1,

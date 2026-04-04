@@ -82,9 +82,9 @@ const RankBenefitsPage: FC = () => {
             <RankMemberCard />
 
             {/* Stats banner */}
-            {currentTier && (
+            {/* {currentTier && (
               <HeroBanner tier={currentTier} pointWallet={pointWallet} />
-            )}
+            )} */}
 
             {/* Progress through tiers */}
             <ProgressSteps tiers={tiers} currentCode={currentTier?.code ?? ''} />

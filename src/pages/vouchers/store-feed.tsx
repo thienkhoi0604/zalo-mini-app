@@ -389,7 +389,6 @@ const StoreTab: FC = () => {
         <EmptyState />
       ) : (
         <>
-          <GlobalSection vouchers={globalVouchers} onItemClick={handleItemClick} />
           <StoreListSection groups={storeGroups} onItemClick={handleItemClick} />
         </>
       )}

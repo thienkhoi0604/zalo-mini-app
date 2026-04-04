@@ -9,7 +9,7 @@ export type CheckinStation = {
 };
 
 export type ScanResult =
-  | { status: 'success'; type: 'checkin'; points?: number; station?: CheckinStation }
+  | { status: 'success'; type: 'checkin'; points?: number; currentPointBalance?: number; station?: CheckinStation }
   | { status: 'success'; type: 'referral' }
   | { status: 'error'; message: string }
   | { status: 'cancelled' };
@@ -64,6 +64,7 @@ export async function runScan(): Promise<ScanResult> {
       status: 'success',
       type: 'checkin',
       points: response?.data?.pointEarned,
+      currentPointBalance: response?.data?.currentPointBalance,
       station: {
         stationName: response?.data?.stationName,
         isPointLocked: response?.data?.isPointLocked,

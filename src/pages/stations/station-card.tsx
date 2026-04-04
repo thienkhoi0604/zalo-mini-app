@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { MapPin, Navigation, Store } from 'lucide-react';
+import { MapPin, Navigation } from 'lucide-react';
 import type { Station } from '@/types/station';
 import CoinIcon from '@/components/ui/coin-icon';
 import logoImg from '@/assets/images/logo.png';
@@ -30,6 +30,9 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
       style={{
         boxShadow: '0 4px 20px rgba(0,0,0,0.09)',
         border: '1px solid #F0F4F0',
+        height: '100%',
+        display: 'flex',
+        flexDirection: 'column',
       }}
       onClick={onClick}
     >
@@ -58,7 +61,7 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
       </Box>
 
       {/* ── Body ── */}
-      <Box flex style={{ minHeight: 90 }}>
+      <Box flex style={{ flex: 1, minHeight: 0 }}>
         {/* Image — full height left column */}
         <Box
           style={{
@@ -115,24 +118,6 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
             </Box>
           )}
 
-          {/* Store */}
-          {station.storeName && (
-            <Box flex className="items-center" style={{ gap: 4 }}>
-              <Store size={11} color="#7C3AED" style={{ flexShrink: 0 }} />
-              <p
-                style={{
-                  fontSize: 11,
-                  fontWeight: 600,
-                  color: '#7C3AED',
-                  overflow: 'hidden',
-                  whiteSpace: 'nowrap',
-                  textOverflow: 'ellipsis',
-                }}
-              >
-                {station.storeName}
-              </p>
-            </Box>
-          )}
 
           {/* Chips row */}
           <Box flex className="items-center" style={{ gap: 6, flexWrap: 'wrap' }}>

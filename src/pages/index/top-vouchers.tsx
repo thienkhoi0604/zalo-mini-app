@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
-import { Gift, ChevronRight } from 'lucide-react';
+import { Gift, LayoutGrid } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
@@ -133,7 +133,7 @@ export const TopVouchers: FC = () => {
           style={{
             width: 28,
             height: 28,
-            background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
+            background: '#288F4E',
           }}
         >
           <Gift size={14} color="#fff" />
@@ -173,30 +173,30 @@ export const TopVouchers: FC = () => {
               style={{
                 width: 64,
                 alignSelf: 'stretch',
-                borderRadius: 18,
-                border: '1.5px dashed #D4A96A',
-                background: 'rgba(196,154,108,0.06)',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
                 justifyContent: 'center',
-                gap: 7,
+                gap: 8,
               }}
               onClick={() => navigate('/rewards')}
             >
-              <div style={{
-                width: 32,
-                height: 32,
-                borderRadius: '50%',
-                background: 'linear-gradient(135deg, #E8CFA0, #C49A6C)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                boxShadow: '0 2px 8px rgba(196,154,108,0.35)',
-              }}>
-                <ChevronRight size={15} color="#fff" strokeWidth={2.5} />
+              <div
+                style={{
+                  width: 44,
+                  height: 44,
+                  borderRadius: '50%',
+                  background: '#288F4E',
+                  boxShadow: '0 4px 16px rgba(40,143,78,0.28), 0 1px 4px rgba(40,143,78,0.14)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <LayoutGrid size={18} color="#fff" strokeWidth={2} />
               </div>
-              <p style={{ fontSize: 10, fontWeight: 700, color: '#C49A6C', letterSpacing: 0.2 }}>Tất cả</p>
+              <p style={{ fontSize: 10, fontWeight: 700, color: '#288F4E', letterSpacing: 0.3, textAlign: 'center' }}>Tất cả</p>
             </div>
           </>
         )}

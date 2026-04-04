@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { ArrowRight, Gift, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
+import { LayoutGrid, Gift, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher } from '@/types/voucher';
 import VoucherItemCard from './item-card';
@@ -107,21 +107,6 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
           </Box>
         </Box>
 
-        <Box
-          flex
-          className="items-center cursor-pointer"
-          style={{
-            gap: 4,
-            background: accent,
-            borderRadius: 20,
-            padding: '6px 12px 6px 13px',
-            boxShadow: `0 3px 10px ${accent}50`,
-          }}
-          onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
-        >
-          <p style={{ fontSize: 11, color: '#fff', fontWeight: 700 }}>Xem tất cả</p>
-          <ArrowRight size={12} color="#fff" strokeWidth={2.5} />
-        </Box>
       </Box>
 
       {/* Horizontal scroll */}
@@ -147,35 +132,36 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
         ))}
 
         {/* View-all end card */}
-        {extra > 0 && (
-          <Box
-            onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
-            className="flex-shrink-0 flex flex-col items-center justify-center cursor-pointer"
+        <div
+          className="flex-shrink-0 cursor-pointer"
+          style={{
+            width: 64,
+            alignSelf: 'stretch',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 8,
+          }}
+          onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
+        >
+          <div
             style={{
-              width: 86,
-              minHeight: 170,
-              borderRadius: 18,
-              background: accentLight,
-              border: `1.5px dashed ${accent}60`,
-              gap: 10,
+              width: 44,
+              height: 44,
+              borderRadius: '50%',
+              background: '#288F4E',
+              boxShadow: '0 4px 16px rgba(40,143,78,0.28), 0 1px 4px rgba(40,143,78,0.14)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
             }}
           >
-            <Box
-              style={{
-                width: 40, height: 40, borderRadius: '50%',
-                background: accent,
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                boxShadow: `0 4px 12px ${accent}55`,
-              }}
-            >
-              <ArrowRight size={18} color="#fff" strokeWidth={2.5} />
-            </Box>
-            <Box style={{ textAlign: 'center' }}>
-              <p style={{ fontSize: 16, color: accent, fontWeight: 900 }}>+{extra}</p>
-              <p style={{ fontSize: 10, color: accent, fontWeight: 600, opacity: 0.75, marginTop: 1 }}>ưu đãi</p>
-            </Box>
-          </Box>
-        )}
+            <LayoutGrid size={18} color="#fff" strokeWidth={2} />
+          </div>
+          <p style={{ fontSize: 10, fontWeight: 700, color: '#288F4E', letterSpacing: 0.3, textAlign: 'center' }}>Tất cả</p>
+        </div>
       </Box>
     </Box>
   );

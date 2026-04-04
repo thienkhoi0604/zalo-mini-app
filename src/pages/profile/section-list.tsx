@@ -46,7 +46,7 @@ const SectionList: FC<SectionListProps> = ({ title, items, onClick }) => (
         {/* Left icon */}
         <Box
           className="flex items-center justify-center rounded-lg flex-shrink-0"
-          style={{ width: 36, height: 36, background: '#F5F0E8' }}
+          style={{ width: 36, height: 36, background: '#288F4E' }}
         >
           {item.icon}
         </Box>
@@ -90,7 +90,7 @@ const SectionList: FC<SectionListProps> = ({ title, items, onClick }) => (
             style={{
               width: 44,
               height: 26,
-              background: item.toggleValue ? '#C49A6C' : '#D1D5DB',
+              background: item.toggleValue ? '#288F4E' : '#D1D5DB',
               padding: 3,
               transition: 'background 0.2s',
             }}

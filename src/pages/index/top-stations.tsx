@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { Box } from "zmp-ui";
-import { Zap, ChevronRight } from "lucide-react";
+import { Zap, LayoutGrid } from "lucide-react";
 import { Station } from '@/types/station';
 import { getStations } from '@/api/stations';
 import StationCard from '@/pages/stations/station-card';
@@ -57,7 +57,7 @@ export const TopStationsCarousel: FC = () => {
         }}
       >
         {topStations.map((station) => (
-          <div key={station.id} style={{ width: 240, flexShrink: 0 }}>
+          <div key={station.id} style={{ width: 280, height: 160, flexShrink: 0 }}>
             <StationCard
               station={station}
               onClick={() => navigate(`/stations/${station.id}`)}
@@ -71,30 +71,30 @@ export const TopStationsCarousel: FC = () => {
           style={{
             width: 64,
             alignSelf: 'stretch',
-            borderRadius: 18,
-            border: '1.5px dashed #4ADE80',
-            background: 'rgba(40,143,78,0.05)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 7,
+            gap: 8,
           }}
           onClick={() => navigate('/stations')}
         >
-          <div style={{
-            width: 32,
-            height: 32,
-            borderRadius: '50%',
-            background: 'linear-gradient(135deg, #43B96B, #288F4E)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 2px 8px rgba(40,143,78,0.35)',
-          }}>
-            <ChevronRight size={15} color="#fff" strokeWidth={2.5} />
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: '50%',
+              background: '#288F4E',
+              boxShadow: '0 4px 16px rgba(40,143,78,0.28), 0 1px 4px rgba(40,143,78,0.14)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <LayoutGrid size={18} color="#fff" strokeWidth={2} />
           </div>
-          <p style={{ fontSize: 10, fontWeight: 700, color: '#288F4E', letterSpacing: 0.2 }}>Tất cả</p>
+          <p style={{ fontSize: 10, fontWeight: 700, color: '#288F4E', letterSpacing: 0.3, textAlign: 'center' }}>Tất cả</p>
         </div>
       </Box>
     </Box>

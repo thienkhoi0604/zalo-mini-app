@@ -60,24 +60,11 @@ const RankMemberCard: FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          justifyContent: 'center',
+          justifyContent: 'flex-start',
           padding: '32px 24px',
           gap: 24,
         }}
       >
-        {/* Rank icon — sharp focal image */}
-        <img
-          src={rankIconUrl || logoImg}
-          alt={rankName}
-          style={{
-            width: '55%',
-            aspectRatio: '1 / 1',
-            objectFit: 'contain',
-            filter: 'drop-shadow(0 0 32px rgba(255,255,255,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))',
-          }}
-          onError={(e) => { (e.target as HTMLImageElement).src = logoImg; }}
-        />
-
         {/* Rank name */}
         <p
           style={{
@@ -93,6 +80,29 @@ const RankMemberCard: FC = () => {
         >
           {rankName}
         </p>
+
+        {/* Rank icon — centered in remaining space */}
+        <Box
+          style={{
+            flex: 1,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+          }}
+        >
+          <img
+            src={rankIconUrl || logoImg}
+            alt={rankName}
+            style={{
+              width: '55%',
+              aspectRatio: '1 / 1',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 0 32px rgba(255,255,255,0.25)) drop-shadow(0 8px 24px rgba(0,0,0,0.6))',
+            }}
+            onError={(e) => { (e.target as HTMLImageElement).src = logoImg; }}
+          />
+        </Box>
       </Box>
     </Box>
   );
