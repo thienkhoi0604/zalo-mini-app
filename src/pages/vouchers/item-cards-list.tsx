@@ -5,7 +5,7 @@ import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher } from '@/types/voucher';
-import VoucherItemCard from './item-card';
+import VoucherCard from './voucher-card';
 import { useNavigate } from 'react-router';
 
 // ─── Category config ───────────────────────────────────────────────────────────
@@ -108,9 +108,10 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
         }}
       >
         {visibleCards.map((card) => (
-          <VoucherItemCard
+          <VoucherCard
             key={card.id}
             card={card}
+            width={155}
             onClick={(c) => navigate(`/rewards/${c.id}`)}
           />
         ))}

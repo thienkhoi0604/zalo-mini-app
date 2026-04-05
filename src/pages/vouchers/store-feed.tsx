@@ -5,7 +5,7 @@ import { Globe, Store, MapPin, Clock, Phone, Navigation, Tag } from 'lucide-reac
 import SectionHeader from '@/components/ui/section-header';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher, StoreGroup } from '@/types/voucher';
-import VoucherItemCard from './item-card';
+import VoucherCard from './voucher-card';
 import { ACTIVE_THEME } from '@/constants/theme';
 import defaultStoreImg from '@/assets/images/logo.png';
 
@@ -68,7 +68,7 @@ const ItemRow: FC<{ items: Voucher[]; onItemClick: (r: Voucher) => void }> = ({ 
     }}
   >
     {items.map((item) => (
-      <VoucherItemCard key={item.id} card={item} onClick={onItemClick} />
+      <VoucherCard key={item.id} card={item} width={155} onClick={onItemClick} />
     ))}
   </Box>
 );
