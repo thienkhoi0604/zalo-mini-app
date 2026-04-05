@@ -13,7 +13,7 @@ function mapApiItemToVoucher(item: VoucherApiItem): Voucher {
     bannerImageUrl: item.imageUrl,
     category: item.type,
     source: 'Reward',
-    costCurrency: 'Points',
+    costCurrency: 'Lá',
     pointsRequired: item.pointCost,
     applicableTimeStart: item.validFrom ?? '',
     applicableTimeEnd: item.validTo ?? '',

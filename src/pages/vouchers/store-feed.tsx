@@ -2,6 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { Globe, Store, MapPin, Clock, Phone, Navigation, Tag } from 'lucide-react';
+import SectionHeader from '@/components/ui/section-header';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher, StoreGroup } from '@/types/voucher';
 import VoucherItemCard from './item-card';
@@ -311,17 +312,10 @@ const StoreListSection: FC<{ groups: StoreGroup[]; onItemClick: (v: Voucher) => 
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
-      {/* Section label */}
-      <Box flex className="items-center" style={{ gap: 8, paddingLeft: 16, paddingRight: 16, marginBottom: 10 }}>
-        <Box
-          style={{
-            width: 3, height: 14, borderRadius: 2,
-            background: 'linear-gradient(180deg, #288F4E, #1A6B38)',
-            flexShrink: 0,
-          }}
-        />
-        <p style={{ fontSize: 13, fontWeight: 700, color: '#374151' }}>Danh mục cửa hàng</p>
-      </Box>
+      <SectionHeader
+        title="Danh mục cửa hàng"
+        icon={<Store size={14} color="#fff" />}
+      />
 
       {/* Store cards */}
       <Box style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

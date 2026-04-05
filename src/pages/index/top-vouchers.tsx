@@ -89,6 +89,13 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
           {reward.name}
         </p>
 
+        {/* Short description */}
+        {reward.shortDescription && (
+          <p style={{ fontSize: 10, color: '#6B7280', lineHeight: '14px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+            {reward.shortDescription}
+          </p>
+        )}
+
         {/* Cost */}
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: 3, alignSelf: 'flex-start', background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)', border: '1px solid #FCD34D', borderRadius: 8, padding: '3px 8px', marginTop: 1, boxShadow: '0 1px 4px rgba(245,158,11,0.20)' }}>
           <CoinIcon size={11} />
