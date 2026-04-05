@@ -33,7 +33,6 @@ const CardSkeleton: FC = () => (
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
 const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onClick }) => {
-  const brandLabel = reward.brandName ?? reward.category ?? '';
   return (
     <div
       className="flex-shrink-0 cursor-pointer"
@@ -81,18 +80,8 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
         <div style={{ position: 'absolute', right: -NOTCH, top: 0, width: NOTCH * 2, height: NOTCH * 2, borderRadius: '50%', background: ACTIVE_THEME.pageBg }} />
       </div>
 
-      {/* Bottom: brand + name + cost (white) */}
+      {/* Bottom: name + cost (white) */}
       <div style={{ padding: '8px 10px 12px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 4 }}>
-        {/* Brand */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <div style={{ width: 16, height: 16, borderRadius: '50%', background: 'linear-gradient(135deg, #D1FAE5, #A7F3D0)', border: '1.5px solid #6EE7B7', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, boxShadow: '0 1px 3px rgba(40,143,78,0.2)' }}>
-            <span style={{ fontSize: 6, fontWeight: 900, color: '#065F46' }}>{brandLabel.charAt(0).toUpperCase()}</span>
-          </div>
-          <p style={{ fontSize: 8.5, color: '#9CA3AF', fontWeight: 700, textTransform: 'uppercase', letterSpacing: 0.6, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-            {brandLabel}
-          </p>
-        </div>
-
         {/* Name */}
         <p style={{ fontSize: 11.5, fontWeight: 700, color: '#0F172A', lineHeight: '16px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: 32, letterSpacing: -0.1 }}>
           {reward.name}
