@@ -4,7 +4,6 @@ import { QrCode } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import { fetchAppRanks } from '@/api/ranks';
 import { buildTierConfig, resolveCurrentTier, TierConfig } from './tiers';
-import HeroBanner from './hero-banner';
 import ProgressSteps from './progress-steps';
 import RankCard from './rank-card';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
@@ -29,7 +28,7 @@ const Skeleton: FC = () => (
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const RankBenefitsPage: FC = () => {
-  const { user, pointWallet } = useUserStore();
+  const { user } = useUserStore();
   const [tiers, setTiers] = useState<TierConfig[]>([]);
   const [loading, setLoading] = useState(true);
   const [qrSheetVisible, setQrSheetVisible] = useState(false);
@@ -146,11 +145,6 @@ const RankBenefitsPage: FC = () => {
 
             {/* Membership card */}
             <RankMemberCard />
-
-            {/* Stats banner */}
-            {/* {currentTier && (
-              <HeroBanner tier={currentTier} pointWallet={pointWallet} />
-            )} */}
 
             {/* Progress through tiers */}
             <ProgressSteps tiers={tiers} currentCode={currentTier?.code ?? ''} userRank={user?.rank} />

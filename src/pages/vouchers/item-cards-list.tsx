@@ -1,6 +1,8 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { LayoutGrid, Gift, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
+import { Gift, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
+import SectionHeader from '@/components/ui/section-header';
+import ViewAllFab from '@/components/ui/view-all-fab';
 import { useVouchersStore } from '@/store/vouchers';
 import { Voucher } from '@/types/voucher';
 import VoucherItemCard from './item-card';
@@ -113,37 +115,9 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
           />
         ))}
 
-        {/* View-all end card */}
-        {cards.length > 2 && <div
-          className="flex-shrink-0 cursor-pointer"
-          style={{
-            width: 64,
-            alignSelf: 'stretch',
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: 8,
-          }}
-          onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
-        >
-          <div
-            style={{
-              width: 44,
-              height: 44,
-              borderRadius: '50%',
-              background: '#288F4E',
-              boxShadow: '0 4px 16px rgba(40,143,78,0.28), 0 1px 4px rgba(40,143,78,0.14)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0,
-            }}
-          >
-            <LayoutGrid size={18} color="#fff" strokeWidth={2} />
-          </div>
-          <p style={{ fontSize: 10, fontWeight: 700, color: '#288F4E', letterSpacing: 0.3, textAlign: 'center' }}>Tất cả</p>
-        </div>}
+        {cards.length > 2 && (
+          <ViewAllFab onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)} />
+        )}
       </Box>
     </Box>
   );
@@ -179,16 +153,11 @@ const VouchersList: FC = () => {
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 12 }}>
-      {/* Section header */}
-      <Box flex className="items-center px-4" style={{ gap: 8 }}>
-        <Box
-          className="flex items-center justify-center rounded-full flex-shrink-0"
-          style={{ width: 28, height: 28, background: '#288F4E' }}
-        >
-          <LayoutGrid size={14} color="#fff" strokeWidth={2} />
-        </Box>
-        <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>Danh mục</p>
-      </Box>
+      <SectionHeader
+        title="Danh mục"
+        icon={<Gift size={14} color="#fff" />}
+        className=""
+      />
 
       {categories.map((category, i) => (
         <CategoryRow

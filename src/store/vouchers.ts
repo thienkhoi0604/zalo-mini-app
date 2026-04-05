@@ -16,7 +16,6 @@ type VouchersStore = {
   loading: boolean;
   /** Loading flag exclusively for userVouchers (my-vouchers) */
   userVouchersLoading: boolean;
-  selectedVoucher: Voucher | null;
   redeeming: boolean;
 
   // Grouped (by-store) feed
@@ -30,7 +29,6 @@ type VouchersStore = {
   loadMoreUserVouchers: () => Promise<void>;
   loadUserVouchersCount: () => Promise<void>;
   loadStoreGroups: () => Promise<void>;
-  selectVoucher: (voucher: Voucher | null) => void;
   redeemVoucher: (voucherId: string) => Promise<void>;
   getGroupedByCategory: () => Record<string, Voucher[]>;
 };
@@ -43,7 +41,6 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
   userVouchersUnusedCount: 0,
   loading: false,
   userVouchersLoading: false,
-  selectedVoucher: null,
   redeeming: false,
   globalVouchers: [],
   storeGroups: [],
@@ -143,8 +140,6 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
       set({ storeGroupsLoading: false });
     }
   },
-
-  selectVoucher: (voucher) => set({ selectedVoucher: voucher }),
 
   redeemVoucher: async (voucherId: string) => {
     set({ redeeming: true });

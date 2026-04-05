@@ -103,21 +103,6 @@ const MemberCard: FC = () => {
             {user?.fullName || 'Tên thành viên'}
           </p>
 
-          {/* Phone */}
-          {/* {user?.phone && (
-            <p
-              style={{
-                color: 'rgba(160,200,255,0.7)',
-                fontSize: 12,
-                fontWeight: 500,
-                marginTop: 4,
-                letterSpacing: 0.5,
-              }}
-            >
-              {user.phone}
-            </p>
-          )} */}
-
           {/* Divider */}
           <Box
             style={{
