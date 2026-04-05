@@ -45,6 +45,8 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
         background: '#fff',
         boxShadow: '0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08), 0 16px 28px rgba(0,0,0,0.06)',
         border: '1px solid rgba(0,0,0,0.04)',
+        display: 'flex',
+        flexDirection: 'column',
       }}
       onClick={onClick}
     >
@@ -83,7 +85,7 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
       </div>
 
       {/* Bottom: name + cost (white) */}
-      <div style={{ padding: '8px 10px 12px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 4 }}>
+      <div style={{ padding: '8px 10px 12px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 0, flex: 1 }}>
         {/* Name */}
         <p style={{ fontSize: 11.5, fontWeight: 700, color: '#0F172A', lineHeight: '16px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', minHeight: 32, letterSpacing: -0.1 }}>
           {reward.name}
@@ -91,13 +93,13 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
 
         {/* Short description */}
         {reward.shortDescription && (
-          <p style={{ fontSize: 10, color: '#6B7280', lineHeight: '14px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+          <p style={{ fontSize: 10, color: '#6B7280', lineHeight: '14px', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', marginTop: 2 }}>
             {reward.shortDescription}
           </p>
         )}
 
         {/* Cost */}
-        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 3, alignSelf: 'flex-start', background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)', border: '1px solid #FCD34D', borderRadius: 8, padding: '3px 8px', marginTop: 1, boxShadow: '0 1px 4px rgba(245,158,11,0.20)' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: 3, alignSelf: 'flex-start', background: 'linear-gradient(135deg, #FFFBEB 0%, #FEF3C7 100%)', border: '1px solid #FCD34D', borderRadius: 8, padding: '3px 8px', marginTop: 'auto', boxShadow: '0 1px 4px rgba(245,158,11,0.20)' }}>
           <CoinIcon size={11} />
           <p style={{ fontSize: 10.5, fontWeight: 800, color: '#92400E', letterSpacing: -0.2 }}>{reward.pointsRequired.toLocaleString('vi-VN')}</p>
         </div>
