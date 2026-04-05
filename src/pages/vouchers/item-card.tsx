@@ -20,6 +20,7 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
       className="flex-shrink-0 cursor-pointer"
       style={{
         width: 155,
+        height: 250,
         position: 'relative',
         borderRadius: 18,
         overflow: 'hidden',
@@ -28,6 +29,7 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
       <div
         style={{
           borderRadius: 18,
+          height: '100%',
           background: '#fff',
           boxShadow:
             '0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08), 0 16px 28px rgba(0,0,0,0.06)',
@@ -113,6 +115,7 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
             display: 'flex',
             flexDirection: 'column',
             gap: 5,
+            flex: 1,
           }}
         >
           <p
@@ -158,7 +161,7 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
               border: '1px solid #FCD34D',
               borderRadius: 8,
               padding: '3px 8px',
-              marginTop: 1,
+              marginTop: 'auto',
               boxShadow: '0 1px 4px rgba(245,158,11,0.20)',
             }}
           >

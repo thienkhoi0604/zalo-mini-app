@@ -120,7 +120,7 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
 
 
           {/* Chips row */}
-          <Box flex className="items-center" style={{ gap: 6, flexWrap: 'wrap' }}>
+          <Box flex className="items-center" style={{ gap: 6, flexWrap: 'wrap', marginTop: 'auto' }}>
             {distanceText && (
               <Box
                 flex
