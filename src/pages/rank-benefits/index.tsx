@@ -1,5 +1,6 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
+import { QrCode } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import { fetchAppRanks } from '@/api/ranks';
 import { buildTierConfig, resolveCurrentTier, TierConfig } from './tiers';
@@ -8,6 +9,8 @@ import ProgressSteps from './progress-steps';
 import RankCard from './rank-card';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import RankMemberCard from './rank-member-card';
+import QRCodeSheet from '@/pages/profile/qr-code-sheet';
+import { fetchQRSession } from '@/api/user';
 import bgVertical from '@/assets/images/background-profile-vertical.png';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -29,6 +32,10 @@ const RankBenefitsPage: FC = () => {
   const { user, pointWallet } = useUserStore();
   const [tiers, setTiers] = useState<TierConfig[]>([]);
   const [loading, setLoading] = useState(true);
+  const [qrSheetVisible, setQrSheetVisible] = useState(false);
+
+  const firstName = user?.fullName?.split(' ').pop() ?? 'bạn';
+  const rankName = user?.rank?.currentRankName;
 
   const loadRanks = useCallback(async () => {
     setLoading(true);
@@ -50,6 +57,13 @@ const RankBenefitsPage: FC = () => {
 
   return (
     <Page className="flex-1 flex flex-col overflow-hidden" style={{ position: 'relative' }}>
+      <QRCodeSheet
+        visible={qrSheetVisible}
+        onClose={() => setQrSheetVisible(false)}
+        fetchData={() => fetchQRSession(null, 'Checkin').then((d) => d.token)}
+        title="Mã QR của tôi"
+        hint="💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc"
+      />
       {/* ── Full-screen background ── */}
       <img
         src={bgVertical}
@@ -78,6 +92,58 @@ const RankBenefitsPage: FC = () => {
           <Skeleton />
         ) : (
           <Box className="px-4 pt-4 pb-8 flex flex-col gap-4">
+            {/* ── User info row ── */}
+            <Box flex className="items-center justify-between" style={{ gap: 12 }}>
+              {/* Left: avatar + greeting + name */}
+              <Box flex className="items-center" style={{ gap: 10, minWidth: 0 }}>
+                <Box
+                  style={{
+                    width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
+                    background: 'rgba(255,255,255,0.18)',
+                    border: '2px solid rgba(255,255,255,0.4)',
+                    overflow: 'hidden',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  }}
+                >
+                  {user?.avatarUrl ? (
+                    <img
+                      src={user.avatarUrl}
+                      alt={user.fullName ?? ''}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  ) : (
+                    <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>
+                      {firstName.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </Box>
+
+                <Box style={{ minWidth: 0 }}>
+                  <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.7)', marginBottom: 2 }}>
+                    Xin chào,
+                  </p>
+                  <p style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: '22px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                    {firstName}
+                  </p>
+                </Box>
+              </Box>
+
+              {/* Right: QR button */}
+              <div
+                onClick={() => setQrSheetVisible(true)}
+                style={{
+                  width: 38, height: 38, borderRadius: '50%',
+                  background: 'rgba(255,255,255,0.18)',
+                  border: '1.5px solid rgba(255,255,255,0.3)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  cursor: 'pointer', flexShrink: 0,
+                }}
+              >
+                <QrCode size={18} color="#fff" />
+              </div>
+            </Box>
+
             {/* Membership card */}
             <RankMemberCard />
 
@@ -87,7 +153,7 @@ const RankBenefitsPage: FC = () => {
             )} */}
 
             {/* Progress through tiers */}
-            <ProgressSteps tiers={tiers} currentCode={currentTier?.code ?? ''} />
+            <ProgressSteps tiers={tiers} currentCode={currentTier?.code ?? ''} userRank={user?.rank} />
 
             {/* Section label */}
             <p

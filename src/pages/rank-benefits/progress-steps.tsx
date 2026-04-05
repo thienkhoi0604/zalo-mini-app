@@ -2,15 +2,24 @@ import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { Check } from 'lucide-react';
 import { TierConfig } from './tiers';
+import { UserRank } from '@/types/user';
+import CoinIcon from '@/components/ui/coin-icon';
 
 interface Props {
   tiers: TierConfig[];
   currentCode: string;
+  userRank?: UserRank;
 }
 
-const ProgressSteps: FC<Props> = ({ tiers, currentCode }) => {
+const ProgressSteps: FC<Props> = ({ tiers, currentCode, userRank }) => {
   const sorted = [...tiers].sort((a, b) => a.priority - b.priority);
   const currentIndex = sorted.findIndex((t) => t.code === currentCode);
+  const currentTier = sorted[currentIndex];
+
+  const percent = userRank?.progressToNextPercent ?? 0;
+  const pointsToNext = userRank?.pointsToNext ?? 0;
+  const nextTier = sorted[currentIndex + 1];
+  const hasNext = !!nextTier;
 
   return (
     <Box
@@ -34,6 +43,7 @@ const ProgressSteps: FC<Props> = ({ tiers, currentCode }) => {
         Lộ trình thăng hạng
       </p>
 
+      {/* Step circles + connectors */}
       <Box flex className="items-center">
         {sorted.map((tier, i) => {
           const reached = i <= currentIndex;
@@ -93,6 +103,53 @@ const ProgressSteps: FC<Props> = ({ tiers, currentCode }) => {
           );
         })}
       </Box>
+
+      {/* Progress to next rank */}
+      {hasNext && currentTier && (
+        <Box style={{ marginTop: 14 }}>
+          {/* Progress bar */}
+          <Box
+            style={{
+              height: 7,
+              borderRadius: 999,
+              background: '#F3F4F6',
+              overflow: 'hidden',
+              marginBottom: 8,
+            }}
+          >
+            <Box
+              style={{
+                height: '100%',
+                width: `${Math.min(percent, 100)}%`,
+                borderRadius: 999,
+                background: currentTier.gradient,
+                transition: 'width 0.6s ease',
+              }}
+            />
+          </Box>
+
+          {/* Percentage + points label */}
+          <Box flex className="items-center justify-between">
+            <Box flex className="items-center" style={{ gap: 4 }}>
+              <CoinIcon size={13} />
+              <p style={{ fontSize: 12, fontWeight: 700, color: '#374151' }}>
+                Cần thêm{' '}
+                <span style={{ color: currentTier.color }}>
+                  {pointsToNext.toLocaleString('vi-VN')}
+                </span>{' '}
+                điểm
+              </p>
+            </Box>
+            <p style={{ fontSize: 12, fontWeight: 800, color: currentTier.color }}>
+              {percent.toFixed(1)}%
+            </p>
+          </Box>
+
+          <p style={{ fontSize: 11, color: '#9CA3AF', marginTop: 3 }}>
+            để đạt hạng <span style={{ fontWeight: 700, color: '#374151' }}>{nextTier.name}</span>
+          </p>
+        </Box>
+      )}
     </Box>
   );
 };

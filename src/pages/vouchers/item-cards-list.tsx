@@ -6,23 +6,6 @@ import { Voucher } from '@/types/voucher';
 import VoucherItemCard from './item-card';
 import { useNavigate } from 'react-router';
 
-// ─── Skeleton ─────────────────────────────────────────────────────────────────
-
-const CardSkeleton: FC = () => (
-  <Box
-    className="flex-shrink-0 animate-pulse"
-    style={{ width: 175, borderRadius: 18, overflow: 'hidden', background: '#F3F4F6' }}
-  >
-    <Box style={{ height: 120, background: '#E9EBED' }} />
-    <Box style={{ padding: '9px 10px 11px', display: 'flex', flexDirection: 'column', gap: 6 }}>
-      <Box style={{ height: 9, width: '40%', background: '#E9EBED', borderRadius: 5 }} />
-      <Box style={{ height: 13, width: '90%', background: '#E9EBED', borderRadius: 5 }} />
-      <Box style={{ height: 13, width: '65%', background: '#E9EBED', borderRadius: 5 }} />
-      <Box style={{ height: 28, background: '#E9EBED', borderRadius: 9, marginTop: 2 }} />
-    </Box>
-  </Box>
-);
-
 // ─── Category config ───────────────────────────────────────────────────────────
 
 interface CategoryConfig {
@@ -53,7 +36,6 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
   const navigate = useNavigate();
   const { accent, accentLight, accentMid, icon } = config;
   const visibleCards = cards.slice(0, 8);
-  const extra = cards.length - 8;
   return (
     <Box
       style={{
@@ -197,6 +179,17 @@ const VouchersList: FC = () => {
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', gap: 14, paddingBottom: 12 }}>
+      {/* Section header */}
+      <Box flex className="items-center px-4" style={{ gap: 8 }}>
+        <Box
+          className="flex items-center justify-center rounded-full flex-shrink-0"
+          style={{ width: 28, height: 28, background: '#288F4E' }}
+        >
+          <LayoutGrid size={14} color="#fff" strokeWidth={2} />
+        </Box>
+        <p style={{ fontSize: 15, fontWeight: 700, color: '#1a1a1a' }}>Danh mục</p>
+      </Box>
+
       {categories.map((category, i) => (
         <CategoryRow
           key={category}

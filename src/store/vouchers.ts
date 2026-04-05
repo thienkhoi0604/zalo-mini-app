@@ -1,16 +1,10 @@
 import { create } from 'zustand';
-import { Voucher, UserVoucher, FEED_ITEM_TYPES, StoreGroup, GroupedFeedResult } from '@/types/voucher';
+import { Voucher, UserVoucher, StoreGroup, GroupedFeedResult } from '@/types/voucher';
 import { getFeedItems, getFeedGrouped } from '@/api/feed';
 import { getVoucherById, getStoreItemById, getUserVouchers, getUserVouchersCount, redeemVoucher } from '@/api/vouchers';
 import { useUserStore } from '@/store/user';
 
 const USER_VOUCHERS_PAGE_SIZE = 5;
-
-// itemTypes used to load vouchers and store items.
-// These are defined here separately; the actual values will be driven by
-// Business Logic in the future.
-const VOUCHER_ITEM_TYPES = [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM] as const;
-const STORE_ITEM_TYPES  = [FEED_ITEM_TYPES.FNB_PRODUCT, FEED_ITEM_TYPES.SERVICE, FEED_ITEM_TYPES.RETAIL_PRODUCT] as const;
 
 type VouchersStore = {
   allVouchers: Voucher[];
@@ -58,15 +52,8 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
   loadAllVouchers: async () => {
     set({ loading: true });
     try {
-      const results = await Promise.all([
-        ...VOUCHER_ITEM_TYPES.map((type) =>
-          getFeedItems({ pageNumber: 1, pageSize: 50, type }),
-        ),
-        ...STORE_ITEM_TYPES.map((type) =>
-          getFeedItems({ pageNumber: 1, pageSize: 50, type }),
-        ),
-      ]);
-      set({ allVouchers: ([] as Voucher[]).concat(...results), loading: false });
+      const items = await getFeedItems({ pageNumber: 1, pageSize: 200 });
+      set({ allVouchers: items, loading: false });
     } catch (error) {
       console.error('Failed to load vouchers:', error);
       set({ loading: false });
@@ -103,15 +90,11 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
     if (get().userVouchersLoading) return;
     set({ userVouchersLoading: true });
     try {
-      const [res, unusedCount] = await Promise.all([
-        getUserVouchers({ pageNumber: 1, pageSize: USER_VOUCHERS_PAGE_SIZE }),
-        getUserVouchersCount(),
-      ]);
+      const res = await getUserVouchers({ pageNumber: 1, pageSize: USER_VOUCHERS_PAGE_SIZE });
       set({
         userVouchers: res.data.items ?? [],
         userVouchersPage: 1,
         userVouchersHasMore: res.data.hasNext ?? false,
-        userVouchersUnusedCount: unusedCount,
       });
     } catch (error) {
       console.error('Failed to load user vouchers:', error);
@@ -170,6 +153,7 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
       await redeemVoucher(voucherId, voucher?.source === 'StoreItem' ? 'Product' : 'Reward');
       await Promise.all([
         get().loadUserVouchers(),
+        get().loadUserVouchersCount(),
         useUserStore.getState().loadPointWallet(),
       ]);
       set({ redeeming: false });

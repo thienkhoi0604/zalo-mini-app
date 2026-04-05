@@ -53,17 +53,14 @@ const VouchersPage: FC = () => {
     const init = async () => {
       try {
         await loadAllVouchers();
-        setInitialized(true);
       } catch {
         openSnackbar({ text: 'Không thể tải danh sách voucher', type: 'error' });
+      } finally {
         setInitialized(true);
       }
+      if (isAuthenticated) loadUserVouchersCount();
     };
     init();
-  }, [isAuthenticated]);
-
-  useEffect(() => {
-    if (isAuthenticated) loadUserVouchersCount();
   }, [isAuthenticated]);
 
   const handleRefresh = async () => {

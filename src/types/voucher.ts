@@ -27,6 +27,7 @@ export interface FeedApiItem {
   code: string;
   name: string;
   description: string | null;
+  shortDescription: string | null;
   imageUrl: string;
   storeImageUrl: string | null;
   storeId: string | null;
@@ -140,6 +141,7 @@ export interface Voucher {
   name: string;
   type: string;
   description: string;
+  shortDescription?: string;
   bannerImageUrl: string;
   thumbnailImageUrl: string;
   /** itemTypeTranslate from the feed — used as grouping key and route param */

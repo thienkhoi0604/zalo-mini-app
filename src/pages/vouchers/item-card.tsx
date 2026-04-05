@@ -14,14 +14,12 @@ const NOTCH = 12;
 const IMG_BG = '#F0F2F5';
 
 const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
-  const brandLabel = card.brandName ?? card.category ?? '';
-
   return (
     <div
       onClick={() => onClick?.(card)}
       className="flex-shrink-0 cursor-pointer"
       style={{
-        width: 175,
+        width: 155,
         borderRadius: 18,
         overflow: 'hidden',
         background: '#fff',
@@ -88,28 +86,6 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
       {/* ── Bottom: brand + name + cost (white) ── */}
       <div style={{ padding: '9px 12px 13px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 5 }}>
 
-        {/* Brand row */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-          <div style={{
-            width: 17, height: 17, borderRadius: '50%',
-            background: 'linear-gradient(135deg, #D1FAE5, #A7F3D0)',
-            border: '1.5px solid #6EE7B7',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            flexShrink: 0,
-            boxShadow: '0 1px 3px rgba(40,143,78,0.2)',
-          }}>
-            <span style={{ fontSize: 7, fontWeight: 900, color: '#065F46' }}>
-              {brandLabel.charAt(0).toUpperCase()}
-            </span>
-          </div>
-          <p style={{
-            fontSize: 8.5, color: '#9CA3AF', fontWeight: 700,
-            textTransform: 'uppercase', letterSpacing: 0.7,
-            overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
-          }}>
-            {brandLabel}
-          </p>
-        </div>
 
         {/* Voucher name */}
         <p style={{
@@ -120,6 +96,17 @@ const VoucherItemCard: FC<Props> = ({ card, onClick }) => {
         }}>
           {card.name}
         </p>
+
+        {/* Short description */}
+        {card.shortDescription && (
+          <p style={{
+            fontSize: 10, color: '#6B7280', lineHeight: '14px',
+            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+            overflow: 'hidden',
+          }}>
+            {card.shortDescription}
+          </p>
+        )}
 
         {/* Cost badge */}
         <div style={{

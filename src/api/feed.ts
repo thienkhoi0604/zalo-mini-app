@@ -12,6 +12,7 @@ export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
     name: item.name,
     type: item.itemType,
     description: item.description ?? '',
+    shortDescription: item.shortDescription ?? undefined,
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
     category: item.itemTypeTranslate,
