@@ -1,11 +1,10 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Box } from 'zmp-ui';
 import { useNavigate } from 'react-router';
 import { Store, MapPin, Clock, Phone, Navigation, Tag } from 'lucide-react';
 import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
-import { useVouchersStore } from '@/store/vouchers';
-import { StoreGroup } from '@/types/voucher';
+import { getStores, AppStore } from '@/api/stores';
 import defaultStoreImg from '@/assets/images/logo.png';
 
 // ─── Skeleton ──────────────────────────────────────────────────────────────────
@@ -37,19 +36,6 @@ const StoreSkeleton: FC = () => (
   </Box>
 );
 
-const GlobalSkeleton: FC = () => (
-  <Box
-    className="animate-pulse"
-    style={{
-      margin: '0 16px',
-      borderRadius: 20,
-      overflow: 'hidden',
-      background: '#E9EBED',
-      height: 56,
-    }}
-  />
-);
-
 // ─── Info row helper ───────────────────────────────────────────────────────────
 
 const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ icon, text, clamp = 1 }) => (
@@ -75,19 +61,16 @@ const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ 
 
 const STORE_CARD_W = 290;
 
-const StoreCard: FC<{ group: StoreGroup; onCardClick: () => void }> = ({ group, onCardClick }) => {
-  const activeCount = group.items.filter((v) => v.status !== 'expired').length;
-  const address = group.address ?? group.items[0]?.stores?.[0]?.address ?? null;
-
-  const distanceLabel = group.distanceKm != null
-    ? group.distanceKm < 1
-      ? `${Math.round(group.distanceKm * 1000)} m`
-      : `${group.distanceKm.toFixed(1)} km`
+const StoreCard: FC<{ store: AppStore; onCardClick: () => void }> = ({ store, onCardClick }) => {
+  const distanceLabel = store.distanceKm != null
+    ? store.distanceKm < 1
+      ? `${Math.round(store.distanceKm * 1000)} m`
+      : `${store.distanceKm.toFixed(1)} km`
     : null;
 
-  const hoursLabel = group.openFrom && group.openTo
-    ? `${group.openFrom} – ${group.openTo}`
-    : null;
+  const hoursLabel = store.openTime && store.closeTime
+    ? `${store.openTime} – ${store.closeTime}`
+    : store.operatingHours ?? null;
 
   return (
     <Box
@@ -125,7 +108,7 @@ const StoreCard: FC<{ group: StoreGroup; onCardClick: () => void }> = ({ group, 
             WebkitBoxOrient: 'vertical',
           }}
         >
-          {group.storeName}
+          {store.name}
         </p>
       </Box>
 
@@ -144,8 +127,8 @@ const StoreCard: FC<{ group: StoreGroup; onCardClick: () => void }> = ({ group, 
           }}
         >
           <img
-            src={group.imageUrl ?? defaultStoreImg}
-            alt={group.storeName}
+            src={store.imageUrl ?? store.storeImageUrl ?? defaultStoreImg}
+            alt={store.name}
             style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block', position: 'absolute', inset: 0 }}
             onError={(e) => { (e.target as HTMLImageElement).src = defaultStoreImg; }}
           />
@@ -162,14 +145,14 @@ const StoreCard: FC<{ group: StoreGroup; onCardClick: () => void }> = ({ group, 
             gap: 4,
           }}
         >
-          {address && (
-            <InfoRow icon={<MapPin size={11} color="#9CA3AF" />} text={address} clamp={2} />
+          {store.address && (
+            <InfoRow icon={<MapPin size={11} color="#9CA3AF" />} text={store.address} clamp={2} />
           )}
           {hoursLabel && (
             <InfoRow icon={<Clock size={11} color="#9CA3AF" />} text={hoursLabel} />
           )}
-          {group.phone && (
-            <InfoRow icon={<Phone size={11} color="#9CA3AF" />} text={group.phone} />
+          {store.phone && (
+            <InfoRow icon={<Phone size={11} color="#9CA3AF" />} text={store.phone} />
           )}
 
           {distanceLabel && (
@@ -194,9 +177,7 @@ const StoreCard: FC<{ group: StoreGroup; onCardClick: () => void }> = ({ group, 
 
           <Box style={{ marginTop: 'auto', paddingTop: 8, display: 'flex', alignItems: 'center', gap: 5 }}>
             <Tag size={11} color="#288F4E" />
-            <p style={{ fontSize: 11.5, fontWeight: 700, color: '#288F4E' }}>
-              {activeCount > 0 ? `${activeCount} ưu đãi` : 'Không có ưu đãi'}
-            </p>
+            <p style={{ fontSize: 11.5, fontWeight: 700, color: '#288F4E' }}>Xem ưu đãi</p>
           </Box>
         </Box>
       </Box>
@@ -208,12 +189,12 @@ const StoreCard: FC<{ group: StoreGroup; onCardClick: () => void }> = ({ group, 
 
 const MAX_VISIBLE_STORES = 5;
 
-const StoreListSection: FC<{ groups: StoreGroup[] }> = ({ groups }) => {
+const StoreListSection: FC<{ stores: AppStore[] }> = ({ stores }) => {
   const navigate = useNavigate();
 
-  if (groups.length === 0) return null;
+  if (stores.length === 0) return null;
 
-  const visible = groups.slice(0, MAX_VISIBLE_STORES);
+  const visible = stores.slice(0, MAX_VISIBLE_STORES);
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
@@ -235,11 +216,11 @@ const StoreListSection: FC<{ groups: StoreGroup[] }> = ({ groups }) => {
           alignItems: 'stretch',
         }}
       >
-        {visible.map((group) => (
+        {visible.map((store) => (
           <StoreCard
-            key={group.storeId}
-            group={group}
-            onCardClick={() => navigate(`/stores/${group.storeId}`, { state: { group } })}
+            key={store.id}
+            store={store}
+            onCardClick={() => navigate(`/stores/${store.id}`)}
           />
         ))}
         <ViewAllFab onClick={() => navigate('/stores')} />
@@ -272,33 +253,32 @@ const EmptyState: FC = () => (
 // ─── Store Tab ─────────────────────────────────────────────────────────────────
 
 const StoreTab: FC = () => {
-  const { storeGroups, storeGroupsLoading, loadStoreGroups } = useVouchersStore();
+  const [stores, setStores] = useState<AppStore[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (!storeGroupsLoading && storeGroups.length === 0) {
-      loadStoreGroups();
-    }
+  const load = useCallback(async () => {
+    setLoading(true);
+    const result = await getStores({ pageSize: 100 });
+    setStores(result.items);
+    setLoading(false);
   }, []);
 
-  const isEmpty = !storeGroupsLoading && storeGroups.length === 0;
+  useEffect(() => { load(); }, [load]);
+
+  const isEmpty = !loading && stores.length === 0;
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', gap: 20, paddingTop: 8, paddingBottom: 16 }}>
-      {storeGroupsLoading ? (
-        <>
-          <GlobalSkeleton />
-          <Box flex style={{ gap: 10, padding: '4px 14px 16px', overflowX: 'hidden' }}>
-            <StoreSkeleton />
-            <StoreSkeleton />
-            <StoreSkeleton />
-          </Box>
-        </>
+      {loading ? (
+        <Box flex style={{ gap: 10, padding: '4px 14px 16px', overflowX: 'hidden' }}>
+          <StoreSkeleton />
+          <StoreSkeleton />
+          <StoreSkeleton />
+        </Box>
       ) : isEmpty ? (
         <EmptyState />
       ) : (
-        <>
-          <StoreListSection groups={storeGroups} />
-        </>
+        <StoreListSection stores={stores} />
       )}
     </Box>
   );

@@ -292,49 +292,6 @@ const StationDetailPage: FC = () => {
             </Box>
           </Box>
 
-          {/* ── Google Maps button ── */}
-          {station.googleMapsDirectionUrl && (
-            <button
-              onClick={() => openWebview({ url: station.googleMapsDirectionUrl! })}
-              style={{
-                width: '100%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 10,
-                background: 'linear-gradient(135deg, #1A73E8, #1558B0)',
-                border: 'none',
-                borderRadius: 16,
-                padding: '15px 20px',
-                cursor: 'pointer',
-                boxShadow: '0 4px 16px rgba(26,115,232,0.35)',
-              }}
-            >
-              <Box
-                style={{
-                  width: 32,
-                  height: 32,
-                  borderRadius: 8,
-                  background: 'rgba(255,255,255,0.18)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0,
-                }}
-              >
-                <Navigation size={16} color="#fff" />
-              </Box>
-              <Box style={{ textAlign: 'left' }}>
-                <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: '18px' }}>
-                  Xem chỉ đường
-                </p>
-                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 1 }}>
-                  Mở Google Maps trong ứng dụng
-                </p>
-              </Box>
-            </button>
-          )}
-
           {/* ── Pillar configs ── */}
           {station.pillarConfigs && station.pillarConfigs.length > 0 && (
             <Box>
@@ -463,6 +420,49 @@ const StationDetailPage: FC = () => {
                 </p>
               </Box>
             </Box>
+          )}
+
+          {/* ── Google Maps button ── */}
+          {station.googleMapsDirectionUrl && (
+            <button
+              onClick={() => openWebview({ url: station.googleMapsDirectionUrl! })}
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: 10,
+                background: 'linear-gradient(135deg, #1A73E8, #1558B0)',
+                border: 'none',
+                borderRadius: 16,
+                padding: '15px 20px',
+                cursor: 'pointer',
+                boxShadow: '0 4px 16px rgba(26,115,232,0.35)',
+              }}
+            >
+              <Box
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  background: 'rgba(255,255,255,0.18)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0,
+                }}
+              >
+                <Navigation size={16} color="#fff" />
+              </Box>
+              <Box style={{ textAlign: 'left' }}>
+                <p style={{ fontSize: 14, fontWeight: 700, color: '#fff', lineHeight: '18px' }}>
+                  Xem chỉ đường
+                </p>
+                <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.7)', marginTop: 1 }}>
+                  Mở Google Maps trong ứng dụng
+                </p>
+              </Box>
+            </button>
           )}
 
         </Box>

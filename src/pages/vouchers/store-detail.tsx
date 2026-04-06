@@ -125,17 +125,18 @@ const VoucherRow: FC<{ voucher: Voucher; onClick: () => void }> = ({ voucher, on
               {voucher.category}
             </p>
           </Box>
-          {!expired && voucher.applicableTimeEnd && (
-            <p style={{ fontSize: 10.5, color: '#9CA3AF' }}>
-              HSD: {formatDate(voucher.applicableTimeEnd)}
-            </p>
-          )}
           {!expired && voucher.stock != null && voucher.stock <= 20 && (
             <p style={{ fontSize: 10.5, color: '#EF4444', fontWeight: 600 }}>
               Còn {voucher.stock}
             </p>
           )}
         </Box>
+
+        {!expired && voucher.applicableTimeEnd && (
+          <p style={{ fontSize: 10.5, color: '#9CA3AF', marginTop: 'auto' }}>
+            HSD: {formatDate(voucher.applicableTimeEnd)}
+          </p>
+        )}
       </Box>
 
       {/* Cost */}
