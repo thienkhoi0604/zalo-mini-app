@@ -58,21 +58,34 @@ const VerifyVehiclePage: FC = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleImageChange1 = async (file: File) => {
-    const localUrl = URL.createObjectURL(file);
-    setPreviewUrl1(localUrl);
-    setUploadedUrl1(null);
-    setUploading1(true);
-    try {
-      const url = await uploadImage(file);
-      setUploadedUrl1(url);
-    } catch {
-      openSnackbar({ text: 'Tải ảnh lên thất bại. Vui lòng thử lại.', type: 'error' });
-      URL.revokeObjectURL(localUrl);
-      setPreviewUrl1(null);
-    } finally {
-      setUploading1(false);
-    }
-  };
+  console.log('=== FILE INFO ===');
+  console.log('name:', file.name);
+  console.log('type:', file.type);
+  console.log('size:', file.size);
+  console.log('lastModified:', file.lastModified);
+  
+  const localUrl = URL.createObjectURL(file);
+  setPreviewUrl1(localUrl);
+  setUploadedUrl1(null);
+  setUploading1(true);
+  try {
+    const url = await uploadImage(file);
+    setUploadedUrl1(url);
+  } catch (err) {
+    console.log('=== UPLOAD ERROR ===');
+    console.log('error:', err);
+    console.log('error type:', typeof err);
+    console.log('error message:', (err as any)?.message);
+    console.log('error code:', (err as any)?.code);
+    console.log('response:', (err as any)?.response);
+    console.log('request:', (err as any)?.request);
+    openSnackbar({ text: 'Tải ảnh lên thất bại. Vui lòng thử lại.', type: 'error' });
+    URL.revokeObjectURL(localUrl);
+    setPreviewUrl1(null);
+  } finally {
+    setUploading1(false);
+  }
+};
 
   const handleClearImage1 = () => {
     if (previewUrl1) URL.revokeObjectURL(previewUrl1);
