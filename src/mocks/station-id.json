@@ -1,0 +1,48 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "qrCodeValue": "stationCode=STA_MNN4Z4KKGWN1&sig=eb0c9d150fc1e9b8ddf580eac7f7f4341c1759ffd6046beb6997af4ee8a4ddd1",
+    "qrCodeImageUrl": "https://quickchart.io/qr?text=stationCode%3DSTA_MNN4Z4KKGWN1%26sig%3Deb0c9d150fc1e9b8ddf580eac7f7f4341c1759ffd6046beb6997af4ee8a4ddd1&size=200",
+    "id": "a17ca9f0-00a6-4bab-b3a1-89a4d6ec1bef",
+    "code": "STA_MNN4Z4KKGWN1",
+    "name": "Khoi station",
+    "stationTypeId": "0b2fbeea-47e8-4722-9390-ebf3d50e55d8",
+    "stationTypeName": "Trạm Sạc Vinfast",
+    "storeId": null,
+    "storeName": null,
+    "address": "740 svh",
+    "provinceCode": "29",
+    "provinceName": "Hồ Chí Minh",
+    "wardCode": "70119089",
+    "wardName": "Phường Hoà Hưng",
+    "latitude": 10.772521,
+    "longitude": 106.669431,
+    "description": null,
+    "isActive": true,
+    "defaultPoint": 1000,
+    "minCheckinIntervalMinutes": 30,
+    "maxCheckinPerDay": 3,
+    "pillarConfigs": [
+      {
+        "powerKW": "120",
+        "pillarCount": 3
+      }
+    ],
+    "timeMultiplierConfigs": [
+      {
+        "startTime": "00:00",
+        "endTime": "05:59",
+        "multiplier": 0.5
+      },
+      {
+        "startTime": "06:00",
+        "endTime": "23:59",
+        "multiplier": 1
+      }
+    ],
+    "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.772521,106.669431",
+    "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/dff4129546304f89a751ab95564d31a3.webp"
+  },
+  "errors": null
+}

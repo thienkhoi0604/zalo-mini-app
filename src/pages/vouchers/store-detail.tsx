@@ -216,6 +216,39 @@ const EmptyVouchers: FC = () => (
   </Box>
 );
 
+// ─── Voucher section ───────────────────────────────────────────────────────────
+
+const VoucherSection: FC<{ title: string; items: Voucher[]; onItemClick: (v: Voucher) => void }> = ({ title, items, onItemClick }) => {
+  const activeCount = items.filter((v) => v.status !== 'expired').length;
+  return (
+    <Box style={{ margin: '0 16px' }}>
+      <Box style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 10 }}>
+        <Box style={{ width: 4, height: 18, borderRadius: 2, background: COLORS.primary, flexShrink: 0 }} />
+        <p style={{ fontSize: 15, fontWeight: 800, color: '#111827', flex: 1 }}>{title}</p>
+        <Box style={{ background: COLORS.primaryLight, borderRadius: 20, padding: '3px 10px' }}>
+          <p style={{ fontSize: 11, fontWeight: 700, color: COLORS.primary }}>{activeCount} ưu đãi</p>
+        </Box>
+      </Box>
+      <Box
+        style={{
+          background: '#fff',
+          borderRadius: 18,
+          border: '1px solid #F0F1F3',
+          overflow: 'hidden',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+        }}
+      >
+        {items.map((voucher, idx) => (
+          <Box key={voucher.id}>
+            {idx > 0 && <Box style={{ height: 1, background: '#F3F4F6', margin: '0 16px' }} />}
+            <VoucherRow voucher={voucher} onClick={() => onItemClick(voucher)} />
+          </Box>
+        ))}
+      </Box>
+    </Box>
+  );
+};
+
 // ─── Not found ─────────────────────────────────────────────────────────────────
 
 const NotFound: FC = () => {
@@ -303,6 +336,8 @@ const StoreDetailPage: FC = () => {
     : null;
 
   const hoursLabel = openFrom && openTo ? `${openFrom} – ${openTo}` : null;
+  const giftItems    = items.filter((v) => [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM].includes(v.type as any));
+  const productItems = items.filter((v) => [FEED_ITEM_TYPES.FNB_PRODUCT, FEED_ITEM_TYPES.SERVICE, FEED_ITEM_TYPES.RETAIL_PRODUCT].includes(v.type as any));
   const activeCount = items.filter((v) => v.status !== 'expired').length;
 
   const handleVoucherClick = (v: Voucher) => navigate(`/rewards/${v.id}`);
@@ -422,43 +457,31 @@ const StoreDetailPage: FC = () => {
           </>
         )}
 
-        {/* ── Vouchers section ── */}
-        <Box style={{ marginTop: 24, paddingBottom: 'calc(24px + var(--zaui-safe-area-inset-bottom, 0px))' }}>
-          <Box style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 16px', marginBottom: 12 }}>
-            <Box style={{ width: 3, height: 18, borderRadius: 2, background: `linear-gradient(180deg, ${COLORS.primary}, ${COLORS.primaryDark})`, flexShrink: 0 }} />
-            <p style={{ fontSize: 16, fontWeight: 800, color: '#111827' }}>Vouchers tại cửa hàng</p>
-            {items.length > 0 && (
-              <Box style={{ background: activeCount > 0 ? COLORS.primaryLight : '#F3F4F6', borderRadius: 20, padding: '2px 9px', marginLeft: 2 }}>
-                <p style={{ fontSize: 11.5, fontWeight: 700, color: activeCount > 0 ? COLORS.primary : '#9CA3AF' }}>
-                  {activeCount > 0 ? activeCount : items.length}
-                </p>
-              </Box>
-            )}
-          </Box>
+        {/* ── Voucher sections ── */}
+        <Box style={{ marginTop: 24, paddingBottom: 'calc(24px + var(--zaui-safe-area-inset-bottom, 0px))', display: 'flex', flexDirection: 'column', gap: 24 }}>
 
-          {items.length === 0 ? (
-            <EmptyVouchers />
-          ) : (
-            <Box
-              style={{
-                margin: '0 16px',
-                background: '#fff',
-                borderRadius: 18,
-                border: '1px solid #F0F1F3',
-                overflow: 'hidden',
-                boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
-              }}
-            >
-              {items.map((v, i) => (
-                <Box key={v.id} style={{ borderBottom: i < items.length - 1 ? '1px solid #F3F4F6' : 'none' }}>
-                  <VoucherRow voucher={v} onClick={() => handleVoucherClick(v)} />
-                </Box>
-              ))}
-            </Box>
+          {items.length === 0 && <EmptyVouchers />}
+
+          {/* Sản phẩm / Dịch vụ */}
+          {productItems.length > 0 && (
+            <VoucherSection
+              title="Sản phẩm / Dịch vụ"
+              items={productItems}
+              onItemClick={handleVoucherClick}
+            />
+          )}
+
+          {/* Quà tặng */}
+          {giftItems.length > 0 && (
+            <VoucherSection
+              title="Quà tặng"
+              items={giftItems}
+              onItemClick={handleVoucherClick}
+            />
           )}
 
           {items.length > 0 && (
-            <Box style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '12px 16px 0', justifyContent: 'center' }}>
+            <Box style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '0 16px', justifyContent: 'center' }}>
               <PackageOpen size={13} color="#9CA3AF" />
               <p style={{ fontSize: 12, color: '#9CA3AF' }}>
                 {items.length} ưu đãi · {activeCount} còn hiệu lực

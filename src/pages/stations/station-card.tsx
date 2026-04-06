@@ -118,7 +118,6 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
             </Box>
           )}
 
-
           {/* Chips row */}
           <Box flex className="items-center" style={{ gap: 6, flexWrap: 'wrap', marginTop: 'auto' }}>
             {distanceText && (
@@ -154,6 +153,8 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
                 <p style={{ fontSize: 10, fontWeight: 700, color: '#92400E' }}>+{station.defaultPoint}</p>
               </Box>
             )}
+
+
           </Box>
         </Box>
       </Box>

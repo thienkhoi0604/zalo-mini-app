@@ -11,6 +11,17 @@ export interface Ward {
   provinceCode: string;
 }
 
+export interface PillarConfig {
+  powerKW: string;
+  pillarCount: number;
+}
+
+export interface TimeMultiplierConfig {
+  startTime: string;
+  endTime: string;
+  multiplier: number;
+}
+
 export interface Station {
   id: string;
   code: string;
@@ -32,6 +43,8 @@ export interface Station {
   defaultPoint: number | null;
   minCheckinIntervalMinutes: number | null;
   maxCheckinPerDay: number | null;
+  pillarConfigs: PillarConfig[] | null;
+  timeMultiplierConfigs: TimeMultiplierConfig[] | null;
   googleMapsDirectionUrl: string;
   imageUrl: string | null;
 }

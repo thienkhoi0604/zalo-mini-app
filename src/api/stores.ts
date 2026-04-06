@@ -23,6 +23,18 @@ export interface AppStore {
   stations: unknown[];
 }
 
+export async function getStores(params: { pageNumber?: number; pageSize?: number } = {}): Promise<{ items: AppStore[]; hasNext: boolean }> {
+  try {
+    const { pageNumber = 1, pageSize = 50 } = params;
+    const { data } = await axiosClient.get<{
+      data: { items: AppStore[]; hasNext: boolean };
+    }>('/app/stores', { params: { pageNumber, pageSize } });
+    return { items: data.data.items ?? [], hasNext: data.data.hasNext ?? false };
+  } catch {
+    return { items: [], hasNext: false };
+  }
+}
+
 export async function getStoreById(id: string): Promise<AppStore | null> {
   try {
     const { data } = await axiosClient.get<{ data: AppStore }>(`/app/stores/${id}`);

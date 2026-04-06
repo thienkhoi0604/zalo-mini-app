@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useParams } from 'react-router';
 import { Box, Page } from 'zmp-ui';
-import { MapPin, Navigation, Zap, Clock, RotateCcw, Store, Tag } from 'lucide-react';
+import { MapPin, Navigation, Zap, Clock, RotateCcw, Store, Tag, Timer } from 'lucide-react';
 import { openWebview } from 'zmp-sdk/apis';
 import { Station } from '@/types/station';
 import { getStationById } from '@/api/stations';
@@ -333,6 +333,117 @@ const StationDetailPage: FC = () => {
                 </p>
               </Box>
             </button>
+          )}
+
+          {/* ── Pillar configs ── */}
+          {station.pillarConfigs && station.pillarConfigs.length > 0 && (
+            <Box>
+              <SectionLabel>Cấu hình trụ sạc</SectionLabel>
+              <Box
+                className="bg-white rounded-2xl overflow-hidden"
+                style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
+              >
+                {station.pillarConfigs.map((cfg, idx) => (
+                  <Box
+                    key={idx}
+                    flex
+                    className="items-center"
+                    style={{
+                      gap: 14,
+                      padding: '14px 16px',
+                      borderBottom: idx < station.pillarConfigs!.length - 1 ? '1px solid #F3F4F6' : 'none',
+                    }}
+                  >
+                    <Box
+                      className="flex items-center justify-center rounded-xl flex-shrink-0"
+                      style={{ width: 38, height: 38, background: '#FEF3C7' }}
+                    >
+                      <Zap size={16} color="#D97706" />
+                    </Box>
+                    <Box style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600, letterSpacing: 0.3, textTransform: 'uppercase', marginBottom: 4 }}>
+                        Công suất
+                      </p>
+                      <p style={{ fontSize: 15, fontWeight: 800, color: '#111827' }}>
+                        {cfg.powerKW} kW
+                      </p>
+                    </Box>
+                    <Box
+                      style={{
+                        background: '#F0FDF4',
+                        border: '1px solid #BBF7D0',
+                        borderRadius: 20,
+                        padding: '5px 14px',
+                        flexShrink: 0,
+                      }}
+                    >
+                      <p style={{ fontSize: 13, fontWeight: 700, color: '#288F4E' }}>
+                        {cfg.pillarCount} trụ
+                      </p>
+                    </Box>
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          )}
+
+          {/* ── Time multiplier configs ── */}
+          {station.timeMultiplierConfigs && station.timeMultiplierConfigs.length > 0 && (
+            <Box>
+              <SectionLabel>Hệ số điểm theo giờ</SectionLabel>
+              <Box
+                className="bg-white rounded-2xl overflow-hidden"
+                style={{ boxShadow: '0 2px 12px rgba(0,0,0,0.06)' }}
+              >
+                {station.timeMultiplierConfigs.map((cfg, idx) => {
+                  const isBonus = cfg.multiplier > 1;
+                  const isReduced = cfg.multiplier < 1;
+                  const accent = isBonus ? '#288F4E' : isReduced ? '#9CA3AF' : '#D97706';
+                  const accentBg = isBonus ? '#F0FDF4' : isReduced ? '#F9FAFB' : '#FFFBEB';
+                  const accentBorder = isBonus ? '#BBF7D0' : isReduced ? '#E5E7EB' : '#FDE68A';
+                  return (
+                    <Box
+                      key={idx}
+                      flex
+                      className="items-center"
+                      style={{
+                        gap: 14,
+                        padding: '14px 16px',
+                        borderBottom: idx < station.timeMultiplierConfigs!.length - 1 ? '1px solid #F3F4F6' : 'none',
+                      }}
+                    >
+                      <Box
+                        className="flex items-center justify-center rounded-xl flex-shrink-0"
+                        style={{ width: 38, height: 38, background: '#EDE9FE' }}
+                      >
+                        <Timer size={16} color="#7C3AED" />
+                      </Box>
+                      <Box style={{ flex: 1, minWidth: 0 }}>
+                        <p style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 600, letterSpacing: 0.3, textTransform: 'uppercase', marginBottom: 4 }}>
+                          Khung giờ
+                        </p>
+                        <p style={{ fontSize: 14, fontWeight: 700, color: '#374151' }}>
+                          {cfg.startTime} – {cfg.endTime}
+                        </p>
+                      </Box>
+                      <Box
+                        style={{
+                          background: accentBg,
+                          border: `1px solid ${accentBorder}`,
+                          borderRadius: 20,
+                          padding: '5px 14px',
+                          flexShrink: 0,
+                        }}
+                      >
+                        <p style={{ fontSize: 13, fontWeight: 800, color: accent }}>
+                          ×{cfg.multiplier}
+                        </p>
+                      </Box>
+                    </Box>
+                  );
+                })}
+              </Box>
+            </Box>
           )}
 
           {/* ── Description ── */}
