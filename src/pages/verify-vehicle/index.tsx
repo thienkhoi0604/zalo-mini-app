@@ -199,16 +199,17 @@ const VerifyVehiclePage: FC = () => {
               </p>
               <Box
                 flex
-                className="items-center rounded-xl overflow-hidden"
+                className="items-center rounded-xl"
                 style={{
                   border: `2px solid ${licensePlate.length >= 6 ? '#288F4E' : '#E5E7EB'}`,
                   background: '#F9FAFB',
                   transition: 'border-color 0.2s',
+                  overflow: 'visible',
                 }}
               >
                 <Box
                   className="flex items-center justify-center flex-shrink-0"
-                  style={{ width: 48, height: 52, background: '#F3F4F6', borderRight: '1.5px solid #E5E7EB' }}
+                  style={{ width: 48, height: 52, background: '#F3F4F6', borderRight: '1.5px solid #E5E7EB', borderRadius: '10px 0 0 10px' }}
                 >
                   <Car size={20} color="#6B7280" />
                 </Box>
@@ -220,6 +221,7 @@ const VerifyVehiclePage: FC = () => {
                   maxLength={12}
                   style={{
                     flex: 1,
+                    minWidth: 0,
                     padding: '0 14px',
                     height: 52,
                     border: 'none',

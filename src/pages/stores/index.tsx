@@ -1,7 +1,7 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box, Page } from 'zmp-ui';
-import { Store, MapPin, Clock, Phone, Navigation, Tag } from 'lucide-react';
+import { Store, MapPin, Clock, Phone, Navigation } from 'lucide-react';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { getStores, AppStore } from '@/api/stores';
 import defaultStoreImg from '@/assets/images/logo.png';
@@ -175,10 +175,6 @@ const StoreCard: FC<{ store: AppStore; onClick: () => void }> = ({ store, onClic
               {store.description}
             </p>
           )}
-          <Box flex className="items-center" style={{ gap: 4, marginTop: 'auto', paddingTop: 6 }}>
-            <Tag size={11} color="#288F4E" />
-            <p style={{ fontSize: 11.5, fontWeight: 700, color: '#288F4E' }}>Xem ưu đãi</p>
-          </Box>
         </Box>
       </Box>
     </Box>
