@@ -60,6 +60,8 @@ export interface GetFeedParams {
   pageSize?: number;
   /** Maps to the `Type` query param on /app/feed */
   type?: FeedItemType;
+  /** Maps to the `StoreId` query param on /app/feed */
+  storeId?: string;
 }
 
 // ─── Grouped feed (Grouped=true) ──────────────────────────────────────────────

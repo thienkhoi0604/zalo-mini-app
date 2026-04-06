@@ -35,7 +35,7 @@ export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
 }
 
 export async function getFeedItems(params: GetFeedParams = {}): Promise<Voucher[]> {
-  const { pageNumber = 1, pageSize = 50, type } = params;
+  const { pageNumber = 1, pageSize = 50, type, storeId } = params;
   const { data } = await axiosClient.get<{
     data: {
       items: FeedApiItem[];
@@ -47,7 +47,12 @@ export async function getFeedItems(params: GetFeedParams = {}): Promise<Voucher[
       hasNext: boolean;
     };
   }>('/app/feed', {
-    params: { pageNumber, pageSize, ...(type && { Type: type }) },
+    params: {
+      pageNumber,
+      pageSize,
+      ...(type && { Type: type }),
+      ...(storeId && { StoreId: storeId }),
+    },
   });
   return (data.data?.items ?? []).map(mapFeedItemToVoucher);
 }

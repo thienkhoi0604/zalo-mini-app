@@ -83,7 +83,7 @@ const HeroBanner: FC<Props> = ({ tier, pointWallet }) => (
         <Box flex className="items-center" style={{ gap: 5 }}>
           <CoinIcon size={20} />
           <p style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>
-            {(pointWallet?.greenCoin ?? 0).toLocaleString('vi-VN')}
+            {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
           </p>
         </Box>
       </Box>

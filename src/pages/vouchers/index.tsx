@@ -92,7 +92,7 @@ const VouchersPage: FC = () => {
               <Box flex className="items-center" style={{ gap: 6, flex: 1, justifyContent: 'center' }}>
                 <CoinIcon size={18} />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#fff', letterSpacing: -0.2 }}>
-                  {(pointWallet?.greenCoin ?? 0).toLocaleString('vi-VN')}
+                  {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
                 </p>
               </Box>
 

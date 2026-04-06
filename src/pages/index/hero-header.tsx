@@ -170,7 +170,7 @@ export const HeroHeader: FC = () => {
                 <Box flex className="items-center" style={{ gap: 6, flex: 1 }}>
                   <CoinIcon size={20} />
                   <p style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>
-                    {(pointWallet?.greenCoin ?? 0).toLocaleString('vi-VN')}
+                    {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
                   </p>
                 </Box>
 

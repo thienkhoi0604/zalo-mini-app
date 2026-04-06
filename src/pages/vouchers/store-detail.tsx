@@ -8,6 +8,7 @@ import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { formatDate } from '@/utils/date';
 import { COLORS } from '@/constants';
 import { getStoreById, AppStore } from '@/api/stores';
+import { getFeedItems } from '@/api/feed';
 import { openWebview } from 'zmp-sdk';
 import defaultStoreImg from '@/assets/images/logo.png';
 
@@ -263,6 +264,7 @@ const StoreDetailPage: FC = () => {
   const { state } = useLocation() as { state?: { group?: StoreGroup } };
 
   const [store, setStore] = useState<AppStore | null>(null);
+  const [storeVouchers, setStoreVouchers] = useState<Voucher[]>(state?.group?.items ?? []);
   const [loading, setLoading] = useState(true);
 
   const group = state?.group ?? null;
@@ -270,8 +272,12 @@ const StoreDetailPage: FC = () => {
   const load = useCallback(async () => {
     if (!storeId) return;
     setLoading(true);
-    const result = await getStoreById(storeId);
+    const [result, vouchers] = await Promise.all([
+      getStoreById(storeId),
+      getFeedItems({ pageNumber: 1, pageSize: 100, storeId }),
+    ]);
     setStore(result);
+    setStoreVouchers(vouchers.length > 0 ? vouchers : (state?.group?.items ?? []));
     setLoading(false);
   }, [storeId]);
 
@@ -290,7 +296,7 @@ const StoreDetailPage: FC = () => {
   const distanceKm  = store?.distanceKm  ?? group?.distanceKm ?? null;
   const mapsUrl     = store?.googleMapsDirectionUrl ?? null;
   const workingStatus = group?.workingStatus ?? null;
-  const items       = group?.items       ?? [];
+  const items       = storeVouchers;
 
   const distanceLabel = distanceKm != null
     ? distanceKm < 1 ? `${Math.round(distanceKm * 1000)} m` : `${distanceKm.toFixed(1)} km`
