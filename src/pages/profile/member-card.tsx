@@ -155,7 +155,7 @@ const MemberCard: FC = () => {
                   <ShoppingBag size={16} color="#93C5FD" strokeWidth={2} />
                 )}
                 <p style={{ color: '#fff', fontWeight: 900, fontSize: 16, letterSpacing: -0.4, lineHeight: 1 }}>
-                  {(pointWallet?.totalSpent ?? 0).toLocaleString('vi-VN')}
+                  {(pointWallet?.greenCoin ?? 0).toLocaleString('vi-VN')}
                 </p>
               </Box>
               <p style={{ color: 'rgba(160,200,255,0.6)', fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>

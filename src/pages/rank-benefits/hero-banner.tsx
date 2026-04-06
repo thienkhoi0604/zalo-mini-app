@@ -90,7 +90,7 @@ const HeroBanner: FC<Props> = ({ tier, pointWallet }) => (
       <Box style={{ flex: 1, paddingLeft: 10 }}>
         <p style={{ fontSize: 11, color: 'rgba(255,255,255,0.8)', marginBottom: 3 }}>GreenCoin</p>
         <p style={{ fontSize: 18, fontWeight: 800, color: '#fff' }}>
-          {(pointWallet?.totalSpent ?? 0).toLocaleString('vi-VN')}
+          {(pointWallet?.greenCoin ?? 0).toLocaleString('vi-VN')}
         </p>
       </Box>
     </Box>
