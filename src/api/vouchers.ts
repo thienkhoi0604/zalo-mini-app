@@ -21,10 +21,15 @@ function mapApiItemToVoucher(item: VoucherApiItem): Voucher {
     usageGuide: '',
     status: item.isActive ? 'active' : 'expired',
     appliesToAll: item.appliesToAll,
-    stores: item.storeNames?.map((name, i) => ({
-      id: item.storeIds?.[i],
-      name,
-    })),
+    stores: item.appliedStores?.length
+      ? item.appliedStores.map((s) => ({
+          id: s.id,
+          name: s.name,
+          address: s.address ?? undefined,
+          imageUrl: s.imageUrl,
+          googleMapsDirectionUrl: s.googleMapsDirectionUrl,
+        }))
+      : item.storeNames?.map((name, i) => ({ id: item.storeIds?.[i], name })),
   };
 }
 

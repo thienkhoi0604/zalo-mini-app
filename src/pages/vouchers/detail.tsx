@@ -2,7 +2,8 @@ import React, { FC, useEffect, useState } from 'react';
 import logoImg from '@/assets/images/logo.png';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
-import { MapPin, Calendar, FileText, Store, AlertCircle, Globe, Zap } from 'lucide-react';
+import { openWebview } from 'zmp-sdk/apis';
+import { MapPin, Calendar, FileText, Store, AlertCircle, Globe, Zap, Navigation } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { getVoucherTypeLabel } from '@/types/voucher';
 import { useUserStore } from '@/store/user';
@@ -387,38 +388,55 @@ const VoucherDetailPage: FC = () => {
                     key={i}
                     flex
                     className="items-center"
+                    onClick={() => store.googleMapsDirectionUrl && openWebview({ url: store.googleMapsDirectionUrl })}
                     style={{
                       gap: 10,
                       padding: '10px 12px',
                       background: '#F9FAFB',
                       borderRadius: 12,
                       border: '1px solid #F3F4F6',
+                      cursor: store.googleMapsDirectionUrl ? 'pointer' : 'default',
                     }}
                   >
-                    <Box
-                      style={{
-                        width: 34, height: 34, borderRadius: 9, flexShrink: 0,
-                        background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      }}
-                    >
-                      <Store size={16} color="#7C3AED" />
-                    </Box>
-                    <Box style={{ flex: 1, minWidth: 0 }}>
-                      <p
+                    {/* Store image or fallback icon */}
+                    {store.imageUrl ? (
+                      <img
+                        src={store.imageUrl}
+                        alt={store.name}
+                        style={{ width: 48, height: 48, borderRadius: 10, objectFit: 'cover', flexShrink: 0 }}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    ) : (
+                      <Box
                         style={{
-                          fontSize: 13, fontWeight: 600, color: '#111827',
-                          overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis',
+                          width: 48, height: 48, borderRadius: 10, flexShrink: 0,
+                          background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
                         }}
                       >
+                        <Store size={20} color="#7C3AED" />
+                      </Box>
+                    )}
+
+                    {/* Name + address */}
+                    <Box style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
                         {store.name}
                       </p>
                       {store.address && (
-                        <p style={{ fontSize: 11, color: '#9CA3AF', marginTop: 2 }}>
-                          {store.address}
-                        </p>
+                        <Box flex className="items-center" style={{ gap: 3, marginTop: 3 }}>
+                          <MapPin size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
+                          <p style={{ fontSize: 11, color: '#9CA3AF', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                            {store.address}
+                          </p>
+                        </Box>
                       )}
                     </Box>
+
+                    {/* Direction chevron */}
+                    {store.googleMapsDirectionUrl && (
+                      <Navigation size={16} color="#7C3AED" style={{ flexShrink: 0 }} />
+                    )}
                   </Box>
                 ))}
               </Box>

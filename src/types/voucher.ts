@@ -2,6 +2,8 @@ export interface VoucherStore {
   id?: string;
   name: string;
   address?: string;
+  imageUrl?: string | null;
+  googleMapsDirectionUrl?: string | null;
 }
 
 // ─── Feed Item Types ───────────────────────────────────────────────────────────
@@ -101,17 +103,31 @@ export interface StoreItemApiResponse {
   code: string;
   name: string;
   description: string | null;
+  shortDescription: string | null;
   price: number | null;
   coinCost: number | null;
   imageUrl: string;
+  storeImageUrl: string | null;
   stock: number | null;
   totalSales: number | null;
   latitude: number | null;
   longitude: number | null;
   distanceKm: number | null;
+  googleMapsDirectionUrl: string | null;
 }
 
 // ─── Legacy Voucher detail API (single-item endpoint) ──────────────────────────
+
+export interface AppliedStore {
+  id: string;
+  name: string;
+  address: string | null;
+  latitude: number | null;
+  longitude: number | null;
+  imageUrl: string | null;
+  phone: string | null;
+  googleMapsDirectionUrl: string | null;
+}
 
 export interface VoucherApiItem {
   id: string;
@@ -119,6 +135,7 @@ export interface VoucherApiItem {
   name: string;
   type: string;
   description: string | null;
+  shortDescription: string | null;
   pointCost: number;
   stock: number;
   imageUrl: string;
@@ -128,6 +145,7 @@ export interface VoucherApiItem {
   isActive: boolean;
   storeIds: string[];
   storeNames: string[];
+  appliedStores?: AppliedStore[];
 }
 
 // ─── Unified internal Voucher type ─────────────────────────────────────────────
