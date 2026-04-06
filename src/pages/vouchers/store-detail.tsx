@@ -1,19 +1,22 @@
-import React, { FC } from 'react';
-import { useLocation, useNavigate } from 'react-router';
+import React, { FC, useCallback, useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router';
 import { Box } from 'zmp-ui';
-import { MapPin, Clock, Phone, Navigation, Tag, PackageOpen, Store } from 'lucide-react';
+import { MapPin, Clock, Phone, Navigation, Tag, PackageOpen, Store, ExternalLink } from 'lucide-react';
 import { StoreGroup, Voucher, FEED_ITEM_TYPES } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { formatDate } from '@/utils/date';
 import { COLORS } from '@/constants';
+import { getStoreById, AppStore } from '@/api/stores';
+import { openWebview } from 'zmp-sdk';
 import defaultStoreImg from '@/assets/images/logo.png';
 
 const VOUCHER_FALLBACK = defaultStoreImg;
 
 // ─── Info row ──────────────────────────────────────────────────────────────────
 
-const InfoRow: FC<{ icon: React.ReactNode; label: string; value: string }> = ({ icon, label, value }) => (
-  <Box style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }}>
+const InfoRow: FC<{ icon: React.ReactNode; label: string; value: string; onPress?: () => void }> = ({ icon, label, value, onPress }) => (
+  <Box style={{ display: 'flex', alignItems: 'flex-start', gap: 12 }} onClick={onPress}>
     <Box
       style={{
         width: 36,
@@ -32,7 +35,7 @@ const InfoRow: FC<{ icon: React.ReactNode; label: string; value: string }> = ({ 
       <p style={{ fontSize: 10, color: '#9CA3AF', fontWeight: 700, letterSpacing: 0.4, marginBottom: 2 }}>
         {label}
       </p>
-      <p style={{ fontSize: 13.5, color: '#374151', fontWeight: 500, lineHeight: '19px' }}>
+      <p style={{ fontSize: 13.5, color: onPress ? COLORS.primary : '#374151', fontWeight: 500, lineHeight: '19px' }}>
         {value}
       </p>
     </Box>
@@ -161,6 +164,29 @@ const VoucherRow: FC<{ voucher: Voucher; onClick: () => void }> = ({ voucher, on
   );
 };
 
+// ─── Skeleton ──────────────────────────────────────────────────────────────────
+
+const Skeleton: FC = () => (
+  <Box className="animate-pulse">
+    <Box style={{ height: 240, background: '#E9EBED' }} />
+    <Box style={{ padding: '16px 16px 12px' }}>
+      <Box style={{ height: 26, width: '55%', background: '#E9EBED', borderRadius: 8, marginBottom: 10 }} />
+      <Box style={{ height: 18, width: '35%', background: '#E9EBED', borderRadius: 20 }} />
+    </Box>
+    <Box style={{ margin: '0 16px', borderRadius: 18, background: '#fff', padding: 16, display: 'flex', flexDirection: 'column', gap: 14 }}>
+      {[1, 2].map((i) => (
+        <Box key={i} style={{ display: 'flex', gap: 12 }}>
+          <Box style={{ width: 36, height: 36, borderRadius: 11, background: '#E9EBED', flexShrink: 0 }} />
+          <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+            <Box style={{ height: 10, width: '30%', background: '#E9EBED', borderRadius: 4 }} />
+            <Box style={{ height: 14, width: '80%', background: '#E9EBED', borderRadius: 4 }} />
+          </Box>
+        </Box>
+      ))}
+    </Box>
+  </Box>
+);
+
 // ─── Empty vouchers ────────────────────────────────────────────────────────────
 
 const EmptyVouchers: FC = () => (
@@ -175,13 +201,9 @@ const EmptyVouchers: FC = () => (
   >
     <Box
       style={{
-        width: 80,
-        height: 80,
-        borderRadius: '50%',
+        width: 80, height: 80, borderRadius: '50%',
         background: COLORS.primaryLight,
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
       }}
     >
       <Tag size={34} color={COLORS.primary} strokeWidth={1.5} />
@@ -237,269 +259,210 @@ const NotFound: FC = () => {
 
 const StoreDetailPage: FC = () => {
   const navigate = useNavigate();
+  const { storeId } = useParams<{ storeId: string }>();
   const { state } = useLocation() as { state?: { group?: StoreGroup } };
+
+  const [store, setStore] = useState<AppStore | null>(null);
+  const [loading, setLoading] = useState(true);
+
   const group = state?.group ?? null;
 
-  if (!group) return <NotFound />;
+  const load = useCallback(async () => {
+    if (!storeId) return;
+    setLoading(true);
+    const result = await getStoreById(storeId);
+    setStore(result);
+    setLoading(false);
+  }, [storeId]);
 
-  const address = group.address ?? group.items[0]?.stores?.[0]?.address ?? null;
+  useEffect(() => { load(); }, [load]);
 
-  const distanceLabel = group.distanceKm != null
-    ? group.distanceKm < 1
-      ? `${Math.round(group.distanceKm * 1000)} m`
-      : `${group.distanceKm.toFixed(1)} km`
+  if (!loading && !store && !group) return <NotFound />;
+
+  // Merge: API data takes priority for store info; voucher items come from navigation state
+  const name        = store?.name        ?? group?.storeName  ?? '';
+  const address     = store?.address     ?? group?.address    ?? null;
+  const phone       = store?.phone       ?? group?.phone      ?? null;
+  const imageUrl    = store?.imageUrl    ?? group?.imageUrl   ?? null;
+  const description = store?.description ?? null;
+  const openFrom    = store?.openTime    ?? group?.openFrom   ?? null;
+  const openTo      = store?.closeTime   ?? group?.openTo     ?? null;
+  const distanceKm  = store?.distanceKm  ?? group?.distanceKm ?? null;
+  const mapsUrl     = store?.googleMapsDirectionUrl ?? null;
+  const workingStatus = group?.workingStatus ?? null;
+  const items       = group?.items       ?? [];
+
+  const distanceLabel = distanceKm != null
+    ? distanceKm < 1 ? `${Math.round(distanceKm * 1000)} m` : `${distanceKm.toFixed(1)} km`
     : null;
 
-  const hoursLabel = group.openFrom && group.openTo
-    ? `${group.openFrom} – ${group.openTo}`
-    : null;
-
-  const activeCount = group.items.filter((v) => v.status !== 'expired').length;
+  const hoursLabel = openFrom && openTo ? `${openFrom} – ${openTo}` : null;
+  const activeCount = items.filter((v) => v.status !== 'expired').length;
 
   const handleVoucherClick = (v: Voucher) => navigate(`/rewards/${v.id}`);
+  const handleMapsOpen = () => {
+    if (mapsUrl) openWebview({ url: mapsUrl });
+  };
 
   return (
-    <Box style={{ flex: 1, overflowY: 'auto', background: '#F8F9FA' }}>
+    <PullToRefresh onRefresh={load} className="flex-1">
+      <Box style={{ flex: 1, background: '#F8F9FA' }}>
 
-      {/* ── Hero ── */}
-      <Box style={{ position: 'relative', height: 240, background: '#E5E7EB', flexShrink: 0 }}>
-        <img
-          src={group.imageUrl ?? defaultStoreImg}
-          alt={group.storeName}
-          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-          onError={(e) => { (e.target as HTMLImageElement).src = defaultStoreImg; }}
-        />
-        {/* Bottom fade for smooth transition into white */}
-        <Box
-          style={{
-            position: 'absolute',
-            bottom: 0,
-            left: 0,
-            right: 0,
-            height: 80,
-            background: 'linear-gradient(to bottom, transparent, #F8F9FA)',
-          }}
-        />
-      </Box>
-
-      {/* ── Store identity ── */}
-      <Box style={{ padding: '4px 16px 16px', background: '#F8F9FA' }}>
-        <p
-          style={{
-            fontSize: 22,
-            fontWeight: 800,
-            color: '#111827',
-            lineHeight: '29px',
-            marginBottom: 8,
-          }}
-        >
-          {group.storeName}
-        </p>
-
-        <Box style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
-          {group.workingStatus && (
-            <Box
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5,
-                background: group.workingStatus === 'Open' ? '#DCFCE7' : '#FEE2E2',
-                border: `1px solid ${group.workingStatus === 'Open' ? '#BBF7D0' : '#FECACA'}`,
-                borderRadius: 20,
-                padding: '4px 11px',
-              }}
-            >
-              <span
+        {loading ? <Skeleton /> : (
+          <>
+            {/* ── Hero ── */}
+            <Box style={{ position: 'relative', height: 240, background: '#E5E7EB', flexShrink: 0 }}>
+              <img
+                src={imageUrl ?? defaultStoreImg}
+                alt={name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                onError={(e) => { (e.target as HTMLImageElement).src = defaultStoreImg; }}
+              />
+              <Box
                 style={{
-                  width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
-                  background: group.workingStatus === 'Open' ? '#16A34A' : '#DC2626',
+                  position: 'absolute', bottom: 0, left: 0, right: 0, height: 80,
+                  background: 'linear-gradient(to bottom, transparent, #F8F9FA)',
                 }}
               />
-              <p
-                style={{
-                  fontSize: 11.5, fontWeight: 700,
-                  color: group.workingStatus === 'Open' ? '#166534' : '#991B1B',
-                }}
-              >
-                {group.workingStatus === 'Open' ? 'Đang mở cửa' : 'Đóng cửa'}
+            </Box>
+
+            {/* ── Store identity ── */}
+            <Box style={{ padding: '4px 16px 16px', background: '#F8F9FA' }}>
+              <p style={{ fontSize: 22, fontWeight: 800, color: '#111827', lineHeight: '29px', marginBottom: 8 }}>
+                {name}
               </p>
-            </Box>
-          )}
-          {distanceLabel && (
-            <Box
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5,
-                background: COLORS.primaryLight,
-                border: `1px solid #BBF7D0`,
-                borderRadius: 20,
-                padding: '4px 11px',
-              }}
-            >
-              <Navigation size={11} color={COLORS.primary} strokeWidth={2.5} />
-              <p style={{ fontSize: 11.5, color: COLORS.primary, fontWeight: 700 }}>{distanceLabel}</p>
-            </Box>
-          )}
-          {group.items.length > 0 && (
-            <Box
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: 5,
-                background: '#F3F4F6',
-                borderRadius: 20,
-                padding: '4px 11px',
-              }}
-            >
-              <Tag size={11} color="#6B7280" />
-              <p style={{ fontSize: 11.5, color: '#6B7280', fontWeight: 600 }}>
-                {activeCount > 0 ? `${activeCount} ưu đãi` : 'Không có ưu đãi'}
-              </p>
-            </Box>
-          )}
-        </Box>
-      </Box>
+              {description && (
+                <p style={{ fontSize: 13, color: '#6B7280', lineHeight: '19px', marginBottom: 8 }}>
+                  {description}
+                </p>
+              )}
 
-      {/* ── Info card ── */}
-      {(address || hoursLabel || group.phone) && (
-        <Box
-          style={{
-            margin: '0 16px',
-            background: '#fff',
-            borderRadius: 18,
-            border: '1px solid #F0F1F3',
-            padding: '16px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: 14,
-            boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
-          }}
-        >
-          {address && (
-            <InfoRow
-              icon={<MapPin size={16} color={COLORS.primary} />}
-              label="ĐỊA CHỈ"
-              value={address}
-            />
-          )}
-          {address && (hoursLabel || group.phone) && (
-            <Box style={{ height: 1, background: '#F3F4F6' }} />
-          )}
-          {hoursLabel && (
-            <InfoRow
-              icon={<Clock size={16} color={COLORS.primary} />}
-              label="GIỜ MỞ CỬA"
-              value={hoursLabel}
-            />
-          )}
-          {hoursLabel && group.phone && (
-            <Box style={{ height: 1, background: '#F3F4F6' }} />
-          )}
-          {group.phone && (
-            <InfoRow
-              icon={<Phone size={16} color={COLORS.primary} />}
-              label="ĐIỆN THOẠI"
-              value={group.phone}
-            />
-          )}
-        </Box>
-      )}
-
-      {/* ── Vouchers section ── */}
-      <Box style={{ marginTop: 24, paddingBottom: 'calc(24px + var(--zaui-safe-area-inset-bottom, 0px))' }}>
-
-        {/* Section header */}
-        <Box
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 8,
-            padding: '0 16px',
-            marginBottom: 12,
-          }}
-        >
-          <Box
-            style={{
-              width: 3,
-              height: 18,
-              borderRadius: 2,
-              background: `linear-gradient(180deg, ${COLORS.primary}, ${COLORS.primaryDark})`,
-              flexShrink: 0,
-            }}
-          />
-          <p style={{ fontSize: 16, fontWeight: 800, color: '#111827' }}>
-            Vouchers tại cửa hàng
-          </p>
-          {group.items.length > 0 && (
-            <Box
-              style={{
-                background: activeCount > 0 ? COLORS.primaryLight : '#F3F4F6',
-                borderRadius: 20,
-                padding: '2px 9px',
-                marginLeft: 2,
-              }}
-            >
-              <p
-                style={{
-                  fontSize: 11.5,
-                  fontWeight: 700,
-                  color: activeCount > 0 ? COLORS.primary : '#9CA3AF',
-                }}
-              >
-                {activeCount > 0 ? activeCount : group.items.length}
-              </p>
-            </Box>
-          )}
-        </Box>
-
-        {/* List */}
-        {group.items.length === 0 ? (
-          <EmptyVouchers />
-        ) : (
-          <Box
-            style={{
-              margin: '0 16px',
-              background: '#fff',
-              borderRadius: 18,
-              border: '1px solid #F0F1F3',
-              overflow: 'hidden',
-              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
-            }}
-          >
-            {group.items.map((v, i) => (
-              <Box
-                key={v.id}
-                style={{
-                  borderBottom: i < group.items.length - 1 ? '1px solid #F3F4F6' : 'none',
-                }}
-              >
-                <VoucherRow voucher={v} onClick={() => handleVoucherClick(v)} />
+              <Box style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+                {workingStatus && (
+                  <Box
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 5,
+                      background: workingStatus === 'Open' ? '#DCFCE7' : '#FEE2E2',
+                      border: `1px solid ${workingStatus === 'Open' ? '#BBF7D0' : '#FECACA'}`,
+                      borderRadius: 20, padding: '4px 11px',
+                    }}
+                  >
+                    <span style={{ width: 6, height: 6, borderRadius: '50%', flexShrink: 0, background: workingStatus === 'Open' ? '#16A34A' : '#DC2626' }} />
+                    <p style={{ fontSize: 11.5, fontWeight: 700, color: workingStatus === 'Open' ? '#166534' : '#991B1B' }}>
+                      {workingStatus === 'Open' ? 'Đang mở cửa' : 'Đóng cửa'}
+                    </p>
+                  </Box>
+                )}
+                {distanceLabel && (
+                  <Box
+                    style={{
+                      display: 'inline-flex', alignItems: 'center', gap: 5,
+                      background: COLORS.primaryLight, border: '1px solid #BBF7D0',
+                      borderRadius: 20, padding: '4px 11px',
+                    }}
+                  >
+                    <Navigation size={11} color={COLORS.primary} strokeWidth={2.5} />
+                    <p style={{ fontSize: 11.5, color: COLORS.primary, fontWeight: 700 }}>{distanceLabel}</p>
+                  </Box>
+                )}
+                {items.length > 0 && (
+                  <Box style={{ display: 'inline-flex', alignItems: 'center', gap: 5, background: '#F3F4F6', borderRadius: 20, padding: '4px 11px' }}>
+                    <Tag size={11} color="#6B7280" />
+                    <p style={{ fontSize: 11.5, color: '#6B7280', fontWeight: 600 }}>
+                      {activeCount > 0 ? `${activeCount} ưu đãi` : 'Không có ưu đãi'}
+                    </p>
+                  </Box>
+                )}
               </Box>
-            ))}
-          </Box>
+            </Box>
+
+            {/* ── Info card ── */}
+            {(address || hoursLabel || phone || mapsUrl) && (
+              <Box
+                style={{
+                  margin: '0 16px',
+                  background: '#fff',
+                  borderRadius: 18,
+                  border: '1px solid #F0F1F3',
+                  padding: '16px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: 14,
+                  boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+                }}
+              >
+                {address && (
+                  <InfoRow icon={<MapPin size={16} color={COLORS.primary} />} label="ĐỊA CHỈ" value={address} />
+                )}
+                {address && (hoursLabel || phone || mapsUrl) && <Box style={{ height: 1, background: '#F3F4F6' }} />}
+                {hoursLabel && (
+                  <InfoRow icon={<Clock size={16} color={COLORS.primary} />} label="GIỜ MỞ CỬA" value={hoursLabel} />
+                )}
+                {hoursLabel && (phone || mapsUrl) && <Box style={{ height: 1, background: '#F3F4F6' }} />}
+                {phone && (
+                  <InfoRow icon={<Phone size={16} color={COLORS.primary} />} label="ĐIỆN THOẠI" value={phone} />
+                )}
+                {phone && mapsUrl && <Box style={{ height: 1, background: '#F3F4F6' }} />}
+                {mapsUrl && (
+                  <InfoRow
+                    icon={<ExternalLink size={16} color={COLORS.primary} />}
+                    label="CHỈ ĐƯỜNG"
+                    value="Xem trên Google Maps"
+                    onPress={handleMapsOpen}
+                  />
+                )}
+              </Box>
+            )}
+          </>
         )}
 
-        {/* Footer summary */}
-        {group.items.length > 0 && (
-          <Box
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              gap: 6,
-              padding: '12px 16px 0',
-              justifyContent: 'center',
-            }}
-          >
-            <PackageOpen size={13} color="#9CA3AF" />
-            <p style={{ fontSize: 12, color: '#9CA3AF' }}>
-              {group.items.length} ưu đãi · {activeCount} còn hiệu lực
-            </p>
+        {/* ── Vouchers section ── */}
+        <Box style={{ marginTop: 24, paddingBottom: 'calc(24px + var(--zaui-safe-area-inset-bottom, 0px))' }}>
+          <Box style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '0 16px', marginBottom: 12 }}>
+            <Box style={{ width: 3, height: 18, borderRadius: 2, background: `linear-gradient(180deg, ${COLORS.primary}, ${COLORS.primaryDark})`, flexShrink: 0 }} />
+            <p style={{ fontSize: 16, fontWeight: 800, color: '#111827' }}>Vouchers tại cửa hàng</p>
+            {items.length > 0 && (
+              <Box style={{ background: activeCount > 0 ? COLORS.primaryLight : '#F3F4F6', borderRadius: 20, padding: '2px 9px', marginLeft: 2 }}>
+                <p style={{ fontSize: 11.5, fontWeight: 700, color: activeCount > 0 ? COLORS.primary : '#9CA3AF' }}>
+                  {activeCount > 0 ? activeCount : items.length}
+                </p>
+              </Box>
+            )}
           </Box>
-        )}
+
+          {items.length === 0 ? (
+            <EmptyVouchers />
+          ) : (
+            <Box
+              style={{
+                margin: '0 16px',
+                background: '#fff',
+                borderRadius: 18,
+                border: '1px solid #F0F1F3',
+                overflow: 'hidden',
+                boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+              }}
+            >
+              {items.map((v, i) => (
+                <Box key={v.id} style={{ borderBottom: i < items.length - 1 ? '1px solid #F3F4F6' : 'none' }}>
+                  <VoucherRow voucher={v} onClick={() => handleVoucherClick(v)} />
+                </Box>
+              ))}
+            </Box>
+          )}
+
+          {items.length > 0 && (
+            <Box style={{ display: 'flex', alignItems: 'center', gap: 6, padding: '12px 16px 0', justifyContent: 'center' }}>
+              <PackageOpen size={13} color="#9CA3AF" />
+              <p style={{ fontSize: 12, color: '#9CA3AF' }}>
+                {items.length} ưu đãi · {activeCount} còn hiệu lực
+              </p>
+            </Box>
+          )}
+        </Box>
+
       </Box>
-
-    </Box>
+    </PullToRefresh>
   );
 };
 

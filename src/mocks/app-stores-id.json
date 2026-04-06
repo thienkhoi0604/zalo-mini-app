@@ -1,0 +1,27 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "stations": [],
+    "id": "e7429547-4094-4a75-9c53-81a66db54ba4",
+    "code": "STO_MNMT5XL4HBF4",
+    "name": "EcoGreen Nam Hoà",
+    "address": "Số 5 Nam Hoà",
+    "latitude": 10.8140699,
+    "longitude": 106.7775661,
+    "provinceCode": "29",
+    "provinceName": "Hồ Chí Minh",
+    "wardCode": "70145139",
+    "wardName": "Phường Phước Long",
+    "description": "Siêu cấp ngon vô đối",
+    "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/9793c77669924baf8e362d7b7e7077d2.webp",
+    "storeImageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/9793c77669924baf8e362d7b7e7077d2.webp",
+    "phone": "0123456712",
+    "operatingHours": null,
+    "openTime": null,
+    "closeTime": null,
+    "distanceKm": null,
+    "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.8140699,106.7775661"
+  },
+  "errors": null
+}
