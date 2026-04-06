@@ -1,31 +1,15 @@
 import React, { FC, useCallback, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
-import { useNavigate } from 'react-router';
 import {
   Car,
   CheckCircle,
   CalendarCheck,
   ImageOff,
-  Pencil,
   Zap,
 } from 'lucide-react';
 import { fetchVehicleInfo } from '@/api/user';
 import { VehicleInfo } from '@/types/user';
-import {
-  VEHICLE_TYPES,
-  VEHICLE_TYPE_IDS,
-} from '@/pages/verify-vehicle/vehicle-type-selector';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
-
-// Reverse lookup: vehicleTypeId → VehicleType
-const vehicleTypeById: Record<string, (typeof VEHICLE_TYPES)[number]> =
-  VEHICLE_TYPES.reduce(
-    (acc, t) => {
-      acc[VEHICLE_TYPE_IDS[t.code]] = t;
-      return acc;
-    },
-    {} as Record<string, (typeof VEHICLE_TYPES)[number]>,
-  );
 
 const formatDate = (iso?: string) => {
   if (!iso) return null;
@@ -129,14 +113,9 @@ const InfoRow: FC<{
   </Box>
 );
 
-function vehicleById(id: string) {
-  return vehicleTypeById[id] ?? null;
-}
-
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const VehicleInfoPage: FC = () => {
-  const navigate = useNavigate();
   const [vehicle, setVehicle] = useState<VehicleInfo | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -151,9 +130,6 @@ const VehicleInfoPage: FC = () => {
     loadVehicle();
   }, []);
 
-  const vehicleType = vehicle?.vehicleTypeId
-    ? vehicleById(vehicle.vehicleTypeId)
-    : null;
 
   return (
     <Page className="flex-1 flex flex-col">
@@ -330,7 +306,7 @@ const VehicleInfoPage: FC = () => {
                   <p
                     style={{ fontSize: 14, fontWeight: 600, color: '#111827' }}
                   >
-                    {vehicleType?.label ?? vehicle.vehicleTypeName ?? 'Xe điện'}
+                    {vehicle.vehicleTypeName ?? 'Xe điện'}
                   </p>
                 }
               />

@@ -1,0 +1,39 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "items": [
+      {
+        "id": "34ee5938-e286-4077-b5d8-ad26e0cee3fb",
+        "code": "ELECTRIC_BIKE",
+        "name": "Electric Bike",
+        "description": "Xe đạp điện",
+        "isActive": true,
+        "imageUrl": null
+      },
+      {
+        "id": "32611f16-0b85-4fed-b57c-34c5b093f2cd",
+        "code": "ELECTRIC_CAR",
+        "name": "Electric Car",
+        "description": "Ô tô điện",
+        "isActive": true,
+        "imageUrl": null
+      },
+      {
+        "id": "53da8f84-de2a-4c2e-8460-a89451d2e0be",
+        "code": "ELECTRIC_MOTORBIKE",
+        "name": "Electric Motorbike",
+        "description": "Xe máy điện",
+        "isActive": true,
+        "imageUrl": null
+      }
+    ],
+    "pageNumber": 1,
+    "pageSize": 20,
+    "totalCount": 3,
+    "totalPages": 1,
+    "hasPrevious": false,
+    "hasNext": false
+  },
+  "errors": null
+}

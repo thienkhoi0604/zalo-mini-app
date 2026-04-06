@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
-import { MapPin, Clock, Phone, Navigation, Tag, PackageOpen, ChevronRight, Store } from 'lucide-react';
+import { MapPin, Clock, Phone, Navigation, Tag, PackageOpen, Store } from 'lucide-react';
 import { StoreGroup, Voucher, FEED_ITEM_TYPES } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
 import { formatDate } from '@/utils/date';
@@ -134,8 +134,8 @@ const VoucherRow: FC<{ voucher: Voucher; onClick: () => void }> = ({ voucher, on
         </Box>
       </Box>
 
-      {/* Cost + chevron */}
-      <Box style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6, flexShrink: 0 }}>
+      {/* Cost */}
+      <Box style={{ flexShrink: 0 }}>
         {expired ? (
           <p style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 600 }}>Hết hạn</p>
         ) : (
@@ -156,7 +156,6 @@ const VoucherRow: FC<{ voucher: Voucher; onClick: () => void }> = ({ voucher, on
             </p>
           </Box>
         )}
-        <ChevronRight size={14} color="#D1D5DB" />
       </Box>
     </Box>
   );

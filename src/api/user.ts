@@ -2,6 +2,24 @@ import axiosClient from './client';
 import { User, VehicleInfo } from '@/types/user';
 import { PointWallet } from '@/types/point-wallet';
 
+export interface AppVehicleType {
+  id: string;
+  code: string;
+  name: string;
+  description: string;
+  isActive: boolean;
+  imageUrl: string | null;
+}
+
+export async function getVehicleTypes(): Promise<AppVehicleType[]> {
+  try {
+    const { data } = await axiosClient.get<{ data: { items: AppVehicleType[] } }>('/app/vehicle-types');
+    return data.data.items ?? [];
+  } catch {
+    return [];
+  }
+}
+
 export interface VerifyVehiclePayload {
   vehicleTypeId: string;
   licensePlate: string;
@@ -64,6 +82,6 @@ export async function fetchPointWallet(): Promise<PointWallet> {
     const { data } = await axiosClient.get<{ data: PointWallet }>('/me/point-wallet');
     return data.data;
   } catch {
-    return { currentBalance: 0, lockedBalance: 0, vehicleStatus: '', totalEarned: 0, totalSpent: 0, lastEarnedAt: null, lastSpentAt: null };
+    return { currentBalance: 0, lockedBalance: 0, vehicleStatus: '', totalEarned: 0, totalSpent: 0, greenCoin: 0, lastEarnedAt: null, lastSpentAt: null };
   }
 }

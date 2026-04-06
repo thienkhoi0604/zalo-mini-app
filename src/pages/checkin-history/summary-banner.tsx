@@ -42,7 +42,7 @@ const SummaryBanner: FC<{ history: CheckinHistoryItem[] }> = ({ history }) => {
         <Box flex className="items-center" style={{ gap: 5 }}>
           <CoinIcon size={20} />
           <p style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>
-            {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}
+            {(pointWallet?.greenCoin ?? 0).toLocaleString('vi-VN')}
           </p>
         </Box>
       </Box>

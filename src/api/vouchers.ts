@@ -1,4 +1,4 @@
-import { Voucher, UserVoucher, VoucherApiItem, StoreItemApiResponse, GetUserVouchersParams } from '@/types/voucher';
+import { Voucher, UserVoucher, VoucherApiItem, StoreItemApiResponse, GetUserVouchersParams, FEED_ITEM_TYPES } from '@/types/voucher';
 import { PaginatedApiResponse } from '@/types/common';
 import axiosClient from './client';
 
@@ -11,7 +11,7 @@ function mapApiItemToVoucher(item: VoucherApiItem): Voucher {
     description: item.description ?? '',
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
-    category: item.type,
+    category: item.type === FEED_ITEM_TYPES.VOUCHER ? 'Voucher giảm giá' : item.type === FEED_ITEM_TYPES.PHYSICAL_ITEM ? 'Quà tặng vật phẩm' : item.type,
     source: 'Reward',
     costCurrency: 'Lá',
     pointsRequired: item.pointCost,

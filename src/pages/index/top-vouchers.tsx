@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Gift } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
-import { Voucher } from '@/types/voucher';
+import { Voucher, FEED_ITEM_TYPES } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
 import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
@@ -132,7 +132,7 @@ export const TopVouchers: FC = () => {
   }, []);
 
   const topVouchers = allVouchers
-    .filter((r) => r.status === 'active')
+    .filter((r) => r.status === 'active' && [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM].includes(r.type as any))
     .slice(0, 8);
 
   const isLoading = loading && allVouchers.length === 0;

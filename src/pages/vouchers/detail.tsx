@@ -214,7 +214,7 @@ const VoucherDetailPage: FC = () => {
     );
   }
 
-  const userPoints = pointWallet?.currentBalance ?? 0;
+  const userPoints = pointWallet?.greenCoin ?? 0;
   const hasEnough = userPoints >= card.pointsRequired;
 
   const handleRefresh = async () => {

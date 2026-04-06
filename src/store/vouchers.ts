@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Voucher, UserVoucher, StoreGroup, GroupedFeedResult } from '@/types/voucher';
+import { Voucher, UserVoucher, StoreGroup, GroupedFeedResult, FEED_ITEM_TYPES } from '@/types/voucher';
 import { getFeedItems, getFeedGrouped } from '@/api/feed';
 import { getVoucherById, getStoreItemById, getUserVouchers, getUserVouchersCount, redeemVoucher } from '@/api/vouchers';
 import { useUserStore } from '@/store/user';
@@ -160,11 +160,14 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
   },
 
   getGroupedByCategory: () => {
+    const ALLOWED_TYPES = [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM];
     const grouped: Record<string, Voucher[]> = {};
-    get().allVouchers.forEach((voucher) => {
-      if (!grouped[voucher.category]) grouped[voucher.category] = [];
-      grouped[voucher.category].push(voucher);
-    });
+    get().allVouchers
+      .filter((voucher) => ALLOWED_TYPES.includes(voucher.type))
+      .forEach((voucher) => {
+        if (!grouped[voucher.category]) grouped[voucher.category] = [];
+        grouped[voucher.category].push(voucher);
+      });
     return grouped;
   },
 }));

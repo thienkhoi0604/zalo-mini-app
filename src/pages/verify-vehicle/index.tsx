@@ -5,7 +5,7 @@ import { ShieldCheck, Car } from 'lucide-react';
 import { uploadImage } from '@/api/upload';
 import { verifyVehicle } from '@/api/user';
 import { useUserStore } from '@/store/user';
-import VehicleTypeSelector, { VEHICLE_TYPE_IDS } from './vehicle-type-selector';
+import VehicleTypeSelector from './vehicle-type-selector';
 import ImagePicker from './image-picker';
 
 // ─── Section wrapper ───────────────────────────────────────────────────────────
@@ -43,7 +43,7 @@ const VerifyVehiclePage: FC = () => {
   const { openSnackbar } = useSnackbar();
 
   const [licensePlate, setLicensePlate] = useState('');
-  const [vehicleTypeCode, setVehicleTypeCode] = useState('ELECTRIC_CAR');
+  const [vehicleTypeId, setVehicleTypeId] = useState('');
 
   // Image 1: preview (local blob) + uploaded server URL + uploading flag
   const [previewUrl1, setPreviewUrl1] = useState<string | null>(null);
@@ -106,7 +106,7 @@ const VerifyVehiclePage: FC = () => {
   // Valid when: license plate ok, image 1 fully uploaded, no upload in progress
   const isValid =
     licensePlate.trim().length >= 6 &&
-    !!vehicleTypeCode &&
+    !!vehicleTypeId &&
     !!uploadedUrl1 &&
     !uploading1 &&
     !uploading2;
@@ -116,7 +116,7 @@ const VerifyVehiclePage: FC = () => {
     setSubmitting(true);
     try {
       await verifyVehicle({
-        vehicleTypeId: VEHICLE_TYPE_IDS[vehicleTypeCode],
+        vehicleTypeId,
         licensePlate: licensePlate.trim().toUpperCase(),
         photoUrl1: uploadedUrl1!,
         ...(uploadedUrl2 ? { photoUrl2: uploadedUrl2 } : {}),
@@ -246,7 +246,7 @@ const VerifyVehiclePage: FC = () => {
 
           {/* Step 2: Vehicle type */}
           <Section step={2} title="Loại phương tiện">
-            <VehicleTypeSelector value={vehicleTypeCode} onChange={setVehicleTypeCode} />
+            <VehicleTypeSelector value={vehicleTypeId} onChange={setVehicleTypeId} />
           </Section>
 
           {/* Step 3: Images */}

@@ -4,6 +4,7 @@ export type PointWallet = {
   vehicleStatus: string;
   totalEarned: number;
   totalSpent: number;
+  greenCoin: number;
   lastEarnedAt: string | null;
   lastSpentAt: string | null;
 };
