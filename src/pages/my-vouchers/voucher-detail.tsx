@@ -2,7 +2,8 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router';
 import { Box, useSnackbar } from 'zmp-ui';
 import QRCode from 'react-qr-code';
-import { Copy, CheckCircle, Clock, MapPin, Ticket } from 'lucide-react';
+import { openWebview } from 'zmp-sdk/apis';
+import { Copy, CheckCircle, Clock, MapPin, Ticket, Store, Globe, Zap, Navigation } from 'lucide-react';
 import { UserVoucher, UserVoucherItemType } from '@/types/voucher';
 import { formatDate } from '@/utils/date';
 import { fetchQRSession, QRSessionType } from '@/api/user';
@@ -300,19 +301,94 @@ const VoucherDetailPage: FC = () => {
           />
         )}
 
-        {userVoucher.storeName && (
-          <>
-            <Box style={{ height: 1, background: '#F3F4F6' }} />
-            <DetailRow
-              icon={<MapPin size={16} color={isUsed ? '#9CA3AF' : COLORS.primary} />}
-              bg={isUsed ? '#F3F4F6' : COLORS.primaryLight}
-              label="CỬA HÀNG ÁP DỤNG"
-              value={userVoucher.storeName}
-              valueColor={isUsed ? '#9CA3AF' : '#374151'}
-            />
-          </>
-        )}
       </Box>
+
+      {/* ── Applicable stores ── */}
+      {(userVoucher.appliesToAll || (userVoucher.appliedStores && userVoucher.appliedStores.length > 0)) && (
+        <Box style={{ padding: '16px 16px 0' }}>
+          <p style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 10, fontWeight: 700, letterSpacing: 0.5 }}>
+            ĐỊA ĐIỂM ÁP DỤNG
+          </p>
+
+          {userVoucher.appliesToAll ? (
+            <Box
+              style={{
+                display: 'flex', alignItems: 'center', gap: 12,
+                padding: '14px 16px',
+                background: '#F0FDF4', border: '1px solid #BBF7D0', borderRadius: 16,
+              }}
+            >
+              <Box
+                style={{
+                  width: 44, height: 44, borderRadius: 12, flexShrink: 0,
+                  background: 'linear-gradient(135deg, #EEF7F1, #DCFCE7)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                }}
+              >
+                <Zap size={20} color={COLORS.primary} fill={COLORS.primary} strokeWidth={0} />
+              </Box>
+              <Box style={{ flex: 1 }}>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>Tất cả trạm sạc EcoGreen</p>
+                <p style={{ fontSize: 11, color: '#6B7280', marginTop: 2 }}>Áp dụng tại toàn bộ hệ thống</p>
+              </Box>
+              <Globe size={16} color={COLORS.primary} style={{ flexShrink: 0 }} />
+            </Box>
+          ) : (
+            <Box style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {userVoucher.appliedStores!.map((store) => (
+                <Box
+                  key={store.id}
+                  onClick={() => store.googleMapsDirectionUrl && openWebview({ url: store.googleMapsDirectionUrl })}
+                  style={{
+                    display: 'flex', alignItems: 'center', gap: 12,
+                    padding: '12px 14px',
+                    background: '#fff',
+                    border: '1px solid #F0F1F3',
+                    borderRadius: 16,
+                    boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
+                    cursor: store.googleMapsDirectionUrl ? 'pointer' : 'default',
+                  }}
+                >
+                  {(store.storeImageUrl ?? store.imageUrl) ? (
+                    <img
+                      src={store.storeImageUrl ?? store.imageUrl!}
+                      alt={store.name}
+                      style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
+                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                    />
+                  ) : (
+                    <Box
+                      style={{
+                        width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+                        background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}
+                    >
+                      <Store size={22} color="#7C3AED" />
+                    </Box>
+                  )}
+                  <Box style={{ flex: 1, minWidth: 0 }}>
+                    <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                      {store.name}
+                    </p>
+                    {store.address && (
+                      <Box style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                        <MapPin size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
+                        <p style={{ fontSize: 11, color: '#9CA3AF', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                          {store.address}
+                        </p>
+                      </Box>
+                    )}
+                  </Box>
+                  {store.googleMapsDirectionUrl && (
+                    <Navigation size={16} color="#7C3AED" style={{ flexShrink: 0 }} />
+                  )}
+                </Box>
+              ))}
+            </Box>
+          )}
+        </Box>
+      )}
 
     </Box>
   );

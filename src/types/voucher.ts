@@ -104,6 +104,7 @@ export interface StoreItemApiResponse {
   name: string;
   description: string | null;
   shortDescription: string | null;
+  address: string | null;
   price: number | null;
   coinCost: number | null;
   imageUrl: string;
@@ -125,6 +126,7 @@ export interface AppliedStore {
   latitude: number | null;
   longitude: number | null;
   imageUrl: string | null;
+  storeImageUrl: string | null;
   phone: string | null;
   googleMapsDirectionUrl: string | null;
 }
@@ -205,7 +207,9 @@ export type UserVoucherItemType = 'Reward' | 'Product';
 export interface UserVoucher {
   id: string;
   code: string;
+  rewardId: string | null;
   rewardName: string;
+  shortDescription: string | null;
   storeName: string | null;
   storeItemId: string | null;
   itemType: UserVoucherItemType;
@@ -213,6 +217,8 @@ export interface UserVoucher {
   issuedAt: string;
   expiredAt: string;
   usedAt: string | null;
+  appliesToAll: boolean | null;
+  appliedStores: AppliedStore[] | null;
 }
 
 export interface GetUserVouchersParams {

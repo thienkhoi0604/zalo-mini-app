@@ -107,7 +107,7 @@ src/
 │   ├── my-vouchers/      # /my-vouchers (protected, infinite scroll)
 │   │   ├── index.tsx
 │   │   ├── voucher-card.tsx          # Status, expiry, usage info
-│   │   └── voucher-detail-sheet.tsx  # Bottom sheet detail modal
+│   │   └── voucher-detail.tsx        # Bottom sheet detail modal
 │   ├── rank-benefits/    # /rank-benefits (protected)
 │   │   ├── index.tsx
 │   │   ├── tiers.ts          # TierConfig, buildTierConfig(), resolveCurrentTier()

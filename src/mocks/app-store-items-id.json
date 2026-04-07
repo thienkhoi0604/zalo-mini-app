@@ -2,6 +2,7 @@
   "success": true,
   "message": "Success",
   "data": {
+    "address": null,
     "id": "10e481ab-fc72-42ae-b7fc-3cbad44c55a3",
     "storeId": "7c1da0dd-14ea-4221-a563-1d045ed7743c",
     "storeName": "Ecogreen Store - Cửa hàng Chi nhánh Quận 7",

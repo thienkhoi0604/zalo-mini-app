@@ -63,7 +63,13 @@ function mapStoreItemToVoucher(item: StoreItemApiResponse): Voucher {
     programNotes: '',
     usageGuide: '',
     status: 'active',
-    stores: [{ id: item.storeId, name: item.storeName }],
+    stores: [{
+      id: item.storeId,
+      name: item.storeName,
+      address: [item.address, item.wardName, item.provinceName].filter(Boolean).join(', ') || undefined,
+      imageUrl: item.storeImageUrl,
+      googleMapsDirectionUrl: item.googleMapsDirectionUrl,
+    }],
   };
 }
 
