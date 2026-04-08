@@ -45,12 +45,14 @@ export const HeroHeader: FC = () => {
   const blob = `rgba(255,255,255,${t.blobOpacity})`;
   const blobFaint = `rgba(255,255,255,${t.blobOpacity * 0.65})`;
 
+  const badgeH = 34;
+
   const iconBtn: React.CSSProperties = {
-    width: 38,
-    height: 38,
+    width: badgeH,
+    height: badgeH,
     borderRadius: '50%',
-    background: 'rgba(255,255,255,0.18)',
-    border: '1.5px solid rgba(255,255,255,0.3)',
+    background: 'rgba(255,255,255,0.2)',
+    border: '1px solid rgba(255,255,255,0.35)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
@@ -82,67 +84,65 @@ export const HeroHeader: FC = () => {
         <Box style={{ position: 'relative', zIndex: 1, padding: '20px 16px 24px' }}>
           {isAuthenticated ? (
             <>
-              {/* Top row: greeting left | QR + bell right */}
-              <Box flex className="items-start justify-between" style={{ gap: 12 }}>
-                {/* Left: greeting line + avatar + rank line */}
-                <Box style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
-                  {/* Line 1: Xin chào, firstName */}
-                  <p style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: '22px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                    <span style={{ fontSize: 12, fontWeight: 400, color: 'rgba(255,255,255,0.8)' }}>Xin chào, </span>{firstName}
-                  </p>
+              {/* Line 1: Xin chào, firstName */}
+              <p style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: '22px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', marginBottom: 6 }}>
+                <span style={{ fontSize: 12, fontWeight: 400, color: 'rgba(255,255,255,0.8)' }}>Xin chào, </span>{firstName}
+              </p>
 
-                  {/* Line 2: avatar + rank */}
-                  <Box flex className="items-center" style={{ gap: 10 }}>
-                    {/* Avatar */}
-                    <Box
-                      style={{
-                        width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
-                        background: 'rgba(255,255,255,0.25)',
-                        border: '2px solid rgba(255,255,255,0.5)',
-                        overflow: 'hidden',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      }}
-                    >
-                      {user?.avatarUrl ? (
-                        <img
-                          src={user.avatarUrl}
-                          alt={user.fullName ?? ''}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                        />
-                      ) : (
-                        <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>
-                          {firstName.charAt(0).toUpperCase()}
-                        </span>
-                      )}
-                    </Box>
-
-                    {/* Rank badge */}
-                    {rankName && (
-                      <Box
-                        style={{
-                          display: 'inline-flex', alignItems: 'center',
-                          background: 'rgba(255,255,255,0.2)',
-                          border: '1px solid rgba(255,255,255,0.35)',
-                          borderRadius: 100,
-                          padding: '4px 10px',
-                          gap: 5,
-                        }}
-                      >
-                        {user?.rank?.currentRankIconUrl && (
-                          <img
-                            src={user.rank.currentRankIconUrl}
-                            alt={rankName}
-                            style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }}
-                          />
-                        )}
-                        <p style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{rankName}</p>
-                      </Box>
+              {/* Line 2: avatar + rank + QR + bell — all badges same height */}
+              <Box flex className="items-center justify-between" style={{ gap: 8 }}>
+                <Box flex className="items-center" style={{ gap: 8, minWidth: 0 }}>
+                  {/* Avatar */}
+                  <Box
+                    style={{
+                      width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
+                      background: 'rgba(255,255,255,0.25)',
+                      border: '2px solid rgba(255,255,255,0.5)',
+                      overflow: 'hidden',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    }}
+                  >
+                    {user?.avatarUrl ? (
+                      <img
+                        src={user.avatarUrl}
+                        alt={user.fullName ?? ''}
+                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    ) : (
+                      <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>
+                        {firstName.charAt(0).toUpperCase()}
+                      </span>
                     )}
                   </Box>
+
+                  {/* Rank badge — same height as icon buttons */}
+                  {rankName && (
+                    <Box
+                      style={{
+                        display: 'inline-flex', alignItems: 'center',
+                        height: badgeH,
+                        background: 'rgba(255,255,255,0.2)',
+                        border: '1px solid rgba(255,255,255,0.35)',
+                        borderRadius: 100,
+                        padding: '0 10px',
+                        gap: 5,
+                        flexShrink: 0,
+                      }}
+                    >
+                      {user?.rank?.currentRankIconUrl && (
+                        <img
+                          src={user.rank.currentRankIconUrl}
+                          alt={rankName}
+                          style={{ width: 20, height: 20, objectFit: 'contain', display: 'block' }}
+                        />
+                      )}
+                      <p style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{rankName}</p>
+                    </Box>
+                  )}
                 </Box>
 
-                {/* Right: QR + bell */}
+                {/* QR + bell — same height as rank badge */}
                 <Box flex className="items-center" style={{ gap: 8, flexShrink: 0 }}>
                   <div style={iconBtn} onClick={() => setQrSheetVisible(true)}>
                     <QrCode size={18} color="#fff" />
@@ -179,7 +179,7 @@ export const HeroHeader: FC = () => {
 
                 {/* Voucher */}
                 <Box flex className="items-center" style={{ gap: 6, flex: 1 }} onClick={() => navigate('/my-vouchers')}>
-                  <span style={{ fontSize: 18 }}>🎫</span>
+                  <span style={{ fontSize: 20 }}>🎫</span>
                   <p style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>
                     {voucherCount}
                   </p>

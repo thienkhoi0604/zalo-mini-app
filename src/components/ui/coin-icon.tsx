@@ -10,7 +10,7 @@ const CoinIcon: FC<CoinIconProps> = ({ size = 16, style }) => (
   <img
     src={coinImg}
     alt="coin"
-    style={{ width: size * 2, height: size * 2, objectFit: 'contain', flexShrink: 0, ...style }}
+    style={{ width: size * 2, height: size * 1.5, objectFit: 'contain', flexShrink: 0, ...style }}
   />
 );
 
