@@ -1,13 +1,22 @@
-import React, { FC, useEffect, useMemo, useState } from 'react';
+import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
 import { Gift, ArrowUpDown, TrendingUp, TrendingDown, Tag, Ticket, ShoppingBag, UtensilsCrossed, Wrench, Store } from 'lucide-react';
-import { useVouchersStore } from '@/store/vouchers';
-import { Voucher } from '@/types/voucher';
+import { Voucher, FeedItemType, FEED_ITEM_TYPES } from '@/types/voucher';
+import { getFeedItems } from '@/api/feed';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import PageHeader from '@/components/ui/page-header';
 import { ACTIVE_THEME } from '@/constants/theme';
 import VoucherCard from './voucher-card';
+
+// Maps Voucher.category display names back to the FeedItemType API param
+const CATEGORY_TYPE_MAP: Record<string, FeedItemType> = {
+  'Voucher giảm giá':    FEED_ITEM_TYPES.VOUCHER,
+  'Quà tặng vật phẩm':  FEED_ITEM_TYPES.PHYSICAL_ITEM,
+  'Đồ ăn & Thức uống':  FEED_ITEM_TYPES.FNB_PRODUCT,
+  'Dịch vụ':             FEED_ITEM_TYPES.SERVICE,
+  'Sản phẩm bán lẻ':    FEED_ITEM_TYPES.RETAIL_PRODUCT,
+};
 
 // ─── Type helpers ──────────────────────────────────────────────────────────────
 
@@ -53,24 +62,27 @@ const CategoryDetailPage: FC = () => {
   const { category } = useParams<{ category: string }>();
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
-  const { getGroupedByCategory, loadAllVouchers, allVouchers, loading } = useVouchersStore();
+  const [rawCards, setRawCards] = useState<Voucher[]>([]);
+  const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<SortOrder>('default');
 
   const decodedCategory = decodeURIComponent(category || '');
+  const feedType = CATEGORY_TYPE_MAP[decodedCategory];
+  const itemType = feedType ?? '';
 
-  // Detect item type from the category string
-  const itemType = allVouchers.find((r) => r.category === decodedCategory)?.type ?? '';
-
-  useEffect(() => {
-    if (!allVouchers.length) {
-      loadAllVouchers().catch(() => {
-        openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
-      });
+  const loadCards = useCallback(async () => {
+    setLoading(true);
+    try {
+      const items = await getFeedItems({ type: feedType, pageNumber: 1, pageSize: 200 });
+      setRawCards(items);
+    } catch {
+      openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
+    } finally {
+      setLoading(false);
     }
-  }, []);
+  }, [decodedCategory]);
 
-  const grouped = getGroupedByCategory();
-  const rawCards: Voucher[] = grouped[decodedCategory] || [];
+  useEffect(() => { loadCards(); }, [loadCards]);
 
   const cards = useMemo(() => {
     if (sortOrder === 'asc')  return [...rawCards].sort((a, b) => a.pointsRequired - b.pointsRequired);
@@ -80,11 +92,7 @@ const CategoryDetailPage: FC = () => {
 
   const isLoading = loading && rawCards.length === 0;
 
-  const handleRefresh = async () => {
-    await loadAllVouchers().catch(() => {
-      openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
-    });
-  };
+  const handleRefresh = loadCards;
 
   return (
     <Page className="flex-1 flex flex-col" style={{ background: ACTIVE_THEME.pageBg }}>

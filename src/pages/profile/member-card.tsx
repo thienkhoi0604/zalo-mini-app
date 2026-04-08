@@ -149,7 +149,7 @@ const MemberCard: FC = () => {
                   <img
                     src={user.rank.currentRankIconUrl}
                     alt={user.rank.currentRankName ?? ''}
-                    style={{ width: 18, height: 18, objectFit: 'contain', display: 'block' }}
+                    style={{ width: 27, height: 27, objectFit: 'contain', display: 'block' }}
                   />
                 ) : (
                   <ShoppingBag size={16} color="#93C5FD" strokeWidth={2} />

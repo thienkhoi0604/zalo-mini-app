@@ -107,7 +107,7 @@ const StationDetailPage: FC = () => {
     },
     station.defaultPoint != null && {
       icon: <Zap size={17} color="#D97706" fill="#D97706" strokeWidth={0} />,
-      label: 'Xu / check-in',
+      label: 'Lá',
       value: `+${station.defaultPoint}`,
       bg: '#FFFBEB',
       iconBg: '#FEF3C7',
@@ -193,7 +193,7 @@ const StationDetailPage: FC = () => {
               }}
             >
               <Zap size={12} color="#fff" fill="#fff" strokeWidth={0} />
-              <p style={{ fontSize: 12, fontWeight: 800, color: '#fff' }}>+{station.defaultPoint} xu</p>
+              <p style={{ fontSize: 12, fontWeight: 800, color: '#fff' }}>+{station.defaultPoint} Lá</p>
             </Box>
           )}
 

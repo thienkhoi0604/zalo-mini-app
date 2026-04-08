@@ -163,7 +163,7 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
     const ALLOWED_TYPES = [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM];
     const grouped: Record<string, Voucher[]> = {};
     get().allVouchers
-      .filter((voucher) => ALLOWED_TYPES.includes(voucher.type))
+      .filter((voucher) => (ALLOWED_TYPES as string[]).includes(voucher.type))
       .forEach((voucher) => {
         if (!grouped[voucher.category]) grouped[voucher.category] = [];
         grouped[voucher.category].push(voucher);

@@ -1,9 +1,9 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Gift } from 'lucide-react';
-import { useVouchersStore } from '@/store/vouchers';
 import { Voucher, FEED_ITEM_TYPES } from '@/types/voucher';
+import { getFeedItems } from '@/api/feed';
 import CoinIcon from '@/components/ui/coin-icon';
 import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
@@ -125,17 +125,21 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
 
 export const TopVouchers: FC = () => {
   const navigate = useNavigate();
-  const { allVouchers, loading, loadAllVouchers } = useVouchersStore();
+  const [topVouchers, setTopVouchers] = useState<Voucher[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!allVouchers.length) loadAllVouchers();
+    Promise.all([
+      getFeedItems({ type: FEED_ITEM_TYPES.VOUCHER,       pageNumber: 1, pageSize: 4 }),
+      getFeedItems({ type: FEED_ITEM_TYPES.PHYSICAL_ITEM, pageNumber: 1, pageSize: 4 }),
+    ])
+      .then(([vouchers, physical]) =>
+        setTopVouchers([...vouchers, ...physical].filter((r) => r.status === 'active'))
+      )
+      .finally(() => setLoading(false));
   }, []);
 
-  const topVouchers = allVouchers
-    .filter((r) => r.status === 'active' && [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM].includes(r.type as any))
-    .slice(0, 8);
-
-  const isLoading = loading && allVouchers.length === 0;
+  const isLoading = loading && topVouchers.length === 0;
 
   if (!isLoading && topVouchers.length === 0) return null;
 

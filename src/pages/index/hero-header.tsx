@@ -82,58 +82,61 @@ export const HeroHeader: FC = () => {
         <Box style={{ position: 'relative', zIndex: 1, padding: '20px 16px 24px' }}>
           {isAuthenticated ? (
             <>
-              {/* Top row: avatar + greeting left | QR + bell right */}
-              <Box flex className="items-center justify-between" style={{ gap: 12 }}>
-                {/* Left: avatar + greeting */}
-                <Box flex className="items-center" style={{ gap: 10, minWidth: 0 }}>
-                  {/* Avatar */}
-                  <Box
-                    style={{
-                      width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
-                      background: 'rgba(255,255,255,0.25)',
-                      border: '2px solid rgba(255,255,255,0.5)',
-                      overflow: 'hidden',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}
-                  >
-                    {user?.avatarUrl ? (
-                      <img
-                        src={user.avatarUrl}
-                        alt={user.fullName ?? ''}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                      />
-                    ) : (
-                      <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>
-                        {firstName.charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                  </Box>
+              {/* Top row: greeting left | QR + bell right */}
+              <Box flex className="items-start justify-between" style={{ gap: 12 }}>
+                {/* Left: greeting line + avatar + rank line */}
+                <Box style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
+                  {/* Line 1: Xin chào, firstName */}
+                  <p style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: '22px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                    <span style={{ fontSize: 12, fontWeight: 400, color: 'rgba(255,255,255,0.8)' }}>Xin chào, </span>{firstName}
+                  </p>
 
-                  {/* Name + rank */}
-                  <Box style={{ minWidth: 0 }}>
-                    <p style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: '22px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                      <span style={{ fontSize: 12, fontWeight: 400, color: 'rgba(255,255,255,0.8)' }}>Xin chào, </span>{firstName}
-                    </p>
+                  {/* Line 2: avatar + rank */}
+                  <Box flex className="items-center" style={{ gap: 10 }}>
+                    {/* Avatar */}
+                    <Box
+                      style={{
+                        width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
+                        background: 'rgba(255,255,255,0.25)',
+                        border: '2px solid rgba(255,255,255,0.5)',
+                        overflow: 'hidden',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                      }}
+                    >
+                      {user?.avatarUrl ? (
+                        <img
+                          src={user.avatarUrl}
+                          alt={user.fullName ?? ''}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                          onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                        />
+                      ) : (
+                        <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>
+                          {firstName.charAt(0).toUpperCase()}
+                        </span>
+                      )}
+                    </Box>
+
+                    {/* Rank badge */}
                     {rankName && (
                       <Box
                         style={{
-                          marginTop: 4,
                           display: 'inline-flex', alignItems: 'center',
                           background: 'rgba(255,255,255,0.2)',
                           border: '1px solid rgba(255,255,255,0.35)',
                           borderRadius: 100,
-                          padding: '2px 8px',
+                          padding: '4px 10px',
+                          gap: 5,
                         }}
                       >
                         {user?.rank?.currentRankIconUrl && (
                           <img
                             src={user.rank.currentRankIconUrl}
                             alt={rankName}
-                            style={{ width: 12, height: 12, objectFit: 'contain', marginRight: 4 }}
+                            style={{ width: 24, height: 24, objectFit: 'contain', display: 'block' }}
                           />
                         )}
-                        <p style={{ fontSize: 10, fontWeight: 700, color: '#fff' }}>{rankName}</p>
+                        <p style={{ fontSize: 13, fontWeight: 700, color: '#fff' }}>{rankName}</p>
                       </Box>
                     )}
                   </Box>
