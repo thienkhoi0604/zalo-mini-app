@@ -22,7 +22,8 @@ src/
 │   ├── client.ts         # Axios instance: JWT injection, 401 refresh queue, base URL from VITE_API_URL
 │   ├── auth.ts           # Zalo OAuth login, token refresh, localStorage token management
 │   ├── feed.ts           # /app/feed — flat list (getFeedItems) + grouped by store (getFeedGrouped)
-│   ├── rewards.ts        # /Rewards — detail, my-vouchers, redeem
+│   ├── vouchers.ts       # /Rewards — detail, my-vouchers, redeem
+│   ├── stores.ts         # /app/stores — paginated list + detail (AppStore type defined here)
 │   ├── stations.ts       # /stations — paginated list + detail
 │   ├── banners.ts        # /app/banners — unauthenticated, plain axios
 │   ├── checkins.ts       # /Checkins — submit check-in + history
@@ -34,7 +35,7 @@ src/
 │   └── index.ts          # barrel re-export of all API modules
 ├── store/                # Zustand stores — one file per feature domain
 │   ├── user.ts           # auth state, point wallet, QR scan
-│   ├── rewards.ts        # allRewards, userRewards, storeGroups, globalRewards
+│   ├── vouchers.ts       # allVouchers, userVouchers, storeGroups, globalVouchers
 │   ├── stations.ts       # stations list, filters (search/province/ward), pagination
 │   ├── checkins.ts       # checkin history pagination
 │   ├── banners.ts        # banner list (filtered by isActive, sorted by displayOrder)
@@ -43,9 +44,10 @@ src/
 │   ├── common.ts         # PaginatedData<T>, PaginatedApiResponse<T>
 │   ├── auth.ts           # JwtTokens, LoginResponse, RefreshResponse, LoginResponseUser
 │   ├── user.ts           # User, UserRank, VehicleInfo
-│   ├── reward.ts         # Reward, FeedApiItem, RewardApiItem, UserReward, StoreGroup,
-│   │                     #   GroupedFeedResult, FEED_ITEM_TYPES, FeedItemType, RewardSource,
-│   │                     #   UserRewardItemType, RewardsFilter, GetUserRewardsParams
+│   ├── voucher.ts        # Voucher, FeedApiItem, VoucherApiItem, UserVoucher, StoreGroup,
+│   │                     #   GroupedFeedResult, FEED_ITEM_TYPES, FeedItemType, VoucherSource,
+│   │                     #   UserVoucherItemType, VouchersFilter, GetUserVouchersParams,
+│   │                     #   VoucherCostCurrency, VoucherStore, StoreItemApiResponse
 │   ├── station.ts        # Station, Province, Ward, GetStationsParams, StationsApiResponse
 │   ├── checkin.ts        # CheckinPayload, CheckinResponse, CheckinHistoryItem, GetCheckinHistoryParams
 │   ├── banner.ts         # Banner
@@ -55,13 +57,17 @@ src/
 ├── components/
 │   ├── ui/               # Primitive reusable components
 │   │   ├── app.tsx           # Root app wrapper with Zalo integration
+│   │   ├── coin-icon.tsx     # GreenCoin icon component
 │   │   ├── sheet.tsx         # Portal-wrapped zmp-ui Sheet (fixes position:fixed inside overflow:hidden)
 │   │   ├── pull-to-refresh.tsx
 │   │   ├── skeleton.tsx      # TextSkeleton, ImageSkeleton
+│   │   ├── page-header.tsx   # Page title + balance display header
+│   │   ├── section-header.tsx # Section title + optional action link
 │   │   ├── section.tsx       # Container with optional title
 │   │   ├── divider.tsx       # Spacer div
 │   │   ├── list-item.tsx     # Title + subtitle + chevron row
 │   │   ├── list-renderer.tsx # Generic collapsible list
+│   │   ├── view-all-fab.tsx  # "View All" floating action button
 │   │   └── elastic-textarea.tsx # Auto-expanding textarea
 │   ├── layout/
 │   │   ├── index.tsx         # App shell: all Routes, AppHeader, safe-area insets, auth init
@@ -85,13 +91,16 @@ src/
 │   │   ├── section-list.tsx      # Menu (edit, vehicles, referrals, rank, history, logout)
 │   │   ├── unverified-banner.tsx # Prompt to verify vehicle
 │   │   └── qr-code-sheet.tsx     # Referral QR code sheet
-│   ├── rewards/          # Flat structure — no sub-folders
+│   ├── vouchers/         # Flat structure — no sub-folders (routes use /rewards prefix)
 │   │   ├── index.tsx         # /rewards — balance header + Danh mục / Cửa hàng tab switcher
 │   │   ├── category-feed.tsx # /rewards/category/:category — grid filtered by itemTypeTranslate
-│   │   ├── store-feed.tsx    # Cửa hàng tab: global rewards + per-store sections (Grouped=true)
+│   │   ├── store-feed.tsx    # Cửa hàng tab: global vouchers + per-store sections (Grouped=true)
+│   │   ├── store-detail.tsx  # /stores/:storeId (protected) — store info + item list
 │   │   ├── item-cards-list.tsx # Danh mục tab: horizontal-scroll rows grouped by category
-│   │   ├── item-card.tsx     # Shared reward card (type chip, stock badge, price display)
+│   │   ├── voucher-card.tsx  # Shared voucher card (type chip, stock badge, price display)
 │   │   └── detail.tsx        # /rewards/:id (protected) — detail + redeem
+│   ├── stores/           # /stores — store directory
+│   │   └── index.tsx         # Store list with infinite scroll
 │   ├── qr-code/          # /qr-code (protected)
 │   │   ├── index.tsx
 │   │   ├── scan-result-view.tsx  # Success / error / referral result display
@@ -107,7 +116,7 @@ src/
 │   ├── my-vouchers/      # /my-vouchers (protected, infinite scroll)
 │   │   ├── index.tsx
 │   │   ├── voucher-card.tsx          # Status, expiry, usage info
-│   │   └── voucher-detail.tsx        # Bottom sheet detail modal
+│   │   └── voucher-detail.tsx        # Bottom sheet detail modal + /my-vouchers/:id route
 │   ├── rank-benefits/    # /rank-benefits (protected)
 │   │   ├── index.tsx
 │   │   ├── tiers.ts          # TierConfig, buildTierConfig(), resolveCurrentTier()
@@ -140,13 +149,14 @@ src/
 │   ├── config.ts         # getConfig<T>(getter) — reads app-config.json via window.APP_CONFIG
 │   └── async.ts          # wait(ms) — resolves after delay
 ├── constants/
-│   └── index.ts          # COLORS, FALLBACK_IMAGES, REDIRECT_DELAY_MS, KEYBOARD_HEIGHT_THRESHOLD
+│   ├── index.ts          # COLORS, FALLBACK_IMAGES, REDIRECT_DELAY_MS, KEYBOARD_HEIGHT_THRESHOLD
+│   └── theme.ts          # AppTheme interface + seasonal theme variants (ACTIVE_THEME export)
 ├── styles/
 │   ├── tailwind.css      # Tailwind source — EDIT THIS
 │   ├── styles.css        # Compiled output — DO NOT EDIT (run build:css)
 │   ├── app.scss          # Custom SCSS overrides
 │   └── icons.css         # Icon styles
-├── assets/images/        # background.png, logo.png
+├── assets/images/        # background.png, logo.png, coin.png, background-profile*.png
 ├── mocks/                # Sample API response templates (reference only, not used at runtime)
 ├── app.ts                # Entry point: renders App, sets window.APP_CONFIG
 └── global.d.ts           # Global type declarations (*.png, *.svg, window.ZaloJavaScriptInterface)
@@ -160,20 +170,25 @@ src/
 |------|------|-----------|
 | `/` | `pages/index/index.tsx` | No |
 | `/register` | `pages/register.tsx` | No |
-| `/rewards` | `pages/rewards/index.tsx` | No |
-| `/rewards/:id` | `pages/rewards/detail.tsx` | Yes |
-| `/rewards/category/:category` | `pages/rewards/category-feed.tsx` | No |
+| `/rewards` | `pages/vouchers/index.tsx` | No |
+| `/rewards/:id` | `pages/vouchers/detail.tsx` | Yes |
+| `/rewards/category/:category` | `pages/vouchers/category-feed.tsx` | No |
+| `/stores` | `pages/stores/index.tsx` | No |
+| `/stores/:storeId` | `pages/vouchers/store-detail.tsx` | Yes |
 | `/qr-code` | `pages/qr-code/index.tsx` | Yes |
 | `/stations` | `pages/stations/index.tsx` | Yes |
 | `/stations/:id` | `pages/station-detail/index.tsx` | Yes |
 | `/profile` | `pages/profile/index.tsx` | Yes |
 | `/my-vouchers` | `pages/my-vouchers/index.tsx` | Yes |
+| `/my-vouchers/:id` | `pages/my-vouchers/voucher-detail.tsx` | Yes |
 | `/rank-benefits` | `pages/rank-benefits/index.tsx` | Yes |
 | `/checkin-history` | `pages/checkin-history/index.tsx` | Yes |
 | `/verify-vehicle` | `pages/verify-vehicle/index.tsx` | Yes |
 | `/vehicle-info` | `pages/vehicle-info/index.tsx` | Yes |
 
 All routes are declared in `src/components/layout/index.tsx`. `ProtectedRoute` redirects unauthenticated users to `/register`.
+
+> **Naming note:** Routes use `/rewards` (matching the backend `/Rewards` API), but the source files live in `src/pages/vouchers/` and the store/types use "voucher" terminology internally. This is intentional.
 
 ---
 
@@ -213,7 +228,7 @@ Stores:
 | Store | Key State | Key Actions |
 |-------|-----------|-------------|
 | `useUserStore` | `user`, `pointWallet`, `isAuthenticated`, `authLoading` | `initializeAuth`, `loginWithZalo`, `loadPointWallet`, `setUnauthenticated`, `scanQRCode` |
-| `useRewardsStore` | `allRewards`, `userRewards`, `globalRewards`, `storeGroups` | `loadAllRewards`, `loadRewardById`, `loadUserRewards`, `loadMoreUserRewards`, `loadStoreGroups`, `redeemReward` |
+| `useVouchersStore` | `allVouchers`, `userVouchers`, `globalVouchers`, `storeGroups` | `loadAllVouchers`, `loadVoucherById`, `loadUserVouchers`, `loadMoreUserVouchers`, `loadStoreGroups`, `redeemVoucher`, `getGroupedByCategory` |
 | `useStationsStore` | `stations`, `provinces`, `wards`, filters | `loadStations`, `loadMore`, `loadProvinces`, `loadWards`, `setFilters` |
 | `useCheckinsStore` | `history`, `page`, `hasMore`, `historyLoading` | `loadHistory`, `loadMoreHistory` |
 | `useBannersStore` | `banners`, `loading` | `loadBanners` |
@@ -234,7 +249,8 @@ Each API module maps between backend response shape and app-internal types.
 |--------|-----------|
 | `auth.ts` | `POST /Auth/zalo-login`, `POST /auth/refresh` |
 | `feed.ts` | `GET /app/feed` (flat + grouped modes) |
-| `rewards.ts` | `GET /Rewards/{id}`, `GET /Rewards/my-vouchers`, `POST /Rewards/redeem` |
+| `vouchers.ts` | `GET /Rewards/{id}`, `GET /Rewards/my-vouchers`, `POST /Rewards/redeem` |
+| `stores.ts` | `GET /app/stores`, `GET /app/stores/{id}` |
 | `stations.ts` | `GET /stations`, `GET /stations/{id}` |
 | `checkins.ts` | `POST /Checkins`, `GET /Checkins/history` |
 | `user.ts` | `GET /me/profile`, `POST /me/vehicles/submit`, `GET /me/vehicles`, `POST /qr-code/scan`, `POST /me/qr/session`, `POST /app/referrals/scan`, `GET /me/referral-qr`, `GET /me/point-wallet` |
@@ -246,25 +262,29 @@ Each API module maps between backend response shape and app-internal types.
 
 ### Feed API (`/app/feed`)
 
-The rewards list and store-items list are both served by `/app/feed`:
-- **Flat mode** (`getFeedItems`): `GET /app/feed?pageNumber=&pageSize=&itemType=` — returns paginated `items[]`
+The vouchers list and store-items list are both served by `/app/feed`:
+- **Flat mode** (`getFeedItems`): `GET /app/feed?pageNumber=&pageSize=&Type=&StoreId=` — returns paginated `items[]`
 - **Grouped mode** (`getFeedGrouped`): `GET /app/feed?Grouped=true` — returns `{ globalRewards[], stores[] }`
 
-`itemType` values are defined in `FEED_ITEM_TYPES` (in `src/types/reward.ts`):
+`itemType` values are defined in `FEED_ITEM_TYPES` (in `src/types/voucher.ts`):
 - `VOUCHER` — discount/gift vouchers
 - `PHYSICAL_ITEM` — physical merchandise
 - `FNB_PRODUCT` — food & beverage store items
+- `SERVICE` — services
+- `RETAIL_PRODUCT` — retail products
 
-`FeedApiItem` is mapped to the unified `Reward` type via `mapFeedItemToReward()` in `src/api/feed.ts`.
+`FeedApiItem` is mapped to the unified `Voucher` type via `mapFeedItemToVoucher()` in `src/api/feed.ts`.
 
-### Rewards Feature (`src/pages/rewards/`)
+### Vouchers Feature (`src/pages/vouchers/`)
 
-Flat file structure (no sub-folders):
+Routes use `/rewards` prefix; source files live in `pages/vouchers/`. Flat file structure:
 - `index.tsx` — balance banner + animated pill tab switcher (Danh mục / Cửa hàng)
 - `item-cards-list.tsx` — Danh mục tab: horizontal-scroll rows, one per `itemTypeTranslate` category
 - `category-feed.tsx` — drill-down grid for a single category with inline sort pills
-- `store-feed.tsx` — Cửa hàng tab: global rewards section + per-store sections with item thumbnails
-- `item-card.tsx` — shared card with type chip, stock badge, price display
+- `store-feed.tsx` — Cửa hàng tab: global vouchers section + per-store sections with item thumbnails
+- `voucher-card.tsx` — shared card with type chip, stock badge, price display
+- `detail.tsx` — voucher detail page with redeem action
+- `store-detail.tsx` — store detail page (rendered at `/stores/:storeId`)
 
 ### Pagination / Infinite Scroll
 
@@ -309,6 +329,8 @@ Brand colours (defined in `src/constants/index.ts`):
 
 Tailwind theme extends these as: `primary`, `green`, `background`, `gray` (`#767A7F`), `divider` (`#E9EBED`), `skeleton` (`rgba(0,0,0,0.1)`).
 
+Seasonal themes are defined in `src/constants/theme.ts` via `AppTheme` interface — change `ACTIVE_THEME` to switch page backgrounds, header gradients, and wave shapes globally.
+
 ### Rank System
 
 Rank tiers are hardcoded in `src/pages/rank-benefits/tiers.ts`:
@@ -317,16 +339,17 @@ Rank tiers are hardcoded in `src/pages/rank-benefits/tiers.ts`:
 
 ### Key Type Conventions
 
-- `FeedApiItem` → mapped to `Reward` via `mapFeedItemToReward()` in `src/api/feed.ts`
-- `RewardApiItem` → used only by `getRewardById()` in `src/api/rewards.ts` (detail endpoint)
-- `RewardSource = 'Reward' | 'StoreItem'` — mirrors `FeedApiItem.sourceType` directly
-- `FEED_ITEM_TYPES = { VOUCHER, PHYSICAL_ITEM, FNB_PRODUCT }` — itemType values for `/app/feed`
+- `FeedApiItem` → mapped to `Voucher` via `mapFeedItemToVoucher()` in `src/api/feed.ts`
+- `VoucherApiItem` → used only by `getVoucherById()` in `src/api/vouchers.ts` (detail endpoint)
+- `VoucherSource = 'Reward' | 'StoreItem'` — mirrors `FeedApiItem.sourceType` directly
+- `VoucherCostCurrency = 'GreenCoin' | 'Lá'` — GreenCoin for StoreItems, Lá for Rewards
+- `FEED_ITEM_TYPES = { VOUCHER, PHYSICAL_ITEM, FNB_PRODUCT, SERVICE, RETAIL_PRODUCT }` — itemType values for `/app/feed`
 - `PaginatedApiResponse<T>` — standard store-facing paginated type with `.data.items`, `.data.hasNext`
 - `UserRank` — carries `currentRankCode`, `currentRankName`, `progressToNextPercent`, `pointsToNext`
 - `PointWallet` — has `currentBalance`, `lockedBalance`, `totalEarned`, `totalSpent`, `vehicleStatus`
 - `StoreGroup + GroupedFeedResult` — represent the `/app/feed?Grouped=true` response
+- `AppStore` — defined in `src/api/stores.ts` (not a separate type file)
 - `QRSessionType = 'Checkin' | 'Voucher' | 'Product'` — determines QR session purpose
-- `VerifyVehiclePayload` — contains vehicle type code + two photo URLs from upload API
 
 ### Error Handling Pattern
 

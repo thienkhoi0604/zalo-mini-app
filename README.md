@@ -132,14 +132,17 @@ ecogreen-coin/
 |------|------|-----------|
 | `/` | Home | No |
 | `/register` | Zalo OAuth login | No |
-| `/rewards` | Rewards catalog | No |
-| `/rewards/:id` | Reward detail + redeem | Yes |
+| `/rewards` | Vouchers catalog | No |
+| `/rewards/:id` | Voucher detail + redeem | Yes |
 | `/rewards/category/:category` | Category drill-down | No |
+| `/stores` | Store directory | No |
+| `/stores/:storeId` | Store detail | Yes |
 | `/qr-code` | QR scanner | Yes |
 | `/stations` | Station list | Yes |
 | `/stations/:id` | Station detail | Yes |
 | `/profile` | User profile | Yes |
 | `/my-vouchers` | Claimed vouchers | Yes |
+| `/my-vouchers/:id` | Voucher detail | Yes |
 | `/rank-benefits` | Rank tiers | Yes |
 | `/checkin-history` | Check-in history | Yes |
 | `/verify-vehicle` | Vehicle registration | Yes |

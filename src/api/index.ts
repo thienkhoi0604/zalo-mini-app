@@ -6,3 +6,7 @@ export * from "./feed";
 export * from "./checkins";
 export * from "./upload";
 export * from "./banners";
+export * from "./provinces";
+export * from "./wards";
+export * from "./ranks";
+export * from "./stores";
