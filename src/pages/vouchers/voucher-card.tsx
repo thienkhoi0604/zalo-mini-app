@@ -69,16 +69,8 @@ const VoucherCard: FC<Props> = ({ card, onClick, width }) => (
         )}
       </div>
 
-      {/* Perforation */}
-      <div style={{ position: 'relative', height: NOTCH_R * 2, background: '#fff' }}>
-        <div style={{
-          position: 'absolute',
-          top: '50%', left: NOTCH_R + 4, right: NOTCH_R + 4,
-          transform: 'translateY(-50%)',
-          borderTop: '1.5px dashed #D1D5DB',
-          height: 0,
-        }} />
-      </div>
+      {/* Perforation — white spacer only; dashed line is drawn outside the flex flow */}
+      <div style={{ height: NOTCH_R * 2, background: '#fff', flexShrink: 0 }} />
 
       {/* Content */}
       <div style={{
@@ -123,6 +115,18 @@ const VoucherCard: FC<Props> = ({ card, onClick, width }) => (
         </div>
       </div>
     </div>
+
+    {/* Dashed perforation line — absolutely positioned so it's independent of the card's flex layout and border offset */}
+    <div style={{
+      position: 'absolute',
+      top: CUT_Y + NOTCH_R,
+      left: NOTCH_R + 4,
+      right: NOTCH_R + 4,
+      height: 0,
+      borderTop: '1.5px dashed #D1D5DB',
+      pointerEvents: 'none',
+      zIndex: 1,
+    }} />
 
     {/* Notch arc border — left */}
     <div style={{

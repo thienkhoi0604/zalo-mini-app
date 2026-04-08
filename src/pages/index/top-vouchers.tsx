@@ -137,6 +137,8 @@ export const TopVouchers: FC = () => {
 
   const isLoading = loading && allVouchers.length === 0;
 
+  if (!isLoading && topVouchers.length === 0) return null;
+
   return (
     <Box className="py-4">
       <SectionHeader

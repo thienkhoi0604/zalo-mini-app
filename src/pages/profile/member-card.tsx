@@ -149,17 +149,17 @@ const MemberCard: FC = () => {
                   <img
                     src={user.rank.currentRankIconUrl}
                     alt={user.rank.currentRankName ?? ''}
-                    style={{ width: 18, height: 18, objectFit: 'contain' }}
+                    style={{ width: 18, height: 18, objectFit: 'contain', display: 'block' }}
                   />
                 ) : (
                   <ShoppingBag size={16} color="#93C5FD" strokeWidth={2} />
                 )}
-                <p style={{ color: '#fff', fontWeight: 900, fontSize: 16, letterSpacing: -0.4, lineHeight: 1 }}>
+                <p style={{ color: '#fff', fontWeight: 900, fontSize: 16, letterSpacing: -0.4, lineHeight: 1, margin: 0 }}>
                   {(pointWallet?.greenCoin ?? 0).toLocaleString('vi-VN')}
                 </p>
               </Box>
               <p style={{ color: 'rgba(160,200,255,0.6)', fontSize: 10, fontWeight: 600, letterSpacing: 0.5, textTransform: 'uppercase' }}>
-                GreenPoint
+                GreenCoin
               </p>
             </Box>
           </Box>

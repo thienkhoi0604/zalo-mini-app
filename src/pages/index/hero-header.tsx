@@ -112,11 +112,8 @@ export const HeroHeader: FC = () => {
 
                   {/* Name + rank */}
                   <Box style={{ minWidth: 0 }}>
-                    <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.8)', marginBottom: 2 }}>
-                      Xin chào,
-                    </p>
                     <p style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: '22px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                      {firstName}
+                      <span style={{ fontSize: 12, fontWeight: 400, color: 'rgba(255,255,255,0.8)' }}>Xin chào, </span>{firstName}
                     </p>
                     {rankName && (
                       <Box

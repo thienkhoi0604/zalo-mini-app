@@ -282,6 +282,11 @@ const VoucherDetailPage: FC = () => {
                 <p style={{ fontSize: 17, fontWeight: 800, color: '#111827', lineHeight: '24px' }}>
                   {card.name}
                 </p>
+                {card.shortDescription && (
+                  <p style={{ fontSize: 13, color: '#6B7280', lineHeight: '19px', marginTop: 4 }}>
+                    {card.shortDescription}
+                  </p>
+                )}
               </Box>
             </Box>
 
