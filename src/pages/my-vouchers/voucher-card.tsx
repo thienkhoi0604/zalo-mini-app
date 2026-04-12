@@ -34,10 +34,10 @@ const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
       }}
       onClick={onClick}
     >
-      {/* Left icon section */}
+      {/* Left image / icon section — fixed width, 16:9 proportional height handled by card content */}
       <Box
         style={{
-          width: 76,
+          width: 110,
           flexShrink: 0,
           background: used
             ? 'linear-gradient(145deg, #E5E7EB, #D1D5DB)'
@@ -46,9 +46,24 @@ const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
           alignItems: 'center',
           justifyContent: 'center',
           position: 'relative',
+          overflow: 'hidden',
         }}
       >
-        <Gift size={30} color={used ? '#9CA3AF' : '#ffffff'} strokeWidth={1.8} />
+        {userVoucher.imageUrl ? (
+          <img
+            src={userVoucher.imageUrl}
+            alt=""
+            aria-hidden
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              filter: used ? 'grayscale(0.4) brightness(0.85)' : undefined,
+            }}
+          />
+        ) : (
+          <Gift size={30} color={used ? '#9CA3AF' : '#ffffff'} strokeWidth={1.8} />
+        )}
 
         {/* Notch top */}
         <Box
@@ -108,8 +123,8 @@ const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
           minWidth: 0,
         }}
       >
-        {/* Status badge */}
-        <Box style={{ display: 'inline-flex' }}>
+        {/* Status badge + date */}
+        <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
           <span
             style={{
               background: used ? '#F3F4F6' : '#DCFCE7',
@@ -119,10 +134,19 @@ const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
               padding: '2px 8px',
               borderRadius: 100,
               letterSpacing: 0.3,
+              flexShrink: 0,
             }}
           >
             {used ? 'Đã dùng' : 'Còn hiệu lực'}
           </span>
+          {date && (
+            <Box style={{ display: 'flex', alignItems: 'center', gap: 3, flexShrink: 0 }}>
+              <Clock size={10} color={used ? '#D1D5DB' : '#6EE7B7'} />
+              <span style={{ fontSize: 10, color: used ? '#D1D5DB' : '#6B7280' }}>
+                {used ? date : `HSD: ${date}`}
+              </span>
+            </Box>
+          )}
         </Box>
 
         {/* Reward name */}
@@ -159,32 +183,22 @@ const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
           </Box>
         )}
 
-        {/* Code + date row */}
-        <Box style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 6 }}>
-          <span
-            style={{
-              fontFamily: 'monospace',
-              fontSize: 11,
-              fontWeight: 700,
-              letterSpacing: 1.5,
-              background: used ? '#F3F4F6' : '#F0FDF4',
-              color: used ? '#9CA3AF' : '#166534',
-              padding: '2px 7px',
-              borderRadius: 5,
-            }}
-          >
-            {userVoucher.code}
-          </span>
-
-          {date && (
-            <Box style={{ display: 'flex', alignItems: 'center', gap: 3, flexShrink: 0 }}>
-              <Clock size={10} color={used ? '#D1D5DB' : '#6EE7B7'} />
-              <span style={{ fontSize: 10, color: used ? '#D1D5DB' : '#6B7280' }}>
-                {used ? date : `HSD: ${date}`}
-              </span>
-            </Box>
-          )}
-        </Box>
+        {/* Code */}
+        <span
+          style={{
+            fontFamily: 'monospace',
+            fontSize: 11,
+            fontWeight: 700,
+            letterSpacing: 1.5,
+            background: used ? '#F3F4F6' : '#F0FDF4',
+            color: used ? '#9CA3AF' : '#166534',
+            padding: '2px 7px',
+            borderRadius: 5,
+            alignSelf: 'flex-start',
+          }}
+        >
+          {userVoucher.code}
+        </span>
       </Box>
 
       {/* Chevron */}

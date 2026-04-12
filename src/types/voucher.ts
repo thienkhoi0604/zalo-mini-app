@@ -207,6 +207,7 @@ export type UserVoucherItemType = 'Reward' | 'Product';
 export interface UserVoucher {
   id: string;
   code: string;
+  imageUrl: string | null;
   rewardId: string | null;
   rewardName: string;
   shortDescription: string | null;
