@@ -148,6 +148,7 @@ export const StationsPage: FC = () => {
                 <div key={station.id} style={{ marginBottom: 14 }}>
                   <StationCard
                     station={station}
+                    isHiddenPower={false}
                     onClick={() => navigate(`/stations/${station.id}`)}
                   />
                 </div>

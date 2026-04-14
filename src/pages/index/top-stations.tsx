@@ -48,9 +48,10 @@ export const TopStationsCarousel: FC = () => {
         }}
       >
         {topStations.map((station) => (
-          <div key={station.id} style={{ width: 280, height: 160, flexShrink: 0 }}>
+          <div key={station.id} style={{ width: 280, height: 150, flexShrink: 0 }}>
             <StationCard
               station={station}
+              isHiddenPower={true}
               onClick={() => {
                 sessionStorage.setItem('home-scroll-section', 'section-stations');
                 navigate(`/stations/${station.id}`);

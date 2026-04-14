@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { MapPin, Navigation } from 'lucide-react';
+import { MapPin, Navigation, Zap } from 'lucide-react';
 import type { Station } from '@/types/station';
 import CoinIcon from '@/components/ui/coin-icon';
 import logoImg from '@/assets/images/logo.png';
@@ -8,15 +8,28 @@ import { formatDistance } from '@/utils/format';
 
 interface Props {
   station: Station;
+  isHiddenPower: boolean;
   onClick: () => void;
 }
 
 const FALLBACK_IMG = logoImg;
 
-const StationCard: FC<Props> = ({ station, onClick }) => {
+const StationCard: FC<Props> = ({ station, isHiddenPower, onClick }) => {
   const address = [station.address, station.wardName, station.provinceName]
     .filter(Boolean)
     .join(', ');
+
+  const powerValues = (station.pillarConfigs ?? [])
+    .map((p) => parseFloat(p.powerKW))
+    .filter((v) => !isNaN(v));
+  const minPower = powerValues.length ? Math.min(...powerValues) : null;
+  const maxPower = powerValues.length ? Math.max(...powerValues) : null;
+  const powerLabel =
+    minPower !== null && maxPower !== null
+      ? minPower === maxPower
+        ? `${minPower} kW`
+        : `${minPower}–${maxPower} kW`
+      : null;
 
   const distanceText = formatDistance(station.distanceKm);
 
@@ -99,23 +112,42 @@ const StationCard: FC<Props> = ({ station, onClick }) => {
             </Box>
           )}
 
-          {/* Station type */}
-          {station.stationTypeName && (
-            <Box
-              style={{
-                background: '#EEF7F1',
-                border: '1px solid #A7F3D0',
-                borderRadius: 6,
-                padding: '2px 8px',
-                alignSelf: 'flex-start',
-              }}
-            >
-              <p style={{ fontSize: 10, fontWeight: 600, color: '#288F4E' }}>{station.stationTypeName}</p>
+          {/* Station type + power */}
+          {(station.stationTypeName || powerLabel) && (
+            <Box flex className="items-center" style={{ gap: 5, flexWrap: 'wrap' }}>
+              {station.stationTypeName && (
+                <Box
+                  style={{
+                    background: '#EEF7F1',
+                    border: '1px solid #A7F3D0',
+                    borderRadius: 6,
+                    padding: '2px 8px',
+                  }}
+                >
+                  <p style={{ fontSize: 10, fontWeight: 600, color: '#288F4E' }}>{station.stationTypeName}</p>
+                </Box>
+              )}
+              {powerLabel && !isHiddenPower && (
+                <Box
+                  flex
+                  className="items-center"
+                  style={{
+                    gap: 3,
+                    background: '#FFF7ED',
+                    border: '1px solid #FED7AA',
+                    borderRadius: 6,
+                    padding: '2px 7px',
+                  }}
+                >
+                  <Zap size={9} color="#EA580C" strokeWidth={2.5} />
+                  <p style={{ fontSize: 10, fontWeight: 600, color: '#EA580C' }}>{powerLabel}</p>
+                </Box>
+              )}
             </Box>
           )}
 
           {/* Chips row */}
-          <Box flex className="items-center" style={{ gap: 6, flexWrap: 'wrap' }}>
+          <Box flex className="items-center" style={{ gap: 6, flexWrap: 'wrap', marginTop: 'auto' }}>
             {distanceText && (
               <Box
                 flex

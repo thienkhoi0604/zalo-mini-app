@@ -13,15 +13,68 @@ const FALLBACK = logoImg;
 const NOTCH_R = 12;
 const CUT_Y = 95;
 const BORDER_COLOR = 'rgba(0,0,0,0.08)';
+const CARD_W = 140;
+const CARD_H = 230;
+const CARD_R = 18;
+
+/* ── Notch-shaped SVG path builder ─────────────────────────────────────────── */
+
+function buildNotchPath(w: number, h: number): string {
+  const r = CARD_R;
+  const nr = NOTCH_R;
+  const ny = CUT_Y;
+
+  return [
+    `M 0 ${r}`,
+    `A ${r} ${r} 0 0 1 ${r} 0`,
+    `L ${w - r} 0`,
+    `A ${r} ${r} 0 0 1 ${w} ${r}`,
+    `L ${w} ${ny}`,
+    `A ${nr} ${nr} 0 0 0 ${w} ${ny + nr * 2}`,
+    `L ${w} ${h - r}`,
+    `A ${r} ${r} 0 0 1 ${w - r} ${h}`,
+    `L ${r} ${h}`,
+    `A ${r} ${r} 0 0 1 0 ${h - r}`,
+    `L 0 ${ny + nr * 2}`,
+    `A ${nr} ${nr} 0 0 0 0 ${ny}`,
+    `Z`,
+  ].join(' ');
+}
+
+/* ── Hidden SVG clip-path definition ───────────────────────────────────────── */
+
+const NotchClipDef: FC<{ id: string }> = ({ id }) => (
+  <svg width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }} aria-hidden="true">
+    <defs>
+      <clipPath id={id} clipPathUnits="objectBoundingBox">
+        <path d={buildNotchPath(CARD_W, CARD_H)} transform={`scale(${1 / CARD_W}, ${1 / CARD_H})`} />
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+/* ── SVG border overlay (replaces CSS border that clip-path cuts off) ──────── */
+
+const NotchBorderOverlay: FC = () => (
+  <svg
+    width={CARD_W}
+    height={CARD_H}
+    viewBox={`0 0 ${CARD_W} ${CARD_H}`}
+    style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}
+    aria-hidden="true"
+  >
+    <path d={buildNotchPath(CARD_W, CARD_H)} fill="none" stroke={BORDER_COLOR} strokeWidth={1} />
+  </svg>
+);
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
 
 const CardSkeleton: FC = () => (
   <div
     className="flex-shrink-0 animate-pulse"
-    style={{ width: 140, borderRadius: 18, overflow: 'hidden', background: '#fff', boxShadow: '0 4px 14px rgba(0,0,0,0.08)' }}
+    style={{ width: CARD_W, borderRadius: CARD_R, overflow: 'hidden', background: '#fff', boxShadow: '0 4px 14px rgba(0,0,0,0.08)' }}
   >
-    <div style={{ height: 95, background: '#E9EBED' }} />
+    <div style={{ height: CUT_Y, background: '#E9EBED' }} />
     <div style={{ height: NOTCH_R * 2, background: '#EDEEF2' }} />
     <div style={{ padding: '8px 10px 12px', background: '#fff', display: 'flex', flexDirection: 'column', gap: 5 }}>
       <div style={{ height: 9, width: '45%', background: '#E9EBED', borderRadius: 5 }} />
@@ -34,33 +87,32 @@ const CardSkeleton: FC = () => (
 
 // ─── Card ─────────────────────────────────────────────────────────────────────
 
-const CARD_MASK = `
-  radial-gradient(circle ${NOTCH_R}px at 0 ${CUT_Y + NOTCH_R}px, transparent ${NOTCH_R}px, black ${NOTCH_R + 0.5}px) 0 0 / 100% 100% no-repeat,
-  radial-gradient(circle ${NOTCH_R}px at 100% ${CUT_Y + NOTCH_R}px, transparent ${NOTCH_R}px, black ${NOTCH_R + 0.5}px) 0 0 / 100% 100% no-repeat
-`.trim();
+/** Unique clip-path ID counter (safe for non-SSR Zalo Mini App context) */
+let clipIdCounter = 0;
 
 const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onClick }) => {
+  const [clipId] = useState(() => `tv-clip-${++clipIdCounter}`);
+
   return (
     <div
       className="flex-shrink-0 cursor-pointer"
-      style={{ width: 140, height: 230, position: 'relative', borderRadius: 18, overflow: 'hidden' }}
+      style={{ width: CARD_W, height: CARD_H, position: 'relative' }}
       onClick={onClick}
     >
-      {/* ── Card (masked) ── */}
+      <NotchClipDef id={clipId} />
+
+      {/* ── Card (clipped) ── */}
       <div
         style={{
-          borderRadius: 18,
+          borderRadius: CARD_R,
           overflow: 'hidden',
           background: '#fff',
           boxShadow: '0 1px 2px rgba(0,0,0,0.06), 0 4px 12px rgba(0,0,0,0.08), 0 16px 28px rgba(0,0,0,0.06)',
-          border: `1px solid ${BORDER_COLOR}`,
           height: '100%',
           display: 'flex',
           flexDirection: 'column',
-          WebkitMask: CARD_MASK,
-          WebkitMaskComposite: 'destination-in',
-          mask: CARD_MASK,
-          maskComposite: 'intersect',
+          clipPath: `url(#${clipId})`,
+          WebkitClipPath: `url(#${clipId})`,
         } as React.CSSProperties}
       >
         {/* ── Image ── */}
@@ -109,14 +161,20 @@ const VoucherCard: FC<{ reward: Voucher; onClick: () => void }> = ({ reward, onC
         </div>
       </div>
 
-      {/* ── Notch arc borders (left) ── */}
-      <div style={{ position: 'absolute', left: 0, top: CUT_Y, width: NOTCH_R, height: NOTCH_R * 2, overflow: 'hidden', pointerEvents: 'none' }}>
-        <div style={{ position: 'absolute', left: -NOTCH_R, top: 0, width: NOTCH_R * 2, height: NOTCH_R * 2, borderRadius: '50%', border: `1px solid ${BORDER_COLOR}`, boxSizing: 'border-box' }} />
-      </div>
-      {/* ── Notch arc borders (right) ── */}
-      <div style={{ position: 'absolute', right: 0, top: CUT_Y, width: NOTCH_R, height: NOTCH_R * 2, overflow: 'hidden', pointerEvents: 'none' }}>
-        <div style={{ position: 'absolute', right: -NOTCH_R, top: 0, width: NOTCH_R * 2, height: NOTCH_R * 2, borderRadius: '50%', border: `1px solid ${BORDER_COLOR}`, boxSizing: 'border-box' }} />
-      </div>
+      {/* ── SVG border overlay ── */}
+      <NotchBorderOverlay />
+
+      {/* ── Dashed perforation line ── */}
+      <div style={{
+        position: 'absolute',
+        top: CUT_Y + NOTCH_R,
+        left: NOTCH_R + 4,
+        right: NOTCH_R + 4,
+        height: 0,
+        borderTop: '1.5px dashed #D1D5DB',
+        pointerEvents: 'none',
+        zIndex: 3,
+      }} />
     </div>
   );
 };
