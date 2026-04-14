@@ -5,6 +5,8 @@ import { Store, MapPin, Clock, Phone, Navigation } from 'lucide-react';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { getStores, AppStore } from '@/api/stores';
 import defaultStoreImg from '@/assets/images/logo.png';
+import { InfoRow } from '@/pages/vouchers/store-feed';
+import { formatDistance } from '@/utils/format';
 
 // ─── Skeleton ──────────────────────────────────────────────────────────────────
 
@@ -28,35 +30,10 @@ const StoreSkeleton: FC = () => (
   </Box>
 );
 
-// ─── Info row ──────────────────────────────────────────────────────────────────
-
-const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ icon, text, clamp = 1 }) => (
-  <Box flex className="items-start" style={{ gap: 6 }}>
-    <Box style={{ marginTop: 1, flexShrink: 0 }}>{icon}</Box>
-    <p
-      style={{
-        fontSize: 11.5,
-        color: '#6B7280',
-        lineHeight: '16px',
-        overflow: 'hidden',
-        display: '-webkit-box',
-        WebkitLineClamp: clamp,
-        WebkitBoxOrient: 'vertical',
-      }}
-    >
-      {text}
-    </p>
-  </Box>
-);
-
 // ─── Store Card ────────────────────────────────────────────────────────────────
 
 const StoreCard: FC<{ store: AppStore; onClick: () => void }> = ({ store, onClick }) => {
-  const distanceLabel = store.distanceKm != null
-    ? store.distanceKm < 1
-      ? `${Math.round(store.distanceKm * 1000)} m`
-      : `${store.distanceKm.toFixed(1)} km`
-    : null;
+  const distanceLabel = formatDistance(store.distanceKm);
 
   const hoursLabel = store.openTime && store.closeTime
     ? `${store.openTime} – ${store.closeTime}`

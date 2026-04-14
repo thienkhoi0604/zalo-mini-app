@@ -136,7 +136,7 @@ export const TopVouchers: FC = () => {
       .then(([vouchers, physical]) =>
         setTopVouchers([...vouchers, ...physical].filter((r) => r.status === 'active'))
       )
-      .finally(() => setLoading(false));
+      .then(() => setLoading(false), () => setLoading(false));
   }, []);
 
   const isLoading = loading && topVouchers.length === 0;
@@ -148,6 +148,7 @@ export const TopVouchers: FC = () => {
       <SectionHeader
         title="Vouchers"
         icon={<Gift size={14} color="#fff" />}
+        onViewAll={() => navigate('/rewards')}
       />
 
       {/* Horizontal scroll */}

@@ -29,6 +29,7 @@ export const TopStationsCarousel: FC = () => {
         title="Trạm sạc"
         icon={<Zap size={14} color="#fff" fill="#fff" strokeWidth={0} />}
         iconBg="linear-gradient(135deg, #43B96B, #288F4E)"
+        onViewAll={() => navigate('/stations')}
       />
 
       {/* Horizontal scroll */}
@@ -54,10 +55,7 @@ export const TopStationsCarousel: FC = () => {
             />
           </div>
         ))}
-
-        {topStations.length > 2 && (
-          <ViewAllFab onClick={() => navigate('/stations')} />
-        )}
+        {topStations.length > 2 && <ViewAllFab onClick={() => navigate('/stations')} />}
       </Box>
     </Box>
   );

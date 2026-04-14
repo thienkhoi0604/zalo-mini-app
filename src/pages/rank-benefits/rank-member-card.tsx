@@ -63,7 +63,7 @@ const RankMemberCard: FC = () => {
             src={rankIconUrl || logoImg}
             alt={rankName}
             style={{
-              width: '65%',
+              width: '80%',
               aspectRatio: '1 / 1',
               objectFit: 'contain',
             }}

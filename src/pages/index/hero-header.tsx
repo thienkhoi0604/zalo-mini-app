@@ -5,7 +5,9 @@ import { QrCode, Bell } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import { useVouchersStore } from '@/store/vouchers';
 import { ACTIVE_THEME } from '@/constants/theme';
+import { getFirstName } from '@/utils/format';
 import CoinIcon from '@/components/ui/coin-icon';
+import UserAvatar from '@/components/ui/user-avatar';
 import QRCodeSheet from '@/pages/profile/qr-code-sheet';
 import { fetchQRSession } from '@/api/user';
 
@@ -36,7 +38,7 @@ export const HeroHeader: FC = () => {
     }
   };
 
-  const firstName = user?.fullName?.split(' ').pop() ?? 'bạn';
+  const firstName = getFirstName(user?.fullName);
   const rankName = user?.rank?.currentRankName;
   const voucherCount = userVouchersUnusedCount ?? 0;
 
@@ -93,32 +95,17 @@ export const HeroHeader: FC = () => {
               <Box flex className="items-center justify-between" style={{ gap: 8 }}>
                 <Box flex className="items-center" style={{ gap: 8, minWidth: 0 }}>
                   {/* Avatar */}
-                  <Box
-                    style={{
-                      width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
-                      background: 'rgba(255,255,255,0.25)',
-                      border: '2px solid rgba(255,255,255,0.5)',
-                      overflow: 'hidden',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    }}
-                  >
-                    {user?.avatarUrl ? (
-                      <img
-                        src={user.avatarUrl}
-                        alt={user.fullName ?? ''}
-                        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                      />
-                    ) : (
-                      <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>
-                        {firstName.charAt(0).toUpperCase()}
-                      </span>
-                    )}
-                  </Box>
+                  <UserAvatar
+                    avatarUrl={user?.avatarUrl}
+                    fullName={user?.fullName}
+                    bgOpacity={0.25}
+                    borderOpacity={0.5}
+                  />
 
                   {/* Rank badge — same height as icon buttons */}
                   {rankName && (
                     <Box
+                      onClick={() => navigate('/rank-benefits')}
                       style={{
                         display: 'inline-flex', alignItems: 'center',
                         height: badgeH,
@@ -128,6 +115,7 @@ export const HeroHeader: FC = () => {
                         padding: '0 10px',
                         gap: 5,
                         flexShrink: 0,
+                        cursor: 'pointer',
                       }}
                     >
                       {user?.rank?.currentRankIconUrl && (
@@ -167,7 +155,7 @@ export const HeroHeader: FC = () => {
                 }}
               >
                 {/* Lá — balance */}
-                <Box flex className="items-center" style={{ gap: 6, flex: 1 }}>
+                <Box flex className="items-center" style={{ gap: 6, flex: 1, cursor: 'pointer' }} onClick={() => navigate('/checkin-history')}>
                   <CoinIcon size={20} />
                   <p style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>
                     {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}

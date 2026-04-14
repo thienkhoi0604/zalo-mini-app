@@ -6,10 +6,11 @@ import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
 import { getStores, AppStore } from '@/api/stores';
 import defaultStoreImg from '@/assets/images/logo.png';
+import { formatDistance } from '@/utils/format';
 
 // ─── Skeleton ──────────────────────────────────────────────────────────────────
 
-const StoreSkeleton: FC = () => (
+export const StoreSkeleton: FC = () => (
   <Box
     className="animate-pulse"
     style={{
@@ -38,7 +39,7 @@ const StoreSkeleton: FC = () => (
 
 // ─── Info row helper ───────────────────────────────────────────────────────────
 
-const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ icon, text, clamp = 1 }) => (
+export const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ icon, text, clamp = 1 }) => (
   <Box flex className="items-start" style={{ gap: 6 }}>
     <Box style={{ marginTop: 1, flexShrink: 0 }}>{icon}</Box>
     <p
@@ -61,12 +62,8 @@ const InfoRow: FC<{ icon: React.ReactNode; text: string; clamp?: number }> = ({ 
 
 const STORE_CARD_W = 290;
 
-const StoreCard: FC<{ store: AppStore; onCardClick: () => void }> = ({ store, onCardClick }) => {
-  const distanceLabel = store.distanceKm != null
-    ? store.distanceKm < 1
-      ? `${Math.round(store.distanceKm * 1000)} m`
-      : `${store.distanceKm.toFixed(1)} km`
-    : null;
+export const StoreCard: FC<{ store: AppStore; onCardClick: () => void }> = ({ store, onCardClick }) => {
+  const distanceLabel = formatDistance(store.distanceKm);
 
   const hoursLabel = store.openTime && store.closeTime
     ? `${store.openTime} – ${store.closeTime}`

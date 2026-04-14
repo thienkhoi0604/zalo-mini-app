@@ -18,6 +18,7 @@ import RegisterPage from '@/pages/register';
 import MyVouchersPage from '@/pages/my-vouchers';
 import MyVoucherDetailPage from '@/pages/my-vouchers/voucher-detail';
 import RankBenefitsPage from '@/pages/rank-benefits';
+import ItemListPage from '@/pages/item-list';
 import CheckinHistoryPage from '@/pages/checkin-history';
 import VerifyVehiclePage from '@/pages/verify-vehicle';
 import VehicleInfoPage from '@/pages/vehicle-info';
@@ -61,6 +62,7 @@ const getRouteTitle = (pathname: string): string => {
     return decodeURIComponent(pathname.replace('/rewards/category/', ''));
   if (pathname.startsWith('/rewards/')) return 'Chi tiết voucher';
   if (pathname.startsWith('/stations/')) return 'Chi tiết trạm sạc';
+  if (pathname === '/item-list') return 'Danh sách phần thưởng';
   if (pathname === '/stores') return 'Danh sách cửa hàng';
   if (pathname.startsWith('/stores/')) return 'Cửa hàng';
   return '';
@@ -191,6 +193,7 @@ export const Layout: FC = () => {
           {/* Rewards — category phải đứng trước :id để tránh match nhầm */}
           <Route path="/rewards" element={<VouchersPage />} />
           <Route path="/rewards/category/:category" element={<CategoryDetailPage />} />
+          <Route path="/item-list" element={<ItemListPage />} />
           <Route path="/stores" element={<StoresPage />} />
           <Route
             path="/stores/:storeId"

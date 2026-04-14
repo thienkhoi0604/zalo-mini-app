@@ -3,6 +3,8 @@ import { Box, Page } from 'zmp-ui';
 import { QrCode } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import { fetchAppRanks } from '@/api/ranks';
+import { getFirstName } from '@/utils/format';
+import UserAvatar from '@/components/ui/user-avatar';
 import { buildTierConfig, resolveCurrentTier, TierConfig } from './tiers';
 import ProgressSteps from './progress-steps';
 import RankCard from './rank-card';
@@ -33,8 +35,7 @@ const RankBenefitsPage: FC = () => {
   const [loading, setLoading] = useState(true);
   const [qrSheetVisible, setQrSheetVisible] = useState(false);
 
-  const firstName = user?.fullName?.split(' ').pop() ?? 'bạn';
-  const rankName = user?.rank?.currentRankName;
+  const firstName = getFirstName(user?.fullName);
 
   const loadRanks = useCallback(async () => {
     setLoading(true);
@@ -95,28 +96,10 @@ const RankBenefitsPage: FC = () => {
             <Box flex className="items-center justify-between" style={{ gap: 12 }}>
               {/* Left: avatar + greeting + name */}
               <Box flex className="items-center" style={{ gap: 10, minWidth: 0 }}>
-                <Box
-                  style={{
-                    width: 44, height: 44, borderRadius: '50%', flexShrink: 0,
-                    background: 'rgba(255,255,255,0.18)',
-                    border: '2px solid rgba(255,255,255,0.4)',
-                    overflow: 'hidden',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  }}
-                >
-                  {user?.avatarUrl ? (
-                    <img
-                      src={user.avatarUrl}
-                      alt={user.fullName ?? ''}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  ) : (
-                    <span style={{ fontSize: 18, fontWeight: 700, color: '#fff' }}>
-                      {firstName.charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                </Box>
+                <UserAvatar
+                  avatarUrl={user?.avatarUrl}
+                  fullName={user?.fullName}
+                />
 
                 <Box style={{ minWidth: 0 }}>
                   <p style={{ fontSize: 17, fontWeight: 800, color: '#fff', lineHeight: '22px', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>

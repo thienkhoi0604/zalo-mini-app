@@ -4,6 +4,7 @@ import { HeroHeader } from "./hero-header";
 import { Banner } from "./banner";
 import { TopVouchers } from "./top-vouchers";
 import { TopStationsCarousel } from "./top-stations";
+import { TopStores } from "./top-stores";
 import PullToRefresh from "@/components/ui/pull-to-refresh";
 import { useUserStore } from "@/store/user";
 import { useVouchersStore } from "@/store/vouchers";
@@ -45,6 +46,14 @@ const HomePage: React.FunctionComponent = () => {
             style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
           >
             <TopVouchers />
+          </Box>
+
+          {/* Stores */}
+          <Box
+            className="mx-4 mt-4 rounded-2xl bg-white"
+            style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
+          >
+            <TopStores />
           </Box>
 
           {/* Stations */}

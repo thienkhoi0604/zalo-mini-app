@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Check } from 'lucide-react';
 import { TierConfig } from './tiers';
 import { UserRank } from '@/types/user';
 import CoinIcon from '@/components/ui/coin-icon';
@@ -67,8 +66,19 @@ const ProgressSteps: FC<Props> = ({ tiers, currentCode, userRank }) => {
                     boxShadow: isCurrent ? `0 0 10px ${tier.color}50` : 'none',
                   }}
                 >
-                  {reached
-                    ? <Check size={13} color="#fff" strokeWidth={2.5} />
+                  {tier.iconUrl
+                    ? (
+                      <img
+                        src={tier.iconUrl}
+                        alt={tier.name}
+                        style={{
+                          width: isCurrent ? 22 : 18,
+                          height: isCurrent ? 22 : 18,
+                          objectFit: 'contain',
+                          opacity: reached ? 1 : 0.45,
+                        }}
+                      />
+                    )
                     : <span style={{ fontSize: 13 }}>{tier.emoji}</span>
                   }
                 </Box>

@@ -10,6 +10,7 @@ import InfoRow from './info-row';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { ACTIVE_THEME } from '@/constants/theme';
 import logoImg from '@/assets/images/logo.png';
+import { formatDistance } from '@/utils/format';
 
 const FALLBACK_IMG = logoImg;
 
@@ -89,12 +90,7 @@ const StationDetailPage: FC = () => {
     .filter(Boolean)
     .join(', ');
 
-  const distanceLabel =
-    station.distanceKm != null && station.distanceKm > 0
-      ? station.distanceKm < 1
-        ? `${Math.round(station.distanceKm * 1000)} m`
-        : `${station.distanceKm.toFixed(1)} km`
-      : null;
+  const distanceLabel = formatDistance(station.distanceKm);
 
   const statItems = [
     station.distanceKm != null && station.distanceKm > 0 && {
