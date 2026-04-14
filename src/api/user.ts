@@ -37,10 +37,11 @@ export async function verifyVehicle(payload: VerifyVehiclePayload): Promise<void
   await axiosClient.post('/me/vehicles/submit', payload);
 }
 
-export async function fetchVehicleInfo(): Promise<VehicleInfo | null> {
+// Returns [] when not yet submitted, null on error
+export async function fetchVehicleInfo(): Promise<VehicleInfo[] | null> {
   try {
     const { data } = await axiosClient.get<{ data: VehicleInfo[] }>('/me/vehicles');
-    return data.data?.[0] ?? null;
+    return data.data ?? [];
   } catch {
     return null;
   }

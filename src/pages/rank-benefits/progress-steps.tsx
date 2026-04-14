@@ -141,13 +141,12 @@ const ProgressSteps: FC<Props> = ({ tiers, currentCode, userRank }) => {
           {/* Percentage + points label */}
           <Box flex className="items-center justify-between">
             <Box flex className="items-center" style={{ gap: 4 }}>
-              <CoinIcon size={13} />
               <p style={{ fontSize: 12, fontWeight: 700, color: '#374151' }}>
                 Cần thêm{' '}
                 <span style={{ color: currentTier.color }}>
                   {pointsToNext.toLocaleString('vi-VN')}
                 </span>{' '}
-                điểm
+                điểm GreenCoin
               </p>
             </Box>
             <p style={{ fontSize: 12, fontWeight: 800, color: currentTier.color }}>

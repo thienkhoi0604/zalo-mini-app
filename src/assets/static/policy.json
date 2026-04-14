@@ -1,0 +1,147 @@
+{
+  "ecosystem": "ECOGREEN",
+  "sections": [
+    {
+      "id": "la",
+      "title": "LÁ",
+      "subtitle": "Điểm thưởng trong hệ sinh thái ECOGREEN",
+      "icon": "leaf",
+      "description": "LÁ là đơn vị điểm thưởng được tích lũy thông qua các hoạt động trong hệ sinh thái ECOGREEN. Thành viên có thể sử dụng LÁ để đổi lấy các voucher ưu đãi từ cửa hàng và thương hiệu liên kết.",
+      "exchange_rate": {
+        "value": 1,
+        "unit": "LÁ",
+        "equivalent": "1.000 VNĐ"
+      },
+      "earning_methods": [
+        {
+          "method": "Check-in tại trạm sạc",
+          "description": "Tích lũy LÁ khi check-in tại các trạm sạc thuộc hệ sinh thái ECOGREEN. Số LÁ nhận được tùy thuộc vào trạm sạc và khung giờ check-in."
+        },
+        {
+          "method": "Giới thiệu bạn bè",
+          "description": "Nhận LÁ khi giới thiệu thành công bạn bè tham gia hệ sinh thái ECOGREEN."
+        },
+        {
+          "method": "Tham gia minigame",
+          "description": "Tích lũy LÁ thông qua các minigame trong ứng dụng."
+        },
+        {
+          "method": "Nạp & chuyển",
+          "description": "Nhận LÁ khi thực hiện các giao dịch nạp hoặc chuyển trong hệ thống."
+        }
+      ],
+      "rules": [
+        {
+          "label": "Điều kiện tích lũy",
+          "content": "LÁ chỉ được ghi nhận khi thành viên đã xác thực tài khoản."
+        },
+        {
+          "label": "Thời hạn sử dụng",
+          "content": "LÁ được sử dụng vô thời hạn, không bị hết hạn."
+        },
+        {
+          "label": "Mục đích sử dụng",
+          "content": "LÁ dùng để đổi các voucher ưu đãi tại cửa hàng và thương hiệu thuộc hoặc liên kết với hệ sinh thái ECOGREEN."
+        },
+        {
+          "label": "Lưu ý",
+          "content": "LÁ không được quy đổi ra tiền mặt."
+        }
+      ]
+    },
+    {
+      "id": "greencoin",
+      "title": "GREENCOIN",
+      "subtitle": "Đồng coin xếp hạng & đổi thưởng",
+      "icon": "coin",
+      "description": "GREENCOIN là đơn vị dùng để xếp hạng thành viên và tham gia chương trình đổi thưởng trong hệ sinh thái ECOGREEN. GREENCOIN được tạo ra khi thành viên sử dụng voucher đã đổi từ LÁ.",
+      "features": [
+        {
+          "feature": "Xếp hạng thành viên",
+          "description": "GREENCOIN được sử dụng để xếp hạng thành viên. Tùy thuộc vào thứ hạng, thành viên sẽ nhận được các đặc quyền riêng biệt."
+        },
+        {
+          "feature": "Đổi thưởng tiền mặt",
+          "description": "GREENCOIN có thể được quy đổi thành tiền mặt, tùy thuộc vào tổng số coin trên toàn hệ thống, chu kỳ xét thưởng và điều kiện tham gia."
+        }
+      ],
+      "membership_tiers": [
+        {
+          "rank": 1,
+          "name": "Đồng",
+          "key": "bronze"
+        },
+        {
+          "rank": 2,
+          "name": "Bạc",
+          "key": "silver"
+        },
+        {
+          "rank": 3,
+          "name": "Vàng",
+          "key": "gold"
+        },
+        {
+          "rank": 4,
+          "name": "Kim Cương",
+          "key": "diamond"
+        }
+      ],
+      "rules": [
+        {
+          "label": "Cách nhận",
+          "content": "GREENCOIN được tạo ra khi thành viên sử dụng voucher đã đổi từ LÁ. Tỷ lệ quy đổi tùy thuộc vào loại voucher."
+        },
+        {
+          "label": "Thời hạn sử dụng",
+          "content": "GREENCOIN có hiệu lực trong vòng 12 tháng kể từ ngày nhận."
+        }
+      ]
+    },
+    {
+      "id": "vouchers",
+      "title": "VOUCHERs",
+      "subtitle": "Voucher ưu đãi từ hệ sinh thái ECOGREEN",
+      "icon": "ticket",
+      "description": "Voucher là phiếu ưu đãi được đổi từ LÁ, áp dụng tại các cửa hàng và thương hiệu trong hệ sinh thái ECOGREEN. Khi sử dụng voucher, thành viên sẽ nhận lại GREENCOIN tương ứng.",
+      "categories": [
+        {
+          "id": "service",
+          "name": "Dịch vụ",
+          "examples": "Đồng sơn, rửa xe, bảo dưỡng...",
+          "exchange_rate": {
+            "la": 1,
+            "greencoin": 1
+          }
+        },
+        {
+          "id": "food_beverage",
+          "name": "Ăn uống",
+          "examples": "Nhà hàng, quán cà phê, đồ uống...",
+          "exchange_rate": {
+            "la": 1,
+            "greencoin": 1
+          }
+        },
+        {
+          "id": "parts_goods",
+          "name": "Phụ tùng & Hàng hóa",
+          "examples": "Vỏ xe, đèn, gạt mưa, lọc gió...",
+          "exchange_rate": {
+            "la": 1,
+            "greencoin": 1
+          }
+        },
+        {
+          "id": "other",
+          "name": "Khác",
+          "examples": "Các voucher ưu đãi khác trong hệ sinh thái",
+          "exchange_rate": {
+            "la": 1,
+            "greencoin": 1
+          }
+        }
+      ]
+    }
+  ]
+}

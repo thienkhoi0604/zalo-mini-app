@@ -22,6 +22,7 @@ import VouchersListPage from '@/pages/vouchers-list';
 import CheckinHistoryPage from '@/pages/checkin-history';
 import VerifyVehiclePage from '@/pages/verify-vehicle';
 import VehicleInfoPage from '@/pages/vehicle-info';
+import PolicyPage from '@/pages/policy';
 import { getSystemInfo } from 'zmp-sdk';
 import { ScrollRestoration } from './scroll-restoration';
 import { useUserStore } from '@/store/user';
@@ -58,6 +59,7 @@ const getRouteTitle = (pathname: string): string => {
   if (pathname === '/checkin-history') return 'Lịch sử điểm';
   if (pathname === '/verify-vehicle') return 'Xác thực xe';
   if (pathname === '/vehicle-info') return 'Thông tin xe';
+  if (pathname === '/policy') return 'Khái niệm & Điều khoản';
   if (pathname.startsWith('/rewards/category/'))
     return decodeURIComponent(pathname.replace('/rewards/category/', ''));
   if (pathname.startsWith('/rewards/')) return 'Chi tiết voucher';
@@ -293,6 +295,7 @@ export const Layout: FC = () => {
               </ProtectedRoute>
             }
           />
+          <Route path="/policy" element={<PolicyPage />} />
         </Routes>
       </Box>
       <Navigation />

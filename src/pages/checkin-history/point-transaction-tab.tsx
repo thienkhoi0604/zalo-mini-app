@@ -11,7 +11,7 @@ type Tab = 'earn' | 'spend';
 
 // ─── Summary banner ────────────────────────────────────────────────────────────
 
-const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab }> = ({ transactions, type }) => {
+const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTypeChange: (t: Tab) => void }> = ({ transactions, type, onTypeChange }) => {
   const total = transactions.reduce((sum, t) => sum + t.points, 0);
   const { pointWallet } = useUserStore();
   const isEarn = type === 'earn';
@@ -33,14 +33,32 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab }> = 
             Từ {transactions.length} {isEarn ? 'lần tích điểm' : 'lần sử dụng'}
           </p>
         </Box>
-        <Box
-          className="flex items-center justify-center rounded-2xl flex-shrink-0"
-          style={{ width: 56, height: 56, background: 'rgba(255,255,255,0.15)', alignSelf: 'center' }}
-        >
-          {isEarn
-            ? <Zap size={28} color="#fff" fill="#fff" strokeWidth={0} />
-            : <TrendingDown size={28} color="#fff" strokeWidth={2} />
-          }
+
+        {/* Toggle icons */}
+        <Box flex className="flex-shrink-0" style={{ gap: 8 }}>
+          {([
+            { key: 'earn' as Tab, icon: (active: boolean) => <Zap size={20} color={active ? '#288F4E' : 'rgba(255,255,255,0.5)'} fill={active ? '#288F4E' : 'rgba(255,255,255,0.5)'} strokeWidth={0} /> },
+            { key: 'spend' as Tab, icon: (active: boolean) => <TrendingDown size={20} color={active ? '#288F4E' : 'rgba(255,255,255,0.5)'} strokeWidth={2.5} /> },
+          ]).map(({ key, icon }) => {
+            const isActive = type === key;
+            return (
+              <Box
+                key={key}
+                onClick={() => onTypeChange(key)}
+                className="flex items-center justify-center"
+                style={{
+                  width: 40,
+                  height: 40,
+                  borderRadius: '50%',
+                  background: isActive ? '#fff' : 'rgba(255,255,255,0.15)',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
+              >
+                {icon(isActive)}
+              </Box>
+            );
+          })}
         </Box>
       </Box>
 
@@ -61,7 +79,7 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab }> = 
 
 // ─── Tab content ──────────────────────────────────────────────────────────────
 
-const PointTransactionTab: FC<{ transactions: PointTransaction[]; type: Tab }> = ({ transactions, type }) => {
+const PointTransactionTab: FC<{ transactions: PointTransaction[]; type: Tab; onTypeChange: (t: Tab) => void }> = ({ transactions, type, onTypeChange }) => {
   const isEarn = type === 'earn';
   const groups = useMemo(() => groupByDateField(transactions, (t) => t.createdAt), [transactions]);
 
@@ -90,7 +108,7 @@ const PointTransactionTab: FC<{ transactions: PointTransaction[]; type: Tab }> =
 
   return (
     <Box style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-      <TransactionSummary transactions={transactions} type={type} />
+      <TransactionSummary transactions={transactions} type={type} onTypeChange={onTypeChange} />
 
       {groups.map((group) => (
         <Box key={group.label}>

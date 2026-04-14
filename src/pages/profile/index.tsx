@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
 import { useNavigate } from 'react-router';
-import { Car, Gift, History, QrCode, ShieldCheck, UserPlus2 } from 'lucide-react';
+import { Car, Gift, History, QrCode, ShieldCheck, UserPlus2, BookOpen } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import { useVouchersStore } from '@/store/vouchers';
 import { fetchQRSession, fetchReferralQR } from '@/api/user';
@@ -44,14 +44,15 @@ const Personal: FC = () => {
     loadUserVouchersCount();
   }, []);
 
-  const isVehicleApproved = pointWallet?.vehicleStatus?.toLowerCase() === 'approved';
+  const vehicleStatus = pointWallet?.vehicleStatus;
+  const isVehicleSubmitted = !!vehicleStatus;
   const activeConfig = activeQRSheet ? QR_SHEET_CONFIG[activeQRSheet] : null;
 
   return (
     <Box className="py-7">
       <MemberCard />
 
-      {user && !isVehicleApproved && <UnverifiedBanner />}
+      {user && !isVehicleSubmitted && <UnverifiedBanner />}
 
       <SectionList
         title="Tiện ích"
@@ -61,7 +62,7 @@ const Personal: FC = () => {
             label: 'Voucher của bạn',
             onPress: () => navigate('/my-vouchers'),
           },
-          ...(isVehicleApproved ? [{
+          ...(isVehicleSubmitted ? [{
             icon: <Car size={ICON_SIZE} color={ICON_COLOR} />,
             label: 'Thông tin xe của tôi',
             onPress: () => navigate('/vehicle-info'),
@@ -101,6 +102,17 @@ const Personal: FC = () => {
             label: 'Lịch sử điểm',
             sub: 'Xem các lần check-in tích điểm',
             onPress: () => navigate('/checkin-history'),
+          },
+        ]}
+      />
+
+      <SectionList
+        title="Hệ thống"
+        items={[
+          {
+            icon: <BookOpen size={ICON_SIZE} color={ICON_COLOR} />,
+            label: 'Khái niệm và điều khoản',
+            onPress: () => navigate('/policy'),
           },
         ]}
       />

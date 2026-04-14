@@ -1,0 +1,20 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": [
+    {
+      "id": "3135fdc7-6242-4bfc-be5d-906c368b51ab",
+      "userId": "ad37d144-d290-4539-9a10-bf3cb6dde2de",
+      "vehicleTypeId": "32611f16-0b85-4fed-b57c-34c5b093f2cd",
+      "vehicleTypeName": "Electric Car",
+      "licensePlate": "A12345",
+      "photoUrl1": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/e0c8d658ea75468faeb42ddab28bc4d1.webp",
+      "photoUrl2": null,
+      "approvalStatus": "Pending",
+      "rejectionReason": null,
+      "reviewedAt": null,
+      "createdAt": "2026-04-14T14:35:01.898166+00:00"
+    }
+  ],
+  "errors": null
+}

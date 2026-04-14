@@ -72,13 +72,6 @@ const VerifyVehiclePage: FC = () => {
     const url = await uploadImage(file);
     setUploadedUrl1(url);
   } catch (err) {
-    console.log('=== UPLOAD ERROR ===');
-    console.log('error:', err);
-    console.log('error type:', typeof err);
-    console.log('error message:', (err as any)?.message);
-    console.log('error code:', (err as any)?.code);
-    console.log('response:', (err as any)?.response);
-    console.log('request:', (err as any)?.request);
     openSnackbar({ text: 'Tải ảnh lên thất bại. Vui lòng thử lại.', type: 'error' });
     URL.revokeObjectURL(localUrl);
     setPreviewUrl1(null);
