@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Store } from 'lucide-react';
 import { getStores, AppStore } from '@/api/stores';
-import { StoreCard, StoreSkeleton } from '@/pages/vouchers/store-feed';
+import { StoreCard, StoreSkeleton } from '@/pages/rewards/store-feed';
 import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
 

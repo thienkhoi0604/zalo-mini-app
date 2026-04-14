@@ -78,63 +78,70 @@ src/
 │   └── providers/
 │       └── config-provider.tsx  # Injects CSS variables onto document.documentElement
 ├── pages/                # Route-level components
-│   ├── index/            # / — Home
+│   ├── home/             # / — Home
 │   │   ├── index.tsx
 │   │   ├── banner.tsx        # Swiper carousel; taps open URL via openWebview
 │   │   ├── hero-header.tsx
 │   │   ├── top-stations.tsx
+│   │   ├── top-stores.tsx
 │   │   └── top-vouchers.tsx
-│   ├── register.tsx      # /register — Zalo OAuth login page
+│   ├── auth/             # /register — Zalo OAuth login page
+│   │   └── index.tsx
 │   ├── profile/          # /profile (protected)
 │   │   ├── index.tsx
 │   │   ├── member-card.tsx       # Avatar, name, rank badge
 │   │   ├── section-list.tsx      # Menu (edit, vehicles, referrals, rank, history, logout)
 │   │   ├── unverified-banner.tsx # Prompt to verify vehicle
 │   │   └── qr-code-sheet.tsx     # Referral QR code sheet
-│   ├── vouchers/         # Flat structure — no sub-folders (routes use /rewards prefix)
+│   ├── rewards/          # /rewards — all rewards/voucher browsing (routes use /rewards prefix)
 │   │   ├── index.tsx         # /rewards — balance header + Danh mục / Cửa hàng tab switcher
 │   │   ├── category-feed.tsx # /rewards/category/:category — grid filtered by itemTypeTranslate
 │   │   ├── store-feed.tsx    # Cửa hàng tab: global vouchers + per-store sections (Grouped=true)
-│   │   ├── store-detail.tsx  # /stores/:storeId (protected) — store info + item list
 │   │   ├── item-cards-list.tsx # Danh mục tab: horizontal-scroll rows grouped by category
 │   │   ├── voucher-card.tsx  # Shared voucher card (type chip, stock badge, price display)
-│   │   └── detail.tsx        # /rewards/:id (protected) — detail + redeem
+│   │   ├── detail.tsx        # /rewards/:id (protected) — detail + redeem
+│   │   ├── all-list.tsx      # /rewards/all — full voucher list with header
+│   │   └── item-list.tsx     # Alternative item list page (WIP)
 │   ├── stores/           # /stores — store directory
-│   │   └── index.tsx         # Store list with infinite scroll
+│   │   ├── index.tsx         # Store list with infinite scroll
+│   │   └── detail.tsx        # /stores/:storeId (protected) — store info + item list
 │   ├── qr-code/          # /qr-code (protected)
 │   │   ├── index.tsx
 │   │   ├── scan-result-view.tsx  # Success / error / referral result display
 │   │   └── scan.ts               # runScan() — checkin vs referral code detection
-│   ├── stations/         # /stations (protected, infinite scroll)
+│   ├── stations/         # /stations + /stations/:id (protected, infinite scroll + detail)
 │   │   ├── index.tsx
+│   │   ├── detail.tsx        # /stations/:id — Google Maps via openWebview
+│   │   ├── station-card.tsx
 │   │   ├── search-filter.tsx # Province/ward Sheet pickers + search input
-│   │   └── station-card.tsx
-│   ├── station-detail/   # /stations/:id (protected)
-│   │   ├── index.tsx         # Google Maps via openWebview
 │   │   ├── info-row.tsx
 │   │   └── stat-card.tsx
 │   ├── my-vouchers/      # /my-vouchers (protected, infinite scroll)
 │   │   ├── index.tsx
 │   │   ├── voucher-card.tsx          # Status, expiry, usage info
 │   │   └── voucher-detail.tsx        # Bottom sheet detail modal + /my-vouchers/:id route
-│   ├── rank-benefits/    # /rank-benefits (protected)
+│   ├── ranks/            # /rank-benefits (protected)
 │   │   ├── index.tsx
 │   │   ├── tiers.ts          # TierConfig, buildTierConfig(), resolveCurrentTier()
 │   │   ├── hero-banner.tsx
 │   │   ├── progress-steps.tsx
-│   │   └── rank-card.tsx
-│   ├── checkin-history/  # /checkin-history (protected, infinite scroll)
+│   │   ├── rank-card.tsx
+│   │   └── rank-member-card.tsx
+│   ├── checkins/         # /checkin-history (protected, infinite scroll)
 │   │   ├── index.tsx
 │   │   ├── history-item.tsx
 │   │   ├── history-skeleton.tsx
-│   │   ├── summary-banner.tsx    # Total points earned
-│   │   └── utils.ts              # formatTime(), formatGroupLabel(), groupByDate()
-│   ├── verify-vehicle/   # /verify-vehicle (protected)
-│   │   ├── index.tsx
+│   │   ├── summary-banner.tsx        # Total points earned
+│   │   ├── point-transaction-item.tsx
+│   │   ├── point-transaction-tab.tsx
+│   │   └── utils.ts                  # formatTime(), formatGroupLabel(), groupByDate()
+│   ├── vehicle/          # /verify-vehicle + /vehicle-info (protected)
+│   │   ├── verify.tsx            # /verify-vehicle — vehicle verification form
 │   │   ├── vehicle-type-selector.tsx
-│   │   └── image-picker.tsx      # Camera/gallery image selection
-│   └── vehicle-info/     # /vehicle-info (protected)
-│       └── index.tsx             # Vehicle approval status display
+│   │   ├── image-picker.tsx      # Camera/gallery image selection
+│   │   └── info.tsx              # /vehicle-info — vehicle approval status display
+│   └── policy/           # /policy
+│       └── index.tsx
 ├── hooks/
 │   ├── use-infinite-scroll.ts         # IntersectionObserver sentinel → calls onLoadMore
 │   ├── use-snackbar-init.ts           # Initialises zmp-ui Snackbar + globalSnackbar ref
@@ -168,27 +175,28 @@ src/
 
 | Path | File | Protected |
 |------|------|-----------|
-| `/` | `pages/index/index.tsx` | No |
-| `/register` | `pages/register.tsx` | No |
-| `/rewards` | `pages/vouchers/index.tsx` | No |
-| `/rewards/:id` | `pages/vouchers/detail.tsx` | Yes |
-| `/rewards/category/:category` | `pages/vouchers/category-feed.tsx` | No |
+| `/` | `pages/home/index.tsx` | No |
+| `/register` | `pages/auth/index.tsx` | No |
+| `/rewards` | `pages/rewards/index.tsx` | No |
+| `/rewards/all` | `pages/rewards/all-list.tsx` | No |
+| `/rewards/:id` | `pages/rewards/detail.tsx` | Yes |
+| `/rewards/category/:category` | `pages/rewards/category-feed.tsx` | No |
 | `/stores` | `pages/stores/index.tsx` | No |
-| `/stores/:storeId` | `pages/vouchers/store-detail.tsx` | Yes |
+| `/stores/:storeId` | `pages/stores/detail.tsx` | Yes |
 | `/qr-code` | `pages/qr-code/index.tsx` | Yes |
 | `/stations` | `pages/stations/index.tsx` | Yes |
-| `/stations/:id` | `pages/station-detail/index.tsx` | Yes |
+| `/stations/:id` | `pages/stations/detail.tsx` | Yes |
 | `/profile` | `pages/profile/index.tsx` | Yes |
 | `/my-vouchers` | `pages/my-vouchers/index.tsx` | Yes |
 | `/my-vouchers/:id` | `pages/my-vouchers/voucher-detail.tsx` | Yes |
-| `/rank-benefits` | `pages/rank-benefits/index.tsx` | Yes |
-| `/checkin-history` | `pages/checkin-history/index.tsx` | Yes |
-| `/verify-vehicle` | `pages/verify-vehicle/index.tsx` | Yes |
-| `/vehicle-info` | `pages/vehicle-info/index.tsx` | Yes |
+| `/rank-benefits` | `pages/ranks/index.tsx` | Yes |
+| `/checkin-history` | `pages/checkins/index.tsx` | Yes |
+| `/verify-vehicle` | `pages/vehicle/verify.tsx` | Yes |
+| `/vehicle-info` | `pages/vehicle/info.tsx` | Yes |
 
 All routes are declared in `src/components/layout/index.tsx`. `ProtectedRoute` redirects unauthenticated users to `/register`.
 
-> **Naming note:** Routes use `/rewards` (matching the backend `/Rewards` API), but the source files live in `src/pages/vouchers/` and the store/types use "voucher" terminology internally. This is intentional.
+> **Naming note:** Routes use `/rewards` (matching the backend `/Rewards` API), and source files now live in `src/pages/rewards/`. Store/types still use "voucher" terminology internally — this is intentional.
 
 ---
 

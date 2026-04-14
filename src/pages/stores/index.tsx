@@ -5,7 +5,7 @@ import { Store, MapPin, Clock, Phone, Navigation } from 'lucide-react';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { getStores, AppStore } from '@/api/stores';
 import defaultStoreImg from '@/assets/images/logo.png';
-import { InfoRow } from '@/pages/vouchers/store-feed';
+import { InfoRow } from '@/pages/rewards/store-feed';
 import { formatDistance } from '@/utils/format';
 
 // ─── Skeleton ──────────────────────────────────────────────────────────────────

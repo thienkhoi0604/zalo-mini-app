@@ -4,15 +4,43 @@ import { Box, Page, useSnackbar } from 'zmp-ui';
 import CoinIcon from '@/components/ui/coin-icon';
 import { useVouchersStore } from '@/store/vouchers';
 import { useUserStore } from '@/store/user';
-import VouchersList from '@/pages/vouchers/item-cards-list';
-import { SkeletonRow } from '@/pages/vouchers';
+import VouchersList from './item-cards-list';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import PageHeader from '@/components/ui/page-header';
 import { ACTIVE_THEME } from '@/constants/theme';
 
+// ─── Skeleton ─────────────────────────────────────────────────────────────────
+
+const SkeletonRow: FC = () => (
+  <Box style={{ paddingBottom: 4 }}>
+    <Box
+      className="animate-pulse"
+      style={{ margin: '0 12px', background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 4px 20px rgba(0,0,0,0.07)' }}
+    >
+      <Box style={{ height: 3, background: '#E9EBED' }} />
+      <Box style={{ padding: '13px 14px 11px', display: 'flex', alignItems: 'center', gap: 10 }}>
+        <Box style={{ width: 38, height: 38, borderRadius: 11, background: '#E9EBED' }} />
+        <Box style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 6 }}>
+          <Box style={{ height: 13, width: '45%', background: '#E9EBED', borderRadius: 5 }} />
+          <Box style={{ height: 10, width: '30%', background: '#E9EBED', borderRadius: 5 }} />
+        </Box>
+        <Box style={{ height: 30, width: 80, background: '#E9EBED', borderRadius: 20 }} />
+      </Box>
+      <Box flex style={{ gap: 10, padding: '4px 14px 16px' }}>
+        {[1, 2, 3].map((i) => (
+          <Box
+            key={i}
+            style={{ width: 160, height: 192, background: '#E9EBED', borderRadius: 18, flexShrink: 0 }}
+          />
+        ))}
+      </Box>
+    </Box>
+  </Box>
+);
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
-const VouchersListPage: FC = () => {
+const ItemListPage: FC = () => {
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
@@ -24,7 +52,7 @@ const VouchersListPage: FC = () => {
       try {
         await loadAllVouchers();
       } catch {
-        openSnackbar({ text: 'Không thể tải danh sách voucher', type: 'error' });
+        openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
       } finally {
         setInitialized(true);
       }
@@ -57,6 +85,7 @@ const VouchersListPage: FC = () => {
                 padding: '8px 14px',
               }}
             >
+              {/* Points balance */}
               <Box flex className="items-center" style={{ gap: 6, flex: 1, justifyContent: 'center' }}>
                 <CoinIcon size={18} />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#fff', letterSpacing: -0.2 }}>
@@ -64,8 +93,10 @@ const VouchersListPage: FC = () => {
                 </p>
               </Box>
 
+              {/* Divider */}
               <Box style={{ width: 1, height: 20, background: 'rgba(255,255,255,0.25)', borderRadius: 1, flexShrink: 0 }} />
 
+              {/* Unused vouchers */}
               <Box
                 onClick={() => navigate('/my-vouchers')}
                 flex
@@ -100,4 +131,4 @@ const VouchersListPage: FC = () => {
   );
 };
 
-export default VouchersListPage;
+export default ItemListPage;
