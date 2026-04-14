@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Gift, Ticket, ShoppingBag, UtensilsCrossed } from 'lucide-react';
+import { Gift, Ticket, ShoppingBag, UtensilsCrossed, ChevronRight } from 'lucide-react';
 import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
 import { useVouchersStore } from '@/store/vouchers';
@@ -91,6 +91,15 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
           </Box>
         </Box>
 
+        <Box
+          flex
+          className="items-center cursor-pointer"
+          style={{ gap: 2 }}
+          onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
+        >
+          <p style={{ fontSize: 12, fontWeight: 600, color: accent }}>Tất cả</p>
+          <ChevronRight size={14} color={accent} strokeWidth={2.5} />
+        </Box>
       </Box>
 
       {/* Horizontal scroll */}

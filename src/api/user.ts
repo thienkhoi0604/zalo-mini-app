@@ -1,6 +1,7 @@
 import axiosClient from './client';
 import { User, VehicleInfo } from '@/types/user';
 import { PointWallet } from '@/types/point-wallet';
+import { PointTransaction } from '@/types/point-transaction';
 
 export interface AppVehicleType {
   id: string;
@@ -74,6 +75,15 @@ export async function fetchReferralQR(): Promise<string> {
     return data.data;
   } catch {
     return '';
+  }
+}
+
+export async function getPointTransactions(): Promise<PointTransaction[]> {
+  try {
+    const { data } = await axiosClient.get<{ data: PointTransaction[] }>('/me/point-transactions');
+    return data.data ?? [];
+  } catch {
+    return [];
   }
 }
 

@@ -1,5 +1,3 @@
-import { CheckinHistoryItem } from '@/types/checkin';
-
 export function formatTime(dateStr: string): string {
   const d = new Date(dateStr);
   return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
@@ -24,10 +22,13 @@ export function formatGroupLabel(dateStr: string): string {
   return `${dd}/${mm}/${d.getFullYear()}`;
 }
 
-export function groupByDate(items: CheckinHistoryItem[]): { label: string; items: CheckinHistoryItem[] }[] {
-  const map = new Map<string, CheckinHistoryItem[]>();
+export function groupByDateField<T>(
+  items: T[],
+  getDate: (item: T) => string,
+): { label: string; items: T[] }[] {
+  const map = new Map<string, T[]>();
   for (const item of items) {
-    const label = formatGroupLabel(item.checkinAt);
+    const label = formatGroupLabel(getDate(item));
     if (!map.has(label)) map.set(label, []);
     map.get(label)!.push(item);
   }

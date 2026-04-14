@@ -51,7 +51,10 @@ export const TopStationsCarousel: FC = () => {
           <div key={station.id} style={{ width: 280, height: 160, flexShrink: 0 }}>
             <StationCard
               station={station}
-              onClick={() => navigate(`/stations/${station.id}`)}
+              onClick={() => {
+                sessionStorage.setItem('home-scroll-section', 'section-stations');
+                navigate(`/stations/${station.id}`);
+              }}
             />
           </div>
         ))}

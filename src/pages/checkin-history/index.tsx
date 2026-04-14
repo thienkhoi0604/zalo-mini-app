@@ -1,98 +1,78 @@
-import React, { FC, useEffect, useMemo } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Box, Page } from 'zmp-ui';
-import { Zap } from 'lucide-react';
-import { useCheckinsStore } from '@/store/checkins';
-import { useInfiniteScroll } from '@/hooks/use-infinite-scroll';
+import { Zap, TrendingDown } from 'lucide-react';
+import { PointTransaction } from '@/types/point-transaction';
+import { getPointTransactions } from '@/api/user';
 import HistorySkeleton from './history-skeleton';
-import HistoryItem from './history-item';
-import SummaryBanner from './summary-banner';
-import { groupByDate } from './utils';
+import PointTransactionTab from './point-transaction-tab';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 
+type Tab = 'earn' | 'spend';
+
+// ─── Icon toggle ──────────────────────────────────────────────────────────────
+
+const IconToggle: FC<{ active: Tab; onChange: (t: Tab) => void }> = ({ active, onChange }) => (
+  <Box flex className="items-center justify-center" style={{ gap: 10 }}>
+    {([
+      { key: 'earn' as Tab, icon: (active: boolean) => <Zap size={20} color={active ? '#288F4E' : '#9CA3AF'} fill={active ? '#288F4E' : 'none'} strokeWidth={0} /> },
+      { key: 'spend' as Tab, icon: (active: boolean) => <TrendingDown size={20} color={active ? '#288F4E' : '#9CA3AF'} strokeWidth={2.5} /> },
+    ]).map(({ key, icon }) => {
+      const isActive = active === key;
+      return (
+        <Box
+          key={key}
+          onClick={() => onChange(key)}
+          className="flex items-center justify-center"
+          style={{
+            width: 44,
+            height: 44,
+            borderRadius: '50%',
+            background: isActive ? '#EEF7F1' : '#F3F4F6',
+            border: isActive ? '1.5px solid #A7F3D0' : '1.5px solid transparent',
+            cursor: 'pointer',
+            transition: 'all 0.2s',
+            flexShrink: 0,
+          }}
+        >
+          {icon(isActive)}
+        </Box>
+      );
+    })}
+  </Box>
+);
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 const CheckinHistoryPage: FC = () => {
-  const { history, historyLoading, hasMore, loadHistory, loadMoreHistory } = useCheckinsStore();
+  const [activeTab, setActiveTab] = useState<Tab>('earn');
+  const [all, setAll] = useState<PointTransaction[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    loadHistory();
-  }, []);
+  const load = () =>
+    getPointTransactions()
+      .then(setAll)
+      .finally(() => setLoading(false));
 
-  const sentinelRef = useInfiniteScroll(loadMoreHistory, hasMore, historyLoading);
-  const groups = useMemo(() => groupByDate(history), [history]);
-  const isInitialLoad = historyLoading && history.length === 0;
+  useEffect(() => { load(); }, []);
+
+  const filtered = useMemo(
+    () => all.filter((t) => (activeTab === 'earn' ? t.type === 'Earn' : t.type === 'Spend')),
+    [all, activeTab],
+  );
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">
       <PullToRefresh
-        onRefresh={async () => { await loadHistory(); }}
+        onRefresh={load}
         className="flex-1 px-4 pt-4 pb-8"
         style={{ display: 'flex', flexDirection: 'column', gap: 16 }}
       >
-        {isInitialLoad ? (
-          <HistorySkeleton />
-        ) : history.length === 0 ? (
-          <Box className="flex flex-col items-center justify-center py-16" style={{ gap: 12 }}>
-            <Box
-              className="flex items-center justify-center rounded-full"
-              style={{ width: 72, height: 72, background: '#EEF7F1' }}
-            >
-              <Zap size={32} color="#288F4E" fill="#288F4E" strokeWidth={0} />
-            </Box>
-            <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>Chưa có lịch sử</p>
-            <p style={{ fontSize: 13, color: '#9CA3AF', textAlign: 'center' }}>
-              Hãy check-in tại trạm sạc để bắt đầu tích điểm nhé!
-            </p>
-          </Box>
-        ) : (
-          <>
-            <SummaryBanner history={history} />
+        <IconToggle active={activeTab} onChange={setActiveTab} />
 
-            <Box style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {groups.map((group) => (
-                <Box key={group.label}>
-                  <p
-                    style={{
-                      fontSize: 12,
-                      fontWeight: 700,
-                      color: '#6B7280',
-                      textTransform: 'uppercase',
-                      letterSpacing: 0.5,
-                      marginBottom: 8,
-                      paddingLeft: 4,
-                    }}
-                  >
-                    {group.label}
-                  </p>
-                  <Box
-                    className="bg-white rounded-2xl overflow-hidden"
-                    style={{ boxShadow: '0 1px 4px rgba(0,0,0,0.06)', border: '1px solid #F0F0F0' }}
-                  >
-                    {group.items.map((item, idx) => (
-                      <HistoryItem key={item.id} item={item} isLast={idx === group.items.length - 1} />
-                    ))}
-                  </Box>
-                </Box>
-              ))}
-            </Box>
-
-            {historyLoading && (
-              <Box flex className="justify-center items-center py-2" style={{ gap: 8 }}>
-                <Box
-                  className="rounded-full animate-spin"
-                  style={{ width: 18, height: 18, border: '2px solid #E5E7EB', borderTopColor: '#288F4E' }}
-                />
-                <p style={{ fontSize: 13, color: '#9CA3AF' }}>Đang tải thêm...</p>
-              </Box>
-            )}
-
-            <div ref={sentinelRef} style={{ height: 1 }} />
-
-            {!hasMore && (
-              <p style={{ textAlign: 'center', fontSize: 12, color: '#D1D5DB' }}>
-                Đã hiển thị toàn bộ lịch sử
-              </p>
-            )}
-          </>
-        )}
+        {loading
+          ? <HistorySkeleton />
+          : <PointTransactionTab transactions={filtered} type={activeTab} />
+        }
       </PullToRefresh>
     </Page>
   );

@@ -52,7 +52,10 @@ export const TopStores: FC = () => {
               <StoreCard
                 key={store.id}
                 store={store}
-                onCardClick={() => navigate(`/stores/${store.id}`)}
+                onCardClick={() => {
+                  sessionStorage.setItem('home-scroll-section', 'section-stores');
+                  navigate(`/stores/${store.id}`);
+                }}
               />
             ))}
             {stores.length > 2 && <ViewAllFab onClick={() => navigate('/stores')} />}

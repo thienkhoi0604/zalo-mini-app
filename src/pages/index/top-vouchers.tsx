@@ -136,7 +136,7 @@ export const TopVouchers: FC = () => {
       .then(([vouchers, physical]) =>
         setTopVouchers([...vouchers, ...physical].filter((r) => r.status === 'active'))
       )
-      .then(() => setLoading(false), () => setLoading(false));
+      .finally(() => setLoading(false));
   }, []);
 
   const isLoading = loading && topVouchers.length === 0;
@@ -148,7 +148,7 @@ export const TopVouchers: FC = () => {
       <SectionHeader
         title="Vouchers"
         icon={<Gift size={14} color="#fff" />}
-        onViewAll={() => navigate('/rewards')}
+        onViewAll={() => navigate('/rewards/all')}
       />
 
       {/* Horizontal scroll */}
@@ -174,10 +174,13 @@ export const TopVouchers: FC = () => {
               <VoucherCard
                 key={reward.id}
                 reward={reward}
-                onClick={() => navigate(`/rewards/${reward.id}`)}
+                onClick={() => {
+                  sessionStorage.setItem('home-scroll-section', 'section-vouchers');
+                  navigate(`/rewards/${reward.id}`);
+                }}
               />
             ))}
-            {topVouchers.length > 2 && <ViewAllFab onClick={() => navigate('/rewards')} />}
+            {topVouchers.length > 2 && <ViewAllFab onClick={() => navigate('/rewards/all')} />}
           </>
         )}
       </Box>

@@ -226,8 +226,3 @@ export interface GetUserVouchersParams {
   pageNumber?: number;
   pageSize?: number;
 }
-
-export interface VouchersFilter {
-  category?: string;
-  search?: string;
-}

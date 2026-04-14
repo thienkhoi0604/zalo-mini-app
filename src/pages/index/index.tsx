@@ -11,6 +11,8 @@ import { useVouchersStore } from "@/store/vouchers";
 import { useBannersStore } from "@/store/banners";
 import { ACTIVE_THEME } from "@/constants/theme";
 
+const HOME_SCROLL_KEY = 'home-scroll-section';
+
 const HomePage: React.FunctionComponent = () => {
   const [refreshKey, setRefreshKey] = useState(0);
   const { loadPointWallet, isAuthenticated } = useUserStore();
@@ -20,6 +22,17 @@ const HomePage: React.FunctionComponent = () => {
   React.useEffect(() => {
     if (isAuthenticated) loadUserVouchersCount();
   }, [isAuthenticated]);
+
+  // Scroll to section when returning from a detail page
+  React.useEffect(() => {
+    const sectionId = sessionStorage.getItem(HOME_SCROLL_KEY);
+    if (!sectionId) return;
+    sessionStorage.removeItem(HOME_SCROLL_KEY);
+    const timer = setTimeout(() => {
+      document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 80);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleRefresh = async () => {
     const tasks: Promise<void>[] = [loadAllVouchers(), loadBanners()];
@@ -42,6 +55,7 @@ const HomePage: React.FunctionComponent = () => {
 
           {/* Vouchers */}
           <Box
+            id="section-vouchers"
             className="mx-4 mt-4 rounded-2xl bg-white"
             style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
           >
@@ -50,6 +64,7 @@ const HomePage: React.FunctionComponent = () => {
 
           {/* Stores */}
           <Box
+            id="section-stores"
             className="mx-4 mt-4 rounded-2xl bg-white"
             style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
           >
@@ -58,6 +73,7 @@ const HomePage: React.FunctionComponent = () => {
 
           {/* Stations */}
           <Box
+            id="section-stations"
             className="mx-4 mt-4 rounded-2xl bg-white"
             style={{ boxShadow: '0 2px 10px rgba(0,0,0,0.06)' }}
           >
