@@ -108,7 +108,19 @@ ecogreen-coin/
 │   │   ├── layout/           # App shell, bottom nav, scroll restoration
 │   │   ├── routing/          # ProtectedRoute auth guard
 │   │   └── providers/        # CSS variable injection
-│   ├── pages/                # Route-level page components
+│   ├── pages/                # Route-level page components (feature-grouped)
+│   │   ├── home/             # / — Home page (banner, hero, top stations/stores/vouchers)
+│   │   ├── auth/             # /register — Zalo OAuth login
+│   │   ├── rewards/          # /rewards/* — Rewards catalog, category drill-down, detail
+│   │   ├── stores/           # /stores/* — Store list + store detail
+│   │   ├── stations/         # /stations/* — Station list + detail (merged)
+│   │   ├── my-vouchers/      # /my-vouchers/* — User's claimed vouchers
+│   │   ├── profile/          # /profile — User profile, QR referral sheet
+│   │   ├── vehicle/          # /verify-vehicle + /vehicle-info — Vehicle registration & status
+│   │   ├── qr-code/          # /qr-code — QR scanner for check-ins and referrals
+│   │   ├── ranks/            # /rank-benefits — Tier progression and benefits
+│   │   ├── checkins/         # /checkin-history — Point transaction history
+│   │   └── policy/           # /policy — Terms and concepts
 │   ├── hooks/                # Custom React hooks
 │   ├── utils/                # Utility functions
 │   ├── constants/            # Brand colors, fallback images, timing constants
@@ -128,25 +140,27 @@ ecogreen-coin/
 
 ## Routes
 
-| Path | Page | Protected |
-|------|------|-----------|
-| `/` | Home | No |
-| `/register` | Zalo OAuth login | No |
-| `/rewards` | Vouchers catalog | No |
-| `/rewards/:id` | Voucher detail + redeem | Yes |
-| `/rewards/category/:category` | Category drill-down | No |
-| `/stores` | Store directory | No |
-| `/stores/:storeId` | Store detail | Yes |
-| `/qr-code` | QR scanner | Yes |
-| `/stations` | Station list | Yes |
-| `/stations/:id` | Station detail | Yes |
-| `/profile` | User profile | Yes |
-| `/my-vouchers` | Claimed vouchers | Yes |
-| `/my-vouchers/:id` | Voucher detail | Yes |
-| `/rank-benefits` | Rank tiers | Yes |
-| `/checkin-history` | Check-in history | Yes |
-| `/verify-vehicle` | Vehicle registration | Yes |
-| `/vehicle-info` | Vehicle status | Yes |
+| Path | Page | File | Protected |
+|------|------|------|-----------|
+| `/` | Home | `pages/home/index.tsx` | No |
+| `/register` | Zalo OAuth login | `pages/auth/index.tsx` | No |
+| `/rewards` | Rewards catalog | `pages/rewards/index.tsx` | No |
+| `/rewards/all` | Full rewards list | `pages/rewards/all-list.tsx` | No |
+| `/rewards/category/:category` | Category drill-down | `pages/rewards/category-feed.tsx` | No |
+| `/rewards/:id` | Reward detail + redeem | `pages/rewards/detail.tsx` | Yes |
+| `/stores` | Store directory | `pages/stores/index.tsx` | No |
+| `/stores/:storeId` | Store detail | `pages/stores/detail.tsx` | Yes |
+| `/qr-code` | QR scanner | `pages/qr-code/index.tsx` | Yes |
+| `/stations` | Station list | `pages/stations/index.tsx` | Yes |
+| `/stations/:id` | Station detail | `pages/stations/detail.tsx` | Yes |
+| `/profile` | User profile | `pages/profile/index.tsx` | Yes |
+| `/my-vouchers` | Claimed vouchers | `pages/my-vouchers/index.tsx` | Yes |
+| `/my-vouchers/:id` | Voucher detail | `pages/my-vouchers/voucher-detail.tsx` | Yes |
+| `/rank-benefits` | Rank tiers & benefits | `pages/ranks/index.tsx` | Yes |
+| `/checkin-history` | Point transaction history | `pages/checkins/index.tsx` | Yes |
+| `/verify-vehicle` | Vehicle registration | `pages/vehicle/verify.tsx` | Yes |
+| `/vehicle-info` | Vehicle approval status | `pages/vehicle/info.tsx` | Yes |
+| `/policy` | Terms & concepts | `pages/policy/index.tsx` | No |
 
 Protected routes redirect unauthenticated users to `/register`.
 
