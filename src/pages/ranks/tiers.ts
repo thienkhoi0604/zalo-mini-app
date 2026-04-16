@@ -3,7 +3,7 @@ import { AppRank } from '@/types/rank';
 export interface TierConfig {
   code: string;
   name: string;
-  description: string;
+  description: string | null;
   minTotalSpent: number;
   maxTotalSpent: number;
   priority: number;
@@ -77,12 +77,16 @@ const DEFAULT_VISUAL: VisualConfig = {
 // ─── Builder ─────────────────────────────────────────────────────────────────
 
 export function buildTierConfig(rank: AppRank): TierConfig {
-  const visual = VISUAL_BY_CODE[rank.code.toUpperCase()] ?? DEFAULT_VISUAL;
+  const visual =
+    VISUAL_BY_CODE[rank.code.toUpperCase()] ??
+    VISUAL_BY_CODE[rank.name.toUpperCase()] ??
+    DEFAULT_VISUAL;
 
   const benefits: { icon: string; label: string }[] = [
     { icon: '🏷️', label: `Giảm ${rank.rewardProductDiscountPercent}% khi đổi voucher` },
     { icon: '⚡', label: `Lá bonus +${rank.bonusPointCheckinPercent}%` },
     { icon: '🪙', label: `Giảm ${rank.rewardExchangeCoinDiscountPercent}% khi đổi GreenCoin` },
+    ...(rank.customBenefits ?? []).map((b) => ({ icon: '🎁', label: b })),
   ];
 
   return {

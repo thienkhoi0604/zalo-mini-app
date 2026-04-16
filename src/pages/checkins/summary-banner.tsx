@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Zap } from 'lucide-react';
 import { CheckinHistoryItem } from '@/types/checkin';
 import { useUserStore } from '@/store/user';
 import CoinIcon from '@/components/ui/coin-icon';
@@ -29,7 +28,7 @@ const SummaryBanner: FC<{ history: CheckinHistoryItem[] }> = ({ history }) => {
           className="flex items-center justify-center rounded-2xl flex-shrink-0"
           style={{ width: 56, height: 56, background: 'rgba(255,255,255,0.15)', alignSelf: 'center' }}
         >
-          <Zap size={28} color="#fff" fill="#fff" strokeWidth={0} />
+          <CoinIcon size={24} />
         </Box>
       </Box>
 

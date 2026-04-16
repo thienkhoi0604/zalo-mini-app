@@ -1,4 +1,4 @@
-export type PointTransactionType = 'Earn' | 'Spend';
+export type PointTransactionType = 'Earn' | 'Spend' | 'GreenCoin';
 export type PointTransactionSourceType = 'Checkin' | 'Redeem' | string;
 
 export interface PointTransaction {

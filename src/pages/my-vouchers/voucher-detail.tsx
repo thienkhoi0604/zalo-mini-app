@@ -88,21 +88,52 @@ const VoucherDetailPage: FC = () => {
 
   const [qrValue, setQrValue] = useState<string | null>(null);
   const [qrLoading, setQrLoading] = useState(false);
-  const fetchedForIdRef = useRef<string | null>(null);
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const countdownRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const isUsed = userVoucher?.usedAt != null;
 
-  useEffect(() => {
-    if (!userVoucher || isUsed) return;
-    if (fetchedForIdRef.current === userVoucher.id) return;
-    fetchedForIdRef.current = userVoucher.id;
-
+  const fetchSession = (id: string, itemType: UserVoucherItemType) => {
     setQrLoading(true);
     setQrValue(null);
-    fetchQRSession(userVoucher.id, QR_SESSION_TYPE[userVoucher.itemType])
-      .then((session) => { setQrValue(session.token); setQrLoading(false); })
+    if (countdownRef.current) clearInterval(countdownRef.current);
+    setCountdown(null);
+
+    fetchQRSession(id, QR_SESSION_TYPE[itemType])
+      .then((session) => {
+        setQrValue(session.token);
+        setQrLoading(false);
+        const seconds = session.expiresInSeconds ?? 270;
+        setCountdown(seconds);
+
+        countdownRef.current = setInterval(() => {
+          setCountdown((prev) => {
+            if (prev === null || prev <= 1) {
+              clearInterval(countdownRef.current!);
+              countdownRef.current = null;
+              fetchSession(id, itemType);
+              return null;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      })
       .catch(() => { setQrLoading(false); });
+  };
+
+  useEffect(() => {
+    if (!userVoucher || isUsed) return;
+    fetchSession(userVoucher.id, userVoucher.itemType);
+    return () => {
+      if (countdownRef.current) clearInterval(countdownRef.current);
+    };
   }, [userVoucher?.id, isUsed]);
+
+  const formatCountdown = (secs: number) => {
+    const m = Math.floor(secs / 60);
+    const s = secs % 60;
+    return `${m}:${String(s).padStart(2, '0')}`;
+  };
 
   const handleCopyCode = () => {
     if (!userVoucher?.code) return;
@@ -213,6 +244,21 @@ const VoucherDetailPage: FC = () => {
             <p style={{ fontSize: 12, color: '#9CA3AF', textAlign: 'center', lineHeight: '18px' }}>
               💡 Cho nhân viên quét mã này để sử dụng voucher
             </p>
+            {countdown !== null && (
+              <Box
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 6,
+                  background: countdown <= 30 ? '#FEF3C7' : '#F0FDF4',
+                  border: `1px solid ${countdown <= 30 ? '#FDE68A' : '#BBF7D0'}`,
+                  borderRadius: 10, padding: '6px 14px',
+                }}
+              >
+                <Clock size={13} color={countdown <= 30 ? '#D97706' : COLORS.primary} />
+                <p style={{ fontSize: 12, fontWeight: 700, color: countdown <= 30 ? '#D97706' : COLORS.primary }}>
+                  Mã refresh sau {formatCountdown(countdown)}
+                </p>
+              </Box>
+            )}
           </Box>
         </Box>
       )}

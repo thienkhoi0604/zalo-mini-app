@@ -95,6 +95,12 @@ Open `localhost:3000` in your browser. The app runs inside a Zalo Mini App simul
 
 ---
 
+## API Reference
+
+Full backend API documentation — all endpoints, request/response shapes, auth requirements, and error handling — is in **[API-README.md](./API-README.md)**.
+
+---
+
 ## Project Structure
 
 ```

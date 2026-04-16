@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { Car, Gift, History, QrCode, ShieldCheck, UserPlus2, BookOpen } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import { useVouchersStore } from '@/store/vouchers';
-import { fetchQRSession, fetchReferralQR } from '@/api/user';
+import { fetchQRSession, fetchReferralQR, fetchReferralRules, ReferralRule } from '@/api/user';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
 import SectionList from './section-list';
@@ -16,20 +16,19 @@ const ICON_SIZE = 18;
 
 type QRSheetType = 'checkin' | 'referral' | null;
 
-const QR_SHEET_CONFIG: Record<
-  NonNullable<QRSheetType>,
-  { fetchData: () => Promise<string>; title: string; hint: string }
-> = {
-  checkin: {
-    fetchData: () => fetchQRSession(null, 'Checkin').then((d) => d.token),
-    title: 'Mã QR của tôi',
-    hint: '💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc',
-  },
-  referral: {
-    fetchData: fetchReferralQR,
-    title: 'QR giới thiệu người dùng',
-    hint: '💡 Chia sẻ mã này để bạn bè quét và nhận điểm thưởng giới thiệu',
-  },
+const buildReferralHint = (rule: ReferralRule | null): string => {
+  if (!rule) return '💡 Chia sẻ mã này để bạn bè quét và nhận điểm thưởng giới thiệu';
+  const parts: string[] = [`💡 Chia sẻ mã này để giới thiệu bạn bè · Bạn nhận +${rule.pointsPerReferral} Lá mỗi lần thành công`];
+  if (rule.pointsForReferredUser) {
+    parts.push(`· Bạn bè được tặng thêm +${rule.pointsForReferredUser} Lá khi đăng ký`);
+  }
+  return parts.join(' ');
+};
+
+const CHECKIN_QR_CONFIG = {
+  fetchData: () => fetchQRSession(null, 'Checkin').then((d) => d.token),
+  title: 'Mã QR của tôi',
+  hint: '💡 Cho nhân viên quét mã này để nhận điểm tại trạm sạc',
 };
 
 // ─── Personal ────────────────────────────────────────────────────────────────
@@ -39,14 +38,22 @@ const Personal: FC = () => {
   const { user, pointWallet } = useUserStore();
   const { loadUserVouchersCount } = useVouchersStore();
   const [activeQRSheet, setActiveQRSheet] = useState<QRSheetType>(null);
+  const [referralRule, setReferralRule] = useState<ReferralRule | null>(null);
 
   useEffect(() => {
     loadUserVouchersCount();
+    fetchReferralRules().then(setReferralRule);
   }, []);
 
   const vehicleStatus = pointWallet?.vehicleStatus;
   const isVehicleSubmitted = !!vehicleStatus;
-  const activeConfig = activeQRSheet ? QR_SHEET_CONFIG[activeQRSheet] : null;
+
+  const referralQRConfig = {
+    fetchData: fetchReferralQR,
+    title: 'QR giới thiệu người dùng',
+    hint: buildReferralHint(referralRule),
+  };
+  const activeConfig = activeQRSheet === 'checkin' ? CHECKIN_QR_CONFIG : activeQRSheet === 'referral' ? referralQRConfig : null;
 
   return (
     <Box className="py-7">

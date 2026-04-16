@@ -70,6 +70,22 @@ export async function scanReferralCode(referralCode: string): Promise<void> {
   await axiosClient.post('/app/referrals/scan', { referralCode });
 }
 
+export interface ReferralRule {
+  pointsPerReferral: number;
+  pointsForReferredUser: number | null;
+  name: string;
+  description: string;
+}
+
+export async function fetchReferralRules(): Promise<ReferralRule | null> {
+  try {
+    const { data } = await axiosClient.get<{ data: { items: ReferralRule[] } }>('/app/referrals/rules');
+    return data.data.items?.[0] ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export async function fetchReferralQR(): Promise<string> {
   try {
     const { data } = await axiosClient.get<{ data: string }>('/me/referral-qr');

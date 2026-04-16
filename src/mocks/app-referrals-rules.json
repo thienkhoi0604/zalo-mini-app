@@ -1,0 +1,26 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": {
+    "items": [
+      {
+        "id": "7cd56863-21e1-4dc9-9338-729ffbc4f159",
+        "code": "SUMMER01",
+        "name": "Giới thiệu người dùng",
+        "description": "Nhận LÁ khi giới thiệu người dùng mới",
+        "pointsPerReferral": 100,
+        "pointsForReferredUser": null,
+        "milestones": null,
+        "validFrom": null,
+        "validTo": null
+      }
+    ],
+    "pageNumber": 1,
+    "pageSize": 20,
+    "totalCount": 1,
+    "totalPages": 1,
+    "hasPrevious": false,
+    "hasNext": false
+  },
+  "errors": null
+}

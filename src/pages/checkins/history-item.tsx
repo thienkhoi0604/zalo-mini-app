@@ -1,6 +1,5 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { Zap } from 'lucide-react';
 import { CheckinHistoryItem } from '@/types/checkin';
 import { formatTime } from './utils';
 import CoinIcon from '@/components/ui/coin-icon';
@@ -19,7 +18,7 @@ const HistoryItem: FC<{ item: CheckinHistoryItem; isLast: boolean }> = ({ item, 
       className="flex items-center justify-center rounded-full flex-shrink-0"
       style={{ width: 44, height: 44, background: 'linear-gradient(135deg, #EEF7F1 0%, #D1ECDB 100%)' }}
     >
-      <Zap size={20} color="#288F4E" fill="#288F4E" strokeWidth={0} />
+      <CoinIcon size={20} />
     </Box>
 
     <Box style={{ flex: 1, minWidth: 0 }}>

@@ -1,12 +1,23 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { TrendingDown, Zap } from 'lucide-react';
+import { TrendingDown } from 'lucide-react';
 import { PointTransaction } from '@/types/point-transaction';
 import { formatTime } from './utils';
 import CoinIcon from '@/components/ui/coin-icon';
 
 const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({ item, isLast }) => {
   const isSpend = item.type === 'Spend';
+  const isGreenCoin = item.type === 'GreenCoin';
+
+  const iconBg = isSpend
+    ? 'linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%)'
+    : isGreenCoin
+    ? 'linear-gradient(135deg, #FEF9EC 0%, #FDE68A 100%)'
+    : 'linear-gradient(135deg, #EEF7F1 0%, #D1ECDB 100%)';
+
+  const badgeBg = isSpend ? '#FEF2F2' : isGreenCoin ? '#FFFBEB' : '#EEF7F1';
+  const amountColor = isSpend ? '#EF4444' : isGreenCoin ? '#D97706' : '#288F4E';
+  const prefix = isSpend ? '-' : '+';
 
   return (
     <Box
@@ -21,17 +32,11 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
       {/* Icon */}
       <Box
         className="flex items-center justify-center rounded-full flex-shrink-0"
-        style={{
-          width: 44,
-          height: 44,
-          background: isSpend
-            ? 'linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%)'
-            : 'linear-gradient(135deg, #EEF7F1 0%, #D1ECDB 100%)',
-        }}
+        style={{ width: 44, height: 44, background: iconBg }}
       >
         {isSpend
           ? <TrendingDown size={20} color="#EF4444" strokeWidth={2} />
-          : <Zap size={20} color="#288F4E" fill="#288F4E" strokeWidth={0} />
+          : <CoinIcon size={16} />
         }
       </Box>
 
@@ -63,16 +68,12 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
       {/* Points badge */}
       <Box
         className="flex items-center justify-center rounded-full flex-shrink-0"
-        style={{
-          background: isSpend ? '#FEF2F2' : '#EEF7F1',
-          padding: '4px 10px',
-          minWidth: 60,
-        }}
+        style={{ background: badgeBg, padding: '4px 10px', minWidth: 60 }}
       >
         <Box flex className="items-center" style={{ gap: 3 }}>
           <CoinIcon size={13} />
-          <p style={{ fontSize: 13, fontWeight: 700, color: isSpend ? '#EF4444' : '#288F4E' }}>
-            {isSpend ? '-' : '+'}{item.points.toLocaleString('vi-VN')}
+          <p style={{ fontSize: 13, fontWeight: 700, color: amountColor }}>
+            {prefix}{item.points.toLocaleString('vi-VN')}
           </p>
         </Box>
       </Box>

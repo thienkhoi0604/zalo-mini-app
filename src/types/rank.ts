@@ -2,7 +2,8 @@ export interface AppRank {
   id: string;
   code: string;
   name: string;
-  description: string;
+  description: string | null;
+  customBenefits: string[] | null;
   minTotalSpent: number;
   maxTotalSpent: number;
   priority: number;
