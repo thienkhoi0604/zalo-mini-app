@@ -2,28 +2,26 @@ import React, { FC, useEffect, useRef, useState } from 'react';
 import { Page } from 'zmp-ui';
 import { PointTransaction } from '@/types/point-transaction';
 import { getPointTransactions } from '@/api/user';
-import PointTransactionTab from './point-transaction-tab';
+import PointTransactionTab, { Tab } from './point-transaction-tab';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
-
-type Tab = 'lá' | 'greencoin';
 
 const GREENCOIN_TYPE = 7;
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 const CheckinHistoryPage: FC = () => {
-  const [activeTab, setActiveTab] = useState<Tab>('lá');
-  const [láData, setLáData] = useState<PointTransaction[]>([]);
+  const [activeTab, setActiveTab] = useState<Tab>('leaf');
+  const [leafData, setLeafData] = useState<PointTransaction[]>([]);
   const [greenCoinData, setGreenCoinData] = useState<PointTransaction[]>([]);
-  const [láLoading, setLáLoading] = useState(true);
+  const [leafLoading, setLeafLoading] = useState(true);
   const [greenCoinLoading, setGreenCoinLoading] = useState(false);
   const greenCoinFetchedRef = useRef(false);
 
-  const loadLá = async () => {
-    setLáLoading(true);
+  const loadLeaf = async () => {
+    setLeafLoading(true);
     const all = await getPointTransactions();
-    setLáData(all.filter((t) => t.type === 'Earn' || t.type === 'Spend'));
-    setLáLoading(false);
+    setLeafData(all.filter((t) => t.type === 'Earn' || t.type === 'Spend'));
+    setLeafLoading(false);
   };
 
   const loadGreenCoin = async () => {
@@ -33,7 +31,7 @@ const CheckinHistoryPage: FC = () => {
     setGreenCoinLoading(false);
   };
 
-  useEffect(() => { loadLá(); }, []);
+  useEffect(() => { loadLeaf(); }, []);
 
   const handleTabChange = (tab: Tab) => {
     setActiveTab(tab);
@@ -44,12 +42,12 @@ const CheckinHistoryPage: FC = () => {
   };
 
   const handleRefresh = async () => {
-    if (activeTab === 'lá') await loadLá();
+    if (activeTab === 'leaf') await loadLeaf();
     else await loadGreenCoin();
   };
 
-  const transactions = activeTab === 'lá' ? láData : greenCoinData;
-  const loading = activeTab === 'lá' ? láLoading : greenCoinLoading;
+  const transactions = activeTab === 'leaf' ? leafData : greenCoinData;
+  const loading = activeTab === 'leaf' ? leafLoading : greenCoinLoading;
 
   return (
     <Page className="flex-1 flex flex-col bg-gray-50">

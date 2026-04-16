@@ -7,21 +7,20 @@ import PointTransactionItem from './point-transaction-item';
 import HistorySkeleton from './history-skeleton';
 import { groupByDateField } from './utils';
 
-type Tab = 'lá' | 'greencoin';
+export type Tab = 'leaf' | 'greencoin';
 
 // ─── Summary banner ────────────────────────────────────────────────────────────
 
 const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTypeChange: (t: Tab) => void }> = ({ transactions, type, onTypeChange }) => {
   const { pointWallet, user } = useUserStore();
   const rankIconUrl = user?.rank?.currentRankIconUrl;
-  const isLa = type === 'lá';
+  const isLa = type === 'leaf';
 
   const bigNumber = isLa
     ? (pointWallet?.currentBalance ?? 0)
     : transactions.reduce((sum, t) => sum + t.points, 0);
 
   const label = isLa ? 'Số dư Lá' : 'Tổng GreenCoin';
-  const subLabel = isLa ? 'giao dịch' : 'giao dịch';
   const balanceLabel = isLa ? 'Tổng tích lũy' : 'GreenCoin hiện có';
   const balance = isLa ? (pointWallet?.totalEarned ?? 0) : (pointWallet?.greenCoin ?? 0);
 
@@ -37,7 +36,7 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
             {bigNumber.toLocaleString('vi-VN')}
           </p>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', marginTop: 4 }}>
-            Từ {transactions.length} {subLabel}
+            Từ {transactions.length} giao dịch
           </p>
         </Box>
 
@@ -45,7 +44,7 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
         <Box flex className="flex-shrink-0" style={{ gap: 8 }}>
           {([
             {
-              key: 'lá' as Tab,
+              key: 'leaf' as Tab,
               icon: (active: boolean) => <CoinIcon size={14} style={{ opacity: active ? 1 : 0.45 }} />,
             },
             {
@@ -105,7 +104,7 @@ const PointTransactionTab: FC<{
 }> = ({ transactions, type, onTypeChange, loading = false }) => {
   const groups = useMemo(() => groupByDateField(transactions, (t) => t.createdAt), [transactions]);
 
-  const emptyMessage = type === 'lá'
+  const emptyMessage = type === 'leaf'
     ? 'Chưa có giao dịch Lá nào.'
     : 'Chưa có giao dịch GreenCoin nào.';
 
