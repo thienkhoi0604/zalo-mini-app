@@ -1,4 +1,4 @@
-import { Voucher, UserVoucher, VoucherApiItem, StoreItemApiResponse, GetUserVouchersParams, FEED_ITEM_TYPES } from '@/types/voucher';
+import { Voucher, UserVoucher, VoucherApiItem, StoreItemApiResponse, GetUserVouchersParams } from '@/types/voucher';
 import { PaginatedApiResponse } from '@/types/common';
 import axiosClient from './client';
 
@@ -12,7 +12,9 @@ function mapApiItemToVoucher(item: VoucherApiItem): Voucher {
     shortDescription: item.shortDescription ?? undefined,
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
-    category: item.type === FEED_ITEM_TYPES.VOUCHER ? 'Voucher giảm giá' : item.type === FEED_ITEM_TYPES.PHYSICAL_ITEM ? 'Quà tặng vật phẩm' : item.type,
+    itemTypeLabel: item.type,
+    categoryId: null,
+    categoryName: null,
     source: 'Reward',
     costCurrency: 'Lá',
     pointsRequired: item.pointCost,
@@ -53,7 +55,9 @@ function mapStoreItemToVoucher(item: StoreItemApiResponse): Voucher {
     shortDescription: item.shortDescription ?? undefined,
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
-    category: item.typeName,
+    itemTypeLabel: item.typeName,
+    categoryId: null,
+    categoryName: null,
     source: 'StoreItem',
     brandName: item.storeName,
     costCurrency: 'GreenCoin',

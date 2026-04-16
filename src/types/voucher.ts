@@ -1,3 +1,11 @@
+export interface AppCategory {
+  id: string;
+  name: string;
+  imageUrl: string;
+  storeItemCount: number;
+  rewardCount: number;
+}
+
 export interface VoucherStore {
   id?: string;
   name: string;
@@ -55,6 +63,8 @@ export interface FeedApiItem {
   validFrom: string | null;
   validTo: string | null;
   appliesToAll: boolean | null;
+  categoryId: string | null;
+  categoryName: string | null;
 }
 
 export interface GetFeedParams {
@@ -64,6 +74,8 @@ export interface GetFeedParams {
   type?: FeedItemType;
   /** Maps to the `StoreId` query param on /app/feed */
   storeId?: string;
+  /** Maps to the `CategoryId` query param on /app/feed */
+  categoryId?: string;
 }
 
 // ─── Grouped feed (Grouped=true) ──────────────────────────────────────────────
@@ -166,8 +178,12 @@ export interface Voucher {
   shortDescription?: string;
   bannerImageUrl: string;
   thumbnailImageUrl: string;
-  /** itemTypeTranslate from the feed — used as grouping key and route param */
-  category: string;
+  /** Derived from itemType — display label for the item type (e.g. "Đồ ăn & Thức uống") */
+  itemTypeLabel: string;
+  /** Category ID from /app/categories — null for store items not assigned to a category */
+  categoryId: string | null;
+  /** Category display name from /app/categories — null when categoryId is null */
+  categoryName: string | null;
   source: VoucherSource;
   brandName?: string;
   brandLogoUrl?: string;

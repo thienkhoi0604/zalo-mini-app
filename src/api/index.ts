@@ -1,5 +1,6 @@
 export { axiosClient, default } from "./client";
 export * from "./auth";
+export * from "./categories";
 export * from "./stations";
 export * from "./vouchers";
 export * from "./feed";

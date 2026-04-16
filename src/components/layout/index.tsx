@@ -61,7 +61,7 @@ const getRouteTitle = (pathname: string): string => {
   if (pathname === '/vehicle-info') return 'Thông tin xe';
   if (pathname === '/policy') return 'Khái niệm & Điều khoản';
   if (pathname.startsWith('/rewards/category/'))
-    return decodeURIComponent(pathname.replace('/rewards/category/', ''));
+    return 'Danh mục';
   if (pathname.startsWith('/rewards/')) return 'Chi tiết voucher';
   if (pathname.startsWith('/stations/')) return 'Chi tiết trạm sạc';
   if (pathname === '/rewards/all') return 'Danh sách voucher';
@@ -194,7 +194,7 @@ export const Layout: FC = () => {
 
           {/* Rewards — category phải đứng trước :id để tránh match nhầm */}
           <Route path="/rewards" element={<VouchersPage />} />
-          <Route path="/rewards/category/:category" element={<CategoryDetailPage />} />
+          <Route path="/rewards/category/:categoryId" element={<CategoryDetailPage />} />
           {/* /rewards/all must come before /rewards/:id to avoid matching "all" as an id */}
           <Route path="/rewards/all" element={<VouchersListPage />} />
           <Route path="/stores" element={<StoresPage />} />

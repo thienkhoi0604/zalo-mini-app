@@ -1,4 +1,4 @@
-import { FeedApiItem, FEED_ITEM_TYPES, GetFeedParams, GroupedFeedResult, Voucher, StoreGroup } from '@/types/voucher';
+import { FeedApiItem, GetFeedParams, GroupedFeedResult, Voucher, StoreGroup } from '@/types/voucher';
 import axiosClient from './client';
 
 export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
@@ -15,7 +15,9 @@ export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
     shortDescription: item.shortDescription ?? undefined,
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
-    category: item.itemType === FEED_ITEM_TYPES.VOUCHER ? 'Voucher giảm giá' : item.itemType === FEED_ITEM_TYPES.PHYSICAL_ITEM ? 'Quà tặng vật phẩm' : (item.itemTypeTranslate ?? ''),
+    itemTypeLabel: item.itemTypeTranslate ?? '',
+    categoryId: item.categoryId ?? null,
+    categoryName: item.categoryName ?? null,
     source: item.sourceType,
     brandName: item.storeName ?? undefined,
     costCurrency: isStoreItem ? 'GreenCoin' : 'Lá',
@@ -35,7 +37,7 @@ export function mapFeedItemToVoucher(item: FeedApiItem): Voucher {
 }
 
 export async function getFeedItems(params: GetFeedParams = {}): Promise<Voucher[]> {
-  const { pageNumber = 1, pageSize = 50, type, storeId } = params;
+  const { pageNumber = 1, pageSize = 50, type, storeId, categoryId } = params;
   const { data } = await axiosClient.get<{
     data: {
       items: FeedApiItem[];
@@ -52,6 +54,7 @@ export async function getFeedItems(params: GetFeedParams = {}): Promise<Voucher[
       pageSize,
       ...(type && { Type: type }),
       ...(storeId && { StoreId: storeId }),
+      ...(categoryId && { CategoryId: categoryId }),
     },
   });
   return (data.data?.items ?? []).map(mapFeedItemToVoucher);

@@ -1,6 +1,7 @@
 import { create } from 'zustand';
-import { Voucher, UserVoucher, StoreGroup, GroupedFeedResult, FEED_ITEM_TYPES } from '@/types/voucher';
+import { Voucher, UserVoucher, StoreGroup, GroupedFeedResult, AppCategory } from '@/types/voucher';
 import { getFeedItems, getFeedGrouped } from '@/api/feed';
+import { getCategories } from '@/api/categories';
 import { getVoucherById, getStoreItemById, getUserVouchers, getUserVouchersCount, redeemVoucher } from '@/api/vouchers';
 import { useUserStore } from '@/store/user';
 
@@ -23,12 +24,17 @@ type VouchersStore = {
   storeGroups: StoreGroup[];
   storeGroupsLoading: boolean;
 
+  // Categories from /app/categories
+  categories: AppCategory[];
+  categoriesLoading: boolean;
+
   loadAllVouchers: () => Promise<void>;
   loadVoucherById: (id: string) => Promise<void>;
   loadUserVouchers: () => Promise<void>;
   loadMoreUserVouchers: () => Promise<void>;
   loadUserVouchersCount: () => Promise<void>;
   loadStoreGroups: () => Promise<void>;
+  loadCategories: () => Promise<void>;
   redeemVoucher: (voucherId: string) => Promise<void>;
   getGroupedByCategory: () => Record<string, Voucher[]>;
 };
@@ -45,6 +51,8 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
   globalVouchers: [],
   storeGroups: [],
   storeGroupsLoading: false,
+  categories: [],
+  categoriesLoading: false,
 
   loadAllVouchers: async () => {
     set({ loading: true });
@@ -141,6 +149,19 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
     }
   },
 
+  loadCategories: async () => {
+    if (get().categoriesLoading) return;
+    set({ categoriesLoading: true });
+    try {
+      const categories = await getCategories();
+      set({ categories });
+    } catch (error) {
+      console.error('Failed to load categories:', error);
+    } finally {
+      set({ categoriesLoading: false });
+    }
+  },
+
   redeemVoucher: async (voucherId: string) => {
     set({ redeeming: true });
     try {
@@ -160,14 +181,21 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
   },
 
   getGroupedByCategory: () => {
-    const ALLOWED_TYPES = [FEED_ITEM_TYPES.VOUCHER, FEED_ITEM_TYPES.PHYSICAL_ITEM];
+    const { allVouchers, categories } = get();
+    // Build a map of categoryId → items from allVouchers that have a categoryId
     const grouped: Record<string, Voucher[]> = {};
-    get().allVouchers
-      .filter((voucher) => (ALLOWED_TYPES as string[]).includes(voucher.type))
+    allVouchers
+      .filter((voucher) => voucher.categoryId !== null)
       .forEach((voucher) => {
-        if (!grouped[voucher.category]) grouped[voucher.category] = [];
-        grouped[voucher.category].push(voucher);
+        const key = voucher.categoryId!;
+        if (!grouped[key]) grouped[key] = [];
+        grouped[key].push(voucher);
       });
-    return grouped;
+    // Return ordered by the categories list from /app/categories
+    const ordered: Record<string, Voucher[]> = {};
+    categories.forEach((cat) => {
+      if (grouped[cat.id]) ordered[cat.id] = grouped[cat.id];
+    });
+    return ordered;
   },
 }));

@@ -1,0 +1,42 @@
+{
+  "success": true,
+  "message": "Success",
+  "data": [
+    {
+      "id": "d37bd383-f99d-448a-89d0-964c55726bc2",
+      "name": "Thức Ăn Nhanh",
+      "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/temp/b92d61fb67294ad1b0389f948d73e755.webp",
+      "storeItemCount": 0,
+      "rewardCount": 1
+    },
+    {
+      "id": "57fea97e-68d2-4a34-901e-ed239646d333",
+      "name": "Đồ Uống",
+      "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/temp/449354f3da87431db9cb60d433a800dd.webp",
+      "storeItemCount": 0,
+      "rewardCount": 2
+    },
+    {
+      "id": "c11c347a-fcfb-40bd-bc16-ccdff4a2f6f1",
+      "name": "Danh Mục Khoi Store Quận 1",
+      "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/temp/444fbafb56f143689507c25a6733571e.webp",
+      "storeItemCount": 0,
+      "rewardCount": 1
+    },
+    {
+      "id": "872f1ec1-3bc4-44a2-8ed4-afe96d89e40b",
+      "name": "Danh Mục Khoi Store Quận 2",
+      "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/temp/cd5f8fefd74449c5a572a194a6da9436.webp",
+      "storeItemCount": 0,
+      "rewardCount": 0
+    },
+    {
+      "id": "146814a4-0f54-4a14-ba15-cb443aeeed73",
+      "name": "Voucher Giảm Giá",
+      "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/4904f92772d743c0a8c8b15b1e6079af.webp",
+      "storeItemCount": 0,
+      "rewardCount": 2
+    }
+  ],
+  "errors": null
+}

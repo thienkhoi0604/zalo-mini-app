@@ -122,7 +122,7 @@ const VoucherRow: FC<{ voucher: Voucher; onClick: () => void }> = ({ voucher, on
         <Box style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
           <Box style={{ background: typeColor.bg, borderRadius: 5, padding: '2px 7px' }}>
             <p style={{ fontSize: 9.5, fontWeight: 700, color: typeColor.text }}>
-              {voucher.category}
+              {voucher.itemTypeLabel}
             </p>
           </Box>
           {!expired && voucher.stock != null && voucher.stock <= 20 && (

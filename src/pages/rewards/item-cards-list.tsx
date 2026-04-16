@@ -1,43 +1,37 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
-import { Gift, Ticket, ShoppingBag, UtensilsCrossed, ChevronRight } from 'lucide-react';
+import { Gift, ChevronRight, Tag } from 'lucide-react';
 import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
 import { useVouchersStore } from '@/store/vouchers';
-import { Voucher } from '@/types/voucher';
+import { AppCategory, Voucher } from '@/types/voucher';
 import VoucherCard from './voucher-card';
 import { useNavigate } from 'react-router';
 
-// ─── Category config ───────────────────────────────────────────────────────────
+// ─── Category colours (cycled) ────────────────────────────────────────────────
 
-interface CategoryConfig {
-  accent: string;
-  accentLight: string;
-  accentMid: string;
-  icon: React.ReactNode;
-}
-
-const CATEGORY_CONFIGS: CategoryConfig[] = [
-  { accent: '#288F4E', accentLight: '#DCFCE7', accentMid: '#BBF7D0', icon: <Ticket size={16} strokeWidth={2} /> },
-  { accent: '#D97706', accentLight: '#FEF3C7', accentMid: '#FDE68A', icon: <ShoppingBag size={16} strokeWidth={2} /> },
-  { accent: '#7C3AED', accentLight: '#EDE9FE', accentMid: '#DDD6FE', icon: <Gift size={16} strokeWidth={2} /> },
-  { accent: '#0891B2', accentLight: '#CFFAFE', accentMid: '#A5F3FC', icon: <UtensilsCrossed size={16} strokeWidth={2} /> },
-  { accent: '#DB2777', accentLight: '#FCE7F3', accentMid: '#FBCFE8', icon: <Ticket size={16} strokeWidth={2} /> },
-  { accent: '#059669', accentLight: '#D1FAE5', accentMid: '#A7F3D0', icon: <ShoppingBag size={16} strokeWidth={2} /> },
+const PALETTE = [
+  { accent: '#288F4E', accentLight: '#DCFCE7', accentMid: '#BBF7D0' },
+  { accent: '#D97706', accentLight: '#FEF3C7', accentMid: '#FDE68A' },
+  { accent: '#7C3AED', accentLight: '#EDE9FE', accentMid: '#DDD6FE' },
+  { accent: '#0891B2', accentLight: '#CFFAFE', accentMid: '#A5F3FC' },
+  { accent: '#DB2777', accentLight: '#FCE7F3', accentMid: '#FBCFE8' },
+  { accent: '#059669', accentLight: '#D1FAE5', accentMid: '#A7F3D0' },
 ];
 
 // ─── Category Row ─────────────────────────────────────────────────────────────
 
 interface CategoryRowProps {
-  category: string;
+  category: AppCategory;
   cards: Voucher[];
-  config: CategoryConfig;
+  paletteIndex: number;
 }
 
-const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
+const CategoryRow: FC<CategoryRowProps> = ({ category, cards, paletteIndex }) => {
   const navigate = useNavigate();
-  const { accent, accentLight, accentMid, icon } = config;
+  const { accent, accentLight, accentMid } = PALETTE[paletteIndex % PALETTE.length];
   const visibleCards = cards.slice(0, 8);
+
   return (
     <Box
       style={{
@@ -66,14 +60,23 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               flexShrink: 0,
               color: accent,
+              overflow: 'hidden',
             }}
           >
-            {icon}
+            {category.imageUrl ? (
+              <img
+                src={category.imageUrl}
+                alt={category.name}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            ) : (
+              <Tag size={16} strokeWidth={2} />
+            )}
           </Box>
 
           <Box>
             <p style={{ fontSize: 14, fontWeight: 800, color: '#111827', lineHeight: '18px' }}>
-              {category}
+              {category.name}
             </p>
             <Box flex className="items-center" style={{ gap: 5, marginTop: 2 }}>
               <Box
@@ -95,7 +98,7 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
           flex
           className="items-center cursor-pointer"
           style={{ gap: 2 }}
-          onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)}
+          onClick={() => navigate(`/rewards/category/${category.id}`)}
         >
           <p style={{ fontSize: 12, fontWeight: 600, color: accent }}>Tất cả</p>
           <ChevronRight size={14} color={accent} strokeWidth={2.5} />
@@ -126,7 +129,7 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
         ))}
 
         {cards.length > 2 && (
-          <ViewAllFab onClick={() => navigate(`/rewards/category/${encodeURIComponent(category)}`)} />
+          <ViewAllFab onClick={() => navigate(`/rewards/category/${category.id}`)} />
         )}
       </Box>
     </Box>
@@ -136,11 +139,22 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, config }) => {
 // ─── Main List ────────────────────────────────────────────────────────────────
 
 const VouchersList: FC = () => {
-  const { getGroupedByCategory } = useVouchersStore();
+  const { categories, categoriesLoading, loadCategories, getGroupedByCategory } = useVouchersStore();
   const grouped = getGroupedByCategory();
-  const categories = Object.keys(grouped).sort();
 
-  if (categories.length === 0) {
+  useEffect(() => {
+    if (categories.length === 0 && !categoriesLoading) {
+      loadCategories();
+    }
+  }, []);
+
+  const visibleCategories = categories.filter((cat) => grouped[cat.id]?.length > 0);
+
+  if (categoriesLoading && categories.length === 0) {
+    return null; // parent already shows skeleton
+  }
+
+  if (visibleCategories.length === 0) {
     return (
       <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 14 }}>
         <Box
@@ -169,12 +183,12 @@ const VouchersList: FC = () => {
         className=""
       />
 
-      {categories.map((category, i) => (
+      {visibleCategories.map((category, i) => (
         <CategoryRow
-          key={category}
+          key={category.id}
           category={category}
-          cards={grouped[category]}
-          config={CATEGORY_CONFIGS[i % CATEGORY_CONFIGS.length]}
+          cards={grouped[category.id]}
+          paletteIndex={i}
         />
       ))}
     </Box>

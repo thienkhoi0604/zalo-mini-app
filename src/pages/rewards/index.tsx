@@ -46,13 +46,13 @@ const VouchersPage: FC = () => {
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const [initialized, setInitialized] = useState(false);
-  const { loading, loadAllVouchers, loadStoreGroups, userVouchersUnusedCount, loadUserVouchersCount } = useVouchersStore();
+  const { loading, loadAllVouchers, loadStoreGroups, loadCategories, userVouchersUnusedCount, loadUserVouchersCount } = useVouchersStore();
   const { pointWallet, isAuthenticated } = useUserStore();
 
   useEffect(() => {
     const init = async () => {
       try {
-        await loadAllVouchers();
+        await Promise.all([loadAllVouchers(), loadCategories()]);
       } catch {
         openSnackbar({ text: 'Không thể tải danh sách voucher', type: 'error' });
       } finally {
@@ -64,7 +64,7 @@ const VouchersPage: FC = () => {
   }, [isAuthenticated]);
 
   const handleRefresh = async () => {
-    const tasks: Promise<void>[] = [loadAllVouchers(), loadStoreGroups()];
+    const tasks: Promise<void>[] = [loadAllVouchers(), loadStoreGroups(), loadCategories()];
     if (isAuthenticated) tasks.push(loadUserVouchersCount());
     await Promise.all(tasks);
   };
