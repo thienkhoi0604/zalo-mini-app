@@ -1,19 +1,15 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
-import { TrendingDown } from 'lucide-react';
 import { PointTransaction } from '@/types/point-transaction';
+import { useUserStore } from '@/store/user';
 import { formatTime } from './utils';
 import CoinIcon from '@/components/ui/coin-icon';
 
 const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({ item, isLast }) => {
   const isSpend = item.type === 'Spend';
   const isGreenCoin = item.type === 'GreenCoin';
-
-  const iconBg = isSpend
-    ? 'linear-gradient(135deg, #FEF2F2 0%, #FECACA 100%)'
-    : isGreenCoin
-    ? 'linear-gradient(135deg, #FEF9EC 0%, #FDE68A 100%)'
-    : 'linear-gradient(135deg, #EEF7F1 0%, #D1ECDB 100%)';
+  const { user } = useUserStore();
+  const rankIconUrl = user?.rank?.currentRankIconUrl;
 
   const badgeBg = isSpend ? '#FEF2F2' : isGreenCoin ? '#FFFBEB' : '#EEF7F1';
   const amountColor = isSpend ? '#EF4444' : isGreenCoin ? '#D97706' : '#288F4E';
@@ -29,15 +25,20 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
         gap: 12,
       }}
     >
-      {/* Icon */}
+      {/* Left icon — no background */}
       <Box
-        className="flex items-center justify-center rounded-full flex-shrink-0"
-        style={{ width: 44, height: 44, background: iconBg }}
+        className="flex items-center justify-center flex-shrink-0"
+        style={{ width: 44, height: 44 }}
       >
-        {isSpend
-          ? <TrendingDown size={20} color="#EF4444" strokeWidth={2} />
-          : <CoinIcon size={16} />
-        }
+        {isGreenCoin && rankIconUrl ? (
+          <img
+            src={rankIconUrl}
+            alt="rank"
+            style={{ width: 44, height: 44, objectFit: 'contain' }}
+          />
+        ) : (
+          <CoinIcon size={26} />
+        )}
       </Box>
 
       {/* Text */}
@@ -58,10 +59,14 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
         </p>
         <p style={{ fontSize: 11, color: '#9CA3AF', marginTop: 3 }}>
           {formatTime(item.createdAt)}
-          {' · '}
-          <span style={{ color: '#B0B7C0' }}>
-            Số dư: {item.balanceAfter.toLocaleString('vi-VN')}
-          </span>
+          {!isGreenCoin && (
+            <>
+              {' · '}
+              <span style={{ color: '#B0B7C0' }}>
+                Số dư: {item.balanceAfter.toLocaleString('vi-VN')}
+              </span>
+            </>
+          )}
         </p>
       </Box>
 
@@ -71,7 +76,11 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
         style={{ background: badgeBg, padding: '4px 10px', minWidth: 60 }}
       >
         <Box flex className="items-center" style={{ gap: 3 }}>
-          <CoinIcon size={13} />
+          {isGreenCoin && rankIconUrl ? (
+            <img src={rankIconUrl} alt="rank" style={{ width: 14, height: 14, objectFit: 'contain' }} />
+          ) : (
+            <CoinIcon size={13} />
+          )}
           <p style={{ fontSize: 13, fontWeight: 700, color: amountColor }}>
             {prefix}{item.points.toLocaleString('vi-VN')}
           </p>

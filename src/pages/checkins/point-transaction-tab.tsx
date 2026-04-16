@@ -1,6 +1,5 @@
 import React, { FC, useMemo } from 'react';
 import { Box } from 'zmp-ui';
-import { TrendingDown, TrendingUp } from 'lucide-react';
 import { PointTransaction } from '@/types/point-transaction';
 import { useUserStore } from '@/store/user';
 import CoinIcon from '@/components/ui/coin-icon';
@@ -8,18 +7,23 @@ import PointTransactionItem from './point-transaction-item';
 import HistorySkeleton from './history-skeleton';
 import { groupByDateField } from './utils';
 
-type Tab = 'earn' | 'spend' | 'greencoin';
+type Tab = 'lá' | 'greencoin';
 
 // ─── Summary banner ────────────────────────────────────────────────────────────
 
 const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTypeChange: (t: Tab) => void }> = ({ transactions, type, onTypeChange }) => {
-  const total = transactions.reduce((sum, t) => sum + t.points, 0);
-  const { pointWallet } = useUserStore();
+  const { pointWallet, user } = useUserStore();
+  const rankIconUrl = user?.rank?.currentRankIconUrl;
+  const isLa = type === 'lá';
 
-  const label = type === 'earn' ? 'Tổng tích lũy' : type === 'spend' ? 'Tổng đã dùng' : 'Tổng GreenCoin';
-  const subLabel = type === 'earn' ? 'lần tích điểm' : type === 'spend' ? 'lần sử dụng' : 'giao dịch';
-  const balance = type === 'greencoin' ? (pointWallet?.greenCoin ?? 0) : (pointWallet?.currentBalance ?? 0);
-  const balanceLabel = type === 'greencoin' ? 'GreenCoin hiện có' : 'Số dư hiện tại';
+  const bigNumber = isLa
+    ? (pointWallet?.currentBalance ?? 0)
+    : transactions.reduce((sum, t) => sum + t.points, 0);
+
+  const label = isLa ? 'Số dư Lá' : 'Tổng GreenCoin';
+  const subLabel = isLa ? 'giao dịch' : 'giao dịch';
+  const balanceLabel = isLa ? 'Tổng tích lũy' : 'GreenCoin hiện có';
+  const balance = isLa ? (pointWallet?.totalEarned ?? 0) : (pointWallet?.greenCoin ?? 0);
 
   return (
     <Box
@@ -30,7 +34,7 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
         <Box style={{ flex: 1 }}>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', marginBottom: 4 }}>{label}</p>
           <p style={{ fontSize: 28, fontWeight: 800, color: '#fff', lineHeight: 1.1 }}>
-            {total.toLocaleString('vi-VN')}
+            {bigNumber.toLocaleString('vi-VN')}
           </p>
           <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)', marginTop: 4 }}>
             Từ {transactions.length} {subLabel}
@@ -41,16 +45,14 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
         <Box flex className="flex-shrink-0" style={{ gap: 8 }}>
           {([
             {
-              key: 'earn' as Tab,
-              icon: (active: boolean) => <TrendingUp size={20} color={active ? '#288F4E' : 'rgba(255,255,255,0.5)'} strokeWidth={2.5} />,
-            },
-            {
-              key: 'spend' as Tab,
-              icon: (active: boolean) => <TrendingDown size={20} color={active ? '#288F4E' : 'rgba(255,255,255,0.5)'} strokeWidth={2.5} />,
+              key: 'lá' as Tab,
+              icon: (active: boolean) => <CoinIcon size={14} style={{ opacity: active ? 1 : 0.45 }} />,
             },
             {
               key: 'greencoin' as Tab,
-              icon: (active: boolean) => <CoinIcon size={14} style={{ opacity: active ? 1 : 0.45, filter: active ? 'none' : 'grayscale(0.4)' }} />,
+              icon: (_active: boolean) => rankIconUrl
+                ? <img src={rankIconUrl} alt="rank" style={{ width: 22, height: 22, objectFit: 'contain' }} />
+                : <CoinIcon size={14} style={{ opacity: _active ? 1 : 0.45 }} />,
             },
           ] as { key: Tab; icon: (active: boolean) => React.ReactNode }[]).map(({ key, icon }) => {
             const isActive = type === key;
@@ -80,7 +82,10 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
       <Box flex className="items-center justify-between">
         <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>{balanceLabel}</p>
         <Box flex className="items-center" style={{ gap: 5 }}>
-          <CoinIcon size={20} />
+          {!isLa && rankIconUrl
+            ? <img src={rankIconUrl} alt="rank" style={{ width: 24, height: 24, objectFit: 'contain' }} />
+            : <CoinIcon size={20} />
+          }
           <p style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>
             {balance.toLocaleString('vi-VN')}
           </p>
@@ -100,16 +105,8 @@ const PointTransactionTab: FC<{
 }> = ({ transactions, type, onTypeChange, loading = false }) => {
   const groups = useMemo(() => groupByDateField(transactions, (t) => t.createdAt), [transactions]);
 
-  const emptyIcon = type === 'earn'
-    ? <TrendingUp size={32} color="#288F4E" strokeWidth={2} />
-    : type === 'spend'
-    ? <TrendingDown size={32} color="#288F4E" strokeWidth={2} />
-    : <CoinIcon size={24} />;
-
-  const emptyMessage = type === 'earn'
-    ? 'Hãy check-in tại trạm sạc để bắt đầu tích điểm nhé!'
-    : type === 'spend'
-    ? 'Bạn chưa sử dụng điểm nào.'
+  const emptyMessage = type === 'lá'
+    ? 'Chưa có giao dịch Lá nào.'
     : 'Chưa có giao dịch GreenCoin nào.';
 
   const listContent = () => {
@@ -121,7 +118,7 @@ const PointTransactionTab: FC<{
             className="flex items-center justify-center rounded-full"
             style={{ width: 72, height: 72, background: '#EEF7F1' }}
           >
-            {emptyIcon}
+            <CoinIcon size={24} />
           </Box>
           <p style={{ fontSize: 15, fontWeight: 600, color: '#374151' }}>Chưa có lịch sử</p>
           <p style={{ fontSize: 13, color: '#9CA3AF', textAlign: 'center' }}>{emptyMessage}</p>

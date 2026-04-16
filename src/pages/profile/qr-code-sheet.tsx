@@ -8,7 +8,7 @@ interface QRCodeSheetProps {
   onClose: () => void;
   fetchData: () => Promise<string>;
   title?: string;
-  hint?: string;
+  hint?: React.ReactNode;
 }
 
 const QRCodeSheet: FC<QRCodeSheetProps> = ({
@@ -81,7 +81,7 @@ const QRCodeSheet: FC<QRCodeSheetProps> = ({
           </Box>
         )}
 
-        <p className="text-xs text-gray-400 text-center">{hint}</p>
+        <div className="text-xs text-gray-400 text-center">{hint}</div>
       </Box>
     </Sheet>
   );

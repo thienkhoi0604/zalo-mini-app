@@ -194,6 +194,7 @@ const StoreListSection: FC<{ stores: AppStore[] }> = ({ stores }) => {
       <SectionHeader
         title="Danh mục cửa hàng"
         icon={<Store size={14} color="#fff" />}
+        onViewAll={() => navigate('/stores')}
       />
 
       {/* Horizontal scroll */}

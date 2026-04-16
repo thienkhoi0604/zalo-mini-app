@@ -95,9 +95,10 @@ export async function fetchReferralQR(): Promise<string> {
   }
 }
 
-export async function getPointTransactions(): Promise<PointTransaction[]> {
+export async function getPointTransactions(transactionType?: number): Promise<PointTransaction[]> {
   try {
-    const { data } = await axiosClient.get<{ data: PointTransaction[] }>('/me/point-transactions');
+    const params = transactionType !== undefined ? { TransactionType: transactionType } : {};
+    const { data } = await axiosClient.get<{ data: PointTransaction[] }>('/me/point-transactions', { params });
     return data.data ?? [];
   } catch {
     return [];

@@ -83,6 +83,7 @@ const NotFound: FC = () => {
 
 const VoucherDetailPage: FC = () => {
   const { openSnackbar } = useSnackbar();
+  const navigate = useNavigate();
   const { state } = useLocation() as { state?: { userVoucher?: UserVoucher } };
   const userVoucher = state?.userVoucher ?? null;
 
@@ -103,7 +104,7 @@ const VoucherDetailPage: FC = () => {
       .then((session) => {
         setQrValue(session.token);
         setQrLoading(false);
-        const seconds = session.expiresInSeconds ?? 270;
+        const seconds = 270;
         setCountdown(seconds);
 
         countdownRef.current = setInterval(() => {
@@ -255,7 +256,7 @@ const VoucherDetailPage: FC = () => {
               >
                 <Clock size={13} color={countdown <= 30 ? '#D97706' : COLORS.primary} />
                 <p style={{ fontSize: 12, fontWeight: 700, color: countdown <= 30 ? '#D97706' : COLORS.primary }}>
-                  Mã refresh sau {formatCountdown(countdown)}
+                  Mã tải lại sau {formatCountdown(countdown)}
                 </p>
               </Box>
             )}
@@ -384,7 +385,6 @@ const VoucherDetailPage: FC = () => {
               {userVoucher.appliedStores!.map((store) => (
                 <Box
                   key={store.id}
-                  onClick={() => store.googleMapsDirectionUrl && openWebview({ url: store.googleMapsDirectionUrl })}
                   style={{
                     display: 'flex', alignItems: 'center', gap: 12,
                     padding: '12px 14px',
@@ -392,42 +392,60 @@ const VoucherDetailPage: FC = () => {
                     border: '1px solid #F0F1F3',
                     borderRadius: 16,
                     boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
-                    cursor: store.googleMapsDirectionUrl ? 'pointer' : 'default',
                   }}
                 >
-                  {(store.storeImageUrl ?? store.imageUrl) ? (
-                    <img
-                      src={store.storeImageUrl ?? store.imageUrl!}
-                      alt={store.name}
-                      style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
-                      onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                    />
-                  ) : (
-                    <Box
-                      style={{
-                        width: 48, height: 48, borderRadius: 12, flexShrink: 0,
-                        background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                      }}
-                    >
-                      <Store size={22} color="#7C3AED" />
-                    </Box>
-                  )}
-                  <Box style={{ flex: 1, minWidth: 0 }}>
-                    <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                      {store.name}
-                    </p>
-                    {store.address && (
-                      <Box style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                        <MapPin size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
-                        <p style={{ fontSize: 11, color: '#9CA3AF', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                          {store.address}
-                        </p>
+                  {/* Store info — taps to store detail */}
+                  <Box
+                    onClick={() => store.id && navigate(`/stores/${store.id}`)}
+                    style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, cursor: store.id ? 'pointer' : 'default' }}
+                  >
+                    {(store.storeImageUrl ?? store.imageUrl) ? (
+                      <img
+                        src={store.storeImageUrl ?? store.imageUrl!}
+                        alt={store.name}
+                        style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
+                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                      />
+                    ) : (
+                      <Box
+                        style={{
+                          width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+                          background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)',
+                          display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        }}
+                      >
+                        <Store size={22} color="#7C3AED" />
                       </Box>
                     )}
+                    <Box style={{ flex: 1, minWidth: 0 }}>
+                      <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                        {store.name}
+                      </p>
+                      {store.address && (
+                        <Box style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                          <MapPin size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
+                          <p style={{ fontSize: 11, color: '#9CA3AF', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                            {store.address}
+                          </p>
+                        </Box>
+                      )}
+                    </Box>
                   </Box>
+
+                  {/* Navigation icon — opens Google Maps webview */}
                   {store.googleMapsDirectionUrl && (
-                    <Navigation size={16} color="#7C3AED" style={{ flexShrink: 0 }} />
+                    <Box
+                      onClick={(e) => { e.stopPropagation(); openWebview({ url: store.googleMapsDirectionUrl! }); }}
+                      style={{
+                        flexShrink: 0,
+                        width: 34, height: 34, borderRadius: 10,
+                        background: '#EDE9FE',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <Navigation size={16} color="#7C3AED" />
+                    </Box>
                   )}
                 </Box>
               ))}

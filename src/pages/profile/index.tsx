@@ -5,6 +5,8 @@ import { Car, Gift, History, QrCode, ShieldCheck, UserPlus2, BookOpen } from 'lu
 import { useUserStore } from '@/store/user';
 import { useVouchersStore } from '@/store/vouchers';
 import { fetchQRSession, fetchReferralQR, fetchReferralRules, ReferralRule } from '@/api/user';
+import CoinIcon from '@/components/ui/coin-icon';
+import { COLORS } from '@/constants';
 import MemberCard from './member-card';
 import UnverifiedBanner from './unverified-banner';
 import SectionList from './section-list';
@@ -16,13 +18,25 @@ const ICON_SIZE = 18;
 
 type QRSheetType = 'checkin' | 'referral' | null;
 
-const buildReferralHint = (rule: ReferralRule | null): string => {
+const buildReferralHint = (rule: ReferralRule | null): React.ReactNode => {
   if (!rule) return '💡 Chia sẻ mã này để bạn bè quét và nhận điểm thưởng giới thiệu';
-  const parts: string[] = [`💡 Chia sẻ mã này để giới thiệu bạn bè · Bạn nhận +${rule.pointsPerReferral} Lá mỗi lần thành công`];
-  if (rule.pointsForReferredUser) {
-    parts.push(`· Bạn bè được tặng thêm +${rule.pointsForReferredUser} Lá khi đăng ký`);
-  }
-  return parts.join(' ');
+  return (
+    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+      <span style={{ color: '#9CA3AF' }}>💡 Chia sẻ mã này để giới thiệu bạn bè</span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 700, color: COLORS.primary }}>
+        Bạn nhận +{rule.pointsPerReferral}
+        <CoinIcon size={13} />
+        mỗi lần thành công
+      </span>
+      {rule.pointsForReferredUser && (
+        <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: '#6B7280' }}>
+          Bạn bè được tặng thêm +{rule.pointsForReferredUser}
+          <CoinIcon size={12} />
+          khi đăng ký
+        </span>
+      )}
+    </span>
+  );
 };
 
 const CHECKIN_QR_CONFIG = {
