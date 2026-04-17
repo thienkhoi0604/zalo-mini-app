@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { Box } from 'zmp-ui';
 import { Gift } from 'lucide-react';
-import { Voucher, FEED_ITEM_TYPES } from '@/types/voucher';
+import { Voucher } from '@/types/voucher';
 import { getFeedItems } from '@/api/feed';
 import CoinIcon from '@/components/ui/coin-icon';
 import SectionHeader from '@/components/ui/section-header';
@@ -187,13 +187,8 @@ export const TopVouchers: FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    Promise.all([
-      getFeedItems({ type: FEED_ITEM_TYPES.VOUCHER,       pageNumber: 1, pageSize: 4 }),
-      getFeedItems({ type: FEED_ITEM_TYPES.PHYSICAL_ITEM, pageNumber: 1, pageSize: 4 }),
-    ])
-      .then(([vouchers, physical]) =>
-        setTopVouchers([...vouchers, ...physical].filter((r) => r.status === 'active'))
-      )
+    getFeedItems({ sourceType: 'Reward', pageNumber: 1, pageSize: 8 })
+      .then((items) => setTopVouchers(items.filter((r) => r.status === 'active')))
       .finally(() => setLoading(false));
   }, []);
 
@@ -234,7 +229,7 @@ export const TopVouchers: FC = () => {
                 reward={reward}
                 onClick={() => {
                   sessionStorage.setItem('home-scroll-section', 'section-vouchers');
-                  navigate(`/rewards/${reward.id}`);
+                  navigate(reward.source === 'StoreItem' ? `/products/${reward.id}` : `/rewards/${reward.id}`);
                 }}
               />
             ))}

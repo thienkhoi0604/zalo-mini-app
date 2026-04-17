@@ -47,6 +47,7 @@ export interface Station {
   timeMultiplierConfigs: TimeMultiplierConfig[] | null;
   googleMapsDirectionUrl: string;
   imageUrl: string | null;
+  amenities: string | null;
 }
 
 export interface StationsApiResponse {

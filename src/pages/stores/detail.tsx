@@ -143,6 +143,23 @@ const VoucherRow: FC<{ voucher: Voucher; onClick: () => void }> = ({ voucher, on
       <Box style={{ flexShrink: 0 }}>
         {expired ? (
           <p style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 600 }}>Hết hạn</p>
+        ) : voucher.source === 'StoreItem' ? (
+          <Box
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              background: '#F0FDF4',
+              border: '1px solid #BBF7D0',
+              borderRadius: 8,
+              padding: '4px 9px',
+            }}
+          >
+            <p style={{ fontSize: 12.5, fontWeight: 800, color: '#166534' }}>
+              {voucher.price != null
+                ? voucher.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                : '—'}
+            </p>
+          </Box>
         ) : (
           <Box
             style={{
@@ -341,7 +358,7 @@ const StoreDetailPage: FC = () => {
   const productItems = items.filter((v) => [FEED_ITEM_TYPES.FNB_PRODUCT, FEED_ITEM_TYPES.SERVICE, FEED_ITEM_TYPES.RETAIL_PRODUCT].includes(v.type as any));
   const activeCount = items.filter((v) => v.status !== 'expired').length;
 
-  const handleVoucherClick = (v: Voucher) => navigate(`/rewards/${v.id}`);
+  const handleVoucherClick = (v: Voucher) => navigate(v.source === 'StoreItem' ? `/products/${v.id}` : `/rewards/${v.id}`);
   const handleMapsOpen = () => {
     if (mapsUrl) openWebview({ url: mapsUrl });
   };

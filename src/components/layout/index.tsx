@@ -8,6 +8,7 @@ import HomePage from '@/pages/home';
 import ProfilePage from '@/pages/profile';
 import VouchersPage from '@/pages/rewards';
 import VoucherDetailPage from '@/pages/rewards/detail';
+import StoreItemDetailPage from '@/pages/rewards/store-item-detail';
 import CategoryDetailPage from '@/pages/rewards/category-feed';
 import StoreDetailPage from '@/pages/stores/detail';
 import StoresPage from '@/pages/stores';
@@ -62,6 +63,7 @@ const getRouteTitle = (pathname: string): string => {
   if (pathname === '/policy') return 'Khái niệm & Điều khoản';
   if (pathname.startsWith('/rewards/category/'))
     return 'Danh mục';
+  if (pathname.startsWith('/products/')) return 'Chi tiết sản phẩm';
   if (pathname.startsWith('/rewards/')) return 'Chi tiết voucher';
   if (pathname.startsWith('/stations/')) return 'Chi tiết trạm sạc';
   if (pathname === '/rewards/all') return 'Danh sách voucher';
@@ -211,6 +213,14 @@ export const Layout: FC = () => {
             element={
               <ProtectedRoute>
                 <VoucherDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/products/:id"
+            element={
+              <ProtectedRoute>
+                <StoreItemDetailPage />
               </ProtectedRoute>
             }
           />

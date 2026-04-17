@@ -1,9 +1,10 @@
 import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
-import { Gift, ChevronRight, Tag } from 'lucide-react';
+import { Gift, ChevronRight } from 'lucide-react';
 import SectionHeader from '@/components/ui/section-header';
+import { FALLBACK_IMAGES } from '@/constants';
 import ViewAllFab from '@/components/ui/view-all-fab';
-import { useVouchersStore } from '@/store/vouchers';
+import { useVouchersStore, OTHER_CATEGORY_ID } from '@/store/vouchers';
 import { AppCategory, Voucher } from '@/types/voucher';
 import VoucherCard from './voucher-card';
 import { useNavigate } from 'react-router';
@@ -63,15 +64,12 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, paletteIndex }) =>
               overflow: 'hidden',
             }}
           >
-            {category.imageUrl ? (
-              <img
-                src={category.imageUrl}
-                alt={category.name}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            ) : (
-              <Tag size={16} strokeWidth={2} />
-            )}
+            <img
+              src={category.imageUrl || FALLBACK_IMAGES.reward}
+              alt={category.name}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGES.reward; }}
+            />
           </Box>
 
           <Box>
@@ -124,7 +122,7 @@ const CategoryRow: FC<CategoryRowProps> = ({ category, cards, paletteIndex }) =>
             key={card.id}
             card={card}
             width={155}
-            onClick={(c) => navigate(`/rewards/${c.id}`)}
+            onClick={(c) => navigate(c.source === 'StoreItem' ? `/products/${c.id}` : `/rewards/${c.id}`)}
           />
         ))}
 
@@ -149,12 +147,14 @@ const VouchersList: FC = () => {
   }, []);
 
   const visibleCategories = categories.filter((cat) => grouped[cat.id]?.length > 0);
+  const otherVouchers = grouped[OTHER_CATEGORY_ID] ?? [];
+  const hasOther = otherVouchers.length > 0;
 
   if (categoriesLoading && categories.length === 0) {
     return null; // parent already shows skeleton
   }
 
-  if (visibleCategories.length === 0) {
+  if (visibleCategories.length === 0 && !hasOther) {
     return (
       <Box className="flex flex-col items-center justify-center py-20" style={{ gap: 14 }}>
         <Box
@@ -191,6 +191,15 @@ const VouchersList: FC = () => {
           paletteIndex={i}
         />
       ))}
+
+      {hasOther && (
+        <CategoryRow
+          key={OTHER_CATEGORY_ID}
+          category={{ id: OTHER_CATEGORY_ID, name: 'Khác', imageUrl: '', storeItemCount: 0, rewardCount: 0 }}
+          cards={otherVouchers}
+          paletteIndex={visibleCategories.length}
+        />
+      )}
     </Box>
   );
 };

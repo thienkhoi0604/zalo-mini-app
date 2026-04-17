@@ -21,14 +21,14 @@ type QRSheetType = 'checkin' | 'referral' | null;
 const buildReferralHint = (rule: ReferralRule | null): React.ReactNode => {
   if (!rule) return '💡 Chia sẻ mã này để bạn bè quét và nhận điểm thưởng giới thiệu';
   return (
-    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4 }}>
+    <span style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 6 }}>
       <span style={{ color: '#9CA3AF' }}>💡 Chia sẻ mã này để giới thiệu bạn bè</span>
-      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontWeight: 700, color: COLORS.primary }}>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, fontWeight: 800, fontSize: 16, color: COLORS.primary }}>
         Bạn nhận +{rule.pointsPerReferral}
-        <CoinIcon size={13} />
+        <CoinIcon size={16} />
         mỗi lần thành công
       </span>
-      {rule.pointsForReferredUser && (
+      {(rule.pointsForReferredUser ?? 0) > 0 && (
         <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, color: '#6B7280' }}>
           Bạn bè được tặng thêm +{rule.pointsForReferredUser}
           <CoinIcon size={12} />

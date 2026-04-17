@@ -1,10 +1,11 @@
 import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
-import { Gift, ArrowUpDown, TrendingUp, TrendingDown, Tag } from 'lucide-react';
+import { Gift, ArrowUpDown, TrendingUp, TrendingDown } from 'lucide-react';
 import { Voucher } from '@/types/voucher';
 import { getFeedItems } from '@/api/feed';
 import { useVouchersStore } from '@/store/vouchers';
+import { FALLBACK_IMAGES } from '@/constants';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import PageHeader from '@/components/ui/page-header';
 import { ACTIVE_THEME } from '@/constants/theme';
@@ -41,13 +42,17 @@ const CategoryDetailPage: FC = () => {
   const { categoryId } = useParams<{ categoryId: string }>();
   const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
-  const { categories } = useVouchersStore();
+  const { categories, loadCategories } = useVouchersStore();
   const [rawCards, setRawCards] = useState<Voucher[]>([]);
   const [loading, setLoading] = useState(true);
   const [sortOrder, setSortOrder] = useState<SortOrder>('default');
 
   const category = categories.find((c) => c.id === categoryId);
   const categoryName = category?.name ?? '';
+
+  useEffect(() => {
+    if (categories.length === 0) loadCategories();
+  }, []);
 
   const loadCards = useCallback(async () => {
     if (!categoryId) return;
@@ -89,15 +94,12 @@ const CategoryDetailPage: FC = () => {
               overflow: 'hidden',
             }}
           >
-            {category?.imageUrl ? (
-              <img
-                src={category.imageUrl}
-                alt={categoryName}
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-              />
-            ) : (
-              <Tag size={24} color="#fff" strokeWidth={1.8} />
-            )}
+            <img
+              src={category?.imageUrl || FALLBACK_IMAGES.reward}
+              alt={categoryName}
+              style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              onError={(e) => { (e.target as HTMLImageElement).src = FALLBACK_IMAGES.reward; }}
+            />
           </Box>
 
           <Box style={{ flex: 1 }}>
@@ -190,7 +192,7 @@ const CategoryDetailPage: FC = () => {
             </Box>
           ) : (
             cards.map((card) => (
-              <VoucherCard key={card.id} card={card} onClick={(c) => navigate(`/rewards/${c.id}`)} />
+              <VoucherCard key={card.id} card={card} onClick={(c) => navigate(c.source === 'StoreItem' ? `/products/${c.id}` : `/rewards/${c.id}`)} />
             ))
           )}
         </div>

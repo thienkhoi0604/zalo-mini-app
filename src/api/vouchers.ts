@@ -55,9 +55,9 @@ function mapStoreItemToVoucher(item: StoreItemApiResponse): Voucher {
     shortDescription: item.shortDescription ?? undefined,
     thumbnailImageUrl: item.imageUrl,
     bannerImageUrl: item.imageUrl,
-    itemTypeLabel: item.typeName,
-    categoryId: null,
-    categoryName: null,
+    itemTypeLabel: item.typeLabel || item.typeName,
+    categoryId: item.categoryId ?? null,
+    categoryName: item.categoryName ?? null,
     source: 'StoreItem',
     brandName: item.storeName,
     costCurrency: 'GreenCoin',
@@ -76,6 +76,8 @@ function mapStoreItemToVoucher(item: StoreItemApiResponse): Voucher {
       imageUrl: item.storeImageUrl,
       googleMapsDirectionUrl: item.googleMapsDirectionUrl,
     }],
+    appliedVoucherDetails: item.appliedVoucherDetails ?? [],
+    calculatedPrices: item.calculatedPrices ?? [],
   };
 }
 

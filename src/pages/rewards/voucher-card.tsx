@@ -1,4 +1,4 @@
-import React, { FC, useId } from 'react';
+import React, { FC, useId, useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { Voucher } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
 import logoImg from '@/assets/images/logo.png';
@@ -16,7 +16,6 @@ const CUT_Y = 120;
 const CARD_HEIGHT = 250;
 const BORDER_COLOR = 'rgba(0,0,0,0.08)';
 const CARD_RADIUS = 18;
-const DEFAULT_WIDTH = 200;
 
 /* ── Notch-shaped SVG path builder ─────────────────────────────────────────── */
 
@@ -44,23 +43,11 @@ function buildNotchPath(w: number, h: number): string {
 
 /* ── Hidden SVG clip-path definition ───────────────────────────────────────── */
 
-const NotchClipDef: FC<{ id: string; w: number; h: number }> = ({
-  id,
-  w,
-  h,
-}) => (
-  <svg
-    width="0"
-    height="0"
-    style={{ position: 'absolute', pointerEvents: 'none' }}
-    aria-hidden="true"
-  >
+const NotchClipDef: FC<{ id: string; w: number; h: number }> = ({ id, w, h }) => (
+  <svg width="0" height="0" style={{ position: 'absolute', pointerEvents: 'none' }} aria-hidden="true">
     <defs>
       <clipPath id={id} clipPathUnits="objectBoundingBox">
-        <path
-          d={buildNotchPath(w, h)}
-          transform={`scale(${1 / w}, ${1 / h})`}
-        />
+        <path d={buildNotchPath(w, h)} transform={`scale(${1 / w}, ${1 / h})`} />
       </clipPath>
     </defs>
   </svg>
@@ -70,29 +57,74 @@ const NotchClipDef: FC<{ id: string; w: number; h: number }> = ({
 
 const NotchBorderOverlay: FC<{ w: number; h: number }> = ({ w, h }) => (
   <svg
-    width={w}
-    height={h}
+    width="100%"
+    height="100%"
     viewBox={`0 0 ${w} ${h}`}
+    preserveAspectRatio="none"
     style={{ position: 'absolute', inset: 0, pointerEvents: 'none', zIndex: 2 }}
     aria-hidden="true"
   >
-    <path
-      d={buildNotchPath(w, h)}
-      fill="none"
-      stroke={BORDER_COLOR}
-      strokeWidth={1}
-    />
+    <path d={buildNotchPath(w, h)} fill="none" stroke={BORDER_COLOR} strokeWidth={1} />
   </svg>
 );
+
+/* ── Hook: measure element width ───────────────────────────────────────────── */
+
+/**
+ * Returns [ref, measuredWidth].
+ * Uses ResizeObserver when available (iOS 13.4+), otherwise falls back
+ * to reading offsetWidth on mount + window resize.
+ */
+function useMeasuredWidth(fixedWidth?: number): [React.RefObject<HTMLDivElement>, number] {
+  const ref = useRef<HTMLDivElement>(null);
+  const [w, setW] = useState(fixedWidth ?? 0);
+
+  // Use useLayoutEffect in browser, useEffect on server (Zalo Mini App is client-only)
+  const useIsomorphicEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect;
+
+  useIsomorphicEffect(() => {
+    if (fixedWidth != null) {
+      setW(fixedWidth);
+      return;
+    }
+
+    const el = ref.current;
+    if (!el) return;
+
+    const measure = () => {
+      const measured = el.offsetWidth;
+      if (measured > 0) setW(measured);
+    };
+
+    measure();
+
+    // ResizeObserver for responsive width changes
+    if (typeof ResizeObserver !== 'undefined') {
+      const ro = new ResizeObserver(() => measure());
+      ro.observe(el);
+      return () => ro.disconnect();
+    }
+
+    // Fallback: listen to window resize
+    window.addEventListener('resize', measure);
+    return () => window.removeEventListener('resize', measure);
+  }, [fixedWidth]);
+
+  return [ref, w];
+}
 
 /* ── VoucherCard ───────────────────────────────────────────────────────────── */
 
 const VoucherCard: FC<Props> = ({ card, onClick, width }) => {
   const clipId = `vc-${useId().replace(/:/g, '')}`;
-  const cardW = width ?? DEFAULT_WIDTH;
+  const [containerRef, cardW] = useMeasuredWidth(width);
+
+  // Don't render SVG clip/border until we have a measured width
+  const hasMeasure = cardW > 0;
 
   return (
     <div
+      ref={containerRef}
       onClick={() => onClick?.(card)}
       className={`cursor-pointer${width ? ' flex-shrink-0' : ''}`}
       style={{
@@ -101,7 +133,7 @@ const VoucherCard: FC<Props> = ({ card, onClick, width }) => {
         position: 'relative',
       }}
     >
-      <NotchClipDef id={clipId} w={cardW} h={CARD_HEIGHT} />
+      {hasMeasure && <NotchClipDef id={clipId} w={cardW} h={CARD_HEIGHT} />}
 
       {/* ── Clipped card ── */}
       <div
@@ -115,24 +147,18 @@ const VoucherCard: FC<Props> = ({ card, onClick, width }) => {
             display: 'flex',
             flexDirection: 'column',
             overflow: 'hidden',
-            clipPath: `url(#${clipId})`,
-            WebkitClipPath: `url(#${clipId})`,
+            ...(hasMeasure
+              ? { clipPath: `url(#${clipId})`, WebkitClipPath: `url(#${clipId})` }
+              : {}),
           } as React.CSSProperties
         }
       >
         {/* Image */}
-        <div
-          style={{ height: CUT_Y, overflow: 'hidden', position: 'relative' }}
-        >
+        <div style={{ height: CUT_Y, overflow: 'hidden', position: 'relative' }}>
           <img
             src={card.thumbnailImageUrl}
             alt={card.name}
-            style={{
-              width: '100%',
-              height: '100%',
-              objectFit: 'cover',
-              display: 'block',
-            }}
+            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
             onError={(e) => {
               (e.target as HTMLImageElement).src = FALLBACK;
             }}
@@ -156,9 +182,7 @@ const VoucherCard: FC<Props> = ({ card, onClick, width }) => {
         </div>
 
         {/* Perforation spacer */}
-        <div
-          style={{ height: NOTCH_R * 2, background: '#fff', flexShrink: 0 }}
-        />
+        <div style={{ height: NOTCH_R * 2, background: '#fff', flexShrink: 0 }} />
 
         {/* Content */}
         <div
@@ -234,7 +258,7 @@ const VoucherCard: FC<Props> = ({ card, onClick, width }) => {
       </div>
 
       {/* ── SVG border overlay ── */}
-      <NotchBorderOverlay w={cardW} h={CARD_HEIGHT} />
+      {hasMeasure && <NotchBorderOverlay w={cardW} h={CARD_HEIGHT} />}
 
       {/* Dashed perforation line */}
       <div

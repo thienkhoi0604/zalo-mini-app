@@ -5,6 +5,33 @@
     "items": [
       {
         "distanceKm": 0,
+        "id": "d5991793-05c0-499b-8fda-faa9ed05261e",
+        "code": "STA_MNO60Y7YH2QR",
+        "name": "EcoGreen - Quận 10",
+        "stationTypeId": "0b2fbeea-47e8-4722-9390-ebf3d50e55d8",
+        "stationTypeName": "Trạm Sạc Vinfast",
+        "storeId": null,
+        "storeName": null,
+        "address": "Số 10 Đồng Nai",
+        "provinceCode": "29",
+        "provinceName": "Hồ Chí Minh",
+        "wardCode": "70127121",
+        "wardName": "Phường Bảy Hiền",
+        "latitude": 10.768545,
+        "longitude": 106.66201,
+        "description": null,
+        "isActive": true,
+        "defaultPoint": 100,
+        "minCheckinIntervalMinutes": 5,
+        "maxCheckinPerDay": 5,
+        "pillarConfigs": [],
+        "timeMultiplierConfigs": [],
+        "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.768545,106.66201",
+        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/67477628107141d2bb3b1af9e4a678dc.webp",
+        "amenities": null
+      },
+      {
+        "distanceKm": 0,
         "id": "0158559c-5db9-47ae-ad1c-f64b4ba346d7",
         "code": "STA_MNMMEKV9MN1F",
         "name": "EcoGreen - Quận 2",
@@ -17,8 +44,8 @@
         "provinceName": "Hồ Chí Minh",
         "wardCode": "71107035",
         "wardName": "Phường An Phú",
-        "latitude": 10.7921063,
-        "longitude": 106.7354701,
+        "latitude": 10.7921221,
+        "longitude": 106.7354698,
         "description": null,
         "isActive": true,
         "defaultPoint": 100,
@@ -34,9 +61,26 @@
             "pillarCount": 2
           }
         ],
-        "timeMultiplierConfigs": [],
-        "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.7921063,106.7354701",
-        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/cd0dd76fd1c441379adf7e9c9da53032.webp"
+        "timeMultiplierConfigs": [
+          {
+            "startTime": "00:00",
+            "endTime": "05:59",
+            "multiplier": 0.5
+          },
+          {
+            "startTime": "22:00",
+            "endTime": "23:59",
+            "multiplier": 0.5
+          },
+          {
+            "startTime": "06:00",
+            "endTime": "21:59",
+            "multiplier": 1
+          }
+        ],
+        "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.7921221,106.7354698",
+        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/cd0dd76fd1c441379adf7e9c9da53032.webp",
+        "amenities": null
       },
       {
         "distanceKm": 0,
@@ -45,13 +89,13 @@
         "name": "EcoGreen - Quận 9",
         "stationTypeId": "0b2fbeea-47e8-4722-9390-ebf3d50e55d8",
         "stationTypeName": "Trạm Sạc Vinfast",
-        "storeId": null,
-        "storeName": null,
+        "storeId": "e7429547-4094-4a75-9c53-81a66db54ba4",
+        "storeName": "EcoGreen Nam Hoà",
         "address": "Số 5 Nam Hoà",
         "provinceCode": "29",
         "provinceName": "Hồ Chí Minh",
-        "wardCode": "70145139",
-        "wardName": "Phường Phước Long",
+        "wardCode": "70113083",
+        "wardName": "Phường Tân Hưng",
         "latitude": 10.8215332,
         "longitude": 106.7598417,
         "description": null,
@@ -59,10 +103,40 @@
         "defaultPoint": 100,
         "minCheckinIntervalMinutes": 30,
         "maxCheckinPerDay": 5,
-        "pillarConfigs": [],
-        "timeMultiplierConfigs": [],
+        "pillarConfigs": [
+          {
+            "powerKW": "120",
+            "pillarCount": 1
+          },
+          {
+            "powerKW": "60",
+            "pillarCount": 3
+          },
+          {
+            "powerKW": "3.5",
+            "pillarCount": 3
+          }
+        ],
+        "timeMultiplierConfigs": [
+          {
+            "startTime": "00:00",
+            "endTime": "05:59",
+            "multiplier": 0.5
+          },
+          {
+            "startTime": "22:00",
+            "endTime": "23:59",
+            "multiplier": 0.5
+          },
+          {
+            "startTime": "06:00",
+            "endTime": "21:59",
+            "multiplier": 1
+          }
+        ],
         "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.8215332,106.7598417",
-        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/6e0d2430491641e9907388fc946efe6b.webp"
+        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/95fa243c4a884faab0d07cc2dd586c11.webp",
+        "amenities": null
       },
       {
         "distanceKm": 0,
@@ -103,7 +177,8 @@
           }
         ],
         "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.74687835,106.70892655",
-        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/11692334c8364f6dabafb6778eef6fb4.webp"
+        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/11692334c8364f6dabafb6778eef6fb4.webp",
+        "amenities": null
       },
       {
         "distanceKm": 0,
@@ -145,12 +220,13 @@
           }
         ],
         "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.772521,106.669431",
-        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/dff4129546304f89a751ab95564d31a3.webp"
+        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/dff4129546304f89a751ab95564d31a3.webp",
+        "amenities": "🍋🏊💻"
       }
     ],
     "pageNumber": 1,
     "pageSize": 10,
-    "totalCount": 4,
+    "totalCount": 5,
     "totalPages": 1,
     "hasPrevious": false,
     "hasNext": false

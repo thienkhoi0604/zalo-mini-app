@@ -7,6 +7,8 @@ import { useUserStore } from '@/store/user';
 
 const USER_VOUCHERS_PAGE_SIZE = 5;
 
+export const OTHER_CATEGORY_ID = '__other__';
+
 type VouchersStore = {
   allVouchers: Voucher[];
   userVouchers: UserVoucher[];
@@ -182,20 +184,32 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
 
   getGroupedByCategory: () => {
     const { allVouchers, categories } = get();
-    // Build a map of categoryId → items from allVouchers that have a categoryId
+    const knownCategoryIds = new Set(categories.map((c) => c.id));
+
+    // Build a map of categoryId → items from allVouchers that have a known categoryId
     const grouped: Record<string, Voucher[]> = {};
-    allVouchers
-      .filter((voucher) => voucher.categoryId !== null)
-      .forEach((voucher) => {
-        const key = voucher.categoryId!;
-        if (!grouped[key]) grouped[key] = [];
-        grouped[key].push(voucher);
-      });
+    const uncategorized: Voucher[] = [];
+
+    allVouchers.forEach((voucher) => {
+      if (voucher.categoryId && knownCategoryIds.has(voucher.categoryId)) {
+        if (!grouped[voucher.categoryId]) grouped[voucher.categoryId] = [];
+        grouped[voucher.categoryId].push(voucher);
+      } else if (voucher.source !== 'StoreItem') {
+        uncategorized.push(voucher);
+      }
+    });
+
     // Return ordered by the categories list from /app/categories
     const ordered: Record<string, Voucher[]> = {};
     categories.forEach((cat) => {
       if (grouped[cat.id]) ordered[cat.id] = grouped[cat.id];
     });
+
+    // Append uncategorized items under a special key
+    if (uncategorized.length > 0) {
+      ordered[OTHER_CATEGORY_ID] = uncategorized;
+    }
+
     return ordered;
   },
 }));

@@ -75,16 +75,9 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
         className="flex items-center justify-center rounded-full flex-shrink-0"
         style={{ background: badgeBg, padding: '4px 10px', minWidth: 60 }}
       >
-        <Box flex className="items-center" style={{ gap: 3 }}>
-          {isGreenCoin && rankIconUrl ? (
-            <img src={rankIconUrl} alt="rank" style={{ width: 14, height: 14, objectFit: 'contain' }} />
-          ) : (
-            <CoinIcon size={13} />
-          )}
-          <p style={{ fontSize: 13, fontWeight: 700, color: amountColor }}>
-            {prefix}{item.points.toLocaleString('vi-VN')}
-          </p>
-        </Box>
+        <p style={{ fontSize: 13, fontWeight: 700, color: amountColor }}>
+          {prefix}{item.points.toLocaleString('vi-VN')}
+        </p>
       </Box>
     </Box>
   );

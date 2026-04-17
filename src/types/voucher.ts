@@ -76,6 +76,8 @@ export interface GetFeedParams {
   storeId?: string;
   /** Maps to the `CategoryId` query param on /app/feed */
   categoryId?: string;
+  /** Maps to the `SourceType` query param on /app/feed — filter by item origin */
+  sourceType?: 'Reward' | 'StoreItem';
 }
 
 // ─── Grouped feed (Grouped=true) ──────────────────────────────────────────────
@@ -102,6 +104,23 @@ export interface GroupedFeedResult {
 
 // ─── Store item detail API (/app/store-items/:id) ──────────────────────────────
 
+export interface AppliedVoucherDetail {
+  id: string;
+  code: string;
+  name: string;
+  discountType: number;
+  discountValue: number;
+  maxDiscountAmount: number;
+}
+
+export interface CalculatedPrice {
+  voucherId: string;
+  voucherName: string;
+  originalPrice: number;
+  discountedPrice: number;
+  discountDescription: string;
+}
+
 export interface StoreItemApiResponse {
   id: string;
   storeId: string;
@@ -112,6 +131,7 @@ export interface StoreItemApiResponse {
   wardName: string | null;
   type: number;
   typeName: string;
+  typeLabel: string;
   code: string;
   name: string;
   description: string | null;
@@ -127,6 +147,10 @@ export interface StoreItemApiResponse {
   longitude: number | null;
   distanceKm: number | null;
   googleMapsDirectionUrl: string | null;
+  categoryId: string | null;
+  categoryName: string | null;
+  appliedVoucherDetails: AppliedVoucherDetail[];
+  calculatedPrices: CalculatedPrice[];
 }
 
 // ─── Legacy Voucher detail API (single-item endpoint) ──────────────────────────
@@ -203,6 +227,10 @@ export interface Voucher {
   programNotes: string;
   usageGuide: string;
   status: 'active' | 'expired';
+  /** Vouchers applicable to this store item (StoreItem source only) */
+  appliedVoucherDetails?: AppliedVoucherDetail[];
+  /** Calculated prices after applying each voucher (StoreItem source only) */
+  calculatedPrices?: CalculatedPrice[];
 }
 
 export function getVoucherTypeLabel(type: string): string {
