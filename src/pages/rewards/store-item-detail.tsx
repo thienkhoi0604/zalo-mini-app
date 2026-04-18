@@ -1,18 +1,19 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import logoImg from '@/assets/images/logo.png';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
-import { FileText, AlertCircle, Ticket } from 'lucide-react';
+import { AlertCircle, FileText, Ticket } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { useUserStore } from '@/store/user';
-import PullToRefresh from '@/components/ui/pull-to-refresh';
 import CoinIcon from '@/components/ui/coin-icon';
+import PullToRefresh from '@/components/ui/pull-to-refresh';
 
 // ─── Confirm Modal ─────────────────────────────────────────────────────────────
 
 interface ConfirmBuyModalProps {
   visible: boolean;
   name: string;
+  price: number | null | undefined;
   pointsRequired: number;
   userPoints: number;
   redeeming: boolean;
@@ -21,7 +22,7 @@ interface ConfirmBuyModalProps {
 }
 
 const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
-  visible, name, pointsRequired, userPoints, redeeming, onConfirm, onCancel,
+  visible, name, price, pointsRequired, userPoints, redeeming, onConfirm, onCancel,
 }) => {
   const hasEnough = userPoints >= pointsRequired;
   const remaining = userPoints - pointsRequired;
@@ -55,8 +56,20 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
             display: 'flex', flexDirection: 'column', gap: 10,
           }}
         >
+          {price != null && (
+            <>
+              <Box flex className="items-center justify-between">
+                <p style={{ fontSize: 13, color: '#6B7280' }}>Giá bán</p>
+                <p style={{ fontSize: 13, fontWeight: 700, color: '#111827' }}>
+                  {price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                </p>
+              </Box>
+              <Box style={{ height: 1, background: '#E5E7EB' }} />
+            </>
+          )}
+
           <Box flex className="items-center justify-between">
-            <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí</p>
+            <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí GreenCoin</p>
             <Box flex className="items-center" style={{ gap: 5 }}>
               <CoinIcon size={18} />
               <p style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
@@ -143,7 +156,7 @@ const StoreItemDetailPage: FC = () => {
   const { allVouchers, loading, loadVoucherById, redeemVoucher, redeeming } = useVouchersStore();
   const { pointWallet } = useUserStore();
   const [confirmVisible, setConfirmVisible] = useState(false);
-  const redirectTimerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const redirectTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     return () => {
@@ -152,24 +165,10 @@ const StoreItemDetailPage: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (id) loadVoucherById(id).catch(() => openSnackbar({ text: 'Không thể tải thông tin', type: 'error' }));
+    if (id) loadVoucherById(id, 'StoreItem').catch(() => openSnackbar({ text: 'Không thể tải thông tin', type: 'error' }));
   }, [id]);
 
   const card = allVouchers.find((c) => c.id === id);
-
-  const handleBuy = async () => {
-    if (!id) return;
-    try {
-      await redeemVoucher(id);
-      setConfirmVisible(false);
-      useUserStore.getState().loadPointWallet();
-      openSnackbar({ text: 'Mua sản phẩm thành công! Voucher đã được thêm vào tài khoản.', type: 'success' });
-      redirectTimerRef.current = setTimeout(() => navigate('/my-vouchers', { replace: true }), 1200);
-    } catch {
-      setConfirmVisible(false);
-      openSnackbar({ text: 'Mua sản phẩm thất bại. Vui lòng thử lại.', type: 'error' });
-    }
-  };
 
   if (!card) {
     if (loading) {
@@ -204,15 +203,28 @@ const StoreItemDetailPage: FC = () => {
   }
 
   const userPoints = pointWallet?.currentBalance ?? 0;
-  const hasEnough = userPoints >= card.pointsRequired;
+
+  const handleBuy = async () => {
+    if (!id) return;
+    try {
+      await redeemVoucher(id);
+      setConfirmVisible(false);
+      useUserStore.getState().loadPointWallet();
+      openSnackbar({ text: 'Mua sản phẩm thành công! Voucher đã được thêm vào tài khoản.', type: 'success' });
+      redirectTimerRef.current = setTimeout(() => navigate('/my-vouchers', { replace: true }), 1200);
+    } catch {
+      setConfirmVisible(false);
+      openSnackbar({ text: 'Mua sản phẩm thất bại. Vui lòng thử lại.', type: 'error' });
+    }
+  };
 
   const handleRefresh = async () => {
-    if (id) await loadVoucherById(id).catch(() => {});
+    if (id) await loadVoucherById(id, 'StoreItem').catch(() => {});
   };
 
   return (
     <Page className="flex-1 flex flex-col" style={{ position: 'relative' }}>
-      <PullToRefresh onRefresh={handleRefresh} className="flex-1" style={{ paddingBottom: 88 }}>
+      <PullToRefresh onRefresh={handleRefresh} className="flex-1">
 
         {/* Hero image */}
         <Box style={{ position: 'relative', height: 240, overflow: 'hidden' }}>
@@ -266,32 +278,14 @@ const StoreItemDetailPage: FC = () => {
 
             <Box style={{ height: 1, background: '#F3F4F6' }} />
 
-            {/* Price + cost row */}
+            {/* Price row */}
             <Box flex className="items-center justify-between">
-              <Box style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <p style={{ fontSize: 11, color: '#9CA3AF', fontWeight: 600 }}>Giá bán</p>
-                <p style={{ fontSize: 18, fontWeight: 800, color: '#111827' }}>
-                  {card.price != null
-                    ? card.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
-                    : '—'}
-                </p>
-              </Box>
-              <Box
-                flex
-                className="items-center"
-                style={{
-                  gap: 6,
-                  background: 'linear-gradient(135deg, #FEF9EF, #FEF3C7)',
-                  border: '1px solid #FDE68A',
-                  borderRadius: 100,
-                  padding: '5px 14px',
-                }}
-              >
-                <CoinIcon size={20} />
-                <p style={{ fontSize: 16, fontWeight: 800, color: '#D97706' }}>
-                  {card.pointsRequired.toLocaleString('vi-VN')}
-                </p>
-              </Box>
+              <p style={{ fontSize: 13, color: '#6B7280' }}>Giá bán</p>
+              <p style={{ fontSize: 18, fontWeight: 800, color: '#111827' }}>
+                {card.price != null
+                  ? card.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })
+                  : '—'}
+              </p>
             </Box>
 
             {/* Stock */}
@@ -380,49 +374,10 @@ const StoreItemDetailPage: FC = () => {
         </Box>
       </PullToRefresh>
 
-      {/* Sticky bottom bar */}
-      <Box
-        style={{
-          position: 'absolute', bottom: 0, left: 0, right: 0,
-          padding: '12px 16px',
-          background: '#fff',
-          boxShadow: '0 -4px 20px rgba(0,0,0,0.1)',
-        }}
-      >
-        <Box flex className="items-center" style={{ gap: 10 }}>
-          {/* Balance */}
-          <Box
-            style={{
-              background: '#F9FAFB', border: '1px solid #E5E7EB', borderRadius: 12,
-              padding: '8px 12px', display: 'flex', alignItems: 'center', gap: 5, flexShrink: 0,
-            }}
-          >
-            <CoinIcon size={18} />
-            <p style={{ fontSize: 14, fontWeight: 700, color: hasEnough ? '#111827' : '#EF4444' }}>
-              {userPoints.toLocaleString('vi-VN')}
-            </p>
-          </Box>
-
-          {/* CTA */}
-          <Box
-            onClick={() => setConfirmVisible(true)}
-            className="flex-1 flex items-center justify-center cursor-pointer"
-            style={{
-              background: hasEnough ? 'linear-gradient(135deg, #2FA85F, #1A6B38)' : '#E5E7EB',
-              height: 50, borderRadius: 14, gap: 6,
-            }}
-          >
-            <p style={{ color: hasEnough ? '#fff' : '#9CA3AF', fontWeight: 700, fontSize: 15 }}>
-              Mua {card.pointsRequired.toLocaleString('vi-VN')}
-            </p>
-            <CoinIcon size={20} />
-          </Box>
-        </Box>
-      </Box>
-
       <ConfirmBuyModal
         visible={confirmVisible}
         name={card.name}
+        price={card.price}
         pointsRequired={card.pointsRequired}
         userPoints={userPoints}
         redeeming={redeeming}

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { Voucher, UserVoucher, StoreGroup, GroupedFeedResult, AppCategory } from '@/types/voucher';
+import { Voucher, UserVoucher, StoreGroup, GroupedFeedResult, AppCategory, VoucherSource } from '@/types/voucher';
 import { getFeedItems, getFeedGrouped } from '@/api/feed';
 import { getCategories } from '@/api/categories';
 import { getVoucherById, getStoreItemById, getUserVouchers, getUserVouchersCount, redeemVoucher } from '@/api/vouchers';
@@ -34,7 +34,7 @@ type VouchersStore = {
   categoriesLoading: boolean;
 
   loadAllVouchers: () => Promise<void>;
-  loadVoucherById: (id: string) => Promise<void>;
+  loadVoucherById: (id: string, sourceHint?: VoucherSource) => Promise<void>;
   loadUserVouchers: (isUsed: boolean) => Promise<void>;
   loadMoreUserVouchers: (isUsed: boolean) => Promise<void>;
   loadUserVouchersCount: () => Promise<void>;
@@ -74,14 +74,20 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
     }
   },
 
-  loadVoucherById: async (id: string) => {
+  loadVoucherById: async (id: string, sourceHint?: VoucherSource) => {
     set({ loading: true });
     try {
       const existing = get().allVouchers.find((r) => r.id === id);
-      const source = existing?.source ?? 'Reward';
-      const voucher = source === 'StoreItem'
-        ? await getStoreItemById(id)
-        : await getVoucherById(id);
+      const source = existing?.source ?? sourceHint;
+      let voucher;
+      if (source === 'StoreItem') {
+        voucher = await getStoreItemById(id);
+      } else if (source === 'Reward') {
+        voucher = await getVoucherById(id);
+      } else {
+        // Source truly unknown — should not happen in normal navigation
+        voucher = await getVoucherById(id) ?? await getStoreItemById(id);
+      }
       if (!voucher) {
         set({ loading: false });
         return;

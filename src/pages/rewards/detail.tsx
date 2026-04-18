@@ -157,7 +157,7 @@ const VoucherDetailPage: FC = () => {
   }, []);
 
   useEffect(() => {
-    if (id) loadVoucherById(id).catch(() => openSnackbar({ text: 'Không thể tải thông tin', type: 'error' }));
+    if (id) loadVoucherById(id, 'Reward').catch(() => openSnackbar({ text: 'Không thể tải thông tin', type: 'error' }));
   }, [id]);
 
   const card = allVouchers.find((c) => c.id === id);
@@ -212,7 +212,7 @@ const VoucherDetailPage: FC = () => {
   const hasEnough = userPoints >= card.pointsRequired;
 
   const handleRefresh = async () => {
-    if (id) await loadVoucherById(id).catch(() => {});
+    if (id) await loadVoucherById(id, 'Reward').catch(() => {});
   };
 
   return (
@@ -278,26 +278,84 @@ const VoucherDetailPage: FC = () => {
 
             <Box style={{ height: 1, background: '#F3F4F6' }} />
 
-            {/* Points row */}
-            <Box flex className="items-center justify-between">
-              <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí đổi</p>
-              <Box
-                flex
-                className="items-center"
-                style={{
-                  gap: 6,
-                  background: 'linear-gradient(135deg, #FEF9EF, #FEF3C7)',
-                  border: '1px solid #FDE68A',
-                  borderRadius: 100,
-                  padding: '5px 14px',
-                }}
-              >
-                <CoinIcon size={20} />
-                <p style={{ fontSize: 16, fontWeight: 800, color: '#D97706' }}>
-                  {card.pointsRequired.toLocaleString('vi-VN')}
-                </p>
+            {/* Points / price row */}
+            {card.source === 'StoreItem' ? (
+              <Box style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                {/* VND price row */}
+                {card.price != null && (
+                  <Box flex className="items-center justify-between">
+                    <p style={{ fontSize: 13, color: '#6B7280' }}>Giá gốc</p>
+                    <p style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
+                      {card.price.toLocaleString('vi-VN')}
+                      <span style={{ fontSize: 12, fontWeight: 600, color: '#6B7280' }}> đ</span>
+                    </p>
+                  </Box>
+                )}
+                {/* Discounted prices from applicable vouchers */}
+                {card.calculatedPrices && card.calculatedPrices.length > 0 && (
+                  card.calculatedPrices.map((cp) => (
+                    <Box key={cp.voucherId} flex className="items-center justify-between">
+                      <p style={{ fontSize: 12, color: '#288F4E', flex: 1, marginRight: 8 }}>
+                        {cp.discountDescription || cp.voucherName}
+                      </p>
+                      <p style={{ fontSize: 14, fontWeight: 700, color: '#288F4E' }}>
+                        {cp.discountedPrice.toLocaleString('vi-VN')}
+                        <span style={{ fontSize: 12, fontWeight: 600 }}> đ</span>
+                      </p>
+                    </Box>
+                  ))
+                )}
+                {/* GreenCoin cost row */}
+                <Box flex className="items-center justify-between">
+                  <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí GreenCoin</p>
+                  <Box
+                    flex
+                    className="items-center"
+                    style={{
+                      gap: 6,
+                      background: 'linear-gradient(135deg, #FEF9EF, #FEF3C7)',
+                      border: '1px solid #FDE68A',
+                      borderRadius: 100,
+                      padding: '5px 14px',
+                    }}
+                  >
+                    <CoinIcon size={20} />
+                    <p style={{ fontSize: 16, fontWeight: 800, color: '#D97706' }}>
+                      {card.pointsRequired.toLocaleString('vi-VN')}
+                    </p>
+                  </Box>
+                </Box>
+                {/* Stock */}
+                {card.stock != null && (
+                  <Box flex className="items-center justify-between">
+                    <p style={{ fontSize: 13, color: '#6B7280' }}>Còn lại</p>
+                    <p style={{ fontSize: 13, fontWeight: 700, color: card.stock <= 5 ? '#EF4444' : '#374151' }}>
+                      {card.stock} sản phẩm
+                    </p>
+                  </Box>
+                )}
               </Box>
-            </Box>
+            ) : (
+              <Box flex className="items-center justify-between">
+                <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí đổi</p>
+                <Box
+                  flex
+                  className="items-center"
+                  style={{
+                    gap: 6,
+                    background: 'linear-gradient(135deg, #FEF9EF, #FEF3C7)',
+                    border: '1px solid #FDE68A',
+                    borderRadius: 100,
+                    padding: '5px 14px',
+                  }}
+                >
+                  <CoinIcon size={20} />
+                  <p style={{ fontSize: 16, fontWeight: 800, color: '#D97706' }}>
+                    {card.pointsRequired.toLocaleString('vi-VN')}
+                  </p>
+                </Box>
+              </Box>
+            )}
 
             {/* Validity */}
             {(card.applicableTimeStart || card.applicableTimeEnd) && (
