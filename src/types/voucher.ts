@@ -269,4 +269,5 @@ export interface UserVoucher {
 export interface GetUserVouchersParams {
   pageNumber?: number;
   pageSize?: number;
+  isUsed?: boolean;
 }

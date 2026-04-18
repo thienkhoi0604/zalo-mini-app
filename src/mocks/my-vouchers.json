@@ -4,11 +4,30 @@
   "data": {
     "items": [
       {
+        "id": "8100ce97-2cd8-486d-b87f-1af4383ff9a6",
+        "code": "VCH-23B01846",
+        "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/f1c91aa53ec64f2291fd13cee29f2f49.webp",
+        "rewardId": "eacc0139-4ff1-4cbc-bd18-faadf34f89b9",
+        "rewardName": "Voucher Giảm Giá 25.000đ",
+        "storeName": "Toàn hệ thống",
+        "storeItemId": null,
+        "itemType": "Reward",
+        "status": "Used",
+        "issuedAt": "2026-04-09T16:35:44.066394+00:00",
+        "expiredAt": "2026-05-09T16:35:44.066412+00:00",
+        "usedAt": "2026-04-16T14:04:09.240011+00:00",
+        "shortDescription": "Đây là sản phẩm test",
+        "appliesToAll": true,
+        "appliedStores": [],
+        "appliedStoreItems": [],
+        "promotionSnapshot": null
+      },
+      {
         "id": "3adc3fab-f218-4704-a594-52a39632b8a9",
         "code": "VCH-A01DD5FF",
         "imageUrl": null,
         "rewardId": "93e0e4ec-4a1a-41c3-b0a8-7b4410f49e04",
-        "rewardName": "Rửa xe - Hút bụi free",
+        "rewardName": "Voucher Giảm Giá 100.000đ",
         "storeName": null,
         "storeItemId": null,
         "itemType": "Reward",
@@ -20,55 +39,36 @@
         "appliesToAll": false,
         "appliedStores": [
           {
-            "id": "7c1da0dd-14ea-4221-a563-1d045ed7743c",
+            "id": "d194867d-874d-4a6d-b572-7eddef9679a5",
             "code": "",
-            "name": "Ecogreen Store - Cửa hàng Chi nhánh Quận 7",
+            "name": "Khoi Store Chi Nhánh Quận 1",
             "address": null,
-            "latitude": 10.74687226,
-            "longitude": 106.70897613,
+            "latitude": 10.772499,
+            "longitude": 106.669565,
             "provinceCode": null,
             "provinceName": null,
             "wardCode": null,
             "wardName": null,
             "description": null,
-            "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/ccb26d1289ab42a689c926cc6374d6fb.webp",
-            "storeImageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/ccb26d1289ab42a689c926cc6374d6fb.webp",
+            "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/bbd68e7d6fea4b70a59764cccc14a0a4.webp",
+            "storeImageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/bbd68e7d6fea4b70a59764cccc14a0a4.webp",
             "phone": null,
             "operatingHours": null,
             "openTime": null,
             "closeTime": null,
-            "distanceKm": 5.13,
-            "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.74687226,106.70897613"
-          },
-          {
-            "id": "e7429547-4094-4a75-9c53-81a66db54ba4",
-            "code": "",
-            "name": "EcoGreen Nam Hoà",
-            "address": null,
-            "latitude": 10.8140699,
-            "longitude": 106.7775661,
-            "provinceCode": null,
-            "provinceName": null,
-            "wardCode": null,
-            "wardName": null,
-            "description": null,
-            "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/9793c77669924baf8e362d7b7e7077d2.webp",
-            "storeImageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/9793c77669924baf8e362d7b7e7077d2.webp",
-            "phone": null,
-            "operatingHours": null,
-            "openTime": null,
-            "closeTime": null,
-            "distanceKm": 12.66,
-            "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.8140699,106.7775661"
+            "distanceKm": 0.03,
+            "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.772499,106.669565"
           }
-        ]
+        ],
+        "appliedStoreItems": [],
+        "promotionSnapshot": null
       },
       {
         "id": "40dc683f-a571-42ef-9bf1-ee788f1d3227",
         "code": "VCH-E89A0751",
         "imageUrl": null,
         "rewardId": "93e0e4ec-4a1a-41c3-b0a8-7b4410f49e04",
-        "rewardName": "Rửa xe - Hút bụi free",
+        "rewardName": "Voucher Giảm Giá 100.000đ",
         "storeName": null,
         "storeItemId": null,
         "itemType": "Reward",
@@ -80,48 +80,29 @@
         "appliesToAll": false,
         "appliedStores": [
           {
-            "id": "7c1da0dd-14ea-4221-a563-1d045ed7743c",
+            "id": "d194867d-874d-4a6d-b572-7eddef9679a5",
             "code": "",
-            "name": "Ecogreen Store - Cửa hàng Chi nhánh Quận 7",
+            "name": "Khoi Store Chi Nhánh Quận 1",
             "address": null,
-            "latitude": 10.74687226,
-            "longitude": 106.70897613,
+            "latitude": 10.772499,
+            "longitude": 106.669565,
             "provinceCode": null,
             "provinceName": null,
             "wardCode": null,
             "wardName": null,
             "description": null,
-            "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/ccb26d1289ab42a689c926cc6374d6fb.webp",
-            "storeImageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/ccb26d1289ab42a689c926cc6374d6fb.webp",
+            "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/bbd68e7d6fea4b70a59764cccc14a0a4.webp",
+            "storeImageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/bbd68e7d6fea4b70a59764cccc14a0a4.webp",
             "phone": null,
             "operatingHours": null,
             "openTime": null,
             "closeTime": null,
-            "distanceKm": 5.13,
-            "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.74687226,106.70897613"
-          },
-          {
-            "id": "e7429547-4094-4a75-9c53-81a66db54ba4",
-            "code": "",
-            "name": "EcoGreen Nam Hoà",
-            "address": null,
-            "latitude": 10.8140699,
-            "longitude": 106.7775661,
-            "provinceCode": null,
-            "provinceName": null,
-            "wardCode": null,
-            "wardName": null,
-            "description": null,
-            "imageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/9793c77669924baf8e362d7b7e7077d2.webp",
-            "storeImageUrl": "https://api-uat.ecogreenhub.vn/api/upload/image/permanent/9793c77669924baf8e362d7b7e7077d2.webp",
-            "phone": null,
-            "operatingHours": null,
-            "openTime": null,
-            "closeTime": null,
-            "distanceKm": 12.66,
-            "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.8140699,106.7775661"
+            "distanceKm": 0.03,
+            "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.772499,106.669565"
           }
-        ]
+        ],
+        "appliedStoreItems": [],
+        "promotionSnapshot": null
       },
       {
         "id": "e26651ef-b4b3-406d-83de-e84afef23825",
@@ -160,12 +141,14 @@
             "distanceKm": 5.13,
             "googleMapsDirectionUrl": "https://www.google.com/maps/dir/?api=1&destination=10.74687226,106.70897613"
           }
-        ]
+        ],
+        "appliedStoreItems": [],
+        "promotionSnapshot": null
       }
     ],
     "pageNumber": 1,
     "pageSize": 20,
-    "totalCount": 3,
+    "totalCount": 4,
     "totalPages": 1,
     "hasPrevious": false,
     "hasNext": false

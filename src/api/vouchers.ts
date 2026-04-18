@@ -93,7 +93,7 @@ export async function getStoreItemById(id: string): Promise<Voucher | null> {
 export async function getUserVouchers(
   params: GetUserVouchersParams = {},
 ): Promise<PaginatedApiResponse<UserVoucher>> {
-  const { pageNumber = 1, pageSize = 5 } = params;
+  const { pageNumber = 1, pageSize = 5, isUsed } = params;
   try {
     const { data } = await axiosClient.get<{
       success: boolean;
@@ -104,7 +104,13 @@ export async function getUserVouchers(
         totalCount: number;
         hasNext: boolean;
       };
-    }>('/Rewards/my-vouchers', { params: { pageNumber, pageSize } });
+    }>('/Rewards/my-vouchers', {
+      params: {
+        pageNumber,
+        pageSize,
+        ...(isUsed !== undefined && { IsUsed: isUsed }),
+      },
+    });
     const items: UserVoucher[] = data.data.items ?? [];
     return {
       success: true,

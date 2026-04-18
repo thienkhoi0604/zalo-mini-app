@@ -11,9 +11,12 @@ export const OTHER_CATEGORY_ID = '__other__';
 
 type VouchersStore = {
   allVouchers: Voucher[];
-  userVouchers: UserVoucher[];
-  userVouchersPage: number;
-  userVouchersHasMore: boolean;
+  unusedVouchers: UserVoucher[];
+  unusedVouchersPage: number;
+  unusedVouchersHasMore: boolean;
+  usedVouchers: UserVoucher[];
+  usedVouchersPage: number;
+  usedVouchersHasMore: boolean;
   userVouchersUnusedCount: number;
   /** Loading flag for allVouchers / voucher detail / storeGroups */
   loading: boolean;
@@ -32,8 +35,8 @@ type VouchersStore = {
 
   loadAllVouchers: () => Promise<void>;
   loadVoucherById: (id: string) => Promise<void>;
-  loadUserVouchers: () => Promise<void>;
-  loadMoreUserVouchers: () => Promise<void>;
+  loadUserVouchers: (isUsed: boolean) => Promise<void>;
+  loadMoreUserVouchers: (isUsed: boolean) => Promise<void>;
   loadUserVouchersCount: () => Promise<void>;
   loadStoreGroups: () => Promise<void>;
   loadCategories: () => Promise<void>;
@@ -43,9 +46,12 @@ type VouchersStore = {
 
 export const useVouchersStore = create<VouchersStore>((set, get) => ({
   allVouchers: [],
-  userVouchers: [],
-  userVouchersPage: 0,
-  userVouchersHasMore: true,
+  unusedVouchers: [],
+  unusedVouchersPage: 0,
+  unusedVouchersHasMore: true,
+  usedVouchers: [],
+  usedVouchersPage: 0,
+  usedVouchersHasMore: true,
   userVouchersUnusedCount: 0,
   loading: false,
   userVouchersLoading: false,
@@ -93,16 +99,16 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
     }
   },
 
-  loadUserVouchers: async () => {
+  loadUserVouchers: async (isUsed: boolean) => {
     if (get().userVouchersLoading) return;
     set({ userVouchersLoading: true });
     try {
-      const res = await getUserVouchers({ pageNumber: 1, pageSize: USER_VOUCHERS_PAGE_SIZE });
-      set({
-        userVouchers: res.data.items ?? [],
-        userVouchersPage: 1,
-        userVouchersHasMore: res.data.hasNext ?? false,
-      });
+      const res = await getUserVouchers({ pageNumber: 1, pageSize: USER_VOUCHERS_PAGE_SIZE, isUsed });
+      if (isUsed) {
+        set({ usedVouchers: res.data.items ?? [], usedVouchersPage: 1, usedVouchersHasMore: res.data.hasNext ?? false });
+      } else {
+        set({ unusedVouchers: res.data.items ?? [], unusedVouchersPage: 1, unusedVouchersHasMore: res.data.hasNext ?? false });
+      }
     } catch (error) {
       console.error('Failed to load user vouchers:', error);
     } finally {
@@ -110,18 +116,29 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
     }
   },
 
-  loadMoreUserVouchers: async () => {
-    const { userVouchersLoading, userVouchersHasMore, userVouchersPage } = get();
-    if (userVouchersLoading || !userVouchersHasMore) return;
+  loadMoreUserVouchers: async (isUsed: boolean) => {
+    const { userVouchersLoading } = get();
+    if (userVouchersLoading) return;
+    const page = isUsed ? get().usedVouchersPage : get().unusedVouchersPage;
+    const hasMore = isUsed ? get().usedVouchersHasMore : get().unusedVouchersHasMore;
+    if (!hasMore) return;
     set({ userVouchersLoading: true });
     try {
-      const nextPage = userVouchersPage + 1;
-      const res = await getUserVouchers({ pageNumber: nextPage, pageSize: USER_VOUCHERS_PAGE_SIZE });
-      set((state) => ({
-        userVouchers: [...state.userVouchers, ...(res.data.items ?? [])],
-        userVouchersPage: nextPage,
-        userVouchersHasMore: res.data.hasNext ?? false,
-      }));
+      const nextPage = page + 1;
+      const res = await getUserVouchers({ pageNumber: nextPage, pageSize: USER_VOUCHERS_PAGE_SIZE, isUsed });
+      if (isUsed) {
+        set((state) => ({
+          usedVouchers: [...state.usedVouchers, ...(res.data.items ?? [])],
+          usedVouchersPage: nextPage,
+          usedVouchersHasMore: res.data.hasNext ?? false,
+        }));
+      } else {
+        set((state) => ({
+          unusedVouchers: [...state.unusedVouchers, ...(res.data.items ?? [])],
+          unusedVouchersPage: nextPage,
+          unusedVouchersHasMore: res.data.hasNext ?? false,
+        }));
+      }
     } catch (error) {
       console.error('Failed to load more user vouchers:', error);
     } finally {
@@ -170,7 +187,7 @@ export const useVouchersStore = create<VouchersStore>((set, get) => ({
       const voucher = get().allVouchers.find((r) => r.id === voucherId);
       await redeemVoucher(voucherId, voucher?.source === 'StoreItem' ? 'Product' : 'Reward');
       await Promise.all([
-        get().loadUserVouchers(),
+        get().loadUserVouchers(false),
         get().loadUserVouchersCount(),
         useUserStore.getState().loadPointWallet(),
       ]);

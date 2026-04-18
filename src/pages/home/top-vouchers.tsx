@@ -187,8 +187,8 @@ export const TopVouchers: FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getFeedItems({ sourceType: 'Reward', pageNumber: 1, pageSize: 8 })
-      .then((items) => setTopVouchers(items.filter((r) => r.status === 'active')))
+    getFeedItems({ pageNumber: 1, pageSize: 12 })
+      .then((items) => setTopVouchers(items.filter((r) => r.source !== 'StoreItem' && r.status === 'active').slice(0, 5)))
       .finally(() => setLoading(false));
   }, []);
 

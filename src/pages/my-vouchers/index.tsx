@@ -129,24 +129,36 @@ const LoadingMore: FC = () => (
 const MyVouchersPage: FC = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = React.useState<Tab>('unused');
-  const { userVouchers, userVouchersLoading: loading, userVouchersHasMore, loadUserVouchers, loadMoreUserVouchers } = useVouchersStore();
+  const {
+    unusedVouchers, unusedVouchersHasMore,
+    usedVouchers, usedVouchersHasMore,
+    userVouchersLoading: loading,
+    loadUserVouchers, loadMoreUserVouchers,
+  } = useVouchersStore();
+
+  const isUsed = activeTab === 'used';
+  const activeVouchers = isUsed ? usedVouchers : unusedVouchers;
+  const activeHasMore = isUsed ? usedVouchersHasMore : unusedVouchersHasMore;
 
   useEffect(() => {
-    loadUserVouchers();
+    loadUserVouchers(false);
   }, []);
 
-  const sentinelRef = useInfiniteScroll(loadMoreUserVouchers, userVouchersHasMore, loading);
+  const handleTabChange = (tab: Tab) => {
+    setActiveTab(tab);
+    const tabIsUsed = tab === 'used';
+    const alreadyLoaded = tabIsUsed ? usedVouchers.length > 0 : unusedVouchers.length > 0;
+    if (!alreadyLoaded) loadUserVouchers(tabIsUsed);
+  };
 
-  const unusedVouchers = userVouchers.filter((v) => v.usedAt === null);
-  const usedVouchers = userVouchers.filter((v) => v.usedAt !== null);
-  const activeVouchers = activeTab === 'unused' ? unusedVouchers : usedVouchers;
+  const sentinelRef = useInfiniteScroll(() => loadMoreUserVouchers(isUsed), activeHasMore, loading);
 
-  const isInitialLoad = loading && userVouchers.length === 0;
-  const isLoadingMore = loading && userVouchers.length > 0;
+  const isInitialLoad = loading && activeVouchers.length === 0;
+  const isLoadingMore = loading && activeVouchers.length > 0;
 
   return (
     <Page className="flex-1 flex flex-col overflow-hidden">
-      <PullToRefresh onRefresh={loadUserVouchers} className="flex-1">
+      <PullToRefresh onRefresh={() => loadUserVouchers(isUsed)} className="flex-1">
 
         {/* Tabs */}
         <Box className="px-4 pt-3 pb-3">
@@ -158,13 +170,13 @@ const MyVouchersPage: FC = () => {
               label="Chưa dùng"
               count={unusedVouchers.length}
               active={activeTab === 'unused'}
-              onClick={() => setActiveTab('unused')}
+              onClick={() => handleTabChange('unused')}
             />
             <TabButton
               label="Đã dùng"
               count={usedVouchers.length}
               active={activeTab === 'used'}
-              onClick={() => setActiveTab('used')}
+              onClick={() => handleTabChange('used')}
             />
           </Box>
         </Box>
@@ -194,7 +206,7 @@ const MyVouchersPage: FC = () => {
 
               <div ref={sentinelRef} style={{ height: 1 }} />
 
-              {!userVouchersHasMore && activeVouchers.length > 0 && (
+              {!activeHasMore && activeVouchers.length > 0 && (
                 <p style={{ textAlign: 'center', fontSize: 12, color: '#D1D5DB', padding: '4px 0' }}>
                   Đã hiển thị tất cả voucher
                 </p>

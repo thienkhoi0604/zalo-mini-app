@@ -121,6 +121,7 @@ const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
           flexDirection: 'column',
           gap: 5,
           minWidth: 0,
+          minHeight: 100,
         }}
       >
         {/* Status badge + date */}
@@ -165,23 +166,25 @@ const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
           {userVoucher.rewardName}
         </p>
 
-        {/* Store */}
-        {userVoucher.storeName && (
-          <Box style={{ display: 'flex', alignItems: 'center', gap: 3 }}>
-            <MapPin size={10} color="#9CA3AF" />
-            <p
-              style={{
-                fontSize: 11,
-                color: '#9CA3AF',
-                overflow: 'hidden',
-                whiteSpace: 'nowrap',
-                textOverflow: 'ellipsis',
-              }}
-            >
-              {userVoucher.storeName}
-            </p>
-          </Box>
-        )}
+        {/* Store — always rendered to keep uniform card height */}
+        <Box style={{ display: 'flex', alignItems: 'center', gap: 3, minHeight: 16 }}>
+          {userVoucher.storeName && (
+            <>
+              <MapPin size={10} color="#9CA3AF" />
+              <p
+                style={{
+                  fontSize: 11,
+                  color: '#9CA3AF',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
+                }}
+              >
+                {userVoucher.storeName}
+              </p>
+            </>
+          )}
+        </Box>
 
         {/* Code */}
         <span

@@ -327,6 +327,8 @@ const StoreItemDetailPage: FC = () => {
                   return (
                     <Box
                       key={voucher.id}
+                      className="cursor-pointer"
+                      onClick={() => navigate(`/rewards/${voucher.id}`)}
                       style={{ padding: '10px 12px', background: '#F9FAFB', borderRadius: 12, border: '1px solid #F3F4F6' }}
                     >
                       <Box flex className="items-center justify-between" style={{ gap: 8 }}>
