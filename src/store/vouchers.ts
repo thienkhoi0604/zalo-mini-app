@@ -7,7 +7,7 @@ import { useUserStore } from '@/store/user';
 
 const USER_VOUCHERS_PAGE_SIZE = 5;
 
-export const OTHER_CATEGORY_ID = '__other__';
+export const OTHER_CATEGORY_ID = '00000000-0000-0000-0000-000000000000';
 
 type VouchersStore = {
   allVouchers: Voucher[];

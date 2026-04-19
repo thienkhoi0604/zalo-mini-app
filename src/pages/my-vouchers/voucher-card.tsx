@@ -4,6 +4,7 @@ import { UserVoucher } from '@/types/voucher';
 import { formatDate } from '@/utils/date';
 import { Gift, Clock, ChevronRight, MapPin } from 'lucide-react';
 import CoinIcon from '@/components/ui/coin-icon';
+import { useUserStore } from '@/store/user';
 
 interface Props {
   userVoucher: UserVoucher;
@@ -12,6 +13,8 @@ interface Props {
 }
 
 const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
+  const { user } = useUserStore();
+  const rankIconUrl = user?.rank?.currentRankIconUrl;
   const date = used
     ? userVoucher.usedAt
       ? formatDate(userVoucher.usedAt)
@@ -247,9 +250,12 @@ const VoucherCard: FC<Props> = ({ userVoucher, used, onClick }) => {
               }}
             >
               <span style={{ fontSize: 11, fontWeight: 700, color: used ? '#9CA3AF' : '#92400E' }}>
-                {userVoucher.pointCost.toLocaleString('vi-VN')}
+                {used ? '+' : '-'}{userVoucher.pointCost.toLocaleString('vi-VN')}
               </span>
-              <CoinIcon size={11} style={{ opacity: used ? 0.5 : 1 }} />
+              {used && rankIconUrl
+                ? <img src={rankIconUrl} alt="rank" style={{ width: 11, height: 11, objectFit: 'contain', opacity: 0.5 }} />
+                : <CoinIcon size={11} style={{ opacity: used ? 0.5 : 1 }} />
+              }
             </Box>
           )}
         </Box>

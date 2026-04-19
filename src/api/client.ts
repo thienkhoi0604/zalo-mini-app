@@ -51,7 +51,7 @@ axiosClient.interceptors.request.use(
     }
     if (API_LOGGING) {
       console.log(
-        `[API] ${config.method?.toUpperCase()} ${config.url}`,
+        `[API request] ${config.method?.toUpperCase()} ${config.url}`,
         config.data ?? config.params ?? '',
       );
     }
@@ -64,7 +64,7 @@ axiosClient.interceptors.response.use(
   (response) => {
     if (API_LOGGING) {
       console.log(
-        `[API] ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`,
+        `[API response] ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`,
         response.data,
       );
     }

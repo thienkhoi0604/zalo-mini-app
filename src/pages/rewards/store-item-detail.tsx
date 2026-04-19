@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 import logoImg from '@/assets/images/coin-logo.png';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
-import { useParams } from 'react-router';
+import { useParams, useNavigate } from 'react-router';
 import { AlertCircle, FileText, Ticket } from 'lucide-react';
 import { useVouchersStore } from '@/store/vouchers';
 import { useUserStore } from '@/store/user';
@@ -298,6 +298,7 @@ interface VoucherRowCardProps {
   discountedPrice?: number;
   discountValue: number;
   onRedeem: () => void;
+  onNavigate: () => void;
 }
 
 const VoucherRowCard: FC<VoucherRowCardProps> = ({
@@ -306,6 +307,7 @@ const VoucherRowCard: FC<VoucherRowCardProps> = ({
   discountedPrice,
   discountValue,
   onRedeem,
+  onNavigate,
 }) => {
   const clipId = `vrc-${useId().replace(/:/g, '')}`;
   const containerRef = useRef<HTMLDivElement>(null);
@@ -365,6 +367,7 @@ const VoucherRowCard: FC<VoucherRowCardProps> = ({
       >
         {/* Left zone: icon + text */}
         <div
+          onClick={onNavigate}
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -372,6 +375,7 @@ const VoucherRowCard: FC<VoucherRowCardProps> = ({
             padding: '0 12px',
             flex: 1,
             minWidth: 0,
+            cursor: 'pointer',
           }}
         >
           {/* Icon */}
@@ -496,6 +500,7 @@ const VoucherRowCard: FC<VoucherRowCardProps> = ({
 
 const StoreItemDetailPage: FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { openSnackbar } = useSnackbar();
   const { allVouchers, loading, loadVoucherById, redeemVoucher, redeeming } =
     useVouchersStore();
@@ -810,6 +815,7 @@ const StoreItemDetailPage: FC = () => {
                             pointCost: voucher.pointCost ?? 0,
                           })
                         }
+                        onNavigate={() => navigate(`/rewards/${voucher.id}`)}
                       />
                     );
                   })}
