@@ -111,6 +111,7 @@ export interface AppliedVoucherDetail {
   discountType: number;
   discountValue: number;
   maxDiscountAmount: number;
+  pointCost?: number;
 }
 
 export interface CalculatedPrice {
@@ -248,6 +249,17 @@ export function getVoucherTypeLabel(type: string): string {
 
 export type UserVoucherItemType = 'Reward' | 'Product';
 
+export interface AppliedStoreItem {
+  id: string;
+  storeId: string;
+  storeName: string;
+  name: string;
+  type: string;
+  price: number | null;
+  coinCost: number | null;
+  imageUrl: string | null;
+}
+
 export interface UserVoucher {
   id: string;
   code: string;
@@ -264,6 +276,8 @@ export interface UserVoucher {
   usedAt: string | null;
   appliesToAll: boolean | null;
   appliedStores: AppliedStore[] | null;
+  appliedStoreItems?: AppliedStoreItem[] | null;
+  pointCost?: number | null;
 }
 
 export interface GetUserVouchersParams {

@@ -1,7 +1,7 @@
 import React, { FC, useId, useRef, useState, useLayoutEffect, useEffect } from 'react';
 import { Voucher } from '@/types/voucher';
 import CoinIcon from '@/components/ui/coin-icon';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 
 interface Props {
   card: Voucher;

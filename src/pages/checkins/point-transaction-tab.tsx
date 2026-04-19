@@ -43,13 +43,13 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
           {([
             {
               key: 'leaf' as Tab,
-              icon: (active: boolean) => <CoinIcon size={14} style={{ opacity: active ? 1 : 0.45 }} />,
+              icon: (active: boolean) => <CoinIcon size={28} style={{ opacity: active ? 1 : 0.35 }} />,
             },
             {
               key: 'greencoin' as Tab,
               icon: (_active: boolean) => rankIconUrl
-                ? <img src={rankIconUrl} alt="rank" style={{ width: 22, height: 22, objectFit: 'contain' }} />
-                : <CoinIcon size={14} style={{ opacity: _active ? 1 : 0.45 }} />,
+                ? <img src={rankIconUrl} alt="rank" style={{ width: 32, height: 32, objectFit: 'contain', opacity: _active ? 1 : 0.35 }} />
+                : <CoinIcon size={28} style={{ opacity: _active ? 1 : 0.35 }} />,
             },
           ] as { key: Tab; icon: (active: boolean) => React.ReactNode }[]).map(({ key, icon }) => {
             const isActive = type === key;
@@ -59,12 +59,9 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
                 onClick={() => onTypeChange(key)}
                 className="flex items-center justify-center"
                 style={{
-                  width: 40,
-                  height: 40,
-                  borderRadius: '50%',
-                  background: isActive ? '#fff' : 'rgba(255,255,255,0.15)',
                   cursor: 'pointer',
-                  transition: 'all 0.2s',
+                  transition: 'opacity 0.2s',
+                  transform: isActive ? 'scale(1.15)' : 'scale(1)',
                 }}
               >
                 {icon(isActive)}

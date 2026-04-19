@@ -10,7 +10,8 @@
         "name": "Voucher Giảm Giá 10.000đ",
         "discountType": 0,
         "discountValue": 10000.0,
-        "maxDiscountAmount": 0
+        "maxDiscountAmount": 0,
+        "pointCost": 10
       }
     ],
     "calculatedPrices": [

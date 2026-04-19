@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { useUserStore } from '@/store/user';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 
 const RankMemberCard: FC = () => {
   const { user } = useUserStore();

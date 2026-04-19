@@ -7,7 +7,7 @@ import { getFeedItems } from '@/api/feed';
 import CoinIcon from '@/components/ui/coin-icon';
 import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 
 const FALLBACK = logoImg;
 const NOTCH_R = 12;

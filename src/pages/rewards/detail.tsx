@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useLocation, useNavigate } from 'react-router';
 import { openWebview } from 'zmp-sdk/apis';

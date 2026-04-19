@@ -89,7 +89,12 @@ const VouchersPage: FC = () => {
               }}
             >
               {/* Points balance */}
-              <Box flex className="items-center" style={{ gap: 6, flex: 1, justifyContent: 'center' }}>
+              <Box
+                onClick={() => navigate('/checkin-history')}
+                flex
+                className="items-center"
+                style={{ gap: 6, flex: 1, justifyContent: 'center', cursor: 'pointer' }}
+              >
                 <CoinIcon size={18} />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#fff', letterSpacing: -0.2 }}>
                   {(pointWallet?.currentBalance ?? 0).toLocaleString('vi-VN')}

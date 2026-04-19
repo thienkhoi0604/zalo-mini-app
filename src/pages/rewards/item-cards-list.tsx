@@ -1,6 +1,7 @@
 import React, { FC, useEffect } from 'react';
 import { Box } from 'zmp-ui';
 import { Gift, ChevronRight } from 'lucide-react';
+import voucherIcon from '@/assets/images/voucher-icon.png';
 import SectionHeader from '@/components/ui/section-header';
 import { FALLBACK_IMAGES } from '@/constants';
 import ViewAllFab from '@/components/ui/view-all-fab';
@@ -195,7 +196,7 @@ const VouchersList: FC = () => {
       {hasOther && (
         <CategoryRow
           key={OTHER_CATEGORY_ID}
-          category={{ id: OTHER_CATEGORY_ID, name: 'Khác', imageUrl: '', storeItemCount: 0, rewardCount: 0 }}
+          category={{ id: OTHER_CATEGORY_ID, name: 'Khác', imageUrl: voucherIcon, storeItemCount: 0, rewardCount: 0 }}
           cards={otherVouchers}
           paletteIndex={visibleCategories.length}
         />

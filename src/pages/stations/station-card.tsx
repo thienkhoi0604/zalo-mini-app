@@ -3,18 +3,19 @@ import { Box } from 'zmp-ui';
 import { MapPin, Navigation, Zap } from 'lucide-react';
 import type { Station } from '@/types/station';
 import CoinIcon from '@/components/ui/coin-icon';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 import { formatDistance } from '@/utils/format';
 
 interface Props {
   station: Station;
   isHiddenPower: boolean;
+  isHiddenAmenities?: boolean;
   onClick: () => void;
 }
 
 const FALLBACK_IMG = logoImg;
 
-const StationCard: FC<Props> = ({ station, isHiddenPower, onClick }) => {
+const StationCard: FC<Props> = ({ station, isHiddenPower, isHiddenAmenities = false, onClick }) => {
   const address = [station.address, station.wardName, station.provinceName]
     .filter(Boolean)
     .join(', ');
@@ -67,6 +68,18 @@ const StationCard: FC<Props> = ({ station, isHiddenPower, onClick }) => {
         >
           {station.name}
         </p>
+        {!isHiddenAmenities && station.amenities && (
+          <p
+            style={{
+              fontSize: 13,
+              textAlign: 'center',
+              marginTop: 4,
+              letterSpacing: 2,
+            }}
+          >
+            {station.amenities}
+          </p>
+        )}
       </Box>
 
       {/* ── Body ── */}

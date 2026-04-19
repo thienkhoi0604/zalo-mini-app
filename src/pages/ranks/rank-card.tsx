@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 import { Box } from 'zmp-ui';
 import { TierConfig } from './tiers';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 
 interface Props {
   tier: TierConfig;

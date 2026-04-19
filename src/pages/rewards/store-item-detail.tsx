@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 import { Box, Modal, Page, useSnackbar } from 'zmp-ui';
 import { useParams } from 'react-router';
 import { AlertCircle, FileText, Ticket } from 'lucide-react';
@@ -81,7 +81,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
             lineHeight: '19px',
           }}
         >
-          Dùng GreenCoin để mua
+          Dùng Lá để mua
         </p>
         <p
           style={{
@@ -121,7 +121,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
           )}
 
           <Box flex className="items-center justify-between">
-            <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí GreenCoin</p>
+            <p style={{ fontSize: 13, color: '#6B7280' }}>Chi phí Lá</p>
             <Box flex className="items-center" style={{ gap: 5 }}>
               <CoinIcon size={18} />
               <p style={{ fontSize: 15, fontWeight: 700, color: '#111827' }}>
@@ -133,7 +133,7 @@ const ConfirmBuyModal: FC<ConfirmBuyModalProps> = ({
           <Box style={{ height: 1, background: '#E5E7EB' }} />
 
           <Box flex className="items-center justify-between">
-            <p style={{ fontSize: 13, color: '#6B7280' }}>GreenCoin hiện có</p>
+            <p style={{ fontSize: 13, color: '#6B7280' }}>Lá hiện có</p>
             <Box flex className="items-center" style={{ gap: 5 }}>
               <CoinIcon size={18} />
               <p
@@ -232,10 +232,9 @@ const ROW_CARD_RADIUS = 14; // corner radius
 const ROW_BORDER_COLOR = 'rgba(0,0,0,0.08)';
 
 /** Full horizontal ticket path: notches on TOP and BOTTOM at cx */
-function buildRowNotchPathFull(w: number, h: number): string {
+function buildRowNotchPathFull(w: number, h: number, cx: number): string {
   const r = ROW_CARD_RADIUS;
   const nr = ROW_NOTCH_R;
-  const cx = ROW_CUT_X;
 
   return [
     `M 0 ${r}`,
@@ -256,10 +255,11 @@ function buildRowNotchPathFull(w: number, h: number): string {
   ].join(' ');
 }
 
-const RowNotchClipDef: FC<{ id: string; w: number; h: number }> = ({
+const RowNotchClipDef: FC<{ id: string; w: number; h: number; cx: number }> = ({
   id,
   w,
   h,
+  cx,
 }) => (
   <svg
     width="0"
@@ -270,7 +270,7 @@ const RowNotchClipDef: FC<{ id: string; w: number; h: number }> = ({
     <defs>
       <clipPath id={id} clipPathUnits="objectBoundingBox">
         <path
-          d={buildRowNotchPathFull(w, h)}
+          d={buildRowNotchPathFull(w, h, cx)}
           transform={`scale(${1 / w}, ${1 / h})`}
         />
       </clipPath>
@@ -278,7 +278,11 @@ const RowNotchClipDef: FC<{ id: string; w: number; h: number }> = ({
   </svg>
 );
 
-const RowNotchBorderOverlay: FC<{ w: number; h: number }> = ({ w, h }) => (
+const RowNotchBorderOverlay: FC<{ w: number; h: number; cx: number }> = ({
+  w,
+  h,
+  cx,
+}) => (
   <svg
     width="100%"
     height="100%"
@@ -288,7 +292,7 @@ const RowNotchBorderOverlay: FC<{ w: number; h: number }> = ({ w, h }) => (
     aria-hidden="true"
   >
     <path
-      d={buildRowNotchPathFull(w, h)}
+      d={buildRowNotchPathFull(w, h, cx)}
       fill="none"
       stroke={ROW_BORDER_COLOR}
       strokeWidth={1}
@@ -341,7 +345,9 @@ const VoucherRowCard: FC<VoucherRowCardProps> = ({
       ref={containerRef}
       style={{ position: 'relative', height: ROW_CARD_H, width: '100%' }}
     >
-      {hasMeasure && <RowNotchClipDef id={clipId} w={cardW} h={ROW_CARD_H} />}
+      {hasMeasure && (
+        <RowNotchClipDef id={clipId} w={cardW} h={ROW_CARD_H} cx={cutX} />
+      )}
 
       {/* Clipped card body */}
       <div
@@ -463,7 +469,7 @@ const VoucherRowCard: FC<VoucherRowCardProps> = ({
               cursor: 'pointer',
               fontSize: 13,
               fontWeight: 700,
-              color: '#9CA3AF',
+              color: C.primary,
               whiteSpace: 'nowrap',
             }}
           >
@@ -473,15 +479,17 @@ const VoucherRowCard: FC<VoucherRowCardProps> = ({
       </div>
 
       {/* SVG border overlay */}
-      {hasMeasure && <RowNotchBorderOverlay w={cardW} h={ROW_CARD_H} />}
+      {hasMeasure && (
+        <RowNotchBorderOverlay w={cardW} h={ROW_CARD_H} cx={cutX} />
+      )}
 
-      {/* Dashed perforation line (vertical) */}
+      {/* Dashed perforation line — centred exactly on the notch axis */}
       <div
         style={{
           position: 'absolute',
-          left: cutX + ROW_NOTCH_R,
-          top: ROW_NOTCH_R + 4,
-          bottom: ROW_NOTCH_R + 4,
+          left: cutX,
+          top: ROW_NOTCH_R,
+          bottom: ROW_NOTCH_R,
           width: 0,
           borderLeft: '1.5px dashed #D1D5DB',
           pointerEvents: 'none',
@@ -500,7 +508,11 @@ const StoreItemDetailPage: FC = () => {
   const { allVouchers, loading, loadVoucherById, redeemVoucher, redeeming } =
     useVouchersStore();
   const { pointWallet } = useUserStore();
-  const [pendingRedeem, setPendingRedeem] = useState<{ id: string; name: string } | null>(null);
+  const [pendingRedeem, setPendingRedeem] = useState<{
+    id: string;
+    name: string;
+    pointCost: number;
+  } | null>(null);
 
   useEffect(() => {
     if (id)
@@ -799,7 +811,13 @@ const StoreItemDetailPage: FC = () => {
                         discountValue={voucher.discountValue}
                         originalPrice={calculated?.originalPrice}
                         discountedPrice={calculated?.discountedPrice}
-                        onRedeem={() => setPendingRedeem({ id: voucher.id, name: voucher.name })}
+                        onRedeem={() =>
+                          setPendingRedeem({
+                            id: voucher.id,
+                            name: voucher.name,
+                            pointCost: voucher.pointCost ?? 0,
+                          })
+                        }
                       />
                     );
                   })}
@@ -813,13 +831,12 @@ const StoreItemDetailPage: FC = () => {
         visible={!!pendingRedeem}
         name={pendingRedeem?.name ?? ''}
         price={undefined}
-        pointsRequired={0}
+        pointsRequired={pendingRedeem?.pointCost ?? 0}
         userPoints={userPoints}
         redeeming={redeeming}
         onConfirm={() => pendingRedeem && handleRedeemVoucher(pendingRedeem.id)}
         onCancel={() => setPendingRedeem(null)}
       />
-
     </Page>
   );
 };

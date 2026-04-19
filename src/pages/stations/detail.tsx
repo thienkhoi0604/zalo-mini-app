@@ -9,7 +9,7 @@ import StatCard from './stat-card';
 import InfoRow from './info-row';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import { ACTIVE_THEME } from '@/constants/theme';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 import { formatDistance } from '@/utils/format';
 
 const FALLBACK_IMG = logoImg;

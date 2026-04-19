@@ -3,7 +3,7 @@ import { Box } from 'zmp-ui';
 import { ShieldCheck, ShoppingBag } from 'lucide-react';
 import { useUserStore } from '@/store/user';
 import bgProfile from '@/assets/images/background-profile.png';
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 
 const MemberCard: FC = () => {
   const { user, pointWallet } = useUserStore();

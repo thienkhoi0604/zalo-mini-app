@@ -10,7 +10,7 @@ import { COLORS } from '@/constants';
 import { getStoreById, AppStore } from '@/api/stores';
 import { getFeedItems } from '@/api/feed';
 import { openWebview } from 'zmp-sdk';
-import defaultStoreImg from '@/assets/images/logo.png';
+import defaultStoreImg from '@/assets/images/coin-logo.png';
 
 const VOUCHER_FALLBACK = defaultStoreImg;
 

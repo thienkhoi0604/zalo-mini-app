@@ -5,7 +5,7 @@ import { Store, MapPin, Clock, Phone, Navigation } from 'lucide-react';
 import SectionHeader from '@/components/ui/section-header';
 import ViewAllFab from '@/components/ui/view-all-fab';
 import { getStores, AppStore } from '@/api/stores';
-import defaultStoreImg from '@/assets/images/logo.png';
+import defaultStoreImg from '@/assets/images/coin-logo.png';
 import { formatDistance } from '@/utils/format';
 
 // ─── Skeleton ──────────────────────────────────────────────────────────────────

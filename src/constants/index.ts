@@ -12,7 +12,7 @@ export const COLORS = {
 
 // ─── Fallback Assets ──────────────────────────────────────────────────────────
 
-import logoImg from '@/assets/images/logo.png';
+import logoImg from '@/assets/images/coin-logo.png';
 
 export const FALLBACK_IMAGES = {
   station: logoImg,

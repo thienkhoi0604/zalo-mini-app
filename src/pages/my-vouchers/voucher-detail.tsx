@@ -4,7 +4,7 @@ import { Box, useSnackbar } from 'zmp-ui';
 import QRCode from 'react-qr-code';
 import { openWebview } from 'zmp-sdk/apis';
 import { Copy, CheckCircle, Clock, MapPin, Ticket, Store, Globe, Zap, Navigation } from 'lucide-react';
-import { UserVoucher, UserVoucherItemType } from '@/types/voucher';
+import { UserVoucher, UserVoucherItemType, AppliedStoreItem } from '@/types/voucher';
 import { formatDate } from '@/utils/date';
 import { fetchQRSession, QRSessionType } from '@/api/user';
 import { COLORS } from '@/constants';
@@ -382,73 +382,123 @@ const VoucherDetailPage: FC = () => {
             </Box>
           ) : (
             <Box style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {userVoucher.appliedStores!.map((store) => (
-                <Box
-                  key={store.id}
-                  style={{
-                    display: 'flex', alignItems: 'center', gap: 12,
-                    padding: '12px 14px',
-                    background: '#fff',
-                    border: '1px solid #F0F1F3',
-                    borderRadius: 16,
-                    boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
-                  }}
-                >
-                  {/* Store info — taps to store detail */}
+              {userVoucher.appliedStores!.map((store) => {
+                const storeItems: AppliedStoreItem[] = (userVoucher.appliedStoreItems ?? []).filter(
+                  (item) => item.storeId === store.id,
+                );
+                return (
                   <Box
-                    onClick={() => store.id && navigate(`/stores/${store.id}`)}
-                    style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, cursor: store.id ? 'pointer' : 'default' }}
+                    key={store.id}
+                    style={{
+                      background: '#fff',
+                      border: '1px solid #F0F1F3',
+                      borderRadius: 16,
+                      boxShadow: '0 1px 6px rgba(0,0,0,0.04)',
+                      overflow: 'hidden',
+                    }}
                   >
-                    {(store.storeImageUrl ?? store.imageUrl) ? (
-                      <img
-                        src={store.storeImageUrl ?? store.imageUrl!}
-                        alt={store.name}
-                        style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
-                        onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
-                      />
-                    ) : (
+                    {/* Store header row */}
+                    <Box
+                      style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '12px 14px' }}
+                    >
                       <Box
-                        style={{
-                          width: 48, height: 48, borderRadius: 12, flexShrink: 0,
-                          background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)',
-                          display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        }}
+                        onClick={() => store.id && navigate(`/stores/${store.id}`)}
+                        style={{ display: 'flex', alignItems: 'center', gap: 12, flex: 1, minWidth: 0, cursor: store.id ? 'pointer' : 'default' }}
                       >
-                        <Store size={22} color="#7C3AED" />
-                      </Box>
-                    )}
-                    <Box style={{ flex: 1, minWidth: 0 }}>
-                      <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                        {store.name}
-                      </p>
-                      {store.address && (
-                        <Box style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
-                          <MapPin size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
-                          <p style={{ fontSize: 11, color: '#9CA3AF', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
-                            {store.address}
+                        {(store.storeImageUrl ?? store.imageUrl) ? (
+                          <img
+                            src={store.storeImageUrl ?? store.imageUrl!}
+                            alt={store.name}
+                            style={{ width: 48, height: 48, borderRadius: 12, objectFit: 'cover', flexShrink: 0 }}
+                            onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                          />
+                        ) : (
+                          <Box
+                            style={{
+                              width: 48, height: 48, borderRadius: 12, flexShrink: 0,
+                              background: 'linear-gradient(135deg, #EDE9FE, #DDD6FE)',
+                              display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            }}
+                          >
+                            <Store size={22} color="#7C3AED" />
+                          </Box>
+                        )}
+                        <Box style={{ flex: 1, minWidth: 0 }}>
+                          <p style={{ fontSize: 13, fontWeight: 600, color: '#111827', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                            {store.name}
                           </p>
+                          {store.address && (
+                            <Box style={{ display: 'flex', alignItems: 'center', gap: 4, marginTop: 4 }}>
+                              <MapPin size={11} color="#9CA3AF" style={{ flexShrink: 0 }} />
+                              <p style={{ fontSize: 11, color: '#9CA3AF', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                                {store.address}
+                              </p>
+                            </Box>
+                          )}
+                        </Box>
+                      </Box>
+                      {store.googleMapsDirectionUrl && (
+                        <Box
+                          onClick={(e) => { e.stopPropagation(); openWebview({ url: store.googleMapsDirectionUrl! }); }}
+                          style={{
+                            flexShrink: 0,
+                            width: 34, height: 34, borderRadius: 10,
+                            background: '#EDE9FE',
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            cursor: 'pointer',
+                          }}
+                        >
+                          <Navigation size={16} color="#7C3AED" />
                         </Box>
                       )}
                     </Box>
-                  </Box>
 
-                  {/* Navigation icon — opens Google Maps webview */}
-                  {store.googleMapsDirectionUrl && (
-                    <Box
-                      onClick={(e) => { e.stopPropagation(); openWebview({ url: store.googleMapsDirectionUrl! }); }}
-                      style={{
-                        flexShrink: 0,
-                        width: 34, height: 34, borderRadius: 10,
-                        background: '#EDE9FE',
-                        display: 'flex', alignItems: 'center', justifyContent: 'center',
-                        cursor: 'pointer',
-                      }}
-                    >
-                      <Navigation size={16} color="#7C3AED" />
-                    </Box>
-                  )}
-                </Box>
-              ))}
+                    {/* Applicable products for this store */}
+                    {storeItems.length > 0 && (
+                      <Box style={{ borderTop: '1px solid #F3F4F6', padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+                        <p style={{ fontSize: 10, fontWeight: 700, color: '#9CA3AF', letterSpacing: 0.4 }}>
+                          SẢN PHẨM ÁP DỤNG
+                        </p>
+                        {storeItems.map((item) => (
+                          <Box
+                            key={item.id}
+                            style={{ display: 'flex', alignItems: 'center', gap: 10 }}
+                          >
+                            {item.imageUrl ? (
+                              <img
+                                src={item.imageUrl}
+                                alt={item.name}
+                                style={{ width: 40, height: 40, borderRadius: 8, objectFit: 'cover', flexShrink: 0 }}
+                                onError={(e) => { (e.target as HTMLImageElement).style.display = 'none'; }}
+                              />
+                            ) : (
+                              <Box
+                                style={{
+                                  width: 40, height: 40, borderRadius: 8, flexShrink: 0,
+                                  background: '#F3F4F6',
+                                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                                }}
+                              >
+                                <Store size={16} color="#9CA3AF" />
+                              </Box>
+                            )}
+                            <Box style={{ flex: 1, minWidth: 0 }}>
+                              <p style={{ fontSize: 12, fontWeight: 600, color: '#111827', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                                {item.name}
+                              </p>
+                              {item.price != null && (
+                                <p style={{ fontSize: 11, color: '#6B7280', marginTop: 2 }}>
+                                  {item.price.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' })}
+                                </p>
+                              )}
+                            </Box>
+                          </Box>
+                        ))}
+                      </Box>
+                    )}
+                  </Box>
+                );
+              })}
             </Box>
           )}
         </Box>

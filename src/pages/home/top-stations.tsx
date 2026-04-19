@@ -52,6 +52,7 @@ export const TopStationsCarousel: FC = () => {
             <StationCard
               station={station}
               isHiddenPower={true}
+              isHiddenAmenities={true}
               onClick={() => {
                 sessionStorage.setItem('home-scroll-section', 'section-stations');
                 navigate(`/stations/${station.id}`);

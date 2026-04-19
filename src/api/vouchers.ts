@@ -111,7 +111,11 @@ export async function getUserVouchers(
         ...(isUsed !== undefined && { IsUsed: isUsed }),
       },
     });
-    const items: UserVoucher[] = data.data.items ?? [];
+    const items: UserVoucher[] = (data.data.items ?? []).map((item: UserVoucher & { promotionSnapshot?: { pointCost?: number | null }; appliedStoreItems?: UserVoucher['appliedStoreItems'] }) => ({
+      ...item,
+      pointCost: item.pointCost ?? item.promotionSnapshot?.pointCost ?? null,
+      appliedStoreItems: item.appliedStoreItems ?? null,
+    }));
     return {
       success: true,
       data: {

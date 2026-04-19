@@ -4,6 +4,9 @@ import { PointTransaction } from '@/types/point-transaction';
 import { useUserStore } from '@/store/user';
 import { formatTime } from './utils';
 import CoinIcon from '@/components/ui/coin-icon';
+import placeIcon from '@/assets/images/place-icon.png';
+import voucherIcon from '@/assets/images/voucher-icon.png';
+import coinLogo from '@/assets/images/coin-logo.png';
 
 const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({ item, isLast }) => {
   const isSpend = item.type === 'Spend';
@@ -30,15 +33,11 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
         className="flex items-center justify-center flex-shrink-0"
         style={{ width: 44, height: 44 }}
       >
-        {isGreenCoin && rankIconUrl ? (
-          <img
-            src={rankIconUrl}
-            alt="rank"
-            style={{ width: 44, height: 44, objectFit: 'contain' }}
-          />
-        ) : (
-          <CoinIcon size={26} />
-        )}
+        <img
+          src={isGreenCoin ? coinLogo : isSpend ? voucherIcon : placeIcon}
+          alt="icon"
+          style={{ width: 44, height: 44, objectFit: 'contain' }}
+        />
       </Box>
 
       {/* Text */}
@@ -73,11 +72,16 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
       {/* Points badge */}
       <Box
         className="flex items-center justify-center rounded-full flex-shrink-0"
-        style={{ background: badgeBg, padding: '4px 10px', minWidth: 60 }}
+        style={{ background: badgeBg, padding: '4px 10px', gap: 4, minWidth: 60 }}
       >
         <p style={{ fontSize: 13, fontWeight: 700, color: amountColor }}>
           {prefix}{item.points.toLocaleString('vi-VN')}
         </p>
+        {isGreenCoin && rankIconUrl ? (
+          <img src={rankIconUrl} alt="rank" style={{ width: 16, height: 16, objectFit: 'contain' }} />
+        ) : (
+          <CoinIcon size={14} />
+        )}
       </Box>
     </Box>
   );
