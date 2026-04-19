@@ -3,6 +3,7 @@ import { Box } from 'zmp-ui';
 import { PointTransaction } from '@/types/point-transaction';
 import { useUserStore } from '@/store/user';
 import CoinIcon from '@/components/ui/coin-icon';
+import coinLogo from '@/assets/images/coin-logo.png';
 import PointTransactionItem from './point-transaction-item';
 import HistorySkeleton from './history-skeleton';
 import { groupByDateField } from './utils';
@@ -12,8 +13,7 @@ export type Tab = 'leaf' | 'greencoin';
 // ─── Summary banner ────────────────────────────────────────────────────────────
 
 const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTypeChange: (t: Tab) => void }> = ({ transactions, type, onTypeChange }) => {
-  const { pointWallet, user } = useUserStore();
-  const rankIconUrl = user?.rank?.currentRankIconUrl;
+  const { pointWallet } = useUserStore();
   const isLa = type === 'leaf';
 
   const bigNumber = isLa
@@ -47,9 +47,7 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
             },
             {
               key: 'greencoin' as Tab,
-              icon: (_active: boolean) => rankIconUrl
-                ? <img src={rankIconUrl} alt="rank" style={{ width: 32, height: 32, objectFit: 'contain', opacity: _active ? 1 : 0.35 }} />
-                : <CoinIcon size={28} style={{ opacity: _active ? 1 : 0.35 }} />,
+              icon: (_active: boolean) => <img src={coinLogo} alt="greencoin" style={{ width: 32, height: 32, objectFit: 'contain', opacity: _active ? 1 : 0.35 }} />,
             },
           ] as { key: Tab; icon: (active: boolean) => React.ReactNode }[]).map(({ key, icon }) => {
             const isActive = type === key;

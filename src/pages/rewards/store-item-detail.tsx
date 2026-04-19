@@ -14,15 +14,7 @@ import { useVouchersStore } from '@/store/vouchers';
 import { useUserStore } from '@/store/user';
 import CoinIcon from '@/components/ui/coin-icon';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
-
-// ─── Design Tokens ─────────────────────────────────────────────────────────────
-const C = {
-  primary: '#288F4E',
-  primaryLight: '#EEF7F1', // ~10% primary tint — backgrounds, badges
-  primaryBorder: '#A7D9B8', // ~30% primary tint — borders
-  primaryDark: '#1A6B39', // darker shade — emphasis text
-  primaryFade: '#D1EDD9', // mid tint — icon backgrounds, gradient end
-} as const;
+import { COLORS as C } from '@/constants';
 
 // ─── Confirm Modal ─────────────────────────────────────────────────────────────
 

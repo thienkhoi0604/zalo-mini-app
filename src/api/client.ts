@@ -16,6 +16,8 @@ export const API_BASE_URL =
   import.meta.env.VITE_API_URL ||
   'http://localhost:3001';
 
+const API_LOGGING = import.meta.env.VITE_API_LOG === 'true';
+
 type QueueEntry = {
   resolve: (token: string | null) => void;
   reject: (reason?: unknown) => void;
@@ -47,6 +49,12 @@ axiosClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+    if (API_LOGGING) {
+      console.log(
+        `[API] ${config.method?.toUpperCase()} ${config.url}`,
+        config.data ?? config.params ?? '',
+      );
+    }
     return config;
   },
   (error) => Promise.reject(error),
@@ -54,10 +62,12 @@ axiosClient.interceptors.request.use(
 
 axiosClient.interceptors.response.use(
   (response) => {
-    console.log(
-      `[API] ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`,
-      response.data,
-    );
+    if (API_LOGGING) {
+      console.log(
+        `[API] ${response.status} ${response.config.method?.toUpperCase()} ${response.config.url}`,
+        response.data,
+      );
+    }
     return response;
   },
   async (error: AxiosError) => {

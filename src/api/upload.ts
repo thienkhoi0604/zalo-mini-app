@@ -58,8 +58,6 @@ function compressImage(
             return;
           }
 
-          console.log(`[compress] ${file.size} -> ${blob.size} bytes`);
-
           const compressed = new File(
             [blob],
             file.name.replace(/\.[^.]+$/, '.jpg'),

@@ -3,23 +3,12 @@ import { Box } from 'zmp-ui';
 import { Gift, ChevronRight } from 'lucide-react';
 import voucherIcon from '@/assets/images/voucher-icon.png';
 import SectionHeader from '@/components/ui/section-header';
-import { FALLBACK_IMAGES } from '@/constants';
+import { FALLBACK_IMAGES, CATEGORY_PALETTE as PALETTE } from '@/constants';
 import ViewAllFab from '@/components/ui/view-all-fab';
 import { useVouchersStore, OTHER_CATEGORY_ID } from '@/store/vouchers';
 import { AppCategory, Voucher } from '@/types/voucher';
 import VoucherCard from './voucher-card';
 import { useNavigate } from 'react-router';
-
-// ─── Category colours (cycled) ────────────────────────────────────────────────
-
-const PALETTE = [
-  { accent: '#288F4E', accentLight: '#DCFCE7', accentMid: '#BBF7D0' },
-  { accent: '#D97706', accentLight: '#FEF3C7', accentMid: '#FDE68A' },
-  { accent: '#7C3AED', accentLight: '#EDE9FE', accentMid: '#DDD6FE' },
-  { accent: '#0891B2', accentLight: '#CFFAFE', accentMid: '#A5F3FC' },
-  { accent: '#DB2777', accentLight: '#FCE7F3', accentMid: '#FBCFE8' },
-  { accent: '#059669', accentLight: '#D1FAE5', accentMid: '#A7F3D0' },
-];
 
 // ─── Category Row ─────────────────────────────────────────────────────────────
 

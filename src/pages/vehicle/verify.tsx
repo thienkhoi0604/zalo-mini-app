@@ -58,12 +58,6 @@ const VerifyVehiclePage: FC = () => {
   const [submitting, setSubmitting] = useState(false);
 
   const handleImageChange1 = async (file: File) => {
-  console.log('=== FILE INFO ===');
-  console.log('name:', file.name);
-  console.log('type:', file.type);
-  console.log('size:', file.size);
-  console.log('lastModified:', file.lastModified);
-  
   const localUrl = URL.createObjectURL(file);
   setPreviewUrl1(localUrl);
   setUploadedUrl1(null);
