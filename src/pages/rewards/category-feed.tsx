@@ -2,9 +2,9 @@ import React, { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import { useParams, useNavigate } from 'react-router';
 import { Gift, ArrowUpDown, TrendingUp, TrendingDown } from 'lucide-react';
-import { Voucher } from '@/types/voucher';
+import { Voucher, FEED_ITEM_TYPES } from '@/types/voucher';
 import { getFeedItems } from '@/api/feed';
-import { useVouchersStore } from '@/store/vouchers';
+import { useVouchersStore, OTHER_CATEGORY_ID } from '@/store/vouchers';
 import { FALLBACK_IMAGES } from '@/constants';
 import PullToRefresh from '@/components/ui/pull-to-refresh';
 import PageHeader from '@/components/ui/page-header';
@@ -58,7 +58,21 @@ const CategoryDetailPage: FC = () => {
     if (!categoryId) return;
     setLoading(true);
     try {
-      const items = await getFeedItems({ categoryId, pageNumber: 1, pageSize: 200 });
+      let items: Voucher[];
+      if (categoryId === OTHER_CATEGORY_ID) {
+        const [vouchers, physicalItems] = await Promise.all([
+          getFeedItems({ categoryId: categoryId, type: FEED_ITEM_TYPES.VOUCHER, pageNumber: 1, pageSize: 200 }),
+          getFeedItems({ categoryId: categoryId, type: FEED_ITEM_TYPES.PHYSICAL_ITEM, pageNumber: 1, pageSize: 200 }),
+        ]);
+        const seen = new Set<string>();
+        items = [...vouchers, ...physicalItems].filter((v) => {
+          if (seen.has(v.id)) return false;
+          seen.add(v.id);
+          return true;
+        });
+      } else {
+        items = await getFeedItems({ categoryId, pageNumber: 1, pageSize: 200 });
+      }
       setRawCards(items);
     } catch {
       openSnackbar({ text: 'Không thể tải danh sách', type: 'error' });
