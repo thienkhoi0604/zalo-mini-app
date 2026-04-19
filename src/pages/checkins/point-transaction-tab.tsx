@@ -21,8 +21,6 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
     : transactions.reduce((sum, t) => sum + t.points, 0);
 
   const label = isLa ? 'Số dư Lá' : 'Tổng GreenCoin';
-  const balanceLabel = isLa ? 'Tổng tích lũy' : 'GreenCoin hiện có';
-  const balance = isLa ? (pointWallet?.totalEarned ?? 0) : (pointWallet?.greenCoin ?? 0);
 
   return (
     <Box
@@ -76,20 +74,6 @@ const TransactionSummary: FC<{ transactions: PointTransaction[]; type: Tab; onTy
         </Box>
       </Box>
 
-      <Box style={{ height: 1, background: 'rgba(255,255,255,0.2)', marginBottom: 12 }} />
-
-      <Box flex className="items-center justify-between">
-        <p style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>{balanceLabel}</p>
-        <Box flex className="items-center" style={{ gap: 5 }}>
-          {!isLa && rankIconUrl
-            ? <img src={rankIconUrl} alt="rank" style={{ width: 24, height: 24, objectFit: 'contain' }} />
-            : <CoinIcon size={20} />
-          }
-          <p style={{ fontSize: 16, fontWeight: 800, color: '#fff' }}>
-            {balance.toLocaleString('vi-VN')}
-          </p>
-        </Box>
-      </Box>
     </Box>
   );
 };
