@@ -2,6 +2,7 @@ import React, { FC, useEffect } from 'react';
 import { Autoplay, Pagination } from 'swiper';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Box } from 'zmp-ui';
+import { openWebview } from 'zmp-sdk/apis';
 import { useBannersStore } from '@/store/banners';
 
 // ─── Skeleton ─────────────────────────────────────────────────────────────────
@@ -49,13 +50,14 @@ export const Banner: FC = () => {
         {banners.map((banner) => (
           <SwiperSlide key={banner.id}>
             <div
+              onClick={() => banner.targetUrl && openWebview({ url: banner.targetUrl })}
               style={{
                 width: '100%',
                 aspectRatio: '16 / 9',
                 borderRadius: 16,
                 overflow: 'hidden',
                 boxShadow: '0 4px 16px rgba(0,0,0,0.12)',
-                cursor: 'default',
+                cursor: banner.targetUrl ? 'pointer' : 'default',
               }}
             >
               <img

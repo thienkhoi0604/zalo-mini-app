@@ -1,4 +1,5 @@
 import React, { FC, useState } from 'react';
+import voucherIcon from '@/assets/images/voucher-icon.png';
 import { useNavigate } from 'react-router';
 import { Box, useSnackbar } from 'zmp-ui';
 import { QrCode, Bell } from 'lucide-react';
@@ -167,7 +168,7 @@ export const HeroHeader: FC = () => {
 
                 {/* Voucher */}
                 <Box flex className="items-center" style={{ gap: 6, flex: 1 }} onClick={() => navigate('/my-vouchers')}>
-                  <span style={{ fontSize: 20 }}>🎫</span>
+                  <img src={voucherIcon} alt="voucher" style={{ width: 24, height: 24, objectFit: 'contain' }} />
                   <p style={{ fontSize: 15, fontWeight: 800, color: '#fff' }}>
                     {voucherCount}
                   </p>

@@ -67,6 +67,7 @@ Open `localhost:3000` in your browser. The app runs inside a Zalo Mini App simul
 |----------|---------|-------------|
 | `VITE_API_URL` | `http://localhost:3001` | Backend API base URL |
 | `VITE_BASE_URL` | `` | Vite base path (set for deployment) |
+| `VITE_API_LOG` | `false` | Set to `true` to log all Axios requests (`[API request]`) and responses (`[API response]`) to the console. Disable before deploying to production. |
 
 ---
 
@@ -111,7 +112,7 @@ ecogreen-coin/
 │   ├── types/                # TypeScript interfaces and types
 │   ├── components/           # Reusable React components
 │   │   ├── ui/               # Primitive UI components
-│   │   ├── layout/           # App shell, bottom nav, scroll restoration
+│   │   ├── layout/           # App shell, AppHeader (app-header.tsx), bottom nav, scroll restoration
 │   │   ├── routing/          # ProtectedRoute auth guard
 │   │   └── providers/        # CSS variable injection
 │   ├── pages/                # Route-level page components (feature-grouped)
@@ -129,7 +130,7 @@ ecogreen-coin/
 │   │   └── policy/           # /policy — Terms and concepts
 │   ├── hooks/                # Custom React hooks
 │   ├── utils/                # Utility functions
-│   ├── constants/            # Brand colors, fallback images, timing constants
+│   ├── constants/            # Brand colors (COLORS), CATEGORY_PALETTE, fallback images, theme
 │   ├── styles/               # Tailwind source + compiled CSS + SCSS + icons
 │   ├── assets/images/        # Static images (background, logo)
 │   ├── app.ts                # App entry point
@@ -152,8 +153,9 @@ ecogreen-coin/
 | `/register` | Zalo OAuth login | `pages/auth/index.tsx` | No |
 | `/rewards` | Rewards catalog | `pages/rewards/index.tsx` | No |
 | `/rewards/all` | Full rewards list | `pages/rewards/all-list.tsx` | No |
-| `/rewards/category/:category` | Category drill-down | `pages/rewards/category-feed.tsx` | No |
+| `/rewards/category/:categoryId` | Category drill-down | `pages/rewards/category-feed.tsx` | No |
 | `/rewards/:id` | Reward detail + redeem | `pages/rewards/detail.tsx` | Yes |
+| `/products/:id` | Store product detail | `pages/rewards/store-item-detail.tsx` | Yes |
 | `/stores` | Store directory | `pages/stores/index.tsx` | No |
 | `/stores/:storeId` | Store detail | `pages/stores/detail.tsx` | Yes |
 | `/qr-code` | QR scanner | `pages/qr-code/index.tsx` | Yes |
@@ -190,7 +192,7 @@ Edit `app.title` in `app-config.json`:
 
 Primary color is `#288F4E` (green). Update in:
 - `app-config.json` → `template.primaryColor`
-- `src/constants/index.ts` → `COLORS`
+- `src/constants/index.ts` → `COLORS` (also contains `primaryBorder`, `primaryFade`, and `CATEGORY_PALETTE`)
 - `tailwind.config.js` → `theme.extend.colors`
 
 ### Tailwind CSS

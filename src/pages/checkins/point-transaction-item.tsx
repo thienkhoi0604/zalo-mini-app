@@ -36,7 +36,7 @@ const PointTransactionItem: FC<{ item: PointTransaction; isLast: boolean }> = ({
         <img
           src={isGreenCoin ? coinLogo : isSpend ? voucherIcon : placeIcon}
           alt="icon"
-          style={{ width: 44, height: 44, objectFit: 'contain' }}
+          style={{ width: isGreenCoin ? 28 : isSpend ? 24 : 44, height: isGreenCoin ? 28 : isSpend ? 24 : 44, objectFit: 'contain' }}
         />
       </Box>
 

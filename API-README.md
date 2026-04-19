@@ -164,7 +164,25 @@ Query params: `pageNumber`, `pageSize`, `IsUsed` (boolean, optional)
 // Response
 {
   "data": {
-    "items": [/* UserVoucher[] */],
+    "items": [
+      {
+        "id", "code", "imageUrl", "rewardId", "rewardName",
+        "shortDescription",
+        "storeName", "storeItemId",
+        "itemType",   // "Reward" | "Product"
+        "status", "issuedAt", "expiredAt", "usedAt",
+        "appliesToAll",
+        "appliedStores": [/* AppliedStore[] */],
+        "appliedStoreItems": [/* AppliedStoreItem[] */],
+        "pointCost",
+        "promotionSnapshot": {
+          // present for Reward items; null for Product items
+          "description": "Full description text",
+          "shortDescription": "Brief tagline"
+          // also carries pointCost used as fallback when top-level pointCost is null
+        }
+      }
+    ],
     "pageNumber": 1,
     "pageSize": 5,
     "totalCount": 20,
@@ -172,6 +190,8 @@ Query params: `pageNumber`, `pageSize`, `IsUsed` (boolean, optional)
   }
 }
 ```
+
+> `pointCost` is resolved from `item.pointCost ?? item.promotionSnapshot?.pointCost`.
 
 **`POST /Rewards/redeem`**
 ```json
@@ -257,7 +277,6 @@ Query params: `pageNumber`, `pageSize`, `search`, `provinceCode`, `wardCode` (se
 | Method | Endpoint | Auth | Description |
 |--------|----------|------|-------------|
 | `POST` | `/Checkins` | Yes | Submit a check-in |
-| `GET` | `/Checkins/history` | Yes | Paginated check-in history |
 
 **`POST /Checkins`**
 ```json
@@ -268,18 +287,7 @@ Query params: `pageNumber`, `pageSize`, `search`, `provinceCode`, `wardCode` (se
 { /* points earned, status, etc. */ }
 ```
 
-**`GET /Checkins/history`**
-
-Query params: `pageNumber`, `pageSize`
-
-```json
-// Response
-{
-  "data": [/* CheckinHistoryItem[] (full list, client paginates) */]
-}
-```
-
-> Note: the backend returns all history in one array; the client slices it locally for pagination.
+> Check-in history is served by `GET /me/point-transactions` (see User section).
 
 ---
 
@@ -480,7 +488,6 @@ All API modules return safe defaults (`[]`, `null`, empty objects) on failure ra
 | `GET` | `/stations` | Yes | stations |
 | `GET` | `/stations/{id}` | Yes | stations |
 | `POST` | `/Checkins` | Yes | checkins |
-| `GET` | `/Checkins/history` | Yes | checkins |
 | `GET` | `/me/profile` | Yes | user |
 | `POST` | `/me/vehicles/submit` | Yes | user |
 | `GET` | `/me/vehicles` | Yes | user |

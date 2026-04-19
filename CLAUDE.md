@@ -19,14 +19,14 @@ No lint or test scripts are configured. TypeScript errors surface via the Vite b
 ```
 src/
 ├── api/                  # HTTP layer — Axios client + one module per resource
-│   ├── client.ts         # Axios instance: JWT injection, 401 refresh queue, base URL from VITE_API_URL
+│   ├── client.ts         # Axios instance: JWT injection, 401 refresh queue, base URL from VITE_API_URL; request/response logging via VITE_API_LOG
 │   ├── auth.ts           # Zalo OAuth login, token refresh, localStorage token management
 │   ├── feed.ts           # /app/feed — flat list (getFeedItems) + grouped by store (getFeedGrouped)
 │   ├── vouchers.ts       # /Rewards — detail, my-vouchers, redeem
 │   ├── stores.ts         # /app/stores — paginated list + detail (AppStore type defined here)
 │   ├── stations.ts       # /stations — paginated list + detail
 │   ├── banners.ts        # /app/banners — unauthenticated, plain axios
-│   ├── checkins.ts       # /Checkins — submit check-in + history
+│   ├── checkins.ts       # /Checkins — submit check-in only (checkin history removed)
 │   ├── user.ts           # /me/* — profile, vehicles, point-wallet, QR session, referrals
 │   ├── ranks.ts          # /app/ranks
 │   ├── provinces.ts      # /app/location/provinces
@@ -70,7 +70,8 @@ src/
 │   │   ├── view-all-fab.tsx  # "View All" floating action button
 │   │   └── elastic-textarea.tsx # Auto-expanding textarea
 │   ├── layout/
-│   │   ├── index.tsx         # App shell: all Routes, AppHeader, safe-area insets, auth init
+│   │   ├── index.tsx         # App shell: all Routes, safe-area insets, auth init
+│   │   ├── app-header.tsx    # AppHeader component + getRouteTitle() (extracted from index.tsx)
 │   │   ├── navigation.tsx    # Bottom nav: Home / Stations / QR FAB / Rewards / Profile
 │   │   └── scroll-restoration.tsx
 │   ├── routing/
@@ -94,14 +95,13 @@ src/
 │   │   ├── unverified-banner.tsx # Prompt to verify vehicle
 │   │   └── qr-code-sheet.tsx     # Referral QR code sheet
 │   ├── rewards/          # /rewards — all rewards/voucher browsing (routes use /rewards prefix)
-│   │   ├── index.tsx         # /rewards — balance header + Danh mục / Cửa hàng tab switcher
-│   │   ├── category-feed.tsx # /rewards/category/:category — grid filtered by itemTypeTranslate
+│   │   ├── index.tsx         # /rewards — balance header (Lá taps → /checkin-history) + tab switcher
+│   │   ├── category-feed.tsx # /rewards/category/:categoryId — sort pills + grid; OTHER_CATEGORY_ID fires dual Type=Voucher + Type=PhysicalItem requests
 │   │   ├── store-feed.tsx    # Cửa hàng tab: global vouchers + per-store sections (Grouped=true)
-│   │   ├── item-cards-list.tsx # Danh mục tab: horizontal-scroll rows grouped by category
+│   │   ├── item-cards-list.tsx # Danh mục tab: horizontal-scroll rows grouped by category; "Khác" uses voucher-icon.png
 │   │   ├── voucher-card.tsx  # Shared voucher card (type chip, stock badge, price display)
 │   │   ├── detail.tsx        # /rewards/:id (protected) — detail + redeem
-│   │   ├── all-list.tsx      # /rewards/all — full voucher list with header
-│   │   └── item-list.tsx     # Alternative item list page (WIP)
+│   │   └── all-list.tsx      # /rewards/all — full voucher list with header
 │   ├── stores/           # /stores — store directory
 │   │   ├── index.tsx         # Store list with infinite scroll
 │   │   └── detail.tsx        # /stores/:storeId (protected) — store info + item list
@@ -156,7 +156,7 @@ src/
 │   ├── config.ts         # getConfig<T>(getter) — reads app-config.json via window.APP_CONFIG
 │   └── async.ts          # wait(ms) — resolves after delay
 ├── constants/
-│   ├── index.ts          # COLORS, FALLBACK_IMAGES, REDIRECT_DELAY_MS, KEYBOARD_HEIGHT_THRESHOLD
+│   ├── index.ts          # COLORS, FALLBACK_IMAGES, KEYBOARD_HEIGHT_THRESHOLD, CATEGORY_PALETTE
 │   └── theme.ts          # AppTheme interface + seasonal theme variants (ACTIVE_THEME export)
 ├── styles/
 │   ├── tailwind.css      # Tailwind source — EDIT THIS
@@ -196,6 +196,8 @@ src/
 
 All routes are declared in `src/components/layout/index.tsx`. `ProtectedRoute` redirects unauthenticated users to `/register`.
 
+Also note the `/products/:id` route (not listed above) which renders `StoreItemDetailPage` for store product details.
+
 > **Naming note:** Routes use `/rewards` (matching the backend `/Rewards` API), and source files now live in `src/pages/rewards/`. Store/types still use "voucher" terminology internally — this is intentional.
 
 ---
@@ -214,10 +216,11 @@ This is a **Zalo Mini App** — a React app running inside the Zalo mobile super
 
 ### Routing & Layout
 
-All routes are declared in `src/components/layout/index.tsx`, which also owns:
-- The `AppHeader` (back button + page title) — titles mapped in `getRouteTitle()`
+All routes are declared in `src/components/layout/index.tsx`, which owns:
 - Auth initialization on mount via `initializeAuth()`
 - The `ProtectedRoute` wrapper (`src/components/routing/protected-route.tsx`)
+
+`AppHeader` (back button + page title) is in `src/components/layout/app-header.tsx`. Route titles are mapped in `getRouteTitle()` exported from that file.
 
 Bottom nav is in `src/components/layout/navigation.tsx` — 5 tabs with a floating QR button in the centre.
 
@@ -249,6 +252,7 @@ Stores:
 - Proactive token refresh 60 s before expiry
 - Reactive 401 refresh with request queue (no duplicate refresh calls)
 - Token keys in localStorage: `ecogreen_access_token`, `ecogreen_refresh_token`
+- Request/response logging controlled by `VITE_API_LOG=true` in `.env`; requests log `[API ↑]`, responses log `[API ↓]`
 
 Each API module maps between backend response shape and app-internal types.
 
@@ -260,7 +264,7 @@ Each API module maps between backend response shape and app-internal types.
 | `vouchers.ts` | `GET /Rewards/{id}`, `GET /Rewards/my-vouchers`, `POST /Rewards/redeem` |
 | `stores.ts` | `GET /app/stores`, `GET /app/stores/{id}` |
 | `stations.ts` | `GET /stations`, `GET /stations/{id}` |
-| `checkins.ts` | `POST /Checkins`, `GET /Checkins/history` |
+| `checkins.ts` | `POST /Checkins` |
 | `user.ts` | `GET /me/profile`, `POST /me/vehicles/submit`, `GET /me/vehicles`, `POST /qr-code/scan`, `POST /me/qr/session`, `POST /app/referrals/scan`, `GET /me/referral-qr`, `GET /me/point-wallet` |
 | `banners.ts` | `GET /app/banners` (unauthenticated) |
 | `ranks.ts` | `GET /app/ranks` |
@@ -283,16 +287,16 @@ The vouchers list and store-items list are both served by `/app/feed`:
 
 `FeedApiItem` is mapped to the unified `Voucher` type via `mapFeedItemToVoucher()` in `src/api/feed.ts`.
 
-### Vouchers Feature (`src/pages/vouchers/`)
+### Vouchers Feature (`src/pages/rewards/`)
 
-Routes use `/rewards` prefix; source files live in `pages/vouchers/`. Flat file structure:
-- `index.tsx` — balance banner + animated pill tab switcher (Danh mục / Cửa hàng)
-- `item-cards-list.tsx` — Danh mục tab: horizontal-scroll rows, one per `itemTypeTranslate` category
-- `category-feed.tsx` — drill-down grid for a single category with inline sort pills
+Routes use `/rewards` prefix; source files live in `pages/rewards/`. Flat file structure:
+- `index.tsx` — balance banner (Lá balance taps → `/checkin-history`) + tab switcher (Danh mục / Cửa hàng)
+- `item-cards-list.tsx` — Danh mục tab: horizontal-scroll rows grouped by category; "Khác" category uses `voucher-icon.png` and is backed by `OTHER_CATEGORY_ID`
+- `category-feed.tsx` — drill-down grid for a single category with inline sort pills; when `categoryId === OTHER_CATEGORY_ID` fires two parallel requests (`Type=Voucher` + `Type=PhysicalItem`), both with the same `CategoryId`, then deduplicates results
 - `store-feed.tsx` — Cửa hàng tab: global vouchers section + per-store sections with item thumbnails
 - `voucher-card.tsx` — shared card with type chip, stock badge, price display
 - `detail.tsx` — voucher detail page with redeem action
-- `store-detail.tsx` — store detail page (rendered at `/stores/:storeId`)
+- `store-item-detail.tsx` — product detail page at `/products/:id`; left zone of each voucher row navigates to `/rewards/:id`
 
 ### Pagination / Infinite Scroll
 
@@ -331,9 +335,13 @@ Brand colours (defined in `src/constants/index.ts`):
 | `COLORS.primaryDark` | `#1A6B38` | Hover / pressed |
 | `COLORS.primaryLight` | `#EEF7F1` | Backgrounds |
 | `COLORS.primaryBg` | `#F0FDF4` | Card backgrounds |
+| `COLORS.primaryBorder` | `#A7D9B8` | Borders (~30% tint) |
+| `COLORS.primaryFade` | `#D1EDD9` | Mid tint — icon backgrounds |
 | `COLORS.brown` | `#C49A6C` | Secondary accent |
 | `COLORS.brownDark` | `#A0784A` | Brown hover |
 | `COLORS.brownLight` | `#F5F0E8` | Brown background |
+
+`CATEGORY_PALETTE` (also in `src/constants/index.ts`) is a 6-colour array used by `item-cards-list.tsx` to cycle accent colours across category rows.
 
 Tailwind theme extends these as: `primary`, `green`, `background`, `gray` (`#767A7F`), `divider` (`#E9EBED`), `skeleton` (`rgba(0,0,0,0.1)`).
 

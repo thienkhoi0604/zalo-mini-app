@@ -350,6 +350,38 @@ const VoucherDetailPage: FC = () => {
 
       </Box>
 
+      {/* ── Description ── */}
+      {(userVoucher.shortDescription || userVoucher.promotionSnapshot?.description) && (
+        <Box style={{ padding: '16px 16px 0' }}>
+          <p style={{ fontSize: 11, color: '#9CA3AF', marginBottom: 10, fontWeight: 700, letterSpacing: 0.5 }}>
+            MÔ TẢ
+          </p>
+          <Box
+            style={{
+              background: '#fff',
+              borderRadius: 18,
+              border: '1px solid #F0F1F3',
+              boxShadow: '0 2px 10px rgba(0,0,0,0.04)',
+              padding: '14px 16px',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 8,
+            }}
+          >
+            {userVoucher.shortDescription && (
+              <p style={{ fontSize: 12, color: '#9CA3AF', fontStyle: 'italic', lineHeight: '18px' }}>
+                {userVoucher.shortDescription}
+              </p>
+            )}
+            {userVoucher.promotionSnapshot?.description && (
+              <p style={{ fontSize: 13, color: '#374151', lineHeight: '20px' }}>
+                {userVoucher.promotionSnapshot.description}
+              </p>
+            )}
+          </Box>
+        </Box>
+      )}
+
       {/* ── Applicable stores ── */}
       {(userVoucher.appliesToAll || (userVoucher.appliedStores && userVoucher.appliedStores.length > 0)) && (
         <Box style={{ padding: '16px 16px 0' }}>

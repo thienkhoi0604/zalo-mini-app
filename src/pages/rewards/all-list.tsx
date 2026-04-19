@@ -1,4 +1,5 @@
 import React, { FC, useEffect, useState } from 'react';
+import voucherIcon from '@/assets/images/voucher-icon.png';
 import { useNavigate } from 'react-router';
 import { Box, Page, useSnackbar } from 'zmp-ui';
 import CoinIcon from '@/components/ui/coin-icon';
@@ -72,7 +73,7 @@ const VouchersListPage: FC = () => {
                 className="items-center"
                 style={{ gap: 6, flex: 1, justifyContent: 'center', cursor: 'pointer' }}
               >
-                <span style={{ fontSize: 13 }}>🎫</span>
+                <img src={voucherIcon} alt="voucher" style={{ width: 24, height: 24, objectFit: 'contain' }} />
                 <p style={{ fontSize: 13, fontWeight: 800, color: '#fff', letterSpacing: -0.2 }}>
                   {userVouchersUnusedCount}
                 </p>

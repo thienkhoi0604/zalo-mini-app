@@ -260,6 +260,11 @@ export interface AppliedStoreItem {
   imageUrl: string | null;
 }
 
+export interface PromotionSnapshot {
+  description: string | null;
+  shortDescription: string | null;
+}
+
 export interface UserVoucher {
   id: string;
   code: string;
@@ -278,6 +283,7 @@ export interface UserVoucher {
   appliedStores: AppliedStore[] | null;
   appliedStoreItems?: AppliedStoreItem[] | null;
   pointCost?: number | null;
+  promotionSnapshot?: PromotionSnapshot | null;
 }
 
 export interface GetUserVouchersParams {
